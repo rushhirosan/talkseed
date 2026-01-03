@@ -1,0 +1,10 @@
+次のステップ：iPhoneにインストール
+iPhoneを接続して、以下のコマンドで実機にインストールできます：
+# 接続されているデバイスを確認flutter devices# iPhoneにインストール（iPhoneが接続されている場合）flutter run
+注意点：
+iPhoneをUSBで接続する
+iPhoneで「このコンピュータを信頼」を許可する
+初回はXcodeで開発者証明書の設定が必要（自動で処理される場合あり）
+iPhoneを接続したら、flutter devicesで認識されているか確認してください。
+
+Podfileというのを作った
