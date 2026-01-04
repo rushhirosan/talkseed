@@ -114,6 +114,15 @@ class DiceWidget extends StatelessWidget {
 
   /// 3Dサイコロの各面を描画
   Widget _buildDiceFace(BuildContext context, int number, {required Matrix4 transform, double brightness = 1.0}) {
+    // X軸回転が関与する面（面2と面5）のテキストを補正
+    // これらの面でテキストが上下逆になるのを防ぐため、X軸で180度回転を追加
+    final Matrix4 textCorrection;
+    if (number == 2 || number == 5) {
+      textCorrection = Matrix4.identity()..rotateX(pi);
+    } else {
+      textCorrection = Matrix4.identity();
+    }
+    
     return Transform(
       transform: transform,
       alignment: Alignment.center,
@@ -141,7 +150,11 @@ class DiceWidget extends StatelessWidget {
             ),
           ],
         ),
-        child: _buildDiceFaceContent(context, number, brightness: brightness),
+        child: Transform(
+          transform: textCorrection,
+          alignment: Alignment.center,
+          child: _buildDiceFaceContent(context, number, brightness: brightness),
+        ),
       ),
     );
   }
