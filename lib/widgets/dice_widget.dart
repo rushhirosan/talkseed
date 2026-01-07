@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'dart:math' as math;
+import 'package:vector_math/vector_math_64.dart' as vm;
 import '../models/theme.dart';
+import '../models/polyhedron_type.dart';
 import '../utils/dice_3d_utils.dart';
 
 /// 3Dサイコロウィジェット
@@ -9,14 +11,38 @@ class DiceWidget extends StatelessWidget {
   final double rotY;
   final double rotZ;
   final List<String> themes;
+  final PolyhedronType polyhedronType;
 
   const DiceWidget({
     super.key,
     required this.rotX,
     required this.rotY,
     required this.rotZ,
+    required this.polyhedronType,
     this.themes = ThemeModel.defaultThemes,
   });
+
+  /// 正六面体の各面のデータを取得
+  /// 現在は正六面体のみをサポートしています
+  /// 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
+  List<Map<String, dynamic>> _getFaceData(double halfSize) {
+        return _getCubeFaceData(halfSize);
+  }
+
+  /// 正六面体（立方体）の各面のデータ
+  List<Map<String, dynamic>> _getCubeFaceData(double halfSize) {
+    return [
+      {'number': 1, 'x': 0.0, 'y': 0.0, 'z': halfSize, 'rot': vm.Matrix4.identity()},
+      {'number': 6, 'x': 0.0, 'y': 0.0, 'z': -halfSize, 'rot': vm.Matrix4.identity()..rotateY(math.pi)},
+      {'number': 4, 'x': halfSize, 'y': 0.0, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateY(math.pi / 2)},
+      {'number': 3, 'x': -halfSize, 'y': 0.0, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateY(-math.pi / 2)},
+      {'number': 2, 'x': 0.0, 'y': -halfSize, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateX(-math.pi / 2)},
+      {'number': 5, 'x': 0.0, 'y': halfSize, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateX(math.pi / 2)},
+    ];
+  }
+
+  // 注意: 正四面体と正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
+  // 将来的に使用する可能性があるため、削除せずに保存用ファイルに移動しました
 
   /// 3Dサイコロ全体を構築
   @override
@@ -25,20 +51,13 @@ class DiceWidget extends StatelessWidget {
     const halfSize = size / 2;
 
     // 回転マトリックスを作成
-    final rotationMatrix = Matrix4.identity()
+    final rotationMatrix = vm.Matrix4.identity()
       ..rotateY(rotY)
       ..rotateX(rotX)
       ..rotateZ(rotZ);
 
-    // 各面の初期位置と回転を定義
-    final faceData = [
-      {'number': 1, 'x': 0.0, 'y': 0.0, 'z': halfSize, 'rot': Matrix4.identity()},
-      {'number': 6, 'x': 0.0, 'y': 0.0, 'z': -halfSize, 'rot': Matrix4.identity()..rotateY(pi)},
-      {'number': 4, 'x': halfSize, 'y': 0.0, 'z': 0.0, 'rot': Matrix4.identity()..rotateY(pi / 2)},
-      {'number': 3, 'x': -halfSize, 'y': 0.0, 'z': 0.0, 'rot': Matrix4.identity()..rotateY(-pi / 2)},
-      {'number': 2, 'x': 0.0, 'y': -halfSize, 'z': 0.0, 'rot': Matrix4.identity()..rotateX(-pi / 2)},
-      {'number': 5, 'x': 0.0, 'y': halfSize, 'z': 0.0, 'rot': Matrix4.identity()..rotateX(pi / 2)},
-    ];
+    // 各面の初期位置と回転を定義（多面体タイプに応じて）
+    final faceData = _getFaceData(halfSize);
 
     // 各面のZ座標を計算して、深度順にソート（奥から手前へ）
     final m = rotationMatrix.storage;
@@ -75,7 +94,7 @@ class DiceWidget extends StatelessWidget {
       final x = face['x'] as double;
       final y = face['y'] as double;
       final z = face['z'] as double;
-      final faceRot = face['rot'] as Matrix4;
+      final faceRot = face['rot'] as vm.Matrix4;
       final depth = item['depth'] as double;
       
       // Z座標に基づいて明るさを計算（前面ほど明るく、背面ほど暗く）
@@ -88,19 +107,22 @@ class DiceWidget extends StatelessWidget {
       final brightness = 0.6 + (normalizedDepth * 0.4);
       
       // 各面の変換マトリックスを作成
-      // 1. まず各面を正しい位置に配置（translate）
-      // 2. 各面を正しい向きに回転（faceRot）
-      // 3. 全体の回転を適用（rotationMatrix）
-      final faceTransform = Matrix4.identity()
+      // 正六面体の各面は独立しているため、シンプルに変換を適用
+      final faceTransform = vm.Matrix4.identity()
         ..translate(x, y, z)
         ..multiply(faceRot);
       
       // 全体の回転マトリックスを適用
-      final finalTransform = Matrix4.identity()
+      final finalTransform = vm.Matrix4.identity()
         ..multiply(rotationMatrix)
         ..multiply(faceTransform);
 
-      return _buildDiceFace(context, number, transform: finalTransform, brightness: brightness);
+      return _buildDiceFace(
+        context,
+        number,
+        transform: finalTransform,
+        brightness: brightness,
+      );
     }).toList();
 
     return SizedBox(
@@ -113,51 +135,73 @@ class DiceWidget extends StatelessWidget {
   }
 
   /// 3Dサイコロの各面を描画
-  Widget _buildDiceFace(BuildContext context, int number, {required Matrix4 transform, double brightness = 1.0}) {
+  /// 現在は正六面体のみをサポートしています
+  Widget _buildDiceFace(
+    BuildContext context,
+    int number, {
+    required vm.Matrix4 transform,
+    double brightness = 1.0,
+  }) {
     // X軸回転が関与する面（面2と面5）のテキストを補正
     // これらの面でテキストが上下逆になるのを防ぐため、X軸で180度回転を追加
-    final Matrix4 textCorrection;
+    final vm.Matrix4 textCorrection;
     if (number == 2 || number == 5) {
-      textCorrection = Matrix4.identity()..rotateX(pi);
+      textCorrection = vm.Matrix4.identity()..rotateX(math.pi);
     } else {
-      textCorrection = Matrix4.identity();
+      textCorrection = vm.Matrix4.identity();
     }
+    
+    final faceWidget = _buildSquareFace(
+            context,
+            number,
+            brightness: brightness,
+            textCorrection: textCorrection,
+    );
     
     return Transform(
       transform: transform,
       alignment: Alignment.center,
-      child: Container(
-        width: Dice3DUtils.diceSize,
-        height: Dice3DUtils.diceSize,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(0.95 * brightness),
-          border: Border.all(
-            color: Colors.grey.shade400.withOpacity(0.6),
-            width: 1.5,
+      child: faceWidget,
+    );
+  }
+
+  /// 正方形の面を描画（正六面体用）
+  Widget _buildSquareFace(BuildContext context, int number, {required double brightness, required vm.Matrix4 textCorrection}) {
+    return Container(
+      width: Dice3DUtils.diceSize,
+      height: Dice3DUtils.diceSize,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white.withOpacity(0.95 * brightness),
+        border: Border.all(
+          color: Colors.grey.shade400.withOpacity(0.6),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25 * brightness),
+            blurRadius: 12,
+            offset: const Offset(3, 3),
+            spreadRadius: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25 * brightness),
-              blurRadius: 12,
-              offset: const Offset(3, 3),
-              spreadRadius: 1,
-            ),
-            BoxShadow(
-              color: Colors.white.withOpacity(0.9 * brightness),
-              blurRadius: 6,
-              offset: const Offset(-2, -2),
-            ),
-          ],
-        ),
-        child: Transform(
-          transform: textCorrection,
-          alignment: Alignment.center,
-          child: _buildDiceFaceContent(context, number, brightness: brightness),
-        ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.9 * brightness),
+            blurRadius: 6,
+            offset: const Offset(-2, -2),
+          ),
+        ],
+      ),
+      child: Transform(
+        transform: textCorrection,
+        alignment: Alignment.center,
+        child: _buildDiceFaceContent(context, number, brightness: brightness),
       ),
     );
   }
+
+  // 注意: 正三角形の面を描画するコード（_buildTriangleFace）は削除されました
+  // 正六面体のみをサポートするため、正方形の面のみを使用します
+  // 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
 
   /// サイコロの面にテーマテキストを描画
   Widget _buildDiceFaceContent(BuildContext context, int number, {double brightness = 1.0}) {
@@ -188,4 +232,8 @@ class DiceWidget extends StatelessWidget {
     );
   }
 }
+
+// 注意: TriangleClipper と _TetrahedronPainter は削除されました
+// 正六面体のみをサポートするため、これらは不要になりました
+// 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
 
