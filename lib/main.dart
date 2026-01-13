@@ -5,10 +5,12 @@ import 'package:vector_math/vector_math_64.dart' as vm;
 import 'models/theme.dart';
 import 'models/polyhedron_type.dart';
 import 'utils/dice_3d_utils.dart';
+import 'utils/preferences_helper.dart';
 import 'widgets/dice_widget.dart';
 import 'widgets/theme_display.dart';
 import 'pages/settings_page.dart';
 import 'pages/initial_settings_page.dart';
+import 'pages/tutorial_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +27,75 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const InitialSettingsPage(),
+      home: const MainPage(),
     );
+  }
+}
+
+/// 初回起動チェックとチュートリアル表示を管理するメインページ
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  bool _isLoading = true;
+  bool _showTutorial = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFirstLaunch();
+  }
+
+  /// 初回起動かどうかをチェック
+  Future<void> _checkFirstLaunch() async {
+    try {
+      final isFirstLaunch = await PreferencesHelper.isFirstLaunch();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _showTutorial = isFirstLaunch;
+        });
+      }
+    } catch (e) {
+      // エラーが発生した場合は、チュートリアルをスキップして初期設定画面を表示
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _showTutorial = false;
+        });
+      }
+    }
+  }
+
+  /// チュートリアル完了時のコールバック
+  void _onTutorialComplete() {
+    setState(() {
+      _showTutorial = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ローディング中
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // チュートリアル表示
+    if (_showTutorial) {
+      return TutorialPage(onComplete: _onTutorialComplete);
+    }
+
+    // 通常の初期設定画面
+    return const InitialSettingsPage();
   }
 }
 

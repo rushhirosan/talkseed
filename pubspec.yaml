@@ -46,6 +46,12 @@ dependencies:
   
   # 触覚フィードバック
   vibration: ^1.8.4
+  
+  # ローカルストレージ（初回起動フラグ管理用）
+  shared_preferences: ^2.2.2
+  
+  # チュートリアル表示用
+  introduction_screen: ^3.1.14
 
 dev_dependencies:
   flutter_test:

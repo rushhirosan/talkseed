@@ -3,6 +3,7 @@ import 'dart:math';
 import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
 import '../main.dart' show DicePage;
+import 'tutorial_page.dart';
 
 /// 初期設定画面（アプリ起動時に表示）
 class InitialSettingsPage extends StatefulWidget {
@@ -65,11 +66,31 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
+  /// チュートリアルを表示
+  void _showTutorial() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TutorialPage(
+          onComplete: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('設定'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showTutorial,
+            tooltip: 'チュートリアルを表示',
+          ),
+        ],
       ),
       body: Row(
         children: [

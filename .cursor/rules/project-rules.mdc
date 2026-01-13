@@ -1,0 +1,113 @@
+# Theme Dice プロジェクト - Cursor Rules
+
+## プロジェクト概要
+- Flutter アプリケーション（iOS/Android対応）
+- テーマをサイコロで選ぶアプリ
+- 3Dサイコロアニメーション機能
+
+## 言語・フレームワーク
+- **言語**: Dart 3.10.4+
+- **フレームワーク**: Flutter
+- **UI**: Material Design 3（Material 3）
+
+## UIコンポーネント規約
+
+### Material 3コンポーネントの使用が必須
+**UIコンポーネントは必ずFlutterのMaterial 3コンポーネントを使用し、公式ドキュメントに従うこと**
+
+- 公式ドキュメント: https://docs.flutter.dev/ui/widgets/material
+- Material 3がデフォルト（Flutter 3.16以降）
+- `useMaterial3: true` を維持すること
+
+### 使用可能なMaterial 3コンポーネント
+公式ドキュメントに記載されている以下のカテゴリのコンポーネントを使用：
+
+#### Actions
+- `ElevatedButton`, `FilledButton`, `OutlinedButton`, `TextButton`
+- `FloatingActionButton`, `ExtendedFloatingActionButton`
+- `IconButton`, `SegmentedButton`
+
+#### Communication
+- `Badge`, `LinearProgressIndicator`, `CircularProgressIndicator`
+- `SnackBar`
+
+#### Containment
+- `AlertDialog`, `BottomSheet`
+- `Card`, `Divider`, `ListTile`
+
+#### Navigation
+- `AppBar`, `BottomAppBar`
+- `NavigationBar`, `NavigationDrawer`, `NavigationRail`
+- `TabBar`
+
+#### Selection
+- `Checkbox`, `Chip`, `DatePicker`, `Menu`
+- `Radio`, `Slider`, `Switch`, `TimePicker`
+
+#### Text inputs
+- `TextField`, `TextFormField`
+
+### カスタムウィジェット
+- 既存のMaterial 3コンポーネントで実現できない場合のみ、カスタムウィジェットを作成
+- カスタムウィジェットはMaterial 3のデザインガイドラインに従う
+- 既存のMaterial 3コンポーネントを拡張することを優先
+
+### コンポーネントの使い方
+- 公式ドキュメント（https://docs.flutter.dev/ui/widgets/material）の例とAPIに従う
+- パラメータやスタイルは公式ドキュメントで推奨されている方法を使用
+- 不明な点がある場合は公式ドキュメントを参照
+
+## コーディング規約
+
+### ファイル構造
+- `lib/models/` - データモデル
+- `lib/pages/` - ページ/画面
+- `lib/widgets/` - 再利用可能なウィジェット
+- `lib/utils/` - ユーティリティ関数
+- `lib/polyhedrons/` - 多面体関連のコード
+
+### 命名規則
+- ファイル名: `snake_case.dart`
+- クラス名: `PascalCase`
+- 変数・関数名: `camelCase`
+- 定数: `lowerCamelCase` または `UPPER_SNAKE_CASE`
+
+### コメント
+- 日本語でのコメントを推奨
+- 重要な機能や複雑なロジックには説明を追加
+- 削除されたコードの理由を明記（例: `// 注意: 正六面体のみをサポート...`）
+
+### コード品質
+- 一貫したスタイルを維持
+- 未使用コードは削除（または明確な理由を記載）
+- Widgetは適切に分割して再利用性を高める
+- `const`コンストラクタを積極的に使用
+
+## 現在の制約事項
+- 正六面体（cube）のみをサポート（他の多面体タイプは将来実装予定）
+- 正四面体・正八面体のコードは `lib/polyhedrons/tetrahedron_octahedron_preserved.dart` に保存
+
+## 依存パッケージ
+- `vector_math`: 3D計算
+- `vibration`: 触覚フィードバック
+- `shared_preferences`: ローカルストレージ
+- `introduction_screen`: チュートリアル表示
+
+## セキュリティ
+- 環境変数や秘密情報は絶対にコミットしない
+- `.env` ファイルは `.gitignore` に含める
+- APIキーなどは環境変数で管理
+- コミット前には `git status` と `git diff` を確認
+
+## UI/UX
+- Material Design 3 のガイドラインに従う
+- アクセシビリティを考慮（ツールチップ、セマンティクス）
+- 日本語UI対応
+
+## パフォーマンス
+- 不要な再ビルドを避ける（`const` コンストラクタの活用）
+- アニメーションは適切なカーブと持続時間を設定
+
+## テスト
+- 可能な限りテストを書く
+- Widget テストを推奨
