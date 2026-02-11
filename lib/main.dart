@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:math';
 import 'package:vibration/vibration.dart';
-import 'package:vector_math/vector_math_64.dart' as vm;
+import 'package:theme_dice/l10n/app_localizations.dart';
 import 'models/theme.dart';
 import 'models/polyhedron_type.dart';
+import 'models/session_config.dart';
+import 'models/game_session.dart';
+import 'services/timer_service.dart';
 import 'utils/dice_3d_utils.dart';
 import 'utils/preferences_helper.dart';
+import 'utils/route_transitions.dart';
 import 'widgets/dice_widget.dart';
 import 'widgets/theme_display.dart';
+import 'widgets/timer_display.dart';
+import 'widgets/player_indicator.dart';
 import 'pages/settings_page.dart';
 import 'pages/initial_settings_page.dart';
+import 'pages/card_settings_page.dart';
+import 'pages/mode_selection_page.dart';
+import 'pages/session_setup_page.dart';
 import 'pages/tutorial_page.dart';
+import 'pages/topics_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,11 +33,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Theme Dice',
+      title: 'Talk Seed',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ja', ''),
+        Locale('en', ''),
+      ],
+      // デバッグ用：特定の言語を強制する場合は以下のコメントを外してください
+      // locale: const Locale('en', ''), // 英語を強制
+      // locale: const Locale('ja', ''), // 日本語を強制
       home: const MainPage(),
     );
   }
@@ -43,38 +67,95 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool _isLoading = true;
   bool _showTutorial = false;
+  /// 案B: 再訪時にデフォルトモードで開く用
+  List<String>? _savedThemes;
+  /// 起動時直接表示: 'dice' のみ（カードは廃止）| null = モード選択
+  String? _defaultPlayMode;
 
   @override
   void initState() {
     super.initState();
-    _checkFirstLaunch();
+    _checkInitialRoute();
   }
 
-  /// 初回起動かどうかをチェック
-  Future<void> _checkFirstLaunch() async {
+  /// 初回起動・チュートリアル・デフォルト遊び方のチェック（案B）
+  Future<void> _checkInitialRoute() async {
     try {
       final isFirstLaunch = await PreferencesHelper.isFirstLaunch();
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _showTutorial = isFirstLaunch;
-        });
+      if (isFirstLaunch) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _showTutorial = true;
+            _savedThemes = null;
+            _defaultPlayMode = null;
+          });
+        }
+        return;
       }
-    } catch (e) {
-      // エラーが発生した場合は、チュートリアルをスキップして初期設定画面を表示
+      final defaultMode = await PreferencesHelper.loadDefaultPlayMode();
+      // カードで開くは廃止（複数デッキのため）。過去に topic_card が保存されていれば未設定扱いにする
+      final effectiveMode = defaultMode == 'topic_card' ? null : defaultMode;
+      if (effectiveMode == null || !mounted) {
+        if (mounted) {
+          if (defaultMode == 'topic_card') {
+            PreferencesHelper.saveDefaultPlayMode(null);
+          }
+          setState(() {
+            _isLoading = false;
+            _showTutorial = false;
+            _savedThemes = null;
+            _defaultPlayMode = null;
+          });
+        }
+        return;
+      }
+      final themes = await PreferencesHelper.loadLastThemes();
+      if (effectiveMode == 'dice') {
+        if (themes != null && themes.length == 6 && mounted) {
+          setState(() {
+            _isLoading = false;
+            _showTutorial = false;
+            _savedThemes = themes;
+            _defaultPlayMode = 'dice';
+          });
+        } else if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _showTutorial = false;
+            _savedThemes = null;
+            _defaultPlayMode = null;
+          });
+        }
+        return;
+      }
       if (mounted) {
         setState(() {
           _isLoading = false;
           _showTutorial = false;
+          _savedThemes = null;
+          _defaultPlayMode = null;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _showTutorial = false;
+          _savedThemes = null;
+          _defaultPlayMode = null;
         });
       }
     }
   }
 
-  /// チュートリアル完了時のコールバック
+  /// チュートリアル完了時のコールバック（必ず初期画面へ）
   void _onTutorialComplete() {
+    if (!mounted) return;
     setState(() {
       _showTutorial = false;
+      _defaultPlayMode = null;
+      _savedThemes = null;
     });
   }
 
@@ -94,7 +175,21 @@ class _MainPageState extends State<MainPage> {
       return TutorialPage(onComplete: _onTutorialComplete);
     }
 
-    // 通常の初期設定画面
+    // 案B: デフォルトが未設定ならモード選択画面（選ぶだけのシンプルな画面）
+    final shouldShowInitial = _defaultPlayMode == null;
+    if (shouldShowInitial) {
+      return const ModeSelectionPage();
+    }
+
+    // 案B: デフォルトがサイコロならサイコロ画面を直接表示
+    if (_defaultPlayMode == 'dice' && _savedThemes != null && _savedThemes!.length == 6) {
+      return DicePage(
+        initialType: PolyhedronType.cube,
+        initialThemes: {PolyhedronType.cube: _savedThemes!},
+      );
+    }
+
+    // サイコロ以外（topic_card は廃止）は初期設定 or モード選択へ
     return const InitialSettingsPage();
   }
 }
@@ -102,11 +197,13 @@ class _MainPageState extends State<MainPage> {
 class DicePage extends StatefulWidget {
   final PolyhedronType? initialType;
   final Map<PolyhedronType, List<String>>? initialThemes;
+  final SessionConfig? sessionConfig;
 
   const DicePage({
     super.key,
     this.initialType,
     this.initialThemes,
+    this.sessionConfig,
   });
 
   @override
@@ -122,18 +219,20 @@ class _DicePageState extends State<DicePage>
   
   // 多面体タイプとテーマの管理
   late PolyhedronType _selectedPolyhedronType;
-  late Map<PolyhedronType, List<String>> _themes;
+  Map<PolyhedronType, List<String>>? _themes;
+  
+  // セッション管理（新規追加）
+  GameSession? _session;
+  TimerService? _timerService;
 
   @override
   void initState() {
     super.initState();
     // 現在は正六面体のみをサポート（常にcubeを使用）
     _selectedPolyhedronType = PolyhedronType.cube;
-    // 初期設定画面からテーマを取得、またはデフォルト値を使用
+    // 初期設定画面からテーマを取得（デフォルト値はbuild内で設定）
     if (widget.initialThemes != null && widget.initialThemes!.containsKey(PolyhedronType.cube)) {
       _themes = {PolyhedronType.cube: widget.initialThemes![PolyhedronType.cube]!};
-    } else {
-      _themes = {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube)};
     }
     
     _initializeAnimationController();
@@ -151,11 +250,44 @@ class _DicePageState extends State<DicePage>
         }
       }
     });
+    
+    // セッション設定があれば初期化
+    if (widget.sessionConfig != null) {
+      _initializeSession(widget.sessionConfig!);
+    }
+  }
+  
+  /// セッションを初期化
+  void _initializeSession(SessionConfig config) {
+    setState(() {
+      _session = GameSession(
+        config: config,
+        themes: widget.initialThemes ?? {},
+        isActive: true,
+      );
+      _session!.startSession();
+      
+      if (config.enableTimer) {
+        _timerService = TimerService(
+          initialDuration: config.timerDuration,
+          onTick: () => setState(() {}),
+          onFinished: () {
+            _onTimerFinished();
+          },
+        );
+      }
+    });
+  }
+  
+  /// タイマー終了時の処理
+  void _onTimerFinished() {
+    _triggerVibration();
+    // タイマー終了を通知（必要に応じてダイアログ表示など）
   }
 
   void _initializeAnimationController() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 2000), // 奥から手前への移動時間
+      duration: const Duration(milliseconds: 3000), // 奥から手前への移動時間
       vsync: this,
     );
   }
@@ -168,19 +300,13 @@ class _DicePageState extends State<DicePage>
   double _endRotationY = 0.0;
   double _endRotationZ = 0.0;
   
-  // Z座標（深度）アニメーション用
-  // 初期値は画面の奥（大きい値）、手前は0に近い値
-  double _startZ = 1000.0; // 画面の奥
-  double _endZ = 0.0; // 手前
-  double _currentZ = 1000.0; // 現在のZ座標
-  
-  bool _isAligningToFront = false;
   bool _isDiceVisible = false; // サイコロが表示されているか
   bool _isRollingFromBack = false; // 奥から手前への移動アニメーション中かどうか
 
   @override
   void dispose() {
     _animationController.dispose();
+    _timerService?.dispose();
     super.dispose();
   }
   
@@ -195,12 +321,6 @@ class _DicePageState extends State<DicePage>
       _isRollingFromBack = true;
       _selectedTheme = null;
       _selectedFaceNumber = null;
-      _isAligningToFront = false;
-
-      // サイコロを画面の奥に配置
-      _startZ = 1000.0;
-      _endZ = 0.0;
-      _currentZ = 1000.0;
 
       // 回転値をリセット
       _startRotationX = 0.0;
@@ -242,14 +362,10 @@ class _DicePageState extends State<DicePage>
       _endRotationY = 6 * pi;
       _endRotationZ = 6 * pi;
       
-      // Z座標アニメーション：奥から手前へ
-      _startZ = 1000.0;
-      _endZ = 0.0;
-      _currentZ = 1000.0; // 初期値を確実に設定
     });
     
     // アニメーション時間を設定（奥から手前への移動時間）
-    _animationController.duration = const Duration(milliseconds: 2000);
+    _animationController.duration = const Duration(milliseconds: 3000);
     _animationController.reset();
     _animationController.forward();
   }
@@ -321,7 +437,7 @@ class _DicePageState extends State<DicePage>
     });
     
     // 回転アニメーション時間を設定
-    _animationController.duration = const Duration(milliseconds: 1500);
+    _animationController.duration = const Duration(milliseconds: 2500);
     _animationController.reset();
     _animationController.forward();
   }
@@ -336,7 +452,8 @@ class _DicePageState extends State<DicePage>
     if (_selectedFaceNumber == null) return;
     
     // 面の番号からテーマを取得
-    final themes = ThemeModel.getThemesForType(_selectedPolyhedronType, _themes);
+    final l10n = AppLocalizations.of(context)!;
+    final themes = ThemeModel.getThemesForType(_selectedPolyhedronType, _themes ?? {}, l10n);
     final theme = ThemeModel.getThemeByFaceNumber(_selectedFaceNumber!, themes);
     
     // 最終的な回転値を正確に設定（選んだ面が正面を向くように）
@@ -355,11 +472,91 @@ class _DicePageState extends State<DicePage>
       _startRotationZ = _endRotationZ;
     });
     
+    // セッションがある場合は結果を記録
+    if (_session != null && _selectedTheme != null) {
+      _session!.addRoundResult(_selectedTheme!);
+      // タイマーを開始（有効な場合）
+      if (_session!.config.enableTimer && _timerService != null) {
+        _timerService!.reset(_session!.config.timerDuration);
+        _timerService!.start();
+      }
+    }
+    
     // 成功時の演出
     _triggerVibration();
     
     // アニメーションをリセット（自動継続しない）
     _animationController.reset();
+  }
+  
+  /// 次のプレイヤーに進む（最後のプレイヤーの場合はセッション終了）
+  void _nextPlayer() {
+    if (_session == null) return;
+    
+    final wasLastPlayer = _session!.isLastPlayer;
+    
+    setState(() {
+      _session!.nextPlayer();
+      _selectedTheme = null;
+      _selectedFaceNumber = null;
+      
+      // タイマーをリセット
+      if (_timerService != null) {
+        _timerService!.stop();
+        if (_session?.config.enableTimer == true) {
+          _timerService!.reset(_session!.config.timerDuration);
+        }
+      }
+    });
+    
+    // 最後のプレイヤーが終わってセッション終了したらダイアログを表示
+    if (wasLastPlayer && _session != null && !_session!.isActive) {
+      _showSessionEndDialog();
+    }
+  }
+  
+  /// セッション終了ダイアログを表示
+  void _showSessionEndDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.sessionSummary),
+        content: Text(l10n.sessionCompleteMessage),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() => _session = null);
+            },
+            child: Text(l10n.newSession),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  /// タイマーを一時停止/再開
+  void _toggleTimer() {
+    if (_timerService == null) return;
+    
+    setState(() {
+      if (_timerService!.isRunning) {
+        _timerService!.pause();
+      } else if (_timerService!.isPaused) {
+        _timerService!.resume();
+      }
+    });
+  }
+  
+  /// タイマーをスキップ
+  void _skipTimer() {
+    if (_timerService == null) return;
+    
+    setState(() {
+      _timerService!.stop();
+    });
   }
 
   // ============================================
@@ -374,11 +571,13 @@ class _DicePageState extends State<DicePage>
 
   /// 設定画面を開く
   Future<void> _openSettings() async {
+    final l10n = AppLocalizations.of(context)!;
+    _themes ??= {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n)};
     await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SettingsPage(
+      RouteTransitions.forwardRoute(
+        page: SettingsPage(
           selectedType: _selectedPolyhedronType,
-          themes: _themes,
+          themes: _themes!,
           onSave: (type, themes) {
             setState(() {
               // 現在は正六面体のみをサポート（常にcubeを使用）
@@ -394,103 +593,212 @@ class _DicePageState extends State<DicePage>
     );
   }
 
-  /// 設定画面に戻る
+  /// 設定画面に戻る（セッション開始からの場合はセッション設定画面へ）
   void _goBackToSettings() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => InitialSettingsPage(),
-      ),
-    );
+    final themes = _themes ?? widget.initialThemes ?? {
+      PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, AppLocalizations.of(context)!),
+    };
+    if (widget.sessionConfig != null) {
+      // セッション設定画面から来た場合はセッション設定画面に戻る（戻るトランジション）
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.backRoute(
+          page: SessionSetupPage(themes: themes, fromDicePage: true),
+        ),
+      );
+    } else {
+      // テーマ設定画面から来た場合はテーマ設定画面に戻る（戻るトランジション）
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.backRoute(
+          page: const InitialSettingsPage(),
+        ),
+      );
+    }
   }
+
+  // デザインカラーパレット（設定画面と統一）
+  static const Color _mustardYellow = Color(0xFFFFEB3B); // マスタードイエロー
+  static const Color _white = Colors.white;
+  static const Color _black = Colors.black87;
+  static const Color _lightYellow = Color(0xFFFFFDE7); // 非常に薄い黄色の背景
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    // テーマが初期化されていない場合はデフォルト値を設定
+    _themes ??= {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n)};
     return Scaffold(
+      backgroundColor: _lightYellow,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Theme Dice'),
+        backgroundColor: _white,
+        elevation: 0,
+        title: Text(
+          l10n.appTitle,
+          style: const TextStyle(
+            color: _black,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: _black),
           onPressed: _goBackToSettings,
-          tooltip: '設定に戻る',
+          tooltip: l10n.backToSettings,
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings, color: _black),
             onPressed: _openSettings,
-            tooltip: '設定',
+            tooltip: l10n.settings,
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                
-                // サイコロ表示エリア（アニメーション付き）
-                SizedBox(
-                  width: Dice3DUtils.diceSize + 50,
-                  height: Dice3DUtils.diceSize + 50,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      if (!_isDiceVisible) {
-                        return const SizedBox.shrink();
-                      }
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: MediaQuery.of(context).size.width,
+            minHeight: MediaQuery.of(context).size.height - 
+                      MediaQuery.of(context).padding.top - 
+                      kToolbarHeight,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              
+              // プレイヤー表示（セッション中の場合）
+              if (_session != null) ...[
+                PlayerIndicator(
+                  currentPlayerIndex: _session!.currentPlayerIndex,
+                  totalPlayers: _session!.config.playerCount,
+                  currentPlayerName: _session!.currentPlayerName,
+                ),
+                const SizedBox(height: 16),
+              ],
+              
+              // タイマー表示（セッション中でタイマー有効の場合）
+              if (_session != null && _session!.config.enableTimer && _timerService != null) ...[
+                TimerDisplay(
+                  timerService: _timerService,
+                  onPause: _toggleTimer,
+                  onResume: _toggleTimer,
+                  onSkip: _skipTimer,
+                ),
+                const SizedBox(height: 16),
+              ],
+              
+              const SizedBox(height: 20),
+              
+              // サイコロ表示エリア（アニメーション付き）
+              SizedBox(
+                width: Dice3DUtils.diceSize + 50,
+                height: Dice3DUtils.diceSize + 50,
+                child: Center(
+                  child: Builder(
+                    builder: (context) {
+                      // _themesが変更されたときにも再構築されるようにする
+                      final l10n = AppLocalizations.of(context)!;
+                      final currentThemes = ThemeModel.getThemesForType(_selectedPolyhedronType, _themes ?? {}, l10n);
                       
-                      final progress = _animationController.value;
-                      final curveValue = Curves.easeOutCubic.transform(progress);
-                      
-                      // 回転値の補間
-                      final currentX = _startRotationX + (_endRotationX - _startRotationX) * curveValue;
-                      final currentY = _startRotationY + (_endRotationY - _startRotationY) * curveValue;
-                      final currentZ = _startRotationZ + (_endRotationZ - _startRotationZ) * curveValue;
-                      
-                      return DiceWidget(
-                        rotX: currentX,
-                        rotY: currentY,
-                        rotZ: currentZ,
-                        polyhedronType: _selectedPolyhedronType,
-                        themes: ThemeModel.getThemesForType(_selectedPolyhedronType, _themes),
+                      return AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          if (!_isDiceVisible) {
+                            return const SizedBox.shrink();
+                          }
+                          
+                          final progress = _animationController.value;
+                          final curveValue = Curves.easeOutCubic.transform(progress);
+                          
+                          // 回転値の補間
+                          final currentX = _startRotationX + (_endRotationX - _startRotationX) * curveValue;
+                          final currentY = _startRotationY + (_endRotationY - _startRotationY) * curveValue;
+                          final currentZ = _startRotationZ + (_endRotationZ - _startRotationZ) * curveValue;
+                          
+                          return DiceWidget(
+                            rotX: currentX,
+                            rotY: currentY,
+                            rotZ: currentZ,
+                            polyhedronType: _selectedPolyhedronType,
+                            themes: currentThemes,
+                          );
+                        },
                       );
                     },
                   ),
                 ),
-                
-                const SizedBox(height: 60),
-                
-                // 「サイコロを振る」ボタン
-                ElevatedButton.icon(
-                  onPressed: _rollDice,
-                  icon: const Icon(Icons.casino),
-                  label: const Text(
-                    'サイコロを振る',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+              ),
+              
+              const SizedBox(height: 60),
+              
+              // 「サイコロを振る」ボタン（設定画面のスタイルに統一）
+              ElevatedButton.icon(
+                onPressed: _rollDice,
+                icon: const Icon(Icons.casino, color: _black),
+                label: Text(
+                  l10n.rollDice,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: _black,
                   ),
                 ),
-                
-                const SizedBox(height: 30),
-                
-                // 選択されたテーマを表示
-                ThemeDisplay(selectedTheme: _selectedTheme),
-                
-                const SizedBox(height: 40),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _mustardYellow,
+                  foregroundColor: _black,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 2,
+                ),
+              ),
+              
+              const SizedBox(height: 30),
+              
+              // 選択されたテーマを表示
+              ThemeDisplay(selectedTheme: _selectedTheme),
+              
+              const SizedBox(height: 20),
+              
+              // セッション中の場合、次のプレイヤー／セッション終了ボタンを表示
+              if (_session != null && _selectedTheme != null) ...[
+                ElevatedButton.icon(
+                  onPressed: _nextPlayer,
+                  icon: Icon(
+                    _session!.isLastPlayer ? Icons.check_circle : Icons.arrow_forward,
+                    color: _black,
+                  ),
+                  label: Text(
+                    _session!.isLastPlayer ? l10n.endSession : l10n.nextPlayer,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: _black,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _white,
+                    foregroundColor: _black,
+                    side: const BorderSide(color: _black, width: 1.5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    elevation: 1,
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

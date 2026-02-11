@@ -19,7 +19,7 @@ class DiceWidget extends StatelessWidget {
     required this.rotY,
     required this.rotZ,
     required this.polyhedronType,
-    this.themes = ThemeModel.defaultThemes,
+    this.themes = const [],
   });
 
   /// 正六面体の各面のデータを取得
@@ -128,8 +128,11 @@ class DiceWidget extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: Stack(
-        children: faces,
+      child: Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: faces,
+        ),
       ),
     );
   }
@@ -165,36 +168,121 @@ class DiceWidget extends StatelessWidget {
     );
   }
 
+  // カラーパレット（設定画面と統一）
+  static const Color _mustardYellow = Color(0xFFFFEB3B); // マスタードイエロー
+  static const Color _lightGreen = Color(0xFFB8E6B8); // ライトグリーン
+  static const Color _lightOrange = Color(0xFFFFE5CC); // ライトオレンジ
+  static const Color _lightPink = Color(0xFFFFCCCC); // ライトピンク
+  static const Color _lightBlueGreen = Color(0xFFCCE5E5); // ライトブルーグリーン
+  static const Color _lightYellow = Color(0xFFFFF9C4); // ライトイエロー
+  static const Color _white = Colors.white;
+  static const Color _black = Colors.black87;
+
+  /// 面番号に基づいてパステルカラーを取得
+  Color _getFaceColor(int number) {
+    final colors = [
+      _lightYellow,     // 面1
+      _lightGreen,      // 面2
+      _lightOrange,     // 面3
+      _lightBlueGreen,  // 面4
+      _lightPink,       // 面5
+      _mustardYellow,   // 面6
+    ];
+    return colors[(number - 1) % colors.length];
+  }
+
   /// 正方形の面を描画（正六面体用）
   Widget _buildSquareFace(BuildContext context, int number, {required double brightness, required vm.Matrix4 textCorrection}) {
+    final baseBrightness = brightness;
+    
+    // 面番号に基づいてパステルカラーを取得
+    final faceColor = _getFaceColor(number);
+    
+    // パステルカラーでグラデーションを構成
+    final baseColor = Color.lerp(
+      faceColor,
+      _white,
+      0.2 * baseBrightness,
+    )?.withOpacity(0.98 * baseBrightness) ?? faceColor;
+    
+    final gradientColor = Color.lerp(
+      faceColor,
+      _white,
+      0.4 * (1.0 - baseBrightness),
+    )?.withOpacity(0.95 * baseBrightness) ?? faceColor;
+    
+    // 角の丸みを小さくして、3D変換時に面同士がしっかり接するようにする
+    const borderRadius = 8.0;
+    
     return Container(
       width: Dice3DUtils.diceSize,
       height: Dice3DUtils.diceSize,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white.withOpacity(0.95 * brightness),
+        borderRadius: BorderRadius.circular(borderRadius),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            baseColor,
+            gradientColor,
+          ],
+          stops: const [0.0, 1.0],
+        ),
         border: Border.all(
-          color: Colors.grey.shade400.withOpacity(0.6),
+          color: _black.withOpacity(0.6 * baseBrightness),
           width: 1.5,
         ),
         boxShadow: [
+          // メインシャドウ
           BoxShadow(
-            color: Colors.black.withOpacity(0.25 * brightness),
-            blurRadius: 12,
-            offset: const Offset(3, 3),
-            spreadRadius: 1,
+            color: _black.withOpacity(0.2 * baseBrightness),
+            blurRadius: 16,
+            offset: const Offset(4, 4),
+            spreadRadius: 0,
           ),
+          // ソフトシャドウ
           BoxShadow(
-            color: Colors.white.withOpacity(0.9 * brightness),
+            color: _black.withOpacity(0.1 * baseBrightness),
+            blurRadius: 8,
+            offset: const Offset(2, 2),
+            spreadRadius: -1,
+          ),
+          // ハイライト（前面のエッジ）
+          BoxShadow(
+            color: _white.withOpacity(0.5 * baseBrightness),
             blurRadius: 6,
             offset: const Offset(-2, -2),
+            spreadRadius: 0,
           ),
         ],
       ),
-      child: Transform(
-        transform: textCorrection,
-        alignment: Alignment.center,
-        child: _buildDiceFaceContent(context, number, brightness: brightness),
+      child: Stack(
+        children: [
+          // 軽いハイライトオーバーレイ
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(borderRadius),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _white.withOpacity(0.3 * baseBrightness),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // コンテンツ
+          Transform(
+            transform: textCorrection,
+            alignment: Alignment.center,
+            child: _buildDiceFaceContent(context, number, brightness: brightness),
+          ),
+        ],
       ),
     );
   }
@@ -211,19 +299,22 @@ class DiceWidget extends StatelessWidget {
         ? themes[themeIndex] 
         : '';
     
-    final textColor = Colors.black87.withOpacity(0.9 * brightness);
+    // テキスト色を黒で統一
+    final textColor = _black.withOpacity(0.95 * brightness);
     
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Center(
+      padding: const EdgeInsets.all(12.0),
+      child: Align(
+        alignment: Alignment.center,
         child: Text(
           themeText,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: textColor,
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: FontWeight.w600,
-            height: 1.3,
+            height: 1.4,
+            letterSpacing: 0.2,
           ),
           maxLines: 4,
           overflow: TextOverflow.ellipsis,

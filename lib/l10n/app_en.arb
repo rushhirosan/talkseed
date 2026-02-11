@@ -1,0 +1,269 @@
+{
+  "@@locale": "en",
+  "appTitle": "Talk Seed",
+  "settings": "Settings",
+  "save": "Save",
+  "backToSettings": "Back to Settings",
+  "rollDice": "Roll Dice",
+  "complete": "Done",
+  "rollNow": "Roll Now",
+  "playWithOthers": "Play with Others",
+  "playWithDice": "Play with Dice",
+  "playWithCards": "Play with Cards",
+  "alwaysOpenWithDice": "Open with dice on startup",
+  "alwaysOpenWithCards": "Open with cards on startup",
+  "startupDefaultSection": "On next launch",
+  "selectThemePrompt": "Tap the dice to\nselect a theme!",
+  "selectThemePromptCard": "Tap the button below to draw a card",
+  "faceLabel": "Face {faceNumber}",
+  "@faceLabel": {
+    "placeholders": {
+      "faceNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "themeInputHint": "Enter theme or drag",
+  "dropHere": "Drop here",
+  "randomSet": "Random Set",
+  "reset": "Reset",
+  "faceThemesList": "Display per face",
+  "themeCandidates": "Theme Candidates",
+  "dragAndDropHint": "Drag & drop to the text boxes on the left",
+  "tutorialWelcome": "Welcome to Talk Seed!",
+  "tutorialWelcomeBody": "Pick a theme by rolling the dice, or draw a card to deepen the conversation.\n\nUse it to get everyone excited, or at work—in teams, meetings, or 1-on-1s.",
+  "tutorialSetTheme": "Set Themes",
+  "tutorialSetThemeBody": "Set the themes shown on each face of the dice for \"Get excited together\".\n\nDrag & drop from the candidates on the right, or type them in.",
+  "tutorialRollDice": "Roll the Dice",
+  "tutorialRollDiceBody": "When you're ready, tap \"Roll Dice\".\n\nThe dice rolls with 3D animation\nand a random theme is selected.",
+  "tutorialCards": "Play with Cards",
+  "tutorialCardsBody": "\"Get excited at work\" offers three card decks.\n\nTeam Building (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).",
+  "tutorialChangeSettings": "Change Settings",
+  "tutorialChangeSettingsBody": "You can change dice themes from the settings screen anytime.\n\nOpen it from the settings icon in the top right.",
+  "tutorialReady": "Ready!",
+  "tutorialReadyBody": "Let's go!\n\nRoll the dice for a theme, or draw a card for a question—use whichever fits the moment.",
+  "skip": "Skip",
+  "start": "Start",
+  "showTutorial": "Show Tutorial",
+  "themeCube": "Themes (Cube)",
+  "yourThemes": "Your Themes",
+  "useVariantsToChooseTheme": "Use variants to choose your theme.",
+  "themeSurprised": "Something surprising",
+  "themeFutureDream": "Future dream",
+  "themeLoveStory": "Love story",
+  "themeRecommendedBook": "Recommended book",
+  "themeRecentHobby": "Recent hobby",
+  "themeDislike": "Something I dislike",
+  "themeFavoriteMovie": "Favorite movie",
+  "themeTreasure": "Something I treasure",
+  "themeCried": "Something that made me cry",
+  "themeLaughed": "Something that made me laugh",
+  "themeMoved": "Something that moved me",
+  "themeRegret": "Something I regret",
+  "themeProud": "Something I'm proud of",
+  "themeEmbarrassed": "Something embarrassing",
+  "themeFavoriteMusic": "Favorite music",
+  "themeFavoriteAnime": "Favorite anime",
+  "themeFavoriteGame": "Favorite game",
+  "themeFavoriteFood": "Favorite food",
+  "themeWantToVisit": "Place I want to visit",
+  "themeFavoriteSport": "Favorite sport",
+  "themeFriendMemory": "Memory with friends",
+  "themeFamilyMemory": "Memory with family",
+  "themeGrateful": "Something I'm grateful for",
+  "themeSupporting": "Someone I'm supporting",
+  "themeWantToDo": "Something I want to do",
+  "themeWantToAchieve": "Something I want to achieve",
+  "themeDreamJob": "Dream job",
+  "themeWantToVisitCountry": "Country I want to visit",
+  "themeRecentEvent": "Recent event",
+  "themeTodayEvent": "Today's event",
+  "themeWeekendPlan": "Weekend plan",
+  "themeRelaxMethod": "How I relax",
+  "themeStressRelief": "How I relieve stress",
+  "themeMorningRoutine": "Morning routine",
+  "themeFavoriteWord": "Favorite word",
+  "themeMotto": "Motto",
+  "themeImportantThing": "Important thing",
+  "themeBelief": "Something I believe in",
+  "themeLifeLesson": "Life lesson",
+  "themeRecentWorry": "Recent worry",
+  "themeProudOf": "Something I'm proud of",
+  "themeUniqueSkill": "Unique skill",
+  "themeSecret": "Something I keep secret",
+  "themeChildhoodMemory": "Childhood memory",
+  "sessionSetup": "Session Setup",
+  "playModeLabel": "Play mode",
+  "playModeDice": "Dice",
+  "playModeTopicCard": "Topic cards",
+  "drawTopic": "Draw topic",
+  "phaseCheckIn": "Before meeting",
+  "phaseCheckOut": "After meeting",
+  "checkInPickOnePrompt": "Pick one question",
+  "reselectQuestion": "Choose again",
+  "chosenCardLabelBefore": "Your chosen question (before meeting)",
+  "chosenCardLabelAfter": "Your chosen question (after meeting)",
+  "playerCount": "Number of Players",
+  "timerSettings": "Timer Settings",
+  "enableTimer": "Enable Timer",
+  "timerDuration": "Duration",
+  "playerName": "Player {number}",
+  "@playerName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "startSession": "Start Session",
+  "currentPlayer": "Player {current}/{total}",
+  "@currentPlayer": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nextPlayer": "Next Player",
+  "endSession": "End Session",
+  "sessionSummary": "Session Summary",
+  "sessionCompleteMessage": "Everyone has had their turn.",
+  "@sessionCompleteMessage": {
+    "description": "Session end dialog body"
+  },
+  "round": "Round {number}",
+  "@round": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Pause",
+  "resume": "Resume",
+  "skip": "Skip",
+  "share": "Share",
+  "newSession": "New Session",
+  "goToSessionSetup": "Go to Session Setup",
+  "backToThemeSettings": "Back to Theme Settings",
+  "timer30Seconds": "30 seconds",
+  "timer1Minute": "1 minute",
+  "timer2Minutes": "2 minutes",
+  "timer3Minutes": "3 minutes",
+  "timer5Minutes": "5 minutes",
+  "timerUnlimited": "Unlimited",
+  "playerNamesOptional": "Player Names (Optional)",
+  "playerNamesHint": "Names display during session. Blank shows numbers.",
+  "sessionPreviewTitle": "Session Preview",
+  "sessionPreviewPlayers": "{count} players",
+  "@sessionPreviewPlayers": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sessionPreviewTimer": "Time limit: {timer}",
+  "@sessionPreviewTimer": {
+    "placeholders": {
+      "timer": {"type": "String"}
+    }
+  },
+  "sessionPreviewNoTimer": "No timer",
+  "modeSelectionTitle": "Choose how to play",
+  "homeSectionEveryone": "Everyone gets excited",
+  "homeSectionWork": "Get excited at work",
+  "homeDiceLabel": "Dice",
+  "backToModeSelection": "Choose mode again",
+  "cardSettingsTitle": "Choose Cards",
+  "selectDeckPrompt": "Select a deck",
+  "playWithDeck": "Play with this deck",
+  "deckTeamBuilding": "Team Building",
+  "deckTeamBuildingDesc": "Share values and build team understanding",
+  "deckCheckIn": "Check-in & Check-out",
+  "deckCheckInDesc": "At meeting start and end. Everyone shares one word from a question",
+  "deckSelfReflection": "Self-reflection & 1-on-1",
+  "deckSelfReflectionDesc": "Questions with lightness and depth. For solo reflection or 1-on-1s",
+  "deckOneOnOne": "Growth Dialogue",
+  "deckOneOnOneDesc": "For 1-on-1s. Talk about future, blockers, and what you want to grow—without evaluation.",
+  "deckRetrospective": "Retrospective",
+  "deckRetrospectiveDesc": "As a team. Reflect on what went well, improvements, and learnings",
+  "deckIceBreaker": "Icebreaker",
+  "deckIceBreakerDesc": "To warm up. Light topics to break the ice",
+  "themeTrust": "Value trust and relationships",
+  "themeChallenge": "Embrace challenges",
+  "themeGratitude": "Express gratitude",
+  "themeFeedback": "Welcome feedback",
+  "themeFlexibility": "Stay flexible",
+  "themeResponsibility": "Take responsibility",
+  "themeGrowth": "Keep growing",
+  "themeWorkLifeBalance": "Value work-life balance",
+  "themeCollaboration": "Work together",
+  "themeTransparency": "Share information openly",
+  "themeWeeklyHighlight": "Weekly highlight",
+  "themeTodayGoal": "Today's goal",
+  "themeBlocker": "Something blocking you",
+  "themeCurrentMood": "Current mood",
+  "themeOneWord": "One word for today",
+  "themeWellDone": "Something that went well",
+  "themeStruggle": "Something you're struggling with",
+  "themeWantToGrow": "Something you want to grow in",
+  "themeFeedbackWant": "Something you want feedback on",
+  "themeGoodPoint": "What went well",
+  "themeImprovePoint": "What to improve",
+  "themeLearnings": "What we learned",
+  "themeNextAction": "Next action",
+  "themeThanks": "Thanks",
+  "themeHonesty": "Value honesty",
+  "themeInnovation": "Try new approaches",
+  "themeStability": "Value stability",
+  "themeAutonomy": "Decide on your own",
+  "themeCommunity": "Value team and community",
+  "themeQuality": "Prioritize quality",
+  "themeSpeed": "Value speed",
+  "themeCustomerFirst": "Put customers first",
+  "themeLearning": "Keep learning",
+  "themeBalance": "Seek balance",
+  "themeCreativity": "Value creativity",
+  "themeEmpathy": "Empathize with others",
+  "themeConsistency": "Stay consistent",
+  "themeRespect": "Respect diversity",
+  "themeValuePriority": "Prioritize what matters",
+  "themeValueIntegrity": "Act on your beliefs",
+  "valuePlayerTurn": "Player {player}'s turn",
+  "@valuePlayerTurn": {
+    "placeholders": {
+      "player": {
+        "type": "int"
+      }
+    }
+  },
+  "valueDiscardPrompt": "Tap the card furthest from your values to discard",
+  "valueRankPrompt": "Rank the 6 cards by importance (top = keep, bottom = discard)",
+  "valueConfirmRanking": "Confirm and discard",
+  "valueDiscardLabel": "Discard",
+  "valuePlayerFinalCards": "Player {player}'s 5 remaining cards",
+  "@valuePlayerFinalCards": {
+    "placeholders": {
+      "player": {
+        "type": "int"
+      }
+    }
+  },
+  "valueNext": "Next",
+  "valueGameComplete": "Well done!",
+  "valueSharePrompt": "Show your 5 remaining cards and share with everyone",
+  "valuePlayerCount": "Number of players",
+  "valueStart": "Start",
+  "valueBackToDeck": "Back to deck selection",
+  "valueDrawCard": "Draw 1 card from pile",
+  "valueRound": "Round {current}/5",
+  "@valueRound": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      }
+    }
+  }
+}

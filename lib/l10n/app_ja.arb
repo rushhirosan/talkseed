@@ -1,0 +1,489 @@
+{
+  "@@locale": "ja",
+  "appTitle": "Talk Seed",
+  "@appTitle": {
+    "description": "アプリのタイトル"
+  },
+  "settings": "設定",
+  "@settings": {
+    "description": "設定画面のタイトル"
+  },
+  "save": "保存",
+  "@save": {
+    "description": "保存ボタン"
+  },
+  "backToSettings": "設定に戻る",
+  "@backToSettings": {
+    "description": "設定に戻るボタン"
+  },
+  "rollDice": "サイコロを振る",
+  "@rollDice": {
+    "description": "サイコロを振るボタン（DicePage用）"
+  },
+  "complete": "完了",
+  "@complete": {
+    "description": "初期設定完了ボタン（サイコロ画面へ遷移）"
+  },
+  "rollNow": "すぐ振る",
+  "@rollNow": {
+    "description": "テーマ設定画面のメインCTA（サイコロ画面へすぐ遷移）"
+  },
+  "playWithOthers": "みんなで遊ぶ",
+  "@playWithOthers": {
+    "description": "セッション設定画面へ遷移するボタン"
+  },
+  "playWithDice": "サイコロで遊ぶ",
+  "@playWithDice": {
+    "description": "案B: サイコロ画面へ遷移するボタン"
+  },
+  "playWithCards": "カードで遊ぶ",
+  "@playWithCards": {
+    "description": "案B: トピックカード画面へ遷移するボタン"
+  },
+  "alwaysOpenWithDice": "起動時にサイコロで開く",
+  "@alwaysOpenWithDice": {
+    "description": "案B: いつもこれで遊ぶ（サイコロ）"
+  },
+  "alwaysOpenWithCards": "起動時にカードで開く",
+  "@alwaysOpenWithCards": {
+    "description": "案B: いつもこれで遊ぶ（カード）"
+  },
+  "startupDefaultSection": "次回起動時",
+  "@startupDefaultSection": {
+    "description": "案B: 起動時デフォルトのセクション見出し"
+  },
+  "selectThemePrompt": "サイコロをタップして\nテーマを選ぼう！",
+  "@selectThemePrompt": {
+    "description": "テーマ選択を促すメッセージ（サイコロ画面用）"
+  },
+  "selectThemePromptCard": "下のボタンで1枚引こう",
+  "@selectThemePromptCard": {
+    "description": "テーマ選択を促すメッセージ（カード画面用）"
+  },
+  "faceLabel": "面{faceNumber}",
+  "@faceLabel": {
+    "description": "サイコロの面のラベル",
+    "placeholders": {
+      "faceNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "themeInputHint": "テーマを入力またはドラッグ",
+  "@themeInputHint": {
+    "description": "テーマ入力フィールドのヒント"
+  },
+  "dropHere": "ここにドロップ",
+  "@dropHere": {
+    "description": "ドロップ可能な領域のヒント"
+  },
+  "randomSet": "ランダムにセット",
+  "@randomSet": {
+    "description": "ランダムにセットボタン"
+  },
+  "reset": "リセット",
+  "@reset": {
+    "description": "リセットボタン"
+  },
+  "faceThemesList": "各面の表示",
+  "@faceThemesList": {
+    "description": "リセットと面リストの間の小タイトル"
+  },
+  "themeCandidates": "テーマ候補",
+  "@themeCandidates": {
+    "description": "テーマ候補セクションのタイトル"
+  },
+  "dragAndDropHint": "左のテキストボックスにドラッグ＆ドロップ",
+  "@dragAndDropHint": {
+    "description": "ドラッグ＆ドロップの説明"
+  },
+  "tutorialWelcome": "Talk Seedへようこそ！",
+  "@tutorialWelcome": {
+    "description": "チュートリアル1ページ目のタイトル"
+  },
+  "tutorialWelcomeBody": "サイコロでテーマを選んだり、カードで問いを引いて話を深めたり。\n\nみんなで盛り上がることも、仕事の場（チーム・会議・1on1）でも使えます。",
+  "@tutorialWelcomeBody": {
+    "description": "チュートリアル1ページ目の本文"
+  },
+  "tutorialSetTheme": "テーマを設定しよう",
+  "@tutorialSetTheme": {
+    "description": "チュートリアル2ページ目のタイトル"
+  },
+  "tutorialSetThemeBody": "「みんなで盛り上がる」で選ぶサイコロの、各面に表示するテーマを設定します。\n\n右側の候補からドラッグ＆ドロップするか、直接入力してください。",
+  "@tutorialSetThemeBody": {
+    "description": "チュートリアル2ページ目の本文"
+  },
+  "tutorialRollDice": "サイコロを振る",
+  "@tutorialRollDice": {
+    "description": "チュートリアル3ページ目のタイトル"
+  },
+  "tutorialRollDiceBody": "設定が完了したら「サイコロを振る」ボタンを押してください。\n\n3Dアニメーションでサイコロが転がり、\nランダムなテーマが選ばれます。",
+  "@tutorialRollDiceBody": {
+    "description": "チュートリアル3ページ目の本文"
+  },
+  "tutorialCards": "カードで遊ぶ",
+  "@tutorialCards": {
+    "description": "チュートリアル・カードページのタイトル"
+  },
+  "tutorialCardsBody": "「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\nチームビルディング（価値観共有）、チェックイン・チェックアウト（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。",
+  "@tutorialCardsBody": {
+    "description": "チュートリアル・カードページの本文"
+  },
+  "tutorialChangeSettings": "設定を変更する",
+  "@tutorialChangeSettings": {
+    "description": "チュートリアル設定ページのタイトル"
+  },
+  "tutorialChangeSettingsBody": "いつでも設定画面からサイコロのテーマを変更できます。\n\n右上の設定アイコンからアクセスできます。",
+  "@tutorialChangeSettingsBody": {
+    "description": "チュートリアル設定ページの本文"
+  },
+  "tutorialReady": "準備完了！",
+  "@tutorialReady": {
+    "description": "チュートリアル最終ページのタイトル"
+  },
+  "tutorialReadyBody": "それでは、はじめましょう。\n\nサイコロでテーマを選んでも、カードで問いを引いてもOK。場に合わせて使ってください。",
+  "@tutorialReadyBody": {
+    "description": "チュートリアル最終ページの本文"
+  },
+  "skip": "スキップ",
+  "@skip": {
+    "description": "チュートリアルのスキップボタン"
+  },
+  "start": "始める",
+  "@start": {
+    "description": "チュートリアルの開始ボタン"
+  },
+  "showTutorial": "チュートリアルを表示",
+  "@showTutorial": {
+    "description": "チュートリアルを表示するボタン"
+  },
+  "themeCube": "テーマ",
+  "@themeCube": {
+    "description": "正六面体のテーマ設定セクション"
+  },
+  "yourThemes": "あなたのテーマ",
+  "@yourThemes": {
+    "description": "テーマ編集セクションのサブタイトル"
+  },
+  "useVariantsToChooseTheme": "候補をドラッグで選択",
+  "@useVariantsToChooseTheme": {
+    "description": "テーマ候補エリアの説明文"
+  },
+  "themeSurprised": "びっくりしたこと",
+  "themeFutureDream": "将来の夢",
+  "themeLoveStory": "恋の話",
+  "themeRecommendedBook": "おすすめの本",
+  "themeRecentHobby": "最近ハマっていること",
+  "themeDislike": "嫌いなこと",
+  "themeFavoriteMovie": "好きな映画",
+  "themeTreasure": "大切にしていること",
+  "themeCried": "泣いたこと",
+  "themeLaughed": "笑ったこと",
+  "themeMoved": "感動したこと",
+  "themeRegret": "後悔していること",
+  "themeProud": "誇らしいこと",
+  "themeEmbarrassed": "恥ずかしかったこと",
+  "themeFavoriteMusic": "好きな音楽",
+  "themeFavoriteAnime": "好きなアニメ",
+  "themeFavoriteGame": "好きなゲーム",
+  "themeFavoriteFood": "好きな食べ物",
+  "themeWantToVisit": "行きたい場所",
+  "themeFavoriteSport": "好きなスポーツ",
+  "themeFriendMemory": "友達との思い出",
+  "themeFamilyMemory": "家族との思い出",
+  "themeGrateful": "感謝していること",
+  "themeSupporting": "応援している人",
+  "themeWantToDo": "やってみたいこと",
+  "themeWantToAchieve": "実現したいこと",
+  "themeDreamJob": "なりたい職業",
+  "themeWantToVisitCountry": "行ってみたい国",
+  "themeRecentEvent": "最近の出来事",
+  "themeTodayEvent": "今日の出来事",
+  "themeWeekendPlan": "週末の予定",
+  "themeRelaxMethod": "リラックス方法",
+  "themeStressRelief": "ストレス解消法",
+  "themeMorningRoutine": "朝のルーティン",
+  "themeFavoriteWord": "好きな言葉",
+  "themeMotto": "座右の銘",
+  "themeImportantThing": "大切なもの",
+  "themeBelief": "信じていること",
+  "themeLifeLesson": "人生で学んだこと",
+  "themeRecentWorry": "最近の悩み",
+  "themeProudOf": "自慢できること",
+  "themeUniqueSkill": "変わった特技",
+  "themeSecret": "秘密にしていること",
+  "themeChildhoodMemory": "子供の頃の思い出",
+  "sessionSetup": "セッション設定",
+  "@sessionSetup": {
+    "description": "セッション設定画面のタイトル"
+  },
+  "playModeLabel": "遊び方",
+  "@playModeLabel": {
+    "description": "セッション設定の遊び方セクション見出し"
+  },
+  "playModeDice": "サイコロで",
+  "@playModeDice": {
+    "description": "遊び方：サイコロ"
+  },
+  "playModeTopicCard": "トピックカードで",
+  "@playModeTopicCard": {
+    "description": "遊び方：トピックカード"
+  },
+  "drawTopic": "トピックを引く",
+  "@drawTopic": {
+    "description": "トピックカード画面で1枚引くボタン"
+  },
+  "phaseCheckIn": "会議前",
+  "@phaseCheckIn": {
+    "description": "チェックイン・チェックアウトの会議前フェーズ"
+  },
+  "phaseCheckOut": "会議後",
+  "@phaseCheckOut": {
+    "description": "チェックイン・チェックアウトの会議後フェーズ"
+  },
+  "checkInPickOnePrompt": "この中から1問選んでください",
+  "reselectQuestion": "選び直す",
+  "chosenCardLabelBefore": "会議前に選んだ問い",
+  "chosenCardLabelAfter": "会議後に選んだ問い",
+  "playerCount": "参加人数",
+  "@playerCount": {
+    "description": "参加人数のラベル"
+  },
+  "timerSettings": "タイマー設定",
+  "@timerSettings": {
+    "description": "タイマー設定セクションのタイトル"
+  },
+  "enableTimer": "タイマーを有効にする",
+  "@enableTimer": {
+    "description": "タイマー有効化のチェックボックス"
+  },
+  "timerDuration": "時間",
+  "@timerDuration": {
+    "description": "タイマー時間のラベル"
+  },
+  "playerName": "プレイヤー{number}",
+  "@playerName": {
+    "description": "プレイヤー名のラベル",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "startSession": "セッション開始",
+  "@startSession": {
+    "description": "セッション開始ボタン"
+  },
+  "currentPlayer": "プレイヤー {current}/{total} の番",
+  "@currentPlayer": {
+    "description": "現在のプレイヤー表示",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nextPlayer": "次のプレイヤー",
+  "@nextPlayer": {
+    "description": "次のプレイヤーへ進むボタン"
+  },
+  "endSession": "セッション終了",
+  "@endSession": {
+    "description": "セッション終了ボタン"
+  },
+  "sessionSummary": "セッション終了",
+  "@sessionSummary": {
+    "description": "セッション終了画面のタイトル"
+  },
+  "sessionCompleteMessage": "全員の番が終わりました。",
+  "@sessionCompleteMessage": {
+    "description": "セッション終了ダイアログの本文"
+  },
+  "round": "ラウンド {number}",
+  "@round": {
+    "description": "ラウンド番号",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "一時停止",
+  "@pause": {
+    "description": "タイマー一時停止ボタン"
+  },
+  "resume": "再開",
+  "@resume": {
+    "description": "タイマー再開ボタン"
+  },
+  "skip": "スキップ",
+  "@skip": {
+    "description": "タイマースキップボタン"
+  },
+  "share": "共有",
+  "@share": {
+    "description": "共有ボタン"
+  },
+  "newSession": "新しいセッション",
+  "@newSession": {
+    "description": "新しいセッション開始ボタン"
+  },
+  "goToSessionSetup": "セッション設定へ",
+  "@goToSessionSetup": {
+    "description": "セッション設定画面へ遷移するボタン"
+  },
+  "backToThemeSettings": "テーマ設定に戻る",
+  "@backToThemeSettings": {
+    "description": "テーマ設定画面に戻るボタン"
+  },
+  "timer30Seconds": "30秒",
+  "timer1Minute": "1分",
+  "timer2Minutes": "2分",
+  "timer3Minutes": "3分",
+  "timer5Minutes": "5分",
+  "timerUnlimited": "無制限",
+  "playerNamesOptional": "プレイヤー名（オプション）",
+  "@playerNamesOptional": {
+    "description": "プレイヤー名セクションのタイトル"
+  },
+  "playerNamesHint": "入力するとセッション中に表示。空欄は番号で表示されます。",
+  "@playerNamesHint": {
+    "description": "プレイヤー名入力の説明"
+  },
+  "sessionPreviewTitle": "このセッション",
+  "sessionPreviewPlayers": "{count}人でプレイ",
+  "@sessionPreviewPlayers": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sessionPreviewTimer": "制限時間：{timer}",
+  "@sessionPreviewTimer": {
+    "placeholders": {
+      "timer": {"type": "String"}
+    }
+  },
+  "sessionPreviewNoTimer": "タイマーなし",
+  "modeSelectionTitle": "遊び方を選んでください",
+  "@modeSelectionTitle": {
+    "description": "モード選択画面のタイトル"
+  },
+  "homeSectionEveryone": "みんなで盛り上がる",
+  "@homeSectionEveryone": {
+    "description": "初回画面セクション見出し（みんなで）"
+  },
+  "homeSectionWork": "仕事で盛り上がる",
+  "@homeSectionWork": {
+    "description": "初回画面セクション見出し（仕事）"
+  },
+  "homeDiceLabel": "サイコロ",
+  "@homeDiceLabel": {
+    "description": "初回画面・みんなで盛り上がるの1項目"
+  },
+  "backToModeSelection": "モードを選び直す",
+  "@backToModeSelection": {
+    "description": "モード選択画面に戻るボタン"
+  },
+  "cardSettingsTitle": "カードを選ぶ",
+  "@cardSettingsTitle": {
+    "description": "カード設定画面のタイトル"
+  },
+  "selectDeckPrompt": "デッキを選んでください",
+  "@selectDeckPrompt": {
+    "description": "デッキ選択の説明"
+  },
+  "playWithDeck": "このデッキで遊ぶ",
+  "@playWithDeck": {
+    "description": "選択したデッキで遊ぶボタン"
+  },
+  "deckTeamBuilding": "チームビルディング",
+  "deckTeamBuildingDesc": "価値観を共有し、チームの理解を深める",
+  "deckCheckIn": "チェックイン・チェックアウト",
+  "deckCheckInDesc": "会議の開始・終了に。問いを元に全員が一言ずつ",
+  "deckSelfReflection": "自己内省・1on1",
+  "deckSelfReflectionDesc": "軽さ×深さの問い。1人で内省も、1on1でも",
+  "deckOneOnOne": "成長対話",
+  "deckOneOnOneDesc": "1on1で。評価を抜きに、未来・詰まり・伸ばしたいことを話す",
+  "deckRetrospective": "振り返り",
+  "deckRetrospectiveDesc": "チームで。良かった点・改善点・学びを振り返る",
+  "deckIceBreaker": "アイスブレイク",
+  "deckIceBreakerDesc": "場あたために。雰囲気を和らげる軽い話題",
+  "themeTrust": "信頼関係を大切にする",
+  "themeChallenge": "挑戦を恐れない",
+  "themeGratitude": "感謝を伝えることを大切にする",
+  "themeFeedback": "フィードバックを歓迎する",
+  "themeFlexibility": "柔軟に対応する",
+  "themeResponsibility": "責任を持ってやり遂げる",
+  "themeGrowth": "成長し続けたい",
+  "themeWorkLifeBalance": "ワークライフバランスを重視する",
+  "themeCollaboration": "協力して成し遂げる",
+  "themeTransparency": "オープンに情報を共有する",
+  "themeWeeklyHighlight": "今週のハイライト",
+  "themeTodayGoal": "今日の目標",
+  "themeBlocker": "困っていること",
+  "themeCurrentMood": "今の気持ち",
+  "themeOneWord": "今日の一言",
+  "themeWellDone": "うまくいったこと",
+  "themeStruggle": "苦戦していること",
+  "themeWantToGrow": "成長したいこと",
+  "themeFeedbackWant": "フィードバックがほしいこと",
+  "themeGoodPoint": "良かった点",
+  "themeImprovePoint": "改善したい点",
+  "themeLearnings": "学んだこと",
+  "themeNextAction": "次にやること",
+  "themeThanks": "感謝したいこと",
+  "themeHonesty": "誠実であることを重んじる",
+  "themeInnovation": "新しいやり方を試す",
+  "themeStability": "安定を大切にする",
+  "themeAutonomy": "自分の裁量で決めたい",
+  "themeCommunity": "仲間やチームを大切にする",
+  "themeQuality": "質を最優先する",
+  "themeSpeed": "スピードを重視する",
+  "themeCustomerFirst": "お客様第一で考える",
+  "themeLearning": "学び続けることを大切にする",
+  "themeBalance": "バランスを取ることを心がける",
+  "themeCreativity": "創造性を大切にする",
+  "themeEmpathy": "相手の気持ちに寄り添う",
+  "themeConsistency": "一貫性を保つ",
+  "themeRespect": "多様性を尊重する",
+  "themeValuePriority": "大切なことを優先する",
+  "themeValueIntegrity": "信じていることに従って行動する",
+  "valuePlayerTurn": "プレイヤー{player}の番",
+  "@valuePlayerTurn": {
+    "placeholders": {
+      "player": {
+        "type": "int"
+      }
+    }
+  },
+  "valueDiscardPrompt": "自分の価値観から最も遠いカードをタップして捨ててください",
+  "valueRankPrompt": "6枚を重要度順に並べてください（上＝大切、下＝手放す）",
+  "valueConfirmRanking": "確定して手放す",
+  "valueDiscardLabel": "手放す",
+  "valuePlayerFinalCards": "プレイヤー{player}が残した5枚",
+  "@valuePlayerFinalCards": {
+    "placeholders": {
+      "player": {
+        "type": "int"
+      }
+    }
+  },
+  "valueNext": "次へ",
+  "valueGameComplete": "お疲れさまでした",
+  "valueSharePrompt": "残った5枚のカードを参加者に見せ、共有しましょう",
+  "valuePlayerCount": "参加人数",
+  "valueStart": "スタート",
+  "valueBackToDeck": "デッキ選択に戻る",
+  "valueDrawCard": "山札から1枚引く",
+  "valueRound": "{current}/5 ラウンド",
+  "@valueRound": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      }
+    }
+  }
+}
