@@ -6,7 +6,7 @@ import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
 import '../utils/preferences_helper.dart';
 import '../utils/route_transitions.dart';
-import '../main.dart' show DicePage;
+import 'dice_page.dart';
 import 'tutorial_page.dart';
 import 'session_setup_page.dart';
 import 'topics_page.dart';

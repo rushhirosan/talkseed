@@ -4,7 +4,7 @@ import '../models/session_config.dart' show SessionConfig, PlayMode;
 import '../models/polyhedron_type.dart';
 import '../utils/preferences_helper.dart';
 import '../utils/route_transitions.dart';
-import '../main.dart' show DicePage;
+import 'dice_page.dart';
 import 'initial_settings_page.dart';
 import 'topics_page.dart';
 
