@@ -1297,6 +1297,30 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{current}/5 ラウンド'**
   String valueRound(int current);
+
+  /// アセット読み込みエラーのタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'データの読み込みに失敗しました'**
+  String get errorDataLoadTitle;
+
+  /// アセット読み込みエラーの本文
+  ///
+  /// In ja, this message translates to:
+  /// **'問いのデータを読み込めませんでした。しばらくしてからもう一度お試しください。'**
+  String get errorDataLoadMessage;
+
+  /// 再試行ボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'再試行'**
+  String get retry;
+
+  /// エラーダイアログの閉じるボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'閉じる'**
+  String get dismiss;
 }
 
 class _AppLocalizationsDelegate

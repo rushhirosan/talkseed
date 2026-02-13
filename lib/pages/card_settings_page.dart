@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
@@ -6,6 +7,7 @@ import 'package:theme_dice/services/checkin_checkout_service.dart';
 import 'package:theme_dice/services/self_reflection_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/topics_page.dart';
 import 'package:theme_dice/pages/value_card_page.dart';
@@ -40,37 +42,56 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
           page: ValueCardPage(themes: themes),
         ),
       );
-    } else if (deck.type == CardDeckType.checkIn) {
-      final checkInThemes = await CheckInCheckOutService.loadCheckInQuestions();
-      final checkOutThemes =
-          await CheckInCheckOutService.loadCheckOutQuestions();
-      final combined = [...checkInThemes, ...checkOutThemes];
-      await PreferencesHelper.saveLastCardThemes(combined);
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        RouteTransitions.forwardRoute(
-          page: TopicsPage(
-            initialThemes: {PolyhedronType.cube: combined},
-            sessionConfig: null,
-            checkInThemes: checkInThemes,
-            checkOutThemes: checkOutThemes,
+      return;
+    }
+
+    try {
+      if (deck.type == CardDeckType.checkIn) {
+        final checkInThemes =
+            await CheckInCheckOutService.loadCheckInQuestions();
+        final checkOutThemes =
+            await CheckInCheckOutService.loadCheckOutQuestions();
+        final combined = [...checkInThemes, ...checkOutThemes];
+        await PreferencesHelper.saveLastCardThemes(combined);
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          RouteTransitions.forwardRoute(
+            page: TopicsPage(
+              initialThemes: {PolyhedronType.cube: combined},
+              sessionConfig: null,
+              checkInThemes: checkInThemes,
+              checkOutThemes: checkOutThemes,
+            ),
           ),
-        ),
+        );
+      } else {
+        // 自己内省・1on1
+        final data = await SelfReflectionService.loadThemesWithSections();
+        await PreferencesHelper.saveLastCardThemes(data.themes);
+        if (!mounted) return;
+        final themeCategoryMap =
+            CardDeck.buildReflectionCategoryMap(data.sectionIdByTheme);
+        Navigator.of(context).pushReplacement(
+          RouteTransitions.forwardRoute(
+            page: TopicsPage(
+              initialThemes: {PolyhedronType.cube: data.themes},
+              sessionConfig: null,
+              themeCategoryMap: themeCategoryMap,
+            ),
+          ),
+        );
+      }
+    } on ThemeDiceException {
+      if (!mounted) return;
+      await ErrorDialogHelper.showDataLoadError(
+        context,
+        onRetry: () => _playWithDeck(deck),
       );
-    } else {
-      // 自己内省・1on1
-      final data = await SelfReflectionService.loadThemesWithSections();
-      await PreferencesHelper.saveLastCardThemes(data.themes);
+    } catch (_) {
       if (!mounted) return;
-      final themeCategoryMap = CardDeck.buildReflectionCategoryMap(data.sectionIdByTheme);
-      Navigator.of(context).pushReplacement(
-        RouteTransitions.forwardRoute(
-          page: TopicsPage(
-            initialThemes: {PolyhedronType.cube: data.themes},
-            sessionConfig: null,
-            themeCategoryMap: themeCategoryMap,
-          ),
-        ),
+      await ErrorDialogHelper.showDataLoadError(
+        context,
+        onRetry: () => _playWithDeck(deck),
       );
     }
   }

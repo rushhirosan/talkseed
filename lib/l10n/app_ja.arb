@@ -485,5 +485,21 @@
         "type": "int"
       }
     }
+  },
+  "errorDataLoadTitle": "データの読み込みに失敗しました",
+  "@errorDataLoadTitle": {
+    "description": "アセット読み込みエラーのタイトル"
+  },
+  "errorDataLoadMessage": "問いのデータを読み込めませんでした。しばらくしてからもう一度お試しください。",
+  "@errorDataLoadMessage": {
+    "description": "アセット読み込みエラーの本文"
+  },
+  "retry": "再試行",
+  "@retry": {
+    "description": "再試行ボタン"
+  },
+  "dismiss": "閉じる",
+  "@dismiss": {
+    "description": "エラーダイアログの閉じるボタン"
   }
 }

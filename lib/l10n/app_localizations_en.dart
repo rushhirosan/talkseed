@@ -640,4 +640,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String valueRound(int current) {
     return 'Round $current/5';
   }
+
+  @override
+  String get errorDataLoadTitle => 'Failed to load data';
+
+  @override
+  String get errorDataLoadMessage =>
+      'Could not load question data. Please try again later.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get dismiss => 'Dismiss';
 }

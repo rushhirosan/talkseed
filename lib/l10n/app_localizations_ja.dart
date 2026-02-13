@@ -631,4 +631,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String valueRound(int current) {
     return '$current/5 ラウンド';
   }
+
+  @override
+  String get errorDataLoadTitle => 'データの読み込みに失敗しました';
+
+  @override
+  String get errorDataLoadMessage => '問いのデータを読み込めませんでした。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get retry => '再試行';
+
+  @override
+  String get dismiss => '閉じる';
 }

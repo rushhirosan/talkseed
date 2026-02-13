@@ -265,5 +265,21 @@
         "type": "int"
       }
     }
+  },
+  "errorDataLoadTitle": "Failed to load data",
+  "@errorDataLoadTitle": {
+    "description": "Asset load error title"
+  },
+  "errorDataLoadMessage": "Could not load question data. Please try again later.",
+  "@errorDataLoadMessage": {
+    "description": "Asset load error body"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button"
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Error dialog dismiss button"
   }
 }

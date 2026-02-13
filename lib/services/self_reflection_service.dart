@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 
 /// self_reflection_1on1.json から問いを読み込むサービス
 /// セクションID: checkin | selfReflection | growthRelationship
@@ -10,9 +11,27 @@ class SelfReflectionService {
 
   static Future<Map<String, dynamic>> _loadJson() async {
     if (_cached != null) return _cached!;
-    final jsonString = await rootBundle.loadString(_assetPath);
-    _cached = jsonDecode(jsonString) as Map<String, dynamic>;
-    return _cached!;
+    String jsonString;
+    try {
+      jsonString = await rootBundle.loadString(_assetPath);
+    } catch (e) {
+      throw DataLoadException.assetLoadFailed(_assetPath, e);
+    }
+    try {
+      final decoded = jsonDecode(jsonString);
+      if (decoded is! Map<String, dynamic>) {
+        throw DataParseException.schemaMismatch(
+          _assetPath,
+          'Expected Map, got ${decoded.runtimeType}',
+        );
+      }
+      _cached = decoded;
+      return _cached!;
+    } on ThemeDiceException {
+      rethrow;
+    } catch (e) {
+      throw DataParseException.invalidJson(_assetPath, e);
+    }
   }
 
   /// 全問いとセクションIDのペアを返す（表示順）
@@ -21,7 +40,7 @@ class SelfReflectionService {
     final sections = data['sections'] as Map<String, dynamic>? ?? {};
     final result = <({String question, String sectionId})>[];
     for (final entry in sections.entries) {
-      final sectionId = entry.key as String;
+      final sectionId = entry.key;
       final list = (entry.value as List<dynamic>?)?.cast<String>() ?? [];
       for (final q in list) {
         result.add((question: q, sectionId: sectionId));

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 
 /// checkin_checkout_work.json から問いを読み込むサービス
 class CheckInCheckOutService {
@@ -10,9 +11,27 @@ class CheckInCheckOutService {
   /// JSON を読み込み、キャッシュする
   static Future<Map<String, dynamic>> _loadJson() async {
     if (_cached != null) return _cached!;
-    final jsonString = await rootBundle.loadString(_assetPath);
-    _cached = jsonDecode(jsonString) as Map<String, dynamic>;
-    return _cached!;
+    String jsonString;
+    try {
+      jsonString = await rootBundle.loadString(_assetPath);
+    } catch (e) {
+      throw DataLoadException.assetLoadFailed(_assetPath, e);
+    }
+    try {
+      final decoded = jsonDecode(jsonString);
+      if (decoded is! Map<String, dynamic>) {
+        throw DataParseException.schemaMismatch(
+          _assetPath,
+          'Expected Map, got ${decoded.runtimeType}',
+        );
+      }
+      _cached = decoded;
+      return _cached!;
+    } on ThemeDiceException {
+      rethrow;
+    } catch (e) {
+      throw DataParseException.invalidJson(_assetPath, e);
+    }
   }
 
   /// チェックイン用の問い一覧（初級・中級・上級を統合）
