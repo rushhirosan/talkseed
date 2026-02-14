@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:vector_math/vector_math_64.dart' as vm;
-import '../models/theme.dart';
 import '../models/polyhedron_type.dart';
 import '../utils/dice_3d_utils.dart';
+
+/// 正六面体の面データ1件（深度ソート・描画用の軽量表現）
+class _FaceInfo {
+  const _FaceInfo(this.number, this.x, this.y, this.z, this.rot);
+  final int number;
+  final double x, y, z;
+  final vm.Matrix4 rot;
+}
+
+/// 深度付き面（ソート済みリスト用）
+class _FaceWithDepth {
+  _FaceWithDepth(this.face, this.depth);
+  final _FaceInfo face;
+  final double depth;
+}
+
+/// 正六面体の静的な面データ（ビルドごとの再生成を避ける）
+final _cubeFaceData = _buildCubeFaceDataOnce();
+
+List<_FaceInfo> _buildCubeFaceDataOnce() {
+  const halfSize = Dice3DUtils.diceSize / 2;
+  return [
+    _FaceInfo(1, 0.0, 0.0, halfSize, vm.Matrix4.identity()),
+    _FaceInfo(6, 0.0, 0.0, -halfSize, vm.Matrix4.identity()..rotateY(math.pi)),
+    _FaceInfo(4, halfSize, 0.0, 0.0, vm.Matrix4.identity()..rotateY(math.pi / 2)),
+    _FaceInfo(3, -halfSize, 0.0, 0.0, vm.Matrix4.identity()..rotateY(-math.pi / 2)),
+    _FaceInfo(2, 0.0, -halfSize, 0.0, vm.Matrix4.identity()..rotateX(-math.pi / 2)),
+    _FaceInfo(5, 0.0, halfSize, 0.0, vm.Matrix4.identity()..rotateX(math.pi / 2)),
+  ];
+}
 
 /// 3Dサイコロウィジェット
 class DiceWidget extends StatelessWidget {
@@ -22,33 +51,10 @@ class DiceWidget extends StatelessWidget {
     this.themes = const [],
   });
 
-  /// 正六面体の各面のデータを取得
-  /// 現在は正六面体のみをサポートしています
-  /// 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
-  List<Map<String, dynamic>> _getFaceData(double halfSize) {
-        return _getCubeFaceData(halfSize);
-  }
-
-  /// 正六面体（立方体）の各面のデータ
-  List<Map<String, dynamic>> _getCubeFaceData(double halfSize) {
-    return [
-      {'number': 1, 'x': 0.0, 'y': 0.0, 'z': halfSize, 'rot': vm.Matrix4.identity()},
-      {'number': 6, 'x': 0.0, 'y': 0.0, 'z': -halfSize, 'rot': vm.Matrix4.identity()..rotateY(math.pi)},
-      {'number': 4, 'x': halfSize, 'y': 0.0, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateY(math.pi / 2)},
-      {'number': 3, 'x': -halfSize, 'y': 0.0, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateY(-math.pi / 2)},
-      {'number': 2, 'x': 0.0, 'y': -halfSize, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateX(-math.pi / 2)},
-      {'number': 5, 'x': 0.0, 'y': halfSize, 'z': 0.0, 'rot': vm.Matrix4.identity()..rotateX(math.pi / 2)},
-    ];
-  }
-
-  // 注意: 正四面体と正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
-  // 将来的に使用する可能性があるため、削除せずに保存用ファイルに移動しました
-
   /// 3Dサイコロ全体を構築
   @override
   Widget build(BuildContext context) {
     const size = Dice3DUtils.diceSize;
-    const halfSize = size / 2;
 
     // 回転マトリックスを作成
     final rotationMatrix = vm.Matrix4.identity()
@@ -56,74 +62,41 @@ class DiceWidget extends StatelessWidget {
       ..rotateX(rotX)
       ..rotateZ(rotZ);
 
-    // 各面の初期位置と回転を定義（多面体タイプに応じて）
-    final faceData = _getFaceData(halfSize);
-
-    // 各面のZ座標を計算して、深度順にソート（奥から手前へ）
     final m = rotationMatrix.storage;
-    final facesWithDepth = faceData.map((face) {
-      final x = face['x'] as double;
-      final y = face['y'] as double;
-      final z = face['z'] as double;
-      
-      // 回転後のZ座標を計算（Matrix4の要素に直接アクセス）
-      // transformed = rotationMatrix * [x, y, z, 1]^T
-      // Matrix4のstorageは列優先順序で格納されている
-      // storage[2, 6, 10, 14]が3列目（Z座標）の要素
-      final transformedZ = m[2] * x + m[6] * y + m[10] * z + m[14];
-      
-      return {
-        'face': face,
-        'depth': transformedZ,
-      };
-    }).toList();
+    const int faceCount = 6;
 
-    // Z座標でソート（奥から手前へ、小さい順）
-    facesWithDepth.sort((a, b) => (a['depth'] as double).compareTo(b['depth'] as double));
-
-    // 最大・最小のZ座標を取得して明るさの範囲を決定
-    final depths = facesWithDepth.map((item) => item['depth'] as double).toList();
-    final minDepth = depths.reduce((a, b) => a < b ? a : b);
-    final maxDepth = depths.reduce((a, b) => a > b ? a : b);
+    // 1パス: 深度計算 + min/max 同時取得（余計な List を生成しない）
+    final facesWithDepth = List<_FaceWithDepth>.filled(faceCount, _FaceWithDepth(_cubeFaceData[0], 0));
+    double minDepth = double.infinity;
+    double maxDepth = double.negativeInfinity;
+    for (int i = 0; i < faceCount; i++) {
+      final f = _cubeFaceData[i];
+      final transformedZ = m[2] * f.x + m[6] * f.y + m[10] * f.z + m[14];
+      if (transformedZ < minDepth) minDepth = transformedZ;
+      if (transformedZ > maxDepth) maxDepth = transformedZ;
+      facesWithDepth[i] = _FaceWithDepth(f, transformedZ);
+    }
+    facesWithDepth.sort((a, b) => a.depth.compareTo(b.depth));
     final depthRange = maxDepth - minDepth;
 
     // 各面を描画（奥から手前の順）
-    final faces = facesWithDepth.map((item) {
-      final face = item['face'] as Map<String, dynamic>;
-      final number = face['number'] as int;
-      final x = face['x'] as double;
-      final y = face['y'] as double;
-      final z = face['z'] as double;
-      final faceRot = face['rot'] as vm.Matrix4;
-      final depth = item['depth'] as double;
-      
-      // Z座標に基づいて明るさを計算（前面ほど明るく、背面ほど暗く）
-      // depthRangeが0の場合は1.0を返す
-      final normalizedDepth = depthRange > 0 
-          ? (depth - minDepth) / depthRange 
-          : 0.5;
-      // 前面（大きいZ）ほど明るく、背面（小さいZ）ほど暗く
-      // 0.6（背面）から1.0（前面）の範囲で調整
+    final faces = List<Widget>.filled(faceCount, const SizedBox.shrink());
+    for (int i = 0; i < faceCount; i++) {
+      final item = facesWithDepth[i];
+      final f = item.face;
+      final depth = item.depth;
+      final normalizedDepth = depthRange > 0 ? (depth - minDepth) / depthRange : 0.5;
       final brightness = 0.6 + (normalizedDepth * 0.4);
-      
-      // 各面の変換マトリックスを作成
-      // 正六面体の各面は独立しているため、シンプルに変換を適用
+
       final faceTransform = vm.Matrix4.identity()
-        ..translate(x, y, z)
-        ..multiply(faceRot);
-      
-      // 全体の回転マトリックスを適用
+        ..translateByDouble(f.x, f.y, f.z, 1.0)
+        ..multiply(f.rot);
       final finalTransform = vm.Matrix4.identity()
         ..multiply(rotationMatrix)
         ..multiply(faceTransform);
 
-      return _buildDiceFace(
-        context,
-        number,
-        transform: finalTransform,
-        brightness: brightness,
-      );
-    }).toList();
+      faces[i] = _buildDiceFace(context, f.number, transform: finalTransform, brightness: brightness);
+    }
 
     return SizedBox(
       width: size,
