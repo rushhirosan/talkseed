@@ -653,4 +653,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dismiss => 'Dismiss';
+
+  @override
+  String get showModeSelectionAtStartup => 'Show mode selection at startup';
+
+  @override
+  String get showModeSelectionAtStartupDone =>
+      'Done. Mode selection will show on next launch.';
 }

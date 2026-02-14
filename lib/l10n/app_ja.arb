@@ -501,5 +501,13 @@
   "dismiss": "閉じる",
   "@dismiss": {
     "description": "エラーダイアログの閉じるボタン"
+  },
+  "showModeSelectionAtStartup": "起動時にモード選択を表示する",
+  "@showModeSelectionAtStartup": {
+    "description": "起動時既定をクリアする設定のラベル"
+  },
+  "showModeSelectionAtStartupDone": "設定しました。次回起動時はモード選択が表示されます。",
+  "@showModeSelectionAtStartupDone": {
+    "description": "起動時既定クリア時のスナックバー"
   }
 }

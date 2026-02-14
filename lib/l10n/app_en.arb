@@ -281,5 +281,13 @@
   "dismiss": "Dismiss",
   "@dismiss": {
     "description": "Error dialog dismiss button"
+  },
+  "showModeSelectionAtStartup": "Show mode selection at startup",
+  "@showModeSelectionAtStartup": {
+    "description": "Label for clearing default launch mode"
+  },
+  "showModeSelectionAtStartupDone": "Done. Mode selection will show on next launch.",
+  "@showModeSelectionAtStartupDone": {
+    "description": "Snackbar when default launch mode is cleared"
   }
 }

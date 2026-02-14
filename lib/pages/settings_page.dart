@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
+import '../utils/preferences_helper.dart';
 
 /// 設定画面
 class SettingsPage extends StatefulWidget {
@@ -252,6 +253,37 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 6),
             _buildFaceColumn(),
+            const SizedBox(height: 24),
+            Divider(color: _black.withOpacity(0.3)),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: () async {
+                await PreferencesHelper.saveDefaultPlayMode(null);
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.showModeSelectionAtStartupDone)),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.home_work_outlined, size: 20, color: _black.withOpacity(0.7)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.showModeSelectionAtStartup,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _black.withOpacity(0.9),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         );
       },

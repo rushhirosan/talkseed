@@ -151,6 +151,7 @@ class DicePainter extends CustomPainter {
         ),
       ),
       textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
       maxLines: 4,
       ellipsis: '…',
     );

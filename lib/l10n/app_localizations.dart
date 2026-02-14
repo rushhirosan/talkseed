@@ -1321,6 +1321,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'閉じる'**
   String get dismiss;
+
+  /// 起動時既定をクリアする設定のラベル
+  ///
+  /// In ja, this message translates to:
+  /// **'起動時にモード選択を表示する'**
+  String get showModeSelectionAtStartup;
+
+  /// 起動時既定クリア時のスナックバー
+  ///
+  /// In ja, this message translates to:
+  /// **'設定しました。次回起動時はモード選択が表示されます。'**
+  String get showModeSelectionAtStartupDone;
 }
 
 class _AppLocalizationsDelegate

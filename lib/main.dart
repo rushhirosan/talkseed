@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:theme_dice/l10n/app_localizations.dart';
-import 'package:theme_dice/models/polyhedron_type.dart';
+import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
-import 'package:theme_dice/pages/dice_page.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/tutorial_page.dart';
@@ -167,11 +166,13 @@ class _MainPageState extends State<MainPage> {
       return const ModeSelectionPage();
     }
 
-    // 案B: デフォルトがサイコロならサイコロ画面を直接表示
-    if (_defaultPlayMode == 'dice' && _savedThemes != null && _savedThemes!.length == 6) {
-      return DicePage(
-        initialType: PolyhedronType.cube,
-        initialThemes: {PolyhedronType.cube: _savedThemes!},
+    // 案B: デフォルトがサイコロならサイコロ設定画面を表示（設定後に「サイコロを振る」で DicePage へ）
+    if (_defaultPlayMode == 'dice') {
+      return InitialSettingsPage(
+        preselectedMode: PreselectedMode.dice,
+        initialThemesForCube: (_savedThemes != null && _savedThemes!.length == 6)
+            ? _savedThemes
+            : null,
       );
     }
 

@@ -643,4 +643,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dismiss => '閉じる';
+
+  @override
+  String get showModeSelectionAtStartup => '起動時にモード選択を表示する';
+
+  @override
+  String get showModeSelectionAtStartupDone => '設定しました。次回起動時はモード選択が表示されます。';
 }

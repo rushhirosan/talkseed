@@ -17,8 +17,14 @@ import '../models/preselected_mode.dart';
 class InitialSettingsPage extends StatefulWidget {
   /// モード選択画面から指定された場合、そのモードのボタンのみ表示
   final PreselectedMode? preselectedMode;
+  /// 起動時などで渡す場合のサイコロ6面の初期テーマ（null の場合はデフォルト）
+  final List<String>? initialThemesForCube;
 
-  const InitialSettingsPage({super.key, this.preselectedMode});
+  const InitialSettingsPage({
+    super.key,
+    this.preselectedMode,
+    this.initialThemesForCube,
+  });
 
   @override
   State<InitialSettingsPage> createState() => _InitialSettingsPageState();
@@ -36,9 +42,13 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
+    final cubeThemes = (widget.initialThemesForCube != null &&
+            widget.initialThemesForCube!.length == 6)
+        ? List<String>.from(widget.initialThemesForCube!)
+        : ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n);
     _themes = {
       PolyhedronType.tetrahedron: ThemeModel.getDefaultThemes(PolyhedronType.tetrahedron, l10n),
-      PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
+      PolyhedronType.cube: cubeThemes,
       PolyhedronType.octahedron: ThemeModel.getDefaultThemes(PolyhedronType.octahedron, l10n),
     };
     // テキストフィールドのコントローラーを初期化
