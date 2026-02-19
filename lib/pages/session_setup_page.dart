@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import '../models/session_config.dart' show SessionConfig, PlayMode;
+import '../models/session_config.dart' show SessionConfig;
 import '../models/polyhedron_type.dart';
 import '../utils/preferences_helper.dart';
 import '../utils/route_transitions.dart';
 import 'dice_page.dart';
 import 'initial_settings_page.dart';
-import 'topics_page.dart';
+import 'value_card_page.dart';
+import 'mode_selection_page.dart';
+import 'card_settings_page.dart';
+import 'tutorial_page.dart';
+import 'value_card_tutorial_page.dart';
 
 /// セッション設定画面（設定画面とデザインテイストを統一）
+/// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
 class SessionSetupPage extends StatefulWidget {
   final Map<PolyhedronType, List<String>> themes;
   /// DicePage から戻ってきた場合 true（戻るボタンで pushReplacement を使うため）
   final bool fromDicePage;
+  /// true のとき「スタート」で ValueCardPage へ遷移（価値観カード用セッション設定）
+  final bool forValueCard;
+  /// forValueCard 時のみ。true なら戻るで CardSettingsPage、false なら ModeSelectionPage
+  final bool fromCardSettings;
 
   const SessionSetupPage({
     super.key,
     required this.themes,
     this.fromDicePage = false,
+    this.forValueCard = false,
+    this.fromCardSettings = false,
   });
 
   @override
@@ -84,14 +95,26 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     });
   }
 
-  void _updatePlayMode(PlayMode mode) {
-    setState(() {
-      _config = _config.copyWith(playMode: mode);
-    });
+  void _showTutorial() {
+    if (widget.forValueCard) {
+      Navigator.of(context).push(
+        RouteTransitions.forwardRoute(
+          page: const ValueCardTutorialPage(),
+        ),
+      );
+    } else {
+      Navigator.of(context).push(
+        RouteTransitions.forwardRoute(
+          page: TutorialPage(
+            onComplete: () => Navigator.of(context).pop(),
+            diceOnly: true,
+          ),
+        ),
+      );
+    }
   }
 
   void _startSession() {
-    // 入力された名前を順番通りに渡す（空欄は空文字）。1人でも名前があれば表示に使う
     final playerNames = List.generate(
       _config.playerCount,
       (i) => _playerNameControllers[i].text.trim(),
@@ -103,11 +126,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       PreferencesHelper.saveLastThemes(themes);
     }
 
-    if (finalConfig.playMode == PlayMode.topicCard) {
-      Navigator.of(context).pushReplacement(
+    if (widget.forValueCard && themes != null) {
+      // push にすることで、価値観カード画面の戻るでこのセッション設定に戻れる
+      Navigator.of(context).push(
         RouteTransitions.forwardRoute(
-          page: TopicsPage(
-            initialThemes: widget.themes,
+          page: ValueCardPage(
+            themes: themes,
             sessionConfig: finalConfig,
           ),
         ),
@@ -141,17 +165,30 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           icon: const Icon(Icons.arrow_back, color: _black),
           onPressed: () {
             if (widget.fromDicePage) {
-              // DicePage から来た場合: pushReplacement で戻るトランジションを明示
               Navigator.of(context).pushReplacement(
                 RouteTransitions.backRoute(
                   page: const InitialSettingsPage(),
                 ),
               );
+            } else if (widget.forValueCard) {
+              if (widget.fromCardSettings) {
+                Navigator.of(context).pushReplacement(
+                  RouteTransitions.backRoute(
+                    page: const CardSettingsPage(),
+                  ),
+                );
+              } else {
+                Navigator.of(context).pushReplacement(
+                  RouteTransitions.backRoute(
+                    page: const ModeSelectionPage(),
+                  ),
+                );
+              }
             } else {
               Navigator.of(context).pop();
             }
           },
-          tooltip: l10n.backToThemeSettings,
+          tooltip: widget.forValueCard ? l10n.backToModeSelection : l10n.backToThemeSettings,
         ),
         title: Text(
           l10n.sessionSetup,
@@ -161,6 +198,13 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             fontSize: 20,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline, color: _black),
+            onPressed: _showTutorial,
+            tooltip: l10n.showTutorial,
+          ),
+        ],
       ),
       body: Row(
         children: [
@@ -208,22 +252,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.playModeLabel,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: _black,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _buildDropdown<PlayMode>(
-          value: _config.playMode,
-          items: PlayMode.values,
-          labelBuilder: (v) => v == PlayMode.dice ? l10n.playModeDice : l10n.playModeTopicCard,
-          onChanged: (v) => v != null ? _updatePlayMode(v) : null,
-        ),
-        const SizedBox(height: 24),
         Text(
           l10n.playerCount,
           style: const TextStyle(
@@ -305,7 +333,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            _config.playMode == PlayMode.dice ? l10n.playModeDice : l10n.playModeTopicCard,
+            widget.forValueCard ? l10n.deckTeamBuilding : l10n.playModeDice,
             style: TextStyle(
               fontSize: 14,
               color: _black.withOpacity(0.8),

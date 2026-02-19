@@ -99,11 +99,12 @@ class DiceWidget extends StatelessWidget {
     }
 
     return SizedBox(
-      width: size,
-      height: size,
+      width: Dice3DUtils.diceDisplaySize,
+      height: Dice3DUtils.diceDisplaySize,
       child: Center(
         child: Stack(
           alignment: Alignment.center,
+          clipBehavior: Clip.none, // 回転時に角がクリップされないようにする
           children: faces,
         ),
       ),
@@ -184,8 +185,9 @@ class DiceWidget extends StatelessWidget {
       0.4 * (1.0 - baseBrightness),
     )?.withOpacity(0.95 * baseBrightness) ?? faceColor;
     
-    // 角の丸みを小さくして、3D変換時に面同士がしっかり接するようにする
-    const borderRadius = 8.0;
+    // 3D変換時、隣接面の角がずれて隙間ができるのを防ぐため角を鋭くする
+    // borderRadius=0 で面同士がエッジで正確に接する
+    const borderRadius = 0.0;
     
     return Container(
       width: Dice3DUtils.diceSize,

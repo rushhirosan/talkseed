@@ -15,7 +15,6 @@ import 'package:theme_dice/widgets/dice_widget.dart';
 import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
-import 'package:theme_dice/pages/settings_page.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 
@@ -51,6 +50,8 @@ class _DicePageState extends State<DicePage>
   // セッション管理（新規追加）
   GameSession? _session;
   TimerService? _timerService;
+  /// 全員振り終えた後に表示する振り返り画面を表示中か
+  bool _showingSessionSummary = false;
 
   @override
   void initState() {
@@ -335,10 +336,124 @@ class _DicePageState extends State<DicePage>
       }
     });
 
-    // 最後のプレイヤーが終わってセッション終了したらダイアログを表示
+    // 最後のプレイヤーが終わってセッション終了したら振り返り画面を表示
     if (wasLastPlayer && _session != null && !_session!.isActive) {
-      _showSessionEndDialog();
+      setState(() => _showingSessionSummary = true);
     }
+  }
+
+  /// 振り返り画面で「セッションを終了」を押したときの処理
+  void _onSessionSummaryEnd() {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _showingSessionSummary = false);
+    if (widget.sessionConfig != null) {
+      final themes = _themes ?? widget.initialThemes ?? {
+        PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
+      };
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.backRoute(
+          page: SessionSetupPage(themes: themes, fromDicePage: true),
+        ),
+      );
+    } else {
+      setState(() => _session = null);
+    }
+  }
+
+  /// セッション振り返り画面の本文を構築
+  Widget _buildSessionSummaryBody(AppLocalizations l10n) {
+    final rounds = _session!.rounds;
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 16),
+            Text(
+              l10n.sessionSummaryScreenTitle,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: _black.withOpacity(0.9),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+            ...rounds.map((result) {
+              final playerLabel = result.playerName?.isNotEmpty == true
+                  ? result.playerName!
+                  : l10n.playerName(result.playerIndex + 1);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: _white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _black.withOpacity(0.3), width: 1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _black.withOpacity(0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.sessionSummaryPlayerTheme(playerLabel),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: _black.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        result.theme,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: _black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _onSessionSummaryEnd,
+                icon: const Icon(Icons.check_circle, color: _black),
+                label: Text(
+                  l10n.sessionEndButton,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: _black,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _mustardYellow,
+                  foregroundColor: _black,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// セッション終了ダイアログを表示
@@ -353,8 +468,20 @@ class _DicePageState extends State<DicePage>
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              setState(() => _session = null);
+              Navigator.of(context).pop(); // ダイアログを閉じる
+              if (widget.sessionConfig != null) {
+                // セッション設定画面から来た場合はセッション設定画面に戻る
+                final themes = _themes ?? widget.initialThemes ?? {
+                  PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
+                };
+                Navigator.of(context).pushReplacement(
+                  RouteTransitions.backRoute(
+                    page: SessionSetupPage(themes: themes, fromDicePage: true),
+                  ),
+                );
+              } else {
+                setState(() => _session = null);
+              }
             },
             child: Text(l10n.newSession),
           ),
@@ -393,30 +520,6 @@ class _DicePageState extends State<DicePage>
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: 100);
     }
-  }
-
-  /// 設定画面を開く
-  Future<void> _openSettings() async {
-    final l10n = AppLocalizations.of(context)!;
-    _themes ??= {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n)};
-    await Navigator.of(context).push(
-      RouteTransitions.forwardRoute(
-        page: SettingsPage(
-          selectedType: _selectedPolyhedronType,
-          themes: _themes!,
-          onSave: (type, themes) {
-            setState(() {
-              // 現在は正六面体のみをサポート（常にcubeを使用）
-              _selectedPolyhedronType = PolyhedronType.cube;
-              // 正六面体のテーマのみを更新
-              if (themes.containsKey(PolyhedronType.cube)) {
-                _themes = {PolyhedronType.cube: themes[PolyhedronType.cube]!};
-              }
-            });
-          },
-        ),
-      ),
-    );
   }
 
   /// 設定画面に戻る（セッション開始からの場合はセッション設定画面へ）
@@ -470,15 +573,10 @@ class _DicePageState extends State<DicePage>
           onPressed: _goBackToSettings,
           tooltip: l10n.backToSettings,
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: _black),
-            onPressed: _openSettings,
-            tooltip: l10n.settings,
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
+      body: _showingSessionSummary && _session != null
+          ? _buildSessionSummaryBody(l10n)
+          : SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: MediaQuery.of(context).size.width,
@@ -487,10 +585,10 @@ class _DicePageState extends State<DicePage>
                 kToolbarHeight,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
 
               // プレイヤー表示（セッション中の場合）
               if (_session != null) ...[
@@ -499,7 +597,7 @@ class _DicePageState extends State<DicePage>
                   totalPlayers: _session!.config.playerCount,
                   currentPlayerName: _session!.currentPlayerName,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
               ],
 
               // タイマー表示（セッション中でタイマー有効の場合）
@@ -510,15 +608,16 @@ class _DicePageState extends State<DicePage>
                   onResume: _toggleTimer,
                   onSkip: _skipTimer,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
               ],
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
 
               // サイコロ表示エリア（アニメーション付き）
+              // diceDisplaySize を使用し回転時に角が切れない十分な領域を確保
               SizedBox(
-                width: Dice3DUtils.diceSize + 50,
-                height: Dice3DUtils.diceSize + 50,
+                width: Dice3DUtils.diceDisplaySize + 40,
+                height: Dice3DUtils.diceDisplaySize + 40,
                 child: Center(
                   child: Builder(
                     builder: (context) {
@@ -555,7 +654,7 @@ class _DicePageState extends State<DicePage>
                 ),
               ),
 
-              const SizedBox(height: 60),
+              const SizedBox(height: 36),
 
               // 「サイコロを振る」ボタン（設定画面のスタイルに統一）
               ElevatedButton.icon(
@@ -583,12 +682,12 @@ class _DicePageState extends State<DicePage>
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               // 選択されたテーマを表示
               ThemeDisplay(selectedTheme: _selectedTheme),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // セッション中の場合、次のプレイヤー／セッション終了ボタンを表示
               if (_session != null && _selectedTheme != null) ...[
@@ -620,8 +719,11 @@ class _DicePageState extends State<DicePage>
                     elevation: 1,
                   ),
                 ),
-                const SizedBox(height: 20),
               ],
+              // 画面下部に余白を確保（セーフエリア＋追加マージン）
+              SizedBox(
+                height: MediaQuery.of(context).padding.bottom + 32,
+              ),
             ],
           ),
         ),

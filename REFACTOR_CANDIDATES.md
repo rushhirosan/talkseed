@@ -25,7 +25,6 @@
 |----------|------|----------------|--------|
 | **initial_settings_page.dart** | 約 900 | テーマ選択ブロック、モード選択ブロックをウィジェット化 | 高 |
 | **value_card_page.dart** | 約 772 | カード表示エリア、結果エリアをウィジェット化 | 高 |
-| **settings_page.dart** | 約 631 | テーマ編集フォーム、カラーパレットを共通化 | 中 |
 | **topics_page.dart** | 約 549 | トピック一覧・カード UI をウィジェット化 | 中 |
 | **session_setup_page.dart** | 約 523 | プレイヤー設定ブロック、タイマー設定ブロック | 中 |
 | **dice_page.dart** | 約 631 | 下記「DicePage 内の切り出し」を参照 | 中 |
@@ -44,7 +43,7 @@
 
 | 候補 | 現状 | 提案先 |
 |------|------|--------|
-| **カラーパレット** | `_mustardYellow`, `_white`, `_black`, `_lightYellow` 等が dice_page / settings_page / session_setup_page に重複 | `utils/app_colors.dart` または `theme/app_theme.dart` で一元定義 |
+| **カラーパレット** | `_mustardYellow`, `_white`, `_black`, `_lightYellow` 等が dice_page / initial_settings_page / session_setup_page に重複 | `utils/app_colors.dart` または `theme/app_theme.dart` で一元定義 |
 
 - 色名は現状のまま（mustardYellow, lightYellow 等）で定数として共有すると、デザイン変更時の修正箇所が減る。
 
@@ -53,7 +52,7 @@
 ## 3. 優先度の目安
 
 1. **高**: initial_settings_page / value_card_page のブロック分割（行数削減・テストしやすさ）
-2. **中**: MainPage の分離、settings / session_setup / dice_page のウィジェット化、色の共通化
+2. **中**: MainPage の分離、initial_settings / session_setup / dice_page のウィジェット化、色の共通化
 3. **低**: tutorial / mode_selection の細かいウィジェット化、DicePage の dice_roll_area 等
 
 ---

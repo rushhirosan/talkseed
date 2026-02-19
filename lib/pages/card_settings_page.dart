@@ -9,6 +9,7 @@ import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
+import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/pages/topics_page.dart';
 import 'package:theme_dice/pages/value_card_page.dart';
 
@@ -32,14 +33,18 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     final l10n = AppLocalizations.of(context)!;
     if (!mounted) return;
 
-    // チームビルディングは価値観カード フルルール
+    // チームビルディングはセッション設定を経て価値観カードへ（サイコロと同様のUI/UX）
     if (deck.type == CardDeckType.teamBuilding) {
       final themes = deck.themes(l10n);
       await PreferencesHelper.saveLastCardThemes(themes);
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         RouteTransitions.forwardRoute(
-          page: ValueCardPage(themes: themes),
+          page: SessionSetupPage(
+            themes: {PolyhedronType.cube: themes},
+            forValueCard: true,
+            fromCardSettings: true,
+          ),
         ),
       );
       return;
@@ -47,11 +52,14 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
 
     try {
       if (deck.type == CardDeckType.checkIn) {
-        final checkInThemes =
-            await CheckInCheckOutService.loadCheckInQuestions();
-        final checkOutThemes =
-            await CheckInCheckOutService.loadCheckOutQuestions();
-        final combined = [...checkInThemes, ...checkOutThemes];
+        final checkInItems =
+            await CheckInCheckOutService.loadCheckInItems();
+        final checkOutItems =
+            await CheckInCheckOutService.loadCheckOutItems();
+        final combined = [
+          ...checkInItems.map((e) => e.text),
+          ...checkOutItems.map((e) => e.text),
+        ];
         await PreferencesHelper.saveLastCardThemes(combined);
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
@@ -59,8 +67,8 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
             page: TopicsPage(
               initialThemes: {PolyhedronType.cube: combined},
               sessionConfig: null,
-              checkInThemes: checkInThemes,
-              checkOutThemes: checkOutThemes,
+              checkInItems: checkInItems,
+              checkOutItems: checkOutItems,
             ),
           ),
         );
@@ -164,7 +172,7 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              ...CardDeck.allDecks.map((deck) {
+              ...CardDeck.visibleDecks.map((deck) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _DeckCard(

@@ -1,93 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import '../utils/preferences_helper.dart';
-import 'dart:math' as math;
 
-/// チュートリアル画面
-class TutorialPage extends StatefulWidget {
-  final VoidCallback onComplete;
-  /// true のときサイコロ関連のみ表示（カードの説明を除外）
-  final bool diceOnly;
-
-  const TutorialPage({
-    super.key,
-    required this.onComplete,
-    this.diceOnly = false,
-  });
+/// 価値観カード専用チュートリアル画面
+class ValueCardTutorialPage extends StatefulWidget {
+  const ValueCardTutorialPage({super.key});
 
   @override
-  State<TutorialPage> createState() => _TutorialPageState();
+  State<ValueCardTutorialPage> createState() => _ValueCardTutorialPageState();
 }
 
-class _TutorialPageState extends State<TutorialPage> {
+class _ValueCardTutorialPageState extends State<ValueCardTutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // デザインの色定義（Figmaデザインのテイストに合わせて調整）
-  static const Color _purpleBackground = Color(0xFF4F20D1); // 明るい紫色（Figmaデザインに合わせて）
-  static const Color _yellowBanner = Color(0xFFFFEB3B); // 黄色
+  static const Color _purpleBackground = Color(0xFF4F20D1);
+  static const Color _yellowBanner = Color(0xFFFFEB3B);
   static const Color _whiteText = Colors.white;
 
-  // チュートリアルページのデータ
-  List<TutorialPageData>? _pages;
+  List<_ValueTutorialPageData>? _pages;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_pages == null) {
       final l10n = AppLocalizations.of(context)!;
-      final dicePages = [
-        TutorialPageData(
-          title: l10n.tutorialWelcome,
-          body: l10n.tutorialWelcomeBody,
-          icon: Icons.casino,
-          icon2: Icons.style,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialSetTheme,
-          body: l10n.tutorialSetThemeBody,
-          icon: Icons.edit,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialRollDice,
-          body: l10n.tutorialRollDiceBody,
-          icon: Icons.play_arrow,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialChangeSettings,
-          body: l10n.tutorialChangeSettingsBody,
-          icon: Icons.settings,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialReady,
-          body: l10n.tutorialReadyBody,
-          icon: Icons.check_circle,
-        ),
-      ];
-      final cardPages = [
-        TutorialPageData(
+      _pages = [
+        _ValueTutorialPageData(
           title: l10n.valueTutorialPage1Title,
           body: l10n.valueTutorialPage1Body,
           icon: Icons.groups,
         ),
-        TutorialPageData(
+        _ValueTutorialPageData(
           title: l10n.valueTutorialPage2Title,
           body: l10n.valueTutorialPage2Body,
           icon: Icons.reorder,
         ),
-        TutorialPageData(
+        _ValueTutorialPageData(
           title: l10n.valueTutorialPage3Title,
           body: l10n.valueTutorialPage3Body,
           icon: Icons.share,
         ),
       ];
-      _pages = widget.diceOnly
-          ? dicePages
-          : [
-              ...dicePages.sublist(0, 3),
-              ...cardPages,
-              ...dicePages.sublist(3),
-            ];
     }
   }
 
@@ -98,9 +51,7 @@ class _TutorialPageState extends State<TutorialPage> {
   }
 
   void _onPageChanged(int index) {
-    setState(() {
-      _currentPage = index;
-    });
+    setState(() => _currentPage = index);
   }
 
   void _nextPage() {
@@ -111,7 +62,7 @@ class _TutorialPageState extends State<TutorialPage> {
         curve: Curves.easeInOut,
       );
     } else {
-      _completeTutorial();
+      Navigator.of(context).pop();
     }
   }
 
@@ -124,37 +75,31 @@ class _TutorialPageState extends State<TutorialPage> {
     }
   }
 
-  Future<void> _completeTutorial() async {
-    await PreferencesHelper.setFirstLaunchCompleted();
-    widget.onComplete();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final pages = _pages ?? [];
-    
+
     if (pages.isEmpty) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
-    
+
     return Scaffold(
-        backgroundColor: _purpleBackground,
-        body: SafeArea(
+      backgroundColor: _purpleBackground,
+      body: SafeArea(
         child: Column(
           children: [
-            // スキップボタン
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _completeTutorial,
+                    onPressed: () => Navigator.of(context).pop(),
                     child: Text(
-                      l10n.skip,
+                      l10n.dismiss,
                       style: const TextStyle(
                         color: _whiteText,
                         fontWeight: FontWeight.w600,
@@ -165,24 +110,20 @@ class _TutorialPageState extends State<TutorialPage> {
                 ],
               ),
             ),
-            // ページビュー
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
                 itemCount: pages.length,
-                physics: const PageScrollPhysics(), // ページスクロールの物理挙動を明示
-                itemBuilder: (context, index) {
-                  return _buildTutorialPage(pages[index]);
-                },
+                physics: const PageScrollPhysics(),
+                itemBuilder: (context, index) =>
+                    _buildTutorialPage(pages[index]),
               ),
             ),
-            // ページインジケーターとナビゲーションボタン
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  // ページインジケーター
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
@@ -191,17 +132,14 @@ class _TutorialPageState extends State<TutorialPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // ナビゲーションボタン
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // 戻るボタン
                       IconButton(
                         onPressed: _currentPage > 0 ? _previousPage : null,
                         icon: const Icon(Icons.arrow_back, color: _whiteText),
                         disabledColor: _whiteText.withOpacity(0.3),
                       ),
-                      // 次へ/完了ボタン
                       FilledButton(
                         onPressed: _nextPage,
                         style: FilledButton.styleFrom(
@@ -217,8 +155,8 @@ class _TutorialPageState extends State<TutorialPage> {
                         ),
                         child: Text(
                           _currentPage < pages.length - 1
-                              ? 'Next'
-                              : l10n.start,
+                              ? l10n.valueNext
+                              : l10n.dismiss,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -232,25 +170,22 @@ class _TutorialPageState extends State<TutorialPage> {
             ),
           ],
         ),
-        ),
+      ),
     );
   }
 
-  Widget _buildTutorialPage(TutorialPageData pageData) {
+  Widget _buildTutorialPage(_ValueTutorialPageData pageData) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 画面サイズに応じてレイアウトを調整
         final isSmallScreen = constraints.maxHeight < 700;
-        
         return SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(), // PageViewのスクロールと競合しないように
+          physics: const NeverScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
               child: Row(
                 children: [
-                  // 左側: テキストコンテンツ
                   Expanded(
                     flex: 1,
                     child: Column(
@@ -258,9 +193,8 @@ class _TutorialPageState extends State<TutorialPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // 黄色のバナー（少し回転）- Figmaデザインのテイスト
                         Transform.rotate(
-                          angle: -0.1, // 約-6度
+                          angle: -0.1,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
@@ -290,7 +224,6 @@ class _TutorialPageState extends State<TutorialPage> {
                           ),
                         ),
                         SizedBox(height: isSmallScreen ? 32 : 48),
-                        // メインタイトル - Figmaデザインのテイスト
                         Text(
                           pageData.title,
                           style: TextStyle(
@@ -302,7 +235,6 @@ class _TutorialPageState extends State<TutorialPage> {
                           ),
                         ),
                         SizedBox(height: isSmallScreen ? 24 : 32),
-                        // 本文
                         Text(
                           pageData.body,
                           style: TextStyle(
@@ -312,53 +244,21 @@ class _TutorialPageState extends State<TutorialPage> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(height: isSmallScreen ? 24 : 40),
-                        // バージョン情報 - Figmaデザインのテイスト（左下に配置）
-                        Text(
-                          'v1.0 | ${DateTime.now().year}',
-                          style: TextStyle(
-                            color: _whiteText.withOpacity(0.75),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
                       ],
                     ),
                   ),
                   SizedBox(width: isSmallScreen ? 32 : 48),
-                  // 右側: アイコン/イラスト - デザインのテイストに合わせて調整
                   Expanded(
                     flex: 1,
                     child: Center(
-                      child: pageData.icon2 != null
-                          ? Transform.rotate(
-                              angle: -0.1,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _buildIconCircle(
-                                    pageData.icon,
-                                    size: isSmallScreen ? 88 : 110,
-                                    iconSize: isSmallScreen ? 44 : 56,
-                                  ),
-                                  SizedBox(height: isSmallScreen ? 12 : 20),
-                                  _buildIconCircle(
-                                    pageData.icon2!,
-                                    size: isSmallScreen ? 88 : 110,
-                                    iconSize: isSmallScreen ? 44 : 56,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Transform.rotate(
-                              angle: -0.1,
-                              child: _buildIconCircle(
-                                pageData.icon,
-                                size: isSmallScreen ? 180 : 240,
-                                iconSize: isSmallScreen ? 90 : 120,
-                              ),
-                            ),
+                      child: Transform.rotate(
+                        angle: -0.1,
+                        child: _buildIconCircle(
+                          pageData.icon,
+                          size: isSmallScreen ? 180 : 240,
+                          iconSize: isSmallScreen ? 90 : 120,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -414,18 +314,14 @@ class _TutorialPageState extends State<TutorialPage> {
   }
 }
 
-/// チュートリアルページのデータ
-class TutorialPageData {
+class _ValueTutorialPageData {
   final String title;
   final String body;
   final IconData icon;
-  /// 1ページ目など、2つアイコンを並べる場合は指定（例: サイコロ＋カード）
-  final IconData? icon2;
 
-  TutorialPageData({
+  _ValueTutorialPageData({
     required this.title,
     required this.body,
     required this.icon,
-    this.icon2,
   });
 }

@@ -39,6 +39,11 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   bool _initialized = false;
 
   final ScrollController _rightScrollController = ScrollController();
+  /// ドロップ直後の面インデックス（アニメーション用）
+  int? _lastDroppedIndex;
+  /// 編集中の面インデックス（null のときは右側と同じ Center+Text で表示）
+  int? _focusedFaceIndex;
+  final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
@@ -66,6 +71,9 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       for (var controller in controllers) {
         controller.dispose();
       }
+    }
+    for (final node in _faceFocusNodes) {
+      node.dispose();
     }
     _rightScrollController.dispose();
     super.dispose();
@@ -156,7 +164,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             isPrimary: true,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: _buildActionButton(
@@ -194,7 +202,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         ),
       ];
     }
-    // 全モード表示（従来の動作）
+    // 全モード表示（サイコロで戻ってきた場合など）。カードで遊ぶはモード選択で選ぶためここでは表示しない
     return [
       SizedBox(
         width: double.infinity,
@@ -205,17 +213,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           isPrimary: true,
         ),
       ),
-      const SizedBox(height: 8),
-      SizedBox(
-        width: double.infinity,
-        child: _buildActionButton(
-          icon: Icons.style,
-          label: l10n.playWithCards,
-          onPressed: _goToCards,
-          isPrimary: false,
-        ),
-      ),
-      const SizedBox(height: 8),
+      const SizedBox(height: 16),
       SizedBox(
         width: double.infinity,
         child: _buildActionButton(
@@ -228,7 +226,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     ];
   }
 
-  /// チュートリアルを表示
+  /// チュートリアルを表示（サイコロ設定画面なのでサイコロのチュートリアルのみ）
   void _showTutorial() {
     Navigator.of(context).push(
       RouteTransitions.forwardRoute(
@@ -236,6 +234,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           onComplete: () {
             Navigator.of(context).pop();
           },
+          diceOnly: true,
         ),
       ),
     );
@@ -258,20 +257,17 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
-        automaticallyImplyLeading: widget.preselectedMode != null,
-        leading: widget.preselectedMode != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: _black),
-                onPressed: _goBackToModeSelection,
-                tooltip: l10n.backToModeSelection,
-              )
-            : null,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: _black),
+          onPressed: _goBackToModeSelection,
+          tooltip: l10n.backToModeSelection,
+        ),
         title: Text(
           l10n.settings,
           style: const TextStyle(
             color: _black,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 22,
           ),
         ),
         actions: [
@@ -282,53 +278,60 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           ),
         ],
       ),
-      body: Row(
-        children: [
-          // 左側: マスタードイエローの背景セクション
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: _mustardYellow,
-              padding: const EdgeInsets.all(24),
-              child: SingleChildScrollView(
+      body: SafeArea(
+        bottom: true,
+        child: Row(
+          children: [
+            // 左側: マスタードイエローの背景セクション
+            // スクロール領域（テーマ+面6つ）とボタン（常に下部に固定表示）を分離
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: _mustardYellow,
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildThemeEditSection(),
-                    const SizedBox(height: 12),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        l10n.faceThemesList,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: _black.withOpacity(0.7),
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildThemeTitleSection(),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.faceThemesList,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: _black.withOpacity(0.85),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Expanded(
+                            child: _buildFaceColumn(),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildRandomResetRow(l10n),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    _buildFaceColumn(),
-                    const SizedBox(height: 16),
-                    // preselectedMode が指定されている場合はそのボタンのみ、なければ3つすべて表示
+                    const SizedBox(height: 12),
                     ..._buildPlayButtons(l10n),
                   ],
                 ),
               ),
             ),
-          ),
-          // 右側: 白背景のテーマ候補エリア
+          // 右側: 白背景のテーマ候補エリア（左パネルと上下の高さを揃える）
           Expanded(
             flex: 1,
             child: Container(
               color: _white,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: _buildThemeCandidatesSection(),
             ),
           ),
         ],
+        ),
       ),
     );
   }
@@ -341,77 +344,67 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required bool isPrimary,
   }) {
     if (isPrimary) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          return ElevatedButton.icon(
-            onPressed: onPressed,
-            icon: Icon(icon, color: _white),
-            label: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: _white,
-                ),
-                maxLines: 1,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _black,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          );
-        },
+      return ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, color: _white),
+        label: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: _white,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.visible,
+          textAlign: TextAlign.center,
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _black,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       );
     } else {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          return OutlinedButton.icon(
-            onPressed: onPressed,
-            icon: Icon(icon, color: _black),
-            label: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: _black,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            side: const BorderSide(color: _black, width: 1.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            backgroundColor: _white.withOpacity(0.6),
-            foregroundColor: _black,
-          ).copyWith(
-            side: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.hovered)) {
-                return const BorderSide(color: _black, width: 2.5);
-              }
-              return const BorderSide(color: _black, width: 1.5);
-            }),
-            overlayColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.hovered) ||
-                  states.contains(WidgetState.pressed)) {
-                return _black.withOpacity(0.08);
-              }
-              return null;
-            }),
+      return OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, color: _black),
+        label: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: _black,
           ),
-          );
-        },
+          maxLines: 2,
+          overflow: TextOverflow.visible,
+          textAlign: TextAlign.center,
+        ),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          side: const BorderSide(color: _black, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: _white.withOpacity(0.6),
+          foregroundColor: _black,
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused) ||
+                states.contains(WidgetState.hovered)) {
+              return const BorderSide(color: _black, width: 2.5);
+            }
+            return const BorderSide(color: _black, width: 1.5);
+          }),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.pressed)) {
+              return _black.withOpacity(0.08);
+            }
+            return null;
+          }),
+        ),
       );
     }
   }
@@ -457,95 +450,128 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     });
   }
 
-  /// テーマ編集セクション（タイトル・ランダム/リセットボタンのみ）
-  Widget _buildThemeEditSection() {
+  /// テーマセクション（タイトルのみ）
+  Widget _buildThemeTitleSection() {
     final l10n = AppLocalizations.of(context)!;
     _initializeThemes(l10n);
-    
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                l10n.themeCube,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: _black,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                l10n.yourThemes,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: _black.withOpacity(0.7),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _buildRoundedButton(
-                  icon: Icons.shuffle,
-                  label: l10n.randomSet,
-                  onPressed: _setRandomThemes,
-                  maxWidth: constraints.maxWidth,
-                ),
-                _buildRoundedButton(
-                  icon: Icons.refresh,
-                  label: l10n.reset,
-                  onPressed: () {
-                    setState(() {
-                      final l10n = AppLocalizations.of(context)!;
-                      final defaultThemes = ThemeModel.getDefaultThemes(_selectedType, l10n);
-                      _themes ??= {};
-                      _themes![_selectedType] = List<String>.from(defaultThemes);
-                      final oldControllers = _controllers[_selectedType] ?? [];
-                      for (var controller in oldControllers) {
-                        controller.dispose();
-                      }
-                      _controllers[_selectedType] = defaultThemes.map((theme) => TextEditingController(text: theme)).toList();
-                    });
-                  },
-                  maxWidth: constraints.maxWidth,
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.themeCube,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: _black,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.yourThemes,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.normal,
+            color: _black.withOpacity(0.7),
+          ),
+        ),
+      ],
     );
   }
 
-  /// 面1〜面6を縦一列に表示（上から面1、面2、面3、面4、面5、面6）
+  /// ランダムにセット・リセットをアイコンのみで1行に2つ表示
+  Widget _buildRandomResetRow(AppLocalizations l10n) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        _buildIconOnlyButton(
+          icon: Icons.shuffle,
+          tooltip: l10n.randomSet,
+          onPressed: _setRandomThemes,
+        ),
+        const SizedBox(width: 8),
+        _buildIconOnlyButton(
+          icon: Icons.refresh,
+          tooltip: l10n.reset,
+          onPressed: () {
+            setState(() {
+              final l10n = AppLocalizations.of(context)!;
+              final defaultThemes = ThemeModel.getDefaultThemes(_selectedType, l10n);
+              _themes ??= {};
+              _themes![_selectedType] = List<String>.from(defaultThemes);
+              final oldControllers = _controllers[_selectedType] ?? [];
+              for (var controller in oldControllers) {
+                controller.dispose();
+              }
+              _controllers[_selectedType] = defaultThemes.map((theme) => TextEditingController(text: theme)).toList();
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  /// アイコンのみボタン（ランダム・リセット用）
+  Widget _buildIconOnlyButton({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(12),
+          minimumSize: const Size(48, 48),
+          side: const BorderSide(color: _black, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: _white.withOpacity(0.6),
+          foregroundColor: _black,
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused) ||
+                states.contains(WidgetState.hovered)) {
+              return const BorderSide(color: _black, width: 2.5);
+            }
+            return const BorderSide(color: _black, width: 1.5);
+          }),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.pressed)) {
+              return _black.withOpacity(0.08);
+            }
+            return null;
+          }),
+        ),
+        child: Icon(icon, size: 22),
+      ),
+    );
+  }
+
+  /// 面1〜面6を縦一列に表示（利用可能な高さを均等に分割して敷き詰める）
   Widget _buildFaceColumn() {
     final l10n = AppLocalizations.of(context)!;
     _initializeThemes(l10n);
     final currentThemes = _themes![_selectedType] ?? [];
     final controllers = _controllers[_selectedType] ?? [];
-    
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         for (int i = 0; i < currentThemes.length; i++) ...[
-          if (i > 0) const SizedBox(height: 8),
-          _buildFaceSlot(
-            index: i,
-            currentThemes: currentThemes,
-            controllers: controllers,
+          if (i > 0) const SizedBox(height: 4),
+          Expanded(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 40),
+              child: _buildFaceSlot(
+                index: i,
+                currentThemes: currentThemes,
+                controllers: controllers,
+              ),
+            ),
           ),
         ],
       ],
@@ -568,56 +594,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       index: index,
       controller: controllers[index],
       compact: true,
-    );
-  }
-
-  /// 角の丸いボタン
-  Widget _buildRoundedButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    double? maxWidth,
-  }) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final buttonMaxWidth = maxWidth ?? constraints.maxWidth;
-        return OutlinedButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 18, color: _black),
-          label: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              label,
-              style: const TextStyle(color: _black),
-              maxLines: 1,
-            ),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            side: const BorderSide(color: _black, width: 1.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            backgroundColor: _white.withOpacity(0.6),
-            foregroundColor: _black,
-          ).copyWith(
-            side: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.hovered)) {
-                return const BorderSide(color: _black, width: 2.5);
-              }
-              return const BorderSide(color: _black, width: 1.5);
-            }),
-            overlayColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.hovered) ||
-                  states.contains(WidgetState.pressed)) {
-                return _black.withOpacity(0.08);
-              }
-              return null;
-            }),
-          ),
-        );
-      },
     );
   }
 
@@ -660,10 +636,16 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         setState(() {
           controller.text = data;
           _themes![_selectedType]![index] = data;
+          _lastDroppedIndex = index;
+          _focusedFaceIndex = null;
+        });
+        Future.delayed(const Duration(milliseconds: 400), () {
+          if (mounted) setState(() => _lastDroppedIndex = null);
         });
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
+        final isJustDropped = _lastDroppedIndex == index;
         return LayoutBuilder(
           builder: (context, constraints) {
             return ValueListenableBuilder<TextEditingValue>(
@@ -676,45 +658,104 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   compact: compact,
                 );
                 
-                return Container(
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  width: compact ? double.infinity : null,
+                  height: compact ? constraints.maxHeight : null,
                   decoration: BoxDecoration(
-                    color: _white,
+                    color: isJustDropped ? const Color(0xFFE8F5E9) : _white,
                     border: Border.all(
-                      color: _black,
-                      width: isHighlighted ? 2.5 : 1.5,
+                      color: isJustDropped ? const Color(0xFF4CAF50) : _black,
+                      width: isHighlighted ? 2.5 : (isJustDropped ? 2.5 : 1.5),
                     ),
                     borderRadius: BorderRadius.circular(8),
+                    boxShadow: isJustDropped
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFF4CAF50).withOpacity(0.3),
+                              blurRadius: 8,
+                              spreadRadius: 1,
+                            ),
+                          ]
+                        : null,
                   ),
                   child: compact
                       ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Expanded(
-                              child: TextField(
-                                controller: controller,
-                                style: TextStyle(
-                                  fontSize: currentFontSize,
-                                  color: _black,
-                                ),
-                                maxLines: 1,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 10,
-                                  ),
-                                  hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
-                                  hintStyle: TextStyle(
-                                    color: _black.withOpacity(0.4),
-                                    fontSize: 12,
-                                  ),
-                                  isDense: true,
-                                ),
-                                onChanged: (value) {
-                                  _themes ??= {};
-                                  _themes![_selectedType]![index] = value;
-                                },
-                              ),
+                              child: _focusedFaceIndex == index
+                                  ? TextField(
+                                      focusNode: _faceFocusNodes[index],
+                                      controller: controller,
+                                      style: TextStyle(
+                                        fontSize: currentFontSize,
+                                        color: _black,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 14,
+                                        ),
+                                        hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
+                                        hintStyle: TextStyle(
+                                          color: _black.withOpacity(0.4),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: Colors.transparent,
+                                      ),
+                                      onChanged: (value) {
+                                        _themes ??= {};
+                                        _themes![_selectedType]![index] = value;
+                                      },
+                                      onTapOutside: (_) {
+                                        setState(() => _focusedFaceIndex = null);
+                                      },
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        setState(() => _focusedFaceIndex = index);
+                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                          _faceFocusNodes[index].requestFocus();
+                                        });
+                                      },
+                                      behavior: HitTestBehavior.opaque,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 14,
+                                        ),
+                                        child: Center(
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              currentText.isEmpty
+                                                  ? (isHighlighted ? l10n.dropHere : l10n.themeInputHint)
+                                                  : currentText,
+                                              style: TextStyle(
+                                                fontSize: currentText.isEmpty ? 12 : currentFontSize,
+                                                color: currentText.isEmpty
+                                                    ? _black.withOpacity(0.4)
+                                                    : _black,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.visible,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ],
                         )
@@ -727,6 +768,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           ),
                           maxLines: 1,
                           textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             labelText: l10n.faceLabel(index + 1),
                             labelStyle: TextStyle(
@@ -765,28 +807,25 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 中央の指示テキスト（オーバーフローを防ぐためFlexibleでラップ）
+        // 中央の指示テキスト
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('✨', style: TextStyle(fontSize: 18)),
+              const Text('✨', style: TextStyle(fontSize: 20)),
               const SizedBox(width: 8),
               Flexible(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    l10n.useVariantsToChooseTheme,
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 1.2,
-                      color: _black.withOpacity(0.7),
-                      fontWeight: FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
+                child: Text(
+                  l10n.useVariantsToChooseTheme,
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.3,
+                    color: _black.withOpacity(0.85),
+                    fontWeight: FontWeight.w500,
                   ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
                 ),
               ),
             ],
@@ -801,8 +840,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             child: GridView.builder(
               controller: _rightScrollController,
               primary: false,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(right: 20, bottom: 16),
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1, // 1列表示
                 crossAxisSpacing: 0,

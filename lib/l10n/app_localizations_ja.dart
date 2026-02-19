@@ -30,10 +30,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rollNow => 'すぐ振る';
 
   @override
-  String get playWithOthers => 'みんなで遊ぶ';
+  String get playWithOthers => 'セッション設定へ';
 
   @override
-  String get playWithDice => 'サイコロで遊ぶ';
+  String get playWithDice => 'サイコロに移動';
 
   @override
   String get playWithCards => 'カードで遊ぶ';
@@ -54,6 +54,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get selectThemePromptCard => '下のボタンで1枚引こう';
 
   @override
+  String get themeResultAnnouncement => 'このテーマが出たー！';
+
+  @override
   String faceLabel(int faceNumber) {
     return '面$faceNumber';
   }
@@ -71,7 +74,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reset => 'リセット';
 
   @override
-  String get faceThemesList => '各面の表示';
+  String get faceThemesList => 'サイコロの面の表示';
 
   @override
   String get themeCandidates => 'テーマ候補';
@@ -105,14 +108,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialCardsBody =>
-      '「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\nチームビルディング（価値観共有）、チェックイン・チェックアウト（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。';
+      '「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。';
 
   @override
   String get tutorialChangeSettings => '設定を変更する';
 
   @override
   String get tutorialChangeSettingsBody =>
-      'いつでも設定画面からサイコロのテーマを変更できます。\n\n右上の設定アイコンからアクセスできます。';
+      'いつでも戻るボタンでこの設定画面に戻り、サイコロのテーマを変更できます。';
 
   @override
   String get tutorialReady => '準備完了！';
@@ -134,10 +137,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeCube => 'テーマ';
 
   @override
-  String get yourThemes => 'あなたのテーマ';
+  String get yourThemes => '話すテーマを選ぼう';
 
   @override
-  String get useVariantsToChooseTheme => '候補をドラッグで選択';
+  String get useVariantsToChooseTheme => '右の候補を左の「各サイコロの面の表示」にドラッグ';
 
   @override
   String get themeSurprised => 'びっくりしたこと';
@@ -296,6 +299,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get checkInPickOnePrompt => 'この中から1問選んでください';
 
   @override
+  String get checkInHowManyPrompt => '何枚選びますか？';
+
+  @override
+  String get checkInCardsOne => '1枚';
+
+  @override
+  String get checkInCardsTwo => '2枚';
+
+  @override
+  String get checkInCardsThree => '3枚';
+
+  @override
+  String get checkInDrawCountButton => 'この枚数で選ぶ';
+
+  @override
+  String get levelBeginner => '初級';
+
+  @override
+  String get levelIntermediate => '中級';
+
+  @override
+  String get levelAdvanced => '上級';
+
+  @override
   String get reselectQuestion => '選び直す';
 
   @override
@@ -359,6 +386,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get newSession => '新しいセッション';
 
   @override
+  String get sessionSummaryScreenTitle => '今話したセッションのまとめ';
+
+  @override
+  String get sessionEndButton => 'セッションを終了';
+
+  @override
+  String sessionSummaryPlayerTheme(String player) {
+    return '$playerのトピック';
+  }
+
+  @override
   String get goToSessionSetup => 'セッション設定へ';
 
   @override
@@ -405,16 +443,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sessionPreviewNoTimer => 'タイマーなし';
 
   @override
-  String get modeSelectionTitle => '遊び方を選んでください';
+  String get modeSelectionTitle => 'Welcome to TalkSeed!\n遊び方を選んでください';
 
   @override
-  String get homeSectionEveryone => 'みんなで盛り上がる';
+  String get homeSectionEveryone => 'サイコロを振ってランダムな話題で盛り上がろう';
 
   @override
-  String get homeSectionWork => '仕事で盛り上がる';
+  String get homeSectionWork => 'カードを選択して互いに価値観を表現しよう';
 
   @override
-  String get homeDiceLabel => 'サイコロ';
+  String get homeDiceLabel => 'ランダムトピック';
 
   @override
   String get backToModeSelection => 'モードを選び直す';
@@ -429,13 +467,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get playWithDeck => 'このデッキで遊ぶ';
 
   @override
-  String get deckTeamBuilding => 'チームビルディング';
+  String get deckTeamBuilding => '価値観カード';
 
   @override
   String get deckTeamBuildingDesc => '価値観を共有し、チームの理解を深める';
 
   @override
-  String get deckCheckIn => 'チェックイン・チェックアウト';
+  String get deckCheckIn => '会議前・振り返り';
 
   @override
   String get deckCheckInDesc => '会議の開始・終了に。問いを元に全員が一言ずつ';
@@ -613,6 +651,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get valueGameComplete => 'お疲れさまでした';
 
   @override
+  String get valueSessionCompleteAndBack => 'お疲れ様でした、セッションに戻る';
+
+  @override
   String get valueSharePrompt => '残った5枚のカードを参加者に見せ、共有しましょう';
 
   @override
@@ -631,6 +672,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String valueRound(int current) {
     return '$current/5 ラウンド';
   }
+
+  @override
+  String get valueTutorialTooltip => 'チュートリアル';
+
+  @override
+  String get valueTutorialPage1Title => '参加人数を選んでスタート';
+
+  @override
+  String get valueTutorialPage1Body =>
+      '2〜10人で遊べます。人数を選んで「スタート」を押すと、山札からカードが配られ、ゲームが始まります。';
+
+  @override
+  String get valueTutorialPage2Title => '1枚捨てて、6枚をランキング';
+
+  @override
+  String get valueTutorialPage2Body =>
+      '各ラウンドで山札から1枚引きます。6枚になったら「自分の価値観から最も遠いカード」を1枚タップして捨ててください。残り6枚を重要度順に並べ替え、確定します。';
+
+  @override
+  String get valueTutorialPage3Title => '5ラウンドで残り5枚を共有';
+
+  @override
+  String get valueTutorialPage3Body =>
+      '5ラウンド終えると、それぞれ残り5枚のカードが残ります。参加者に見せて、なぜそのカードを残したか共有しましょう。';
 
   @override
   String get errorDataLoadTitle => 'データの読み込みに失敗しました';

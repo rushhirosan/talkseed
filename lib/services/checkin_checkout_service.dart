@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
+import 'package:theme_dice/models/checkin_checkout_item.dart';
 
 /// checkin_checkout_work.json から問いを読み込むサービス
 class CheckInCheckOutService {
@@ -34,28 +35,46 @@ class CheckInCheckOutService {
     }
   }
 
-  /// チェックイン用の問い一覧（初級・中級・上級を統合）
-  static Future<List<String>> loadCheckInQuestions() async {
-    final data = await _loadJson();
-    final checkIn = data['checkIn'] as Map<String, dynamic>? ?? {};
-    final beginner = (checkIn['beginner'] as List<dynamic>?)?.cast<String>() ?? [];
+  static List<CheckInCheckOutItem> _itemsFromSection(
+    Map<String, dynamic> section,
+  ) {
+    final beginner =
+        (section['beginner'] as List<dynamic>?)?.cast<String>() ?? [];
     final intermediate =
-        (checkIn['intermediate'] as List<dynamic>?)?.cast<String>() ?? [];
+        (section['intermediate'] as List<dynamic>?)?.cast<String>() ?? [];
     final advanced =
-        (checkIn['advanced'] as List<dynamic>?)?.cast<String>() ?? [];
-    return [...beginner, ...intermediate, ...advanced];
+        (section['advanced'] as List<dynamic>?)?.cast<String>() ?? [];
+    return [
+      ...beginner.map((t) => CheckInCheckOutItem(text: t, level: CheckInLevel.beginner)),
+      ...intermediate.map((t) => CheckInCheckOutItem(text: t, level: CheckInLevel.intermediate)),
+      ...advanced.map((t) => CheckInCheckOutItem(text: t, level: CheckInLevel.advanced)),
+    ];
   }
 
-  /// チェックアウト用の問い一覧（初級・中級・上級を統合）
-  static Future<List<String>> loadCheckOutQuestions() async {
+  /// チェックイン用の問い一覧（初級・中級・上級付き）
+  static Future<List<CheckInCheckOutItem>> loadCheckInItems() async {
+    final data = await _loadJson();
+    final checkIn = data['checkIn'] as Map<String, dynamic>? ?? {};
+    return _itemsFromSection(checkIn);
+  }
+
+  /// チェックアウト用の問い一覧（初級・中級・上級付き）
+  static Future<List<CheckInCheckOutItem>> loadCheckOutItems() async {
     final data = await _loadJson();
     final checkOut = data['checkOut'] as Map<String, dynamic>? ?? {};
-    final beginner = (checkOut['beginner'] as List<dynamic>?)?.cast<String>() ?? [];
-    final intermediate =
-        (checkOut['intermediate'] as List<dynamic>?)?.cast<String>() ?? [];
-    final advanced =
-        (checkOut['advanced'] as List<dynamic>?)?.cast<String>() ?? [];
-    return [...beginner, ...intermediate, ...advanced];
+    return _itemsFromSection(checkOut);
+  }
+
+  /// チェックイン用の問い一覧（文字列のみ・後方互換）
+  static Future<List<String>> loadCheckInQuestions() async {
+    final items = await loadCheckInItems();
+    return items.map((e) => e.text).toList();
+  }
+
+  /// チェックアウト用の問い一覧（文字列のみ・後方互換）
+  static Future<List<String>> loadCheckOutQuestions() async {
+    final items = await loadCheckOutItems();
+    return items.map((e) => e.text).toList();
   }
 
   /// チェックイン・チェックアウト統合（両方の問いをまとめて返す）

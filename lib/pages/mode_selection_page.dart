@@ -11,6 +11,7 @@ import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/services/checkin_checkout_service.dart';
 import 'package:theme_dice/services/self_reflection_service.dart';
 import 'initial_settings_page.dart';
+import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'topics_page.dart';
 import 'value_card_page.dart';
@@ -67,7 +68,11 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         RouteTransitions.forwardRoute(
-          page: ValueCardPage(themes: themes),
+          page: SessionSetupPage(
+            themes: {PolyhedronType.cube: themes},
+            forValueCard: true,
+            fromCardSettings: false,
+          ),
         ),
       );
       return;
@@ -75,11 +80,14 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
 
     try {
       if (deck.type == CardDeckType.checkIn) {
-        final checkInThemes =
-            await CheckInCheckOutService.loadCheckInQuestions();
-        final checkOutThemes =
-            await CheckInCheckOutService.loadCheckOutQuestions();
-        final combined = [...checkInThemes, ...checkOutThemes];
+        final checkInItems =
+            await CheckInCheckOutService.loadCheckInItems();
+        final checkOutItems =
+            await CheckInCheckOutService.loadCheckOutItems();
+        final combined = [
+          ...checkInItems.map((e) => e.text),
+          ...checkOutItems.map((e) => e.text),
+        ];
         await PreferencesHelper.saveLastCardThemes(combined);
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
@@ -87,8 +95,8 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             page: TopicsPage(
               initialThemes: {PolyhedronType.cube: combined},
               sessionConfig: null,
-              checkInThemes: checkInThemes,
-              checkOutThemes: checkOutThemes,
+              checkInItems: checkInItems,
+              checkOutItems: checkOutItems,
             ),
           ),
         );
@@ -143,7 +151,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
         Text(
           title,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 13,
             fontWeight: FontWeight.bold,
             color: _black.withOpacity(0.85),
           ),
@@ -354,20 +362,6 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                 icon: Icons.groups,
                 label: l10n.deckTeamBuilding,
                 onPressed: () => _goToWorkDeck(CardDeckType.teamBuilding),
-                isPrimary: false,
-              ),
-              const SizedBox(height: 12),
-              _buildModeButton(
-                icon: Icons.wb_sunny,
-                label: l10n.deckCheckIn,
-                onPressed: () => _goToWorkDeck(CardDeckType.checkIn),
-                isPrimary: false,
-              ),
-              const SizedBox(height: 12),
-              _buildModeButton(
-                icon: Icons.psychology_outlined,
-                label: l10n.deckSelfReflection,
-                onPressed: () => _goToWorkDeck(CardDeckType.oneOnOne),
                 isPrimary: false,
               ),
               const SizedBox(height: 48),

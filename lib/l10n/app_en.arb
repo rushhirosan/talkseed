@@ -7,7 +7,7 @@
   "rollDice": "Roll Dice",
   "complete": "Done",
   "rollNow": "Roll Now",
-  "playWithOthers": "Play with Others",
+  "playWithOthers": "Session Setup",
   "playWithDice": "Play with Dice",
   "playWithCards": "Play with Cards",
   "alwaysOpenWithDice": "Open with dice on startup",
@@ -15,6 +15,7 @@
   "startupDefaultSection": "On next launch",
   "selectThemePrompt": "Tap the dice to\nselect a theme!",
   "selectThemePromptCard": "Tap the button below to draw a card",
+  "themeResultAnnouncement": "This theme came up!",
   "faceLabel": "Face {faceNumber}",
   "@faceLabel": {
     "placeholders": {
@@ -39,7 +40,7 @@
   "tutorialCards": "Play with Cards",
   "tutorialCardsBody": "\"Get excited at work\" offers three card decks.\n\nTeam Building (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).",
   "tutorialChangeSettings": "Change Settings",
-  "tutorialChangeSettingsBody": "You can change dice themes from the settings screen anytime.\n\nOpen it from the settings icon in the top right.",
+  "tutorialChangeSettingsBody": "You can go back to this settings screen anytime with the back button to change dice themes.",
   "tutorialReady": "Ready!",
   "tutorialReadyBody": "Let's go!\n\nRoll the dice for a theme, or draw a card for a question—use whichever fits the moment.",
   "skip": "Skip",
@@ -47,7 +48,7 @@
   "showTutorial": "Show Tutorial",
   "themeCube": "Themes (Cube)",
   "yourThemes": "Your Themes",
-  "useVariantsToChooseTheme": "Use variants to choose your theme.",
+  "useVariantsToChooseTheme": "Drag candidates from right to left faces.",
   "themeSurprised": "Something surprising",
   "themeFutureDream": "Future dream",
   "themeLoveStory": "Love story",
@@ -100,6 +101,14 @@
   "phaseCheckIn": "Before meeting",
   "phaseCheckOut": "After meeting",
   "checkInPickOnePrompt": "Pick one question",
+  "checkInHowManyPrompt": "How many cards?",
+  "checkInCardsOne": "1",
+  "checkInCardsTwo": "2",
+  "checkInCardsThree": "3",
+  "checkInDrawCountButton": "Draw this many",
+  "levelBeginner": "Beginner",
+  "levelIntermediate": "Intermediate",
+  "levelAdvanced": "Advanced",
   "reselectQuestion": "Choose again",
   "chosenCardLabelBefore": "Your chosen question (before meeting)",
   "chosenCardLabelAfter": "Your chosen question (after meeting)",
@@ -147,6 +156,23 @@
   "skip": "Skip",
   "share": "Share",
   "newSession": "New Session",
+  "sessionSummaryScreenTitle": "Session summary",
+  "@sessionSummaryScreenTitle": {
+    "description": "Session reflection screen title"
+  },
+  "sessionEndButton": "End session",
+  "@sessionEndButton": {
+    "description": "Button to end session from summary screen"
+  },
+  "sessionSummaryPlayerTheme": "{player}'s topic",
+  "@sessionSummaryPlayerTheme": {
+    "description": "Player row on summary screen",
+    "placeholders": {
+      "player": {
+        "type": "String"
+      }
+    }
+  },
   "goToSessionSetup": "Go to Session Setup",
   "backToThemeSettings": "Back to Theme Settings",
   "timer30Seconds": "30 seconds",
@@ -253,6 +279,7 @@
   },
   "valueNext": "Next",
   "valueGameComplete": "Well done!",
+  "valueSessionCompleteAndBack": "Well done, back to session",
   "valueSharePrompt": "Show your 5 remaining cards and share with everyone",
   "valuePlayerCount": "Number of players",
   "valueStart": "Start",
@@ -266,6 +293,13 @@
       }
     }
   },
+  "valueTutorialTooltip": "Tutorial",
+  "valueTutorialPage1Title": "Choose players and start",
+  "valueTutorialPage1Body": "Play with 2–10 players. Choose the number and tap \"Start\" to deal cards and begin the game.",
+  "valueTutorialPage2Title": "Discard one, rank the six",
+  "valueTutorialPage2Body": "Each round, draw one card from the pile. When you have 6 cards, tap the card furthest from your values to discard it. Then rank the remaining 6 by importance and confirm.",
+  "valueTutorialPage3Title": "After 5 rounds, share your 5",
+  "valueTutorialPage3Body": "After 5 rounds, each player has 5 cards left. Show them and share why you kept those cards.",
   "errorDataLoadTitle": "Failed to load data",
   "@errorDataLoadTitle": {
     "description": "Asset load error title"

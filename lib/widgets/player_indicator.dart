@@ -28,7 +28,7 @@ class PlayerIndicator extends StatelessWidget {
         : l10n.currentPlayer(currentPlayerIndex + 1, totalPlayers);
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: _mustardYellow,
         borderRadius: BorderRadius.circular(8),
@@ -37,15 +37,12 @@ class PlayerIndicator extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.person,
-            color: _black,
-          ),
+          Icon(Icons.person, color: _black, size: 20),
           const SizedBox(width: 8),
           Text(
             displayText,
             style: const TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: _black,
             ),

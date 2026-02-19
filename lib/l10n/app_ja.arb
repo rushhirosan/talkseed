@@ -28,11 +28,11 @@
   "@rollNow": {
     "description": "テーマ設定画面のメインCTA（サイコロ画面へすぐ遷移）"
   },
-  "playWithOthers": "みんなで遊ぶ",
+  "playWithOthers": "セッション設定へ",
   "@playWithOthers": {
     "description": "セッション設定画面へ遷移するボタン"
   },
-  "playWithDice": "サイコロで遊ぶ",
+  "playWithDice": "サイコロに移動",
   "@playWithDice": {
     "description": "案B: サイコロ画面へ遷移するボタン"
   },
@@ -60,6 +60,10 @@
   "@selectThemePromptCard": {
     "description": "テーマ選択を促すメッセージ（カード画面用）"
   },
+  "themeResultAnnouncement": "このテーマが出たー！",
+  "@themeResultAnnouncement": {
+    "description": "サイコロでテーマが出た時のキャッチフレーズ"
+  },
   "faceLabel": "面{faceNumber}",
   "@faceLabel": {
     "description": "サイコロの面のラベル",
@@ -85,7 +89,7 @@
   "@reset": {
     "description": "リセットボタン"
   },
-  "faceThemesList": "各面の表示",
+  "faceThemesList": "サイコロの面の表示",
   "@faceThemesList": {
     "description": "リセットと面リストの間の小タイトル"
   },
@@ -125,7 +129,7 @@
   "@tutorialCards": {
     "description": "チュートリアル・カードページのタイトル"
   },
-  "tutorialCardsBody": "「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\nチームビルディング（価値観共有）、チェックイン・チェックアウト（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。",
+  "tutorialCardsBody": "「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。",
   "@tutorialCardsBody": {
     "description": "チュートリアル・カードページの本文"
   },
@@ -133,7 +137,7 @@
   "@tutorialChangeSettings": {
     "description": "チュートリアル設定ページのタイトル"
   },
-  "tutorialChangeSettingsBody": "いつでも設定画面からサイコロのテーマを変更できます。\n\n右上の設定アイコンからアクセスできます。",
+  "tutorialChangeSettingsBody": "いつでも戻るボタンでこの設定画面に戻り、サイコロのテーマを変更できます。",
   "@tutorialChangeSettingsBody": {
     "description": "チュートリアル設定ページの本文"
   },
@@ -161,11 +165,11 @@
   "@themeCube": {
     "description": "正六面体のテーマ設定セクション"
   },
-  "yourThemes": "あなたのテーマ",
+  "yourThemes": "話すテーマを選ぼう",
   "@yourThemes": {
     "description": "テーマ編集セクションのサブタイトル"
   },
-  "useVariantsToChooseTheme": "候補をドラッグで選択",
+  "useVariantsToChooseTheme": "右の候補を左の「各サイコロの面の表示」にドラッグ",
   "@useVariantsToChooseTheme": {
     "description": "テーマ候補エリアの説明文"
   },
@@ -235,13 +239,21 @@
   },
   "phaseCheckIn": "会議前",
   "@phaseCheckIn": {
-    "description": "チェックイン・チェックアウトの会議前フェーズ"
+    "description": "会議前・振り返りの会議前フェーズ"
   },
   "phaseCheckOut": "会議後",
   "@phaseCheckOut": {
-    "description": "チェックイン・チェックアウトの会議後フェーズ"
+    "description": "会議前・振り返りの会議後フェーズ"
   },
   "checkInPickOnePrompt": "この中から1問選んでください",
+  "checkInHowManyPrompt": "何枚選びますか？",
+  "checkInCardsOne": "1枚",
+  "checkInCardsTwo": "2枚",
+  "checkInCardsThree": "3枚",
+  "checkInDrawCountButton": "この枚数で選ぶ",
+  "levelBeginner": "初級",
+  "levelIntermediate": "中級",
+  "levelAdvanced": "上級",
   "reselectQuestion": "選び直す",
   "chosenCardLabelBefore": "会議前に選んだ問い",
   "chosenCardLabelAfter": "会議後に選んだ問い",
@@ -331,6 +343,23 @@
   "@newSession": {
     "description": "新しいセッション開始ボタン"
   },
+  "sessionSummaryScreenTitle": "今話したセッションのまとめ",
+  "@sessionSummaryScreenTitle": {
+    "description": "セッション振り返り画面のタイトル"
+  },
+  "sessionEndButton": "セッションを終了",
+  "@sessionEndButton": {
+    "description": "振り返り画面でセッションを終了するボタン"
+  },
+  "sessionSummaryPlayerTheme": "{player}のトピック",
+  "@sessionSummaryPlayerTheme": {
+    "description": "振り返り画面のプレイヤー行（プレイヤー名）",
+    "placeholders": {
+      "player": {
+        "type": "String"
+      }
+    }
+  },
   "goToSessionSetup": "セッション設定へ",
   "@goToSessionSetup": {
     "description": "セッション設定画面へ遷移するボタン"
@@ -367,19 +396,19 @@
     }
   },
   "sessionPreviewNoTimer": "タイマーなし",
-  "modeSelectionTitle": "遊び方を選んでください",
+  "modeSelectionTitle": "Welcome to TalkSeed!\n遊び方を選んでください",
   "@modeSelectionTitle": {
     "description": "モード選択画面のタイトル"
   },
-  "homeSectionEveryone": "みんなで盛り上がる",
+  "homeSectionEveryone": "サイコロを振ってランダムな話題で盛り上がろう",
   "@homeSectionEveryone": {
     "description": "初回画面セクション見出し（みんなで）"
   },
-  "homeSectionWork": "仕事で盛り上がる",
+  "homeSectionWork": "カードを選択して互いに価値観を表現しよう",
   "@homeSectionWork": {
     "description": "初回画面セクション見出し（仕事）"
   },
-  "homeDiceLabel": "サイコロ",
+  "homeDiceLabel": "ランダムトピック",
   "@homeDiceLabel": {
     "description": "初回画面・みんなで盛り上がるの1項目"
   },
@@ -399,9 +428,9 @@
   "@playWithDeck": {
     "description": "選択したデッキで遊ぶボタン"
   },
-  "deckTeamBuilding": "チームビルディング",
+  "deckTeamBuilding": "価値観カード",
   "deckTeamBuildingDesc": "価値観を共有し、チームの理解を深める",
-  "deckCheckIn": "チェックイン・チェックアウト",
+  "deckCheckIn": "会議前・振り返り",
   "deckCheckInDesc": "会議の開始・終了に。問いを元に全員が一言ずつ",
   "deckSelfReflection": "自己内省・1on1",
   "deckSelfReflectionDesc": "軽さ×深さの問い。1人で内省も、1on1でも",
@@ -473,6 +502,10 @@
   },
   "valueNext": "次へ",
   "valueGameComplete": "お疲れさまでした",
+  "valueSessionCompleteAndBack": "お疲れ様でした、セッションに戻る",
+  "@valueSessionCompleteAndBack": {
+    "description": "最後のプレイヤー共有後のボタン（押すとセッション設定に戻る）"
+  },
   "valueSharePrompt": "残った5枚のカードを参加者に見せ、共有しましょう",
   "valuePlayerCount": "参加人数",
   "valueStart": "スタート",
@@ -486,6 +519,13 @@
       }
     }
   },
+  "valueTutorialTooltip": "チュートリアル",
+  "valueTutorialPage1Title": "参加人数を選んでスタート",
+  "valueTutorialPage1Body": "2〜10人で遊べます。人数を選んで「スタート」を押すと、山札からカードが配られ、ゲームが始まります。",
+  "valueTutorialPage2Title": "1枚捨てて、6枚をランキング",
+  "valueTutorialPage2Body": "各ラウンドで山札から1枚引きます。6枚になったら「自分の価値観から最も遠いカード」を1枚タップして捨ててください。残り6枚を重要度順に並べ替え、確定します。",
+  "valueTutorialPage3Title": "5ラウンドで残り5枚を共有",
+  "valueTutorialPage3Body": "5ラウンド終えると、それぞれ残り5枚のカードが残ります。参加者に見せて、なぜそのカードを残したか共有しましょう。",
   "errorDataLoadTitle": "データの読み込みに失敗しました",
   "@errorDataLoadTitle": {
     "description": "アセット読み込みエラーのタイトル"

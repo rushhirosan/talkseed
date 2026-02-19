@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import '../models/session_config.dart';
+import '../models/game_session.dart';
+import '../models/polyhedron_type.dart';
 import '../models/value_game_state.dart';
+import '../services/timer_service.dart';
 import '../utils/route_transitions.dart';
+import '../widgets/player_indicator.dart';
+import '../widgets/timer_display.dart';
 import 'mode_selection_page.dart';
+import 'value_card_tutorial_page.dart';
 
 /// 価値観カード フルルールのゲーム画面
 /// ファシリテーター持ち or 場に置いて、スマホを回さずにプレイ
+/// sessionConfig ありのときはセッション設定済み（プレイヤー数・タイマー・名前を表示）
 class ValueCardPage extends StatefulWidget {
   /// デッキのテーマ一覧（ローカライズ済み）
   final List<String> themes;
+  /// セッション設定（参加人数・タイマー・プレイヤー名）。null のときは画面内で人数のみ選択
+  final SessionConfig? sessionConfig;
 
   const ValueCardPage({
     super.key,
     required this.themes,
+    this.sessionConfig,
   });
 
   @override
@@ -22,7 +33,11 @@ class ValueCardPage extends StatefulWidget {
 
 class _ValueCardPageState extends State<ValueCardPage> {
   ValueGameState? _gameState;
-  int _playerCount = 4; // セットアップ用
+  int _playerCount = 4; // セットアップ用（sessionConfig が null のときのみ使用）
+
+  /// セッション設定ありのときのセッション・タイマー（サイコロと同様のUI）
+  GameSession? _session;
+  TimerService? _timerService;
 
   /// プレイヤー切り替え時のバナー表示中（null = 非表示）
   int? _playerSwitchBannerPlayer;
@@ -30,10 +45,48 @@ class _ValueCardPageState extends State<ValueCardPage> {
   /// ランキング用の並べ替え可能な手札（needsToRank 時に使用）
   List<String>? _rankedCards;
 
+  /// 手放すアニメーション表示中のカード文言（null = 非表示）
+  String? _discardAnimationCard;
+
   static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
   static const Color _lightYellow = Color(0xFFFFFDE7);
+
+  @override
+  void initState() {
+    super.initState();
+    final config = widget.sessionConfig;
+    if (config != null) {
+      _playerCount = config.playerCount;
+      _gameState = ValueGameLogic.createGame(widget.themes, config.playerCount);
+      _session = GameSession(
+        config: config,
+        themes: {PolyhedronType.cube: widget.themes},
+        isActive: true,
+      );
+      _session!.startSession();
+      _session!.currentPlayerIndex = 0;
+      if (config.enableTimer) {
+        _timerService = TimerService(
+          initialDuration: config.timerDuration,
+          onTick: () => setState(() {}),
+          onFinished: _onTimerFinished,
+        );
+        _timerService!.start();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _timerService?.dispose();
+    super.dispose();
+  }
+
+  void _onTimerFinished() {
+    _triggerVibration();
+  }
 
   Future<void> _triggerVibration() async {
     if (await Vibration.hasVibrator() ?? false) {
@@ -58,19 +111,36 @@ class _ValueCardPageState extends State<ValueCardPage> {
     if (_gameState == null || !_gameState!.needsToRank || _rankedCards == null) {
       return;
     }
+    if (_discardAnimationCard != null) return; // アニメーション中は無視
+
+    final discardedCard = _rankedCards!.last;
+    setState(() => _discardAnimationCard = discardedCard);
+    _triggerVibration();
+  }
+
+  void _finishDiscardAndConfirm() {
+    if (_gameState == null || _rankedCards == null) return;
+
     final prevPlayer = _gameState!.currentPlayerIndex;
     final prevRound = _gameState!.currentRound;
 
     setState(() {
       _gameState = ValueGameLogic.confirmRanking(_gameState!, _rankedCards!);
       _rankedCards = null;
+      _discardAnimationCard = null;
     });
-    _triggerVibration();
 
     if (prevRound >= 5 &&
         _gameState!.phase == ValuePhase.playing &&
         _gameState!.currentPlayerIndex != prevPlayer) {
       _showPlayerSwitchBanner(_gameState!.currentPlayerIndex);
+      if (_session != null) {
+        _session!.currentPlayerIndex = _gameState!.currentPlayerIndex;
+        if (_session!.config.enableTimer && _timerService != null) {
+          _timerService!.reset(_session!.config.timerDuration);
+          _timerService!.start();
+        }
+      }
     }
   }
 
@@ -101,10 +171,18 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   void _goBackToHome() {
+    // セッション中はセッション設定画面に戻る（push で開いているので pop）
+    if (_session != null) {
+      Navigator.of(context).pop();
+      return;
+    }
     Navigator.of(context).pushReplacement(
       RouteTransitions.backRoute(page: const ModeSelectionPage()),
     );
   }
+
+  /// セッション設定ありのときは設定画面で人数を決めているためセットアップ画面をスキップ
+  bool get _hasSessionConfig => widget.sessionConfig != null;
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +206,24 @@ class _ValueCardPageState extends State<ValueCardPage> {
             fontSize: 20,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline, color: _black),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const ValueCardTutorialPage(),
+                ),
+              );
+            },
+            tooltip: l10n.valueTutorialTooltip,
+          ),
+        ],
       ),
       body: SafeArea(
-        child: _gameState == null ? _buildSetup(l10n) : _buildGame(l10n),
+        child: _gameState == null && !_hasSessionConfig
+            ? _buildSetup(l10n)
+            : _buildGame(l10n),
       ),
     );
   }
@@ -219,16 +312,46 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
   Widget _buildGame(AppLocalizations l10n) {
     final state = _gameState!;
+    if (_session != null) {
+      _session!.currentPlayerIndex = state.currentPlayerIndex;
+    }
 
+    Widget content;
     if (state.isComplete) {
-      return _buildComplete(l10n);
+      content = _buildComplete(l10n);
+    } else if (state.isSharing) {
+      content = _buildSharing(l10n, state);
+    } else {
+      content = _buildPlaying(l10n, state);
     }
 
-    if (state.isSharing) {
-      return _buildSharing(l10n, state);
-    }
+    if (_session == null) return content;
 
-    return _buildPlaying(l10n, state);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PlayerIndicator(
+          currentPlayerIndex: _session!.currentPlayerIndex,
+          totalPlayers: _session!.config.playerCount,
+          currentPlayerName: _session!.currentPlayerName,
+        ),
+        if (_session!.config.enableTimer && _timerService != null) ...[
+          const SizedBox(height: 8),
+          TimerDisplay(
+            timerService: _timerService,
+            onPause: () => setState(() {
+              _timerService!.pause();
+            }),
+            onResume: () => setState(() {
+              _timerService!.resume();
+            }),
+            onSkip: () => _timerService?.stop(),
+          ),
+        ],
+        const SizedBox(height: 8),
+        Expanded(child: content),
+      ],
+    );
   }
 
   Widget _buildPlaying(AppLocalizations l10n, ValueGameState state) {
@@ -252,12 +375,12 @@ class _ValueCardPageState extends State<ValueCardPage> {
     return Stack(
       children: [
         SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration: BoxDecoration(
                   color: _white,
                   borderRadius: BorderRadius.circular(12),
@@ -267,44 +390,44 @@ class _ValueCardPageState extends State<ValueCardPage> {
                   l10n.valuePlayerTurn(playerLabel),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: _black,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
               Text(
                 l10n.valueRound(state.currentRound),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: _black.withOpacity(0.7),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               if (state.needsToRank && _rankedCards != null) ...[
                 Text(
                   l10n.valueRankPrompt,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     color: _black.withOpacity(0.8),
-                    height: 1.4,
+                    height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _onConfirmRanking,
-                    icon: const Icon(Icons.check, color: _black),
+                    icon: const Icon(Icons.check, color: _black, size: 20),
                     label: Text(
                       l10n.valueConfirmRanking,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: _black,
                       ),
@@ -312,7 +435,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _mustardYellow,
                       foregroundColor: _black,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -345,6 +468,12 @@ class _ValueCardPageState extends State<ValueCardPage> {
             playerLabel: _playerSwitchBannerPlayer! + 1,
             message: l10n.valuePlayerTurn(_playerSwitchBannerPlayer! + 1),
           ),
+        if (_discardAnimationCard != null)
+          _DiscardCardOverlay(
+            cardText: _discardAnimationCard!,
+            discardLabel: l10n.valueDiscardLabel,
+            onAnimationComplete: _finishDiscardAndConfirm,
+          ),
       ],
     );
   }
@@ -371,12 +500,13 @@ class _ValueCardPageState extends State<ValueCardPage> {
     );
   }
 
-  Widget _buildCardGrid(List<String> cards, {void Function(int)? onTap}) {
+  Widget _buildCardGrid(List<String> cards, {void Function(int)? onTap, bool compact = false}) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        const spacing = 12.0;
+        final spacing = compact ? 8.0 : 12.0;
         const columns = 2;
         final cardWidth = (constraints.maxWidth - spacing * (columns - 1)) / columns;
+        final cardHeight = cardWidth * (compact ? 0.58 : 0.7);
 
         return Wrap(
           spacing: spacing,
@@ -386,7 +516,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
             final card = entry.value;
             return SizedBox(
               width: cardWidth,
-              height: cardWidth * 0.7,
+              height: cardHeight,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 switchInCurve: Curves.easeOut,
@@ -424,13 +554,13 @@ class _ValueCardPageState extends State<ValueCardPage> {
     final playerLabel = playerIndex + 1;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: BoxDecoration(
               color: _white,
               borderRadius: BorderRadius.circular(12),
@@ -440,41 +570,53 @@ class _ValueCardPageState extends State<ValueCardPage> {
               l10n.valuePlayerFinalCards(playerLabel),
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: _black,
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           Text(
             l10n.valueSharePrompt,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               color: _black.withOpacity(0.7),
-              height: 1.4,
+              height: 1.3,
             ),
           ),
-          const SizedBox(height: 24),
-          _buildCardGrid(hand),
-          const SizedBox(height: 32),
+          const SizedBox(height: 12),
+          _buildCardGrid(hand, compact: true),
+          const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _onNextSharing,
+              onPressed: () {
+                if (playerIndex < state.playerCount - 1) {
+                  _onNextSharing();
+                } else {
+                  // 最後のプレイヤー: セッション中ならそのままセッション設定に戻る（お疲れ画面をスキップ）
+                  if (_session != null) {
+                    Navigator.of(context).pop();
+                  } else {
+                    _onNextSharing();
+                  }
+                }
+              },
               icon: Icon(
                 playerIndex < state.playerCount - 1
                     ? Icons.arrow_forward
                     : Icons.check_circle,
                 color: _black,
+                size: 20,
               ),
               label: Text(
                 playerIndex < state.playerCount - 1
                     ? l10n.valueNext
-                    : l10n.valueGameComplete,
+                    : l10n.valueSessionCompleteAndBack,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: _black,
                 ),
@@ -482,7 +624,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: _mustardYellow,
                 foregroundColor: _black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -539,6 +681,166 @@ class _ValueCardPageState extends State<ValueCardPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 手放したカードを表示するオーバーレイ（アニメーション付き）
+class _DiscardCardOverlay extends StatefulWidget {
+  final String cardText;
+  final String discardLabel;
+  final VoidCallback onAnimationComplete;
+
+  const _DiscardCardOverlay({
+    required this.cardText,
+    required this.discardLabel,
+    required this.onAnimationComplete,
+  });
+
+  @override
+  State<_DiscardCardOverlay> createState() => _DiscardCardOverlayState();
+}
+
+class _DiscardCardOverlayState extends State<_DiscardCardOverlay>
+    with SingleTickerProviderStateMixin {
+  static const Color _white = Colors.white;
+  static const Color _black = Colors.black87;
+
+  late final AnimationController _controller;
+  late final Animation<double> _opacityAnimation;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _opacityAnimation = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0, 0.8),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeInCubic),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeInCubic),
+      ),
+    );
+
+    _controller.forward().then((_) {
+      if (mounted) {
+        widget.onAnimationComplete();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Container(
+          color: _black.withOpacity(0.35),
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Align(
+                alignment: Alignment.center,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Opacity(
+                    opacity: _opacityAnimation.value,
+                    child: child,
+                  ),
+                ),
+              ),
+            );
+          },
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: _white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: _black, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _black.withOpacity(0.25),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _black.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.remove_circle_outline, size: 18, color: _black.withOpacity(0.8)),
+                          const SizedBox(width: 6),
+                          Text(
+                            widget.discardLabel,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: _black.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      widget.cardText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
+                        height: 1.3,
+                      ),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -670,9 +972,9 @@ class _RankableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       key: key,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 6),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         side: BorderSide(
           color: isLast ? _black.withOpacity(0.5) : _black,
           width: isLast ? 1 : 1.5,
@@ -680,22 +982,24 @@ class _RankableCard extends StatelessWidget {
       ),
       color: _white,
       child: ListTile(
+        visualDensity: VisualDensity.compact,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         leading: ReorderableDragStartListener(
           index: index,
           child: Container(
-            width: 40,
-            height: 40,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: _black.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(6),
             ),
-            child: Icon(Icons.drag_handle, color: _black, size: 24),
+            child: Icon(Icons.drag_handle, color: _black, size: 20),
           ),
         ),
         title: Text(
           '$rank. $text',
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.w600,
             color: _black,
           ),
@@ -706,7 +1010,7 @@ class _RankableCard extends StatelessWidget {
             ? Text(
                 discardLabel,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   color: _black.withOpacity(0.6),
                   fontWeight: FontWeight.w500,
                 ),

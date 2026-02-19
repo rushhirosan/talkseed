@@ -259,6 +259,12 @@ class CardDeck {
     ),
   ];
 
+  /// 初回リリースで表示するデッキ（チェックイン・1on1は非表示）
+  static List<CardDeck> get visibleDecks => allDecks
+      .where((d) =>
+          d.type != CardDeckType.checkIn && d.type != CardDeckType.oneOnOne)
+      .toList();
+
   /// 自己内省デッキ用: 問い→セクションIDのマップから themeCategoryMap を組み立てる
   static Map<String, ReflectionDeckCategory> buildReflectionCategoryMap(
     Map<String, String> sectionIdByTheme,

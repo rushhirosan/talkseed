@@ -7,6 +7,7 @@ import 'package:theme_dice/models/card_deck.dart';
 /// - 裏向きカードをタップで引く
 /// - スライド＆フリップでオモテを表示
 /// - 自己内省デッキでは category 指定で色・アイコンを変えられる
+/// - チェックイン・チェックアウトでは levelLabel で初級/中級/上級を表示
 class CardDrawWidget extends StatefulWidget {
   /// 引いたテーマ（null = 未引く）
   final String? theme;
@@ -20,12 +21,16 @@ class CardDrawWidget extends StatefulWidget {
   /// 自己内省・1on1用：テーマのカテゴリ（色・アイコンを変える）
   final ReflectionDeckCategory? category;
 
+  /// チェックイン・チェックアウト用：難易度ラベル（初級・中級・上級）
+  final String? levelLabel;
+
   const CardDrawWidget({
     super.key,
     this.theme,
     required this.onDrawRequest,
     this.canDraw = true,
     this.category,
+    this.levelLabel,
   });
 
   @override
@@ -138,6 +143,7 @@ class _CardDrawWidgetState extends State<CardDrawWidget>
                               widget.theme ?? '',
                               l10n,
                               widget.category,
+                              widget.levelLabel,
                             ),
                           ),
                   ),
@@ -193,6 +199,7 @@ class _CardDrawWidgetState extends State<CardDrawWidget>
     String theme,
     AppLocalizations l10n, [
     ReflectionDeckCategory? category,
+    String? levelLabel,
   ]) {
     final showPlaceholder = theme.isEmpty;
     final style = category != null
@@ -219,6 +226,27 @@ class _CardDrawWidgetState extends State<CardDrawWidget>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (levelLabel != null && levelLabel.isNotEmpty) ...[
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _black.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    levelLabel,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: _black.withOpacity(0.8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             if (style != null && !showPlaceholder) ...[
               Icon(style.icon, size: 24, color: _black.withOpacity(0.7)),
               const SizedBox(height: 8),

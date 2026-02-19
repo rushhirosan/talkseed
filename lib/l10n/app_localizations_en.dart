@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rollNow => 'Roll Now';
 
   @override
-  String get playWithOthers => 'Play with Others';
+  String get playWithOthers => 'Session Setup';
 
   @override
   String get playWithDice => 'Play with Dice';
@@ -52,6 +52,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectThemePromptCard => 'Tap the button below to draw a card';
+
+  @override
+  String get themeResultAnnouncement => 'This theme came up!';
 
   @override
   String faceLabel(int faceNumber) {
@@ -112,7 +115,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialChangeSettingsBody =>
-      'You can change dice themes from the settings screen anytime.\n\nOpen it from the settings icon in the top right.';
+      'You can go back to this settings screen anytime with the back button to change dice themes.';
 
   @override
   String get tutorialReady => 'Ready!';
@@ -137,7 +140,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourThemes => 'Your Themes';
 
   @override
-  String get useVariantsToChooseTheme => 'Use variants to choose your theme.';
+  String get useVariantsToChooseTheme =>
+      'Drag candidates from right to left faces.';
 
   @override
   String get themeSurprised => 'Something surprising';
@@ -296,6 +300,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkInPickOnePrompt => 'Pick one question';
 
   @override
+  String get checkInHowManyPrompt => 'How many cards?';
+
+  @override
+  String get checkInCardsOne => '1';
+
+  @override
+  String get checkInCardsTwo => '2';
+
+  @override
+  String get checkInCardsThree => '3';
+
+  @override
+  String get checkInDrawCountButton => 'Draw this many';
+
+  @override
+  String get levelBeginner => 'Beginner';
+
+  @override
+  String get levelIntermediate => 'Intermediate';
+
+  @override
+  String get levelAdvanced => 'Advanced';
+
+  @override
   String get reselectQuestion => 'Choose again';
 
   @override
@@ -357,6 +385,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newSession => 'New Session';
+
+  @override
+  String get sessionSummaryScreenTitle => 'Session summary';
+
+  @override
+  String get sessionEndButton => 'End session';
+
+  @override
+  String sessionSummaryPlayerTheme(String player) {
+    return '$player\'s topic';
+  }
 
   @override
   String get goToSessionSetup => 'Go to Session Setup';
@@ -621,6 +660,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valueGameComplete => 'Well done!';
 
   @override
+  String get valueSessionCompleteAndBack => 'Well done, back to session';
+
+  @override
   String get valueSharePrompt =>
       'Show your 5 remaining cards and share with everyone';
 
@@ -640,6 +682,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String valueRound(int current) {
     return 'Round $current/5';
   }
+
+  @override
+  String get valueTutorialTooltip => 'Tutorial';
+
+  @override
+  String get valueTutorialPage1Title => 'Choose players and start';
+
+  @override
+  String get valueTutorialPage1Body =>
+      'Play with 2–10 players. Choose the number and tap \"Start\" to deal cards and begin the game.';
+
+  @override
+  String get valueTutorialPage2Title => 'Discard one, rank the six';
+
+  @override
+  String get valueTutorialPage2Body =>
+      'Each round, draw one card from the pile. When you have 6 cards, tap the card furthest from your values to discard it. Then rank the remaining 6 by importance and confirm.';
+
+  @override
+  String get valueTutorialPage3Title => 'After 5 rounds, share your 5';
+
+  @override
+  String get valueTutorialPage3Body =>
+      'After 5 rounds, each player has 5 cards left. Show them and share why you kept those cards.';
 
   @override
   String get errorDataLoadTitle => 'Failed to load data';

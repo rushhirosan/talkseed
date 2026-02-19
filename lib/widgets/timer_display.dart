@@ -53,53 +53,62 @@ class TimerDisplay extends StatelessWidget {
     final isPaused = timerService!.isPaused;
     
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: _white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: _black, width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // タイマー表示
+          // タイマー表示（コンパクト）
           Text(
             _formatDuration(remainingTime),
             style: TextStyle(
-              fontSize: 48,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: _getTimerColor(remainingTime),
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
-          const SizedBox(height: 8),
-          // コントロールボタン
           if (showControls) ...[
+            const SizedBox(width: 4),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (isRunning && !isPaused)
                   IconButton(
-                    icon: const Icon(Icons.pause, color: _black),
+                    icon: const Icon(Icons.pause, color: _black, size: 22),
+                    iconSize: 22,
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: onPause,
                     tooltip: l10n.pause,
                   )
                 else if (isPaused)
                   IconButton(
-                    icon: const Icon(Icons.play_arrow, color: _black),
+                    icon: const Icon(Icons.play_arrow, color: _black, size: 22),
+                    iconSize: 22,
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: onResume,
                     tooltip: l10n.resume,
                   ),
                 if (onSkip != null)
                   IconButton(
-                    icon: const Icon(Icons.skip_next, color: _black),
+                    icon: const Icon(Icons.skip_next, color: _black, size: 22),
+                    iconSize: 22,
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: onSkip,
                     tooltip: l10n.skip,
                   ),

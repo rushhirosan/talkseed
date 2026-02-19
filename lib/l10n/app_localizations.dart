@@ -143,13 +143,13 @@ abstract class AppLocalizations {
   /// セッション設定画面へ遷移するボタン
   ///
   /// In ja, this message translates to:
-  /// **'みんなで遊ぶ'**
+  /// **'セッション設定へ'**
   String get playWithOthers;
 
   /// 案B: サイコロ画面へ遷移するボタン
   ///
   /// In ja, this message translates to:
-  /// **'サイコロで遊ぶ'**
+  /// **'サイコロに移動'**
   String get playWithDice;
 
   /// 案B: トピックカード画面へ遷移するボタン
@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'下のボタンで1枚引こう'**
   String get selectThemePromptCard;
 
+  /// サイコロでテーマが出た時のキャッチフレーズ
+  ///
+  /// In ja, this message translates to:
+  /// **'このテーマが出たー！'**
+  String get themeResultAnnouncement;
+
   /// サイコロの面のラベル
   ///
   /// In ja, this message translates to:
@@ -221,7 +227,7 @@ abstract class AppLocalizations {
   /// リセットと面リストの間の小タイトル
   ///
   /// In ja, this message translates to:
-  /// **'各面の表示'**
+  /// **'サイコロの面の表示'**
   String get faceThemesList;
 
   /// テーマ候補セクションのタイトル
@@ -281,7 +287,7 @@ abstract class AppLocalizations {
   /// チュートリアル・カードページの本文
   ///
   /// In ja, this message translates to:
-  /// **'「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\nチームビルディング（価値観共有）、チェックイン・チェックアウト（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。'**
+  /// **'「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。'**
   String get tutorialCardsBody;
 
   /// チュートリアル設定ページのタイトル
@@ -293,7 +299,7 @@ abstract class AppLocalizations {
   /// チュートリアル設定ページの本文
   ///
   /// In ja, this message translates to:
-  /// **'いつでも設定画面からサイコロのテーマを変更できます。\n\n右上の設定アイコンからアクセスできます。'**
+  /// **'いつでも戻るボタンでこの設定画面に戻り、サイコロのテーマを変更できます。'**
   String get tutorialChangeSettingsBody;
 
   /// チュートリアル最終ページのタイトル
@@ -335,13 +341,13 @@ abstract class AppLocalizations {
   /// テーマ編集セクションのサブタイトル
   ///
   /// In ja, this message translates to:
-  /// **'あなたのテーマ'**
+  /// **'話すテーマを選ぼう'**
   String get yourThemes;
 
   /// テーマ候補エリアの説明文
   ///
   /// In ja, this message translates to:
-  /// **'候補をドラッグで選択'**
+  /// **'右の候補を左の「各サイコロの面の表示」にドラッグ'**
   String get useVariantsToChooseTheme;
 
   /// No description provided for @themeSurprised.
@@ -638,13 +644,13 @@ abstract class AppLocalizations {
   /// **'トピックを引く'**
   String get drawTopic;
 
-  /// チェックイン・チェックアウトの会議前フェーズ
+  /// 会議前・振り返りの会議前フェーズ
   ///
   /// In ja, this message translates to:
   /// **'会議前'**
   String get phaseCheckIn;
 
-  /// チェックイン・チェックアウトの会議後フェーズ
+  /// 会議前・振り返りの会議後フェーズ
   ///
   /// In ja, this message translates to:
   /// **'会議後'**
@@ -655,6 +661,54 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'この中から1問選んでください'**
   String get checkInPickOnePrompt;
+
+  /// No description provided for @checkInHowManyPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'何枚選びますか？'**
+  String get checkInHowManyPrompt;
+
+  /// No description provided for @checkInCardsOne.
+  ///
+  /// In ja, this message translates to:
+  /// **'1枚'**
+  String get checkInCardsOne;
+
+  /// No description provided for @checkInCardsTwo.
+  ///
+  /// In ja, this message translates to:
+  /// **'2枚'**
+  String get checkInCardsTwo;
+
+  /// No description provided for @checkInCardsThree.
+  ///
+  /// In ja, this message translates to:
+  /// **'3枚'**
+  String get checkInCardsThree;
+
+  /// No description provided for @checkInDrawCountButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'この枚数で選ぶ'**
+  String get checkInDrawCountButton;
+
+  /// No description provided for @levelBeginner.
+  ///
+  /// In ja, this message translates to:
+  /// **'初級'**
+  String get levelBeginner;
+
+  /// No description provided for @levelIntermediate.
+  ///
+  /// In ja, this message translates to:
+  /// **'中級'**
+  String get levelIntermediate;
+
+  /// No description provided for @levelAdvanced.
+  ///
+  /// In ja, this message translates to:
+  /// **'上級'**
+  String get levelAdvanced;
 
   /// No description provided for @reselectQuestion.
   ///
@@ -770,6 +824,24 @@ abstract class AppLocalizations {
   /// **'新しいセッション'**
   String get newSession;
 
+  /// セッション振り返り画面のタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'今話したセッションのまとめ'**
+  String get sessionSummaryScreenTitle;
+
+  /// 振り返り画面でセッションを終了するボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'セッションを終了'**
+  String get sessionEndButton;
+
+  /// 振り返り画面のプレイヤー行（プレイヤー名）
+  ///
+  /// In ja, this message translates to:
+  /// **'{player}のトピック'**
+  String sessionSummaryPlayerTheme(String player);
+
   /// セッション設定画面へ遷移するボタン
   ///
   /// In ja, this message translates to:
@@ -857,25 +929,25 @@ abstract class AppLocalizations {
   /// モード選択画面のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'遊び方を選んでください'**
+  /// **'Welcome to TalkSeed!\n遊び方を選んでください'**
   String get modeSelectionTitle;
 
   /// 初回画面セクション見出し（みんなで）
   ///
   /// In ja, this message translates to:
-  /// **'みんなで盛り上がる'**
+  /// **'サイコロを振ってランダムな話題で盛り上がろう'**
   String get homeSectionEveryone;
 
   /// 初回画面セクション見出し（仕事）
   ///
   /// In ja, this message translates to:
-  /// **'仕事で盛り上がる'**
+  /// **'カードを選択して互いに価値観を表現しよう'**
   String get homeSectionWork;
 
   /// 初回画面・みんなで盛り上がるの1項目
   ///
   /// In ja, this message translates to:
-  /// **'サイコロ'**
+  /// **'ランダムトピック'**
   String get homeDiceLabel;
 
   /// モード選択画面に戻るボタン
@@ -905,7 +977,7 @@ abstract class AppLocalizations {
   /// No description provided for @deckTeamBuilding.
   ///
   /// In ja, this message translates to:
-  /// **'チームビルディング'**
+  /// **'価値観カード'**
   String get deckTeamBuilding;
 
   /// No description provided for @deckTeamBuildingDesc.
@@ -917,7 +989,7 @@ abstract class AppLocalizations {
   /// No description provided for @deckCheckIn.
   ///
   /// In ja, this message translates to:
-  /// **'チェックイン・チェックアウト'**
+  /// **'会議前・振り返り'**
   String get deckCheckIn;
 
   /// No description provided for @deckCheckInDesc.
@@ -1262,6 +1334,12 @@ abstract class AppLocalizations {
   /// **'お疲れさまでした'**
   String get valueGameComplete;
 
+  /// 最後のプレイヤー共有後のボタン（押すとセッション設定に戻る）
+  ///
+  /// In ja, this message translates to:
+  /// **'お疲れ様でした、セッションに戻る'**
+  String get valueSessionCompleteAndBack;
+
   /// No description provided for @valueSharePrompt.
   ///
   /// In ja, this message translates to:
@@ -1297,6 +1375,48 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{current}/5 ラウンド'**
   String valueRound(int current);
+
+  /// No description provided for @valueTutorialTooltip.
+  ///
+  /// In ja, this message translates to:
+  /// **'チュートリアル'**
+  String get valueTutorialTooltip;
+
+  /// No description provided for @valueTutorialPage1Title.
+  ///
+  /// In ja, this message translates to:
+  /// **'参加人数を選んでスタート'**
+  String get valueTutorialPage1Title;
+
+  /// No description provided for @valueTutorialPage1Body.
+  ///
+  /// In ja, this message translates to:
+  /// **'2〜10人で遊べます。人数を選んで「スタート」を押すと、山札からカードが配られ、ゲームが始まります。'**
+  String get valueTutorialPage1Body;
+
+  /// No description provided for @valueTutorialPage2Title.
+  ///
+  /// In ja, this message translates to:
+  /// **'1枚捨てて、6枚をランキング'**
+  String get valueTutorialPage2Title;
+
+  /// No description provided for @valueTutorialPage2Body.
+  ///
+  /// In ja, this message translates to:
+  /// **'各ラウンドで山札から1枚引きます。6枚になったら「自分の価値観から最も遠いカード」を1枚タップして捨ててください。残り6枚を重要度順に並べ替え、確定します。'**
+  String get valueTutorialPage2Body;
+
+  /// No description provided for @valueTutorialPage3Title.
+  ///
+  /// In ja, this message translates to:
+  /// **'5ラウンドで残り5枚を共有'**
+  String get valueTutorialPage3Title;
+
+  /// No description provided for @valueTutorialPage3Body.
+  ///
+  /// In ja, this message translates to:
+  /// **'5ラウンド終えると、それぞれ残り5枚のカードが残ります。参加者に見せて、なぜそのカードを残したか共有しましょう。'**
+  String get valueTutorialPage3Body;
 
   /// アセット読み込みエラーのタイトル
   ///

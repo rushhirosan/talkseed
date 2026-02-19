@@ -3,8 +3,12 @@ import 'dart:math';
 
 /// 3Dサイコロの計算ユーティリティ
 class Dice3DUtils {
-  /// サイコロのサイズ
+  /// サイコロの面のサイズ（各面の一辺の長さ）
   static const double diceSize = 150.0;
+
+  /// 回転時に角がクリップされないよう、描画領域を拡張したサイズ
+  /// 立方体の対角線投影 2 * (halfSize * sqrt(2)) ≈ 212 にマージンを加えた値
+  static const double diceDisplaySize = 230.0;
 
   /// 現在の回転状態から正面を向いている面の番号を取得
   /// 

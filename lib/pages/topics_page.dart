@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import '../models/card_deck.dart';
+import '../models/checkin_checkout_item.dart';
 import '../models/session_config.dart';
 import '../models/game_session.dart';
 import '../models/polyhedron_type.dart';
@@ -19,9 +20,9 @@ class TopicsPage extends StatefulWidget {
   final Map<PolyhedronType, List<String>> initialThemes;
   /// null の場合は単体利用（プレイヤー表示・タイマー・次のプレイヤーなし）
   final SessionConfig? sessionConfig;
-  /// チェックイン・チェックアウト用。両方指定時は会議前/会議後の切り替えUIを表示
-  final List<String>? checkInThemes;
-  final List<String>? checkOutThemes;
+  /// チェックイン・チェックアウト用。両方指定時は会議前/会議後の切り替えUIを表示（難易度付き）
+  final List<CheckInCheckOutItem>? checkInItems;
+  final List<CheckInCheckOutItem>? checkOutItems;
   /// 自己内省・1on1用：テーマ文字列 → カテゴリ（色・アイコン表示用）
   final Map<String, ReflectionDeckCategory>? themeCategoryMap;
 
@@ -29,8 +30,8 @@ class TopicsPage extends StatefulWidget {
     super.key,
     required this.initialThemes,
     this.sessionConfig,
-    this.checkInThemes,
-    this.checkOutThemes,
+    this.checkInItems,
+    this.checkOutItems,
     this.themeCategoryMap,
   });
 
@@ -41,66 +42,110 @@ class TopicsPage extends StatefulWidget {
 /// 会議前/会議後のフェーズ
 enum _CheckInPhase { before, after }
 
+/// 会議前で選ぶ枚数（最大3）
+const int _maxCheckInCards = 3;
+
 class _TopicsPageState extends State<TopicsPage> {
   GameSession? _session;
   TimerService? _timerService;
   String? _currentTopic;
   final Random _random = Random();
   _CheckInPhase _phase = _CheckInPhase.before;
-  /// チェックイン・チェックアウトで「今日の1問」として選んだ問い（会議前/会議後で別）
-  String? _selectedCheckInQuestion;
-  String? _selectedCheckOutQuestion;
-  /// 候補として表示中の2〜3問（再描画で変わらないよう保持）
-  List<String>? _candidateQuestions;
+  /// 会議前：何枚選ぶか（1〜3）
+  int _checkInCardCount = 1;
+  /// 会議前：選んだカード（1〜3枚）
+  List<CheckInCheckOutItem>? _selectedCheckInItems;
+  /// 会議後：選んだ1問
+  CheckInCheckOutItem? _selectedCheckOutItem;
+  /// 会議後：候補として表示中の問い（再描画で変わらないよう保持）
+  List<CheckInCheckOutItem>? _candidateCheckOutItems;
 
   bool get _isCheckInCheckOutMode =>
-      (widget.checkInThemes != null &&
-          widget.checkInThemes!.isNotEmpty &&
-          widget.checkOutThemes != null &&
-          widget.checkOutThemes!.isNotEmpty);
+      (widget.checkInItems != null &&
+          widget.checkInItems!.isNotEmpty &&
+          widget.checkOutItems != null &&
+          widget.checkOutItems!.isNotEmpty);
 
   List<String> get _themes {
     if (_isCheckInCheckOutMode) {
       return _phase == _CheckInPhase.before
-          ? widget.checkInThemes!
-          : widget.checkOutThemes!;
+          ? widget.checkInItems!.map((e) => e.text).toList()
+          : widget.checkOutItems!.map((e) => e.text).toList();
     }
     return widget.initialThemes[PolyhedronType.cube] ?? [];
   }
 
-  /// 現在のフェーズで選ばれた1問（未選択なら null）
-  String? _getSelectedQuestionForPhase() =>
-      _phase == _CheckInPhase.before ? _selectedCheckInQuestion : _selectedCheckOutQuestion;
+  /// 会議前で選択済みか
+  bool get _hasCheckInSelection =>
+      _selectedCheckInItems != null && _selectedCheckInItems!.isNotEmpty;
+
+  /// 会議後で選択済みか
+  bool get _hasCheckOutSelection => _selectedCheckOutItem != null;
+
+  /// 難易度の表示ラベル（l10n）
+  String _levelLabel(AppLocalizations l10n, CheckInLevel level) {
+    switch (level) {
+      case CheckInLevel.beginner:
+        return l10n.levelBeginner;
+      case CheckInLevel.intermediate:
+        return l10n.levelIntermediate;
+      case CheckInLevel.advanced:
+        return l10n.levelAdvanced;
+    }
+  }
 
   /// 表示中のテーマに対するカテゴリ（自己内省デッキ用・テーマが未選択なら null）
   ReflectionDeckCategory? _getCategoryForCurrentTopic() {
     final map = widget.themeCategoryMap;
     if (map == null || map.isEmpty) return null;
     final topic = _isCheckInCheckOutMode
-        ? _getSelectedQuestionForPhase()
+        ? (_phase == _CheckInPhase.after
+            ? _selectedCheckOutItem?.text
+            : _selectedCheckInItems?.isNotEmpty == true
+                ? _selectedCheckInItems!.first.text
+                : null)
         : _currentTopic;
     return topic != null ? map[topic] : null;
   }
 
-  /// 候補として表示する2〜3問（シャッフルから先頭を取る）
-  List<String> _getCandidates() {
-    final list = List<String>.from(_themes);
+  /// 会議後用：候補として表示する3問（シャッフルから先頭を取る）
+  List<CheckInCheckOutItem> _getCheckOutCandidates() {
+    final list = List<CheckInCheckOutItem>.from(widget.checkOutItems ?? []);
     if (list.isEmpty) return [];
     list.shuffle(_random);
     return list.take(3).toList();
   }
 
-  void _selectQuestion(String question) {
+  /// 会議前：選択した枚数でランダムに選ぶ
+  void _drawCheckInCards() {
+    final items = widget.checkInItems!;
+    if (items.isEmpty) return;
+    final list = List<CheckInCheckOutItem>.from(items);
+    list.shuffle(_random);
+    final selected = list.take(_checkInCardCount).toList();
     setState(() {
-      if (_phase == _CheckInPhase.before) {
-        _selectedCheckInQuestion = question;
-      } else {
-        _selectedCheckOutQuestion = question;
-      }
-      _currentTopic = question;
+      _selectedCheckInItems = selected;
       final session = _session;
       if (session != null) {
-        session.addRoundResult(question);
+        for (final item in selected) {
+          session.addRoundResult(item.text);
+        }
+        if (session.config.enableTimer && _timerService != null) {
+          _timerService!.reset(session.config.timerDuration);
+          _timerService!.start();
+        }
+      }
+    });
+    _triggerVibration();
+  }
+
+  void _selectCheckOutItem(CheckInCheckOutItem item) {
+    setState(() {
+      _selectedCheckOutItem = item;
+      _currentTopic = item.text;
+      final session = _session;
+      if (session != null) {
+        session.addRoundResult(item.text);
         if (session.config.enableTimer && _timerService != null) {
           _timerService!.reset(session.config.timerDuration);
           _timerService!.start();
@@ -113,12 +158,15 @@ class _TopicsPageState extends State<TopicsPage> {
   void _reselectQuestion() {
     setState(() {
       if (_phase == _CheckInPhase.before) {
-        _selectedCheckInQuestion = null;
+        _selectedCheckInItems = null;
       } else {
-        _selectedCheckOutQuestion = null;
+        _selectedCheckOutItem = null;
+        _candidateCheckOutItems = null;
       }
       _currentTopic = null;
-      _candidateQuestions = _getCandidates();
+      if (_phase == _CheckInPhase.after) {
+        _candidateCheckOutItems = _getCheckOutCandidates();
+      }
     });
   }
 
@@ -231,20 +279,20 @@ class _TopicsPageState extends State<TopicsPage> {
     _timerService?.stop();
   }
 
-  Widget _buildCandidateCards(AppLocalizations l10n) {
-    final computed = _getCandidates();
-    final candidates = _candidateQuestions ?? computed;
+  /// 会議後用：候補カード（3問・レベル表示付き）
+  Widget _buildCheckOutCandidateCards(AppLocalizations l10n) {
+    final computed = _getCheckOutCandidates();
+    final candidates = _candidateCheckOutItems ?? computed;
     if (candidates.isEmpty) return const SizedBox.shrink();
-    // 初回表示で候補を状態に保存（再描画で変わらないように）
-    if (_candidateQuestions == null && computed.isNotEmpty) {
+    if (_candidateCheckOutItems == null && computed.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _getSelectedQuestionForPhase() == null) {
-          setState(() => _candidateQuestions = computed);
+        if (mounted && !_hasCheckOutSelection) {
+          setState(() => _candidateCheckOutItems = computed);
         }
       });
     }
     return Column(
-      children: candidates.map((question) {
+      children: candidates.map((item) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: Material(
@@ -252,7 +300,7 @@ class _TopicsPageState extends State<TopicsPage> {
             borderRadius: BorderRadius.circular(16),
             elevation: 2,
             child: InkWell(
-              onTap: () => _selectQuestion(question),
+              onTap: () => _selectCheckOutItem(item),
               borderRadius: BorderRadius.circular(16),
               child: Container(
                 width: double.infinity,
@@ -261,20 +309,71 @@ class _TopicsPageState extends State<TopicsPage> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: _black.withOpacity(0.15), width: 1),
                 ),
-                child: Text(
-                  question,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: _black,
-                    height: 1.4,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _levelLabel(l10n, item.level),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: _black.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      item.text,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: _black,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
         );
       }).toList(),
+    );
+  }
+
+  /// 会議前用：「何枚選ぶ」セグメント（1〜3枚）
+  Widget _buildCheckInCountSegment(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: BoxDecoration(
+        color: _white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _black.withOpacity(0.2), width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _PhaseSegmentButton(
+              label: l10n.checkInCardsOne,
+              isSelected: _checkInCardCount == 1,
+              onTap: () => setState(() => _checkInCardCount = 1),
+            ),
+          ),
+          Expanded(
+            child: _PhaseSegmentButton(
+              label: l10n.checkInCardsTwo,
+              isSelected: _checkInCardCount == 2,
+              onTap: () => setState(() => _checkInCardCount = 2),
+            ),
+          ),
+          Expanded(
+            child: _PhaseSegmentButton(
+              label: l10n.checkInCardsThree,
+              isSelected: _checkInCardCount == 3,
+              onTap: () => setState(() => _checkInCardCount = 3),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -292,10 +391,7 @@ class _TopicsPageState extends State<TopicsPage> {
             child: _PhaseSegmentButton(
               label: l10n.phaseCheckIn,
               isSelected: _phase == _CheckInPhase.before,
-              onTap: () => setState(() {
-                _phase = _CheckInPhase.before;
-                _candidateQuestions = _getCandidates();
-              }),
+              onTap: () => setState(() => _phase = _CheckInPhase.before),
             ),
           ),
           Expanded(
@@ -304,7 +400,7 @@ class _TopicsPageState extends State<TopicsPage> {
               isSelected: _phase == _CheckInPhase.after,
               onTap: () => setState(() {
                 _phase = _CheckInPhase.after;
-                _candidateQuestions = _getCandidates();
+                _candidateCheckOutItems = _getCheckOutCandidates();
               }),
             ),
           ),
@@ -390,55 +486,173 @@ class _TopicsPageState extends State<TopicsPage> {
                 const SizedBox(height: 16),
               ],
               const SizedBox(height: 24),
-              // チェックイン・チェックアウト: 候補から1問選ぶ or 選んだ1問を表示
-              if (_isCheckInCheckOutMode && _getSelectedQuestionForPhase() == null) ...[
-                Text(
-                  l10n.checkInPickOnePrompt,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: _black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                _buildCandidateCards(l10n),
-              ] else ...[
-                if (_isCheckInCheckOutMode && _getSelectedQuestionForPhase() != null) ...[
-                  Text(
-                    _phase == _CheckInPhase.before
-                        ? l10n.chosenCardLabelBefore
-                        : l10n.chosenCardLabelAfter,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: _black,
+              // チェックイン・チェックアウト専用UI
+              if (_isCheckInCheckOutMode) ...[
+                if (_phase == _CheckInPhase.before) ...[
+                  if (!_hasCheckInSelection) ...[
+                    Text(
+                      l10n.checkInHowManyPrompt,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 12),
+                    _buildCheckInCountSegment(l10n),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _drawCheckInCards,
+                        icon: const Icon(Icons.style, color: _black),
+                        label: Text(
+                          l10n.checkInDrawCountButton,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: _black,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _mustardYellow,
+                          foregroundColor: _black,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 2,
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    Text(
+                      l10n.chosenCardLabelBefore,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    ..._selectedCheckInItems!.map((item) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Center(
+                            child: CardDrawWidget(
+                              theme: item.text,
+                              levelLabel: _levelLabel(l10n, item.level),
+                              onDrawRequest: () {},
+                              canDraw: false,
+                            ),
+                          ),
+                        )),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: _reselectQuestion,
+                      icon: const Icon(Icons.refresh, color: _black),
+                      label: Text(
+                        l10n.reselectQuestion,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: _black,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _mustardYellow,
+                        foregroundColor: _black,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 2,
+                      ),
+                    ),
+                  ],
+                ] else ...[
+                  // 会議後
+                  if (!_hasCheckOutSelection) ...[
+                    Text(
+                      l10n.checkInPickOnePrompt,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildCheckOutCandidateCards(l10n),
+                  ] else ...[
+                    Text(
+                      l10n.chosenCardLabelAfter,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: CardDrawWidget(
+                        theme: _selectedCheckOutItem!.text,
+                        levelLabel: _levelLabel(l10n, _selectedCheckOutItem!.level),
+                        onDrawRequest: _reselectQuestion,
+                        canDraw: true,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      onPressed: _reselectQuestion,
+                      icon: const Icon(Icons.refresh, color: _black),
+                      label: Text(
+                        l10n.reselectQuestion,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: _black,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _mustardYellow,
+                        foregroundColor: _black,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 2,
+                      ),
+                    ),
+                  ],
                 ],
+              ] else ...[
+                // 通常のトピックカード（自己内省・チームビルディング等）
                 Center(
                   child: CardDrawWidget(
-                    theme: _isCheckInCheckOutMode
-                        ? _getSelectedQuestionForPhase()
-                        : _currentTopic,
-                    onDrawRequest: _isCheckInCheckOutMode ? _reselectQuestion : _drawTopic,
-                    canDraw: _isCheckInCheckOutMode || _themes.isNotEmpty,
+                    theme: _currentTopic,
+                    onDrawRequest: _drawTopic,
+                    canDraw: _themes.isNotEmpty,
                     category: _getCategoryForCurrentTopic(),
                   ),
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: _isCheckInCheckOutMode
-                      ? _reselectQuestion
-                      : (_themes.isEmpty ? null : _drawTopic),
-                  icon: Icon(
-                    _isCheckInCheckOutMode ? Icons.refresh : Icons.style,
-                    color: _black,
-                  ),
+                  onPressed: _themes.isEmpty ? null : _drawTopic,
+                  icon: const Icon(Icons.style, color: _black),
                   label: Text(
-                    _isCheckInCheckOutMode ? l10n.reselectQuestion : l10n.drawTopic,
+                    l10n.drawTopic,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -462,7 +676,7 @@ class _TopicsPageState extends State<TopicsPage> {
               const SizedBox(height: 24),
               if (_session != null &&
                   (_currentTopic != null ||
-                      (_isCheckInCheckOutMode && _getSelectedQuestionForPhase() != null))) ...[
+                      (_isCheckInCheckOutMode && (_hasCheckInSelection || _hasCheckOutSelection)))) ...[
                 ElevatedButton.icon(
                   onPressed: _nextPlayer,
                   icon: Icon(
