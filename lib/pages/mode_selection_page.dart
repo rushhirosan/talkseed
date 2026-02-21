@@ -15,6 +15,7 @@ import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'topics_page.dart';
 import 'value_card_page.dart';
+import 'session_history_page.dart';
 
 /// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（チームビルディング・チェックイン・自己内省・1on1）
 class ModeSelectionPage extends StatefulWidget {
@@ -313,6 +314,17 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: _black),
+            onPressed: () {
+              Navigator.of(context).push(
+                RouteTransitions.forwardRoute(
+                  page: const SessionHistoryPage(),
+                ),
+              );
+            },
+            tooltip: l10n.historyTitle,
+          ),
           IconButton(
             icon: const Icon(Icons.help_outline, color: _black),
             onPressed: _showTutorial,

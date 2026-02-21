@@ -398,6 +398,77 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get historyTitle => 'History';
+
+  @override
+  String get historyEmptyMessage => 'No records yet';
+
+  @override
+  String get historyEmptyFiltered => 'No records for this filter';
+
+  @override
+  String historyListItemTitle(String date, String mode) {
+    return 'Played $mode on $date';
+  }
+
+  @override
+  String historyPlayerCount(int count) {
+    return '$count players';
+  }
+
+  @override
+  String get historyDetailTitle => 'History Details';
+
+  @override
+  String get historySummaryTitle => 'Summary';
+
+  @override
+  String get historyTopicsTitle => 'Topics';
+
+  @override
+  String get historySelectedCardsTitle => 'Selected cards';
+
+  @override
+  String get historyModeDice => 'Dice';
+
+  @override
+  String get historyModeValueCards => 'Value cards';
+
+  @override
+  String get historyFilterAll => 'All';
+
+  @override
+  String get historyFilterDice => 'Dice';
+
+  @override
+  String get historyFilterValueCards => 'Value cards';
+
+  @override
+  String get historyDeleteAll => 'Delete all history';
+
+  @override
+  String get historyDeleteAllTitle => 'Delete all history?';
+
+  @override
+  String get historyDeleteAllMessage =>
+      'All history on this device will be deleted.';
+
+  @override
+  String get historyDeleteOne => 'Delete this history';
+
+  @override
+  String get historyDeleteOneTitle => 'Delete this history?';
+
+  @override
+  String get historyDeleteOneMessage => 'This history cannot be restored.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
   String get goToSessionSetup => 'Go to Session Setup';
 
   @override

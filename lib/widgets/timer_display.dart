@@ -8,7 +8,6 @@ class TimerDisplay extends StatelessWidget {
   final bool showControls;
   final VoidCallback? onPause;
   final VoidCallback? onResume;
-  final VoidCallback? onSkip;
   
   const TimerDisplay({
     super.key,
@@ -16,7 +15,6 @@ class TimerDisplay extends StatelessWidget {
     this.showControls = true,
     this.onPause,
     this.onResume,
-    this.onSkip,
   });
   
   // カラーパレット（設定画面と統一）
@@ -102,15 +100,6 @@ class TimerDisplay extends StatelessWidget {
                     constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: onResume,
                     tooltip: l10n.resume,
-                  ),
-                if (onSkip != null)
-                  IconButton(
-                    icon: const Icon(Icons.skip_next, color: _black, size: 22),
-                    iconSize: 22,
-                    padding: const EdgeInsets.all(6),
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                    onPressed: onSkip,
-                    tooltip: l10n.skip,
                   ),
               ],
             ),

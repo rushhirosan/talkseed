@@ -3,12 +3,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
+import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/tutorial_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SessionRecordService.init();
   runApp(const MyApp());
 }
 

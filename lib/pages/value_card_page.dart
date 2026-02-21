@@ -5,6 +5,8 @@ import '../models/session_config.dart';
 import '../models/game_session.dart';
 import '../models/polyhedron_type.dart';
 import '../models/value_game_state.dart';
+import '../models/session_record.dart';
+import '../services/session_record_service.dart';
 import '../services/timer_service.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/player_indicator.dart';
@@ -47,6 +49,9 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
   /// 手放すアニメーション表示中のカード文言（null = 非表示）
   String? _discardAnimationCard;
+
+  /// 履歴を保存済みか（重複保存防止）
+  bool _didSaveHistory = false;
 
   static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _white = Colors.white;
@@ -168,6 +173,9 @@ class _ValueCardPageState extends State<ValueCardPage> {
       _gameState = ValueGameLogic.nextSharingPlayer(_gameState!);
     });
     _triggerVibration();
+    if (_gameState?.phase == ValuePhase.complete) {
+      _saveValueCardRecord();
+    }
   }
 
   void _goBackToHome() {
@@ -179,6 +187,31 @@ class _ValueCardPageState extends State<ValueCardPage> {
     Navigator.of(context).pushReplacement(
       RouteTransitions.backRoute(page: const ModeSelectionPage()),
     );
+  }
+
+  void _saveValueCardRecord() {
+    if (_didSaveHistory || _gameState == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final playerCount = _gameState!.playerCount;
+    final hands = _gameState!.hands;
+    final names = widget.sessionConfig?.playerNames;
+    final selectedCardsByPlayer = <String, List<String>>{};
+    for (var i = 0; i < playerCount; i++) {
+      final customName =
+          (names != null && i < names.length && names[i].trim().isNotEmpty)
+              ? names[i].trim()
+              : null;
+      final label = customName ?? l10n.playerName(i + 1);
+      selectedCardsByPlayer[label] = List<String>.from(hands[i] ?? []);
+    }
+    final record = SessionRecord.create(
+      mode: 'value_cards',
+      topics: const [],
+      selectedCardsByPlayer: selectedCardsByPlayer,
+      playerCount: playerCount,
+    );
+    _didSaveHistory = true;
+    SessionRecordService.addRecord(record);
   }
 
   /// セッション設定ありのときは設定画面で人数を決めているためセットアップ画面をスキップ
@@ -345,7 +378,6 @@ class _ValueCardPageState extends State<ValueCardPage> {
             onResume: () => setState(() {
               _timerService!.resume();
             }),
-            onSkip: () => _timerService?.stop(),
           ),
         ],
         const SizedBox(height: 8),
@@ -598,6 +630,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                 } else {
                   // 最後のプレイヤー: セッション中ならそのままセッション設定に戻る（お疲れ画面をスキップ）
                   if (_session != null) {
+                    _saveValueCardRecord();
                     Navigator.of(context).pop();
                   } else {
                     _onNextSharing();

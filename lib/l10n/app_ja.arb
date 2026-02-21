@@ -360,6 +360,107 @@
       }
     }
   },
+  "historyTitle": "履歴",
+  "@historyTitle": {
+    "description": "履歴一覧のタイトル"
+  },
+  "historyEmptyMessage": "まだ記録がありません",
+  "@historyEmptyMessage": {
+    "description": "履歴が空のときのメッセージ"
+  },
+  "historyEmptyFiltered": "条件に合う履歴がありません",
+  "@historyEmptyFiltered": {
+    "description": "フィルタ結果が空のときのメッセージ"
+  },
+  "historyListItemTitle": "{date} {mode}をプレイ",
+  "@historyListItemTitle": {
+    "description": "履歴一覧の表示テキスト",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "historyPlayerCount": "{count}人でプレイ",
+  "@historyPlayerCount": {
+    "description": "履歴の参加人数表示",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyDetailTitle": "履歴詳細",
+  "@historyDetailTitle": {
+    "description": "履歴詳細画面のタイトル"
+  },
+  "historySummaryTitle": "概要",
+  "@historySummaryTitle": {
+    "description": "履歴詳細の概要セクション"
+  },
+  "historyTopicsTitle": "出たテーマ",
+  "@historyTopicsTitle": {
+    "description": "履歴詳細の出たテーマセクション"
+  },
+  "historySelectedCardsTitle": "選択したカード",
+  "@historySelectedCardsTitle": {
+    "description": "履歴詳細の選択カードセクション"
+  },
+  "historyModeDice": "サイコロ",
+  "@historyModeDice": {
+    "description": "履歴用のモード表示（サイコロ）"
+  },
+  "historyModeValueCards": "価値観カード",
+  "@historyModeValueCards": {
+    "description": "履歴用のモード表示（価値観カード）"
+  },
+  "historyFilterAll": "すべて",
+  "@historyFilterAll": {
+    "description": "履歴フィルタ（全て）"
+  },
+  "historyFilterDice": "サイコロ",
+  "@historyFilterDice": {
+    "description": "履歴フィルタ（サイコロ）"
+  },
+  "historyFilterValueCards": "価値観カード",
+  "@historyFilterValueCards": {
+    "description": "履歴フィルタ（価値観カード）"
+  },
+  "historyDeleteAll": "履歴を全削除",
+  "@historyDeleteAll": {
+    "description": "履歴全削除ボタン"
+  },
+  "historyDeleteAllTitle": "履歴を全削除しますか？",
+  "@historyDeleteAllTitle": {
+    "description": "履歴全削除の確認ダイアログタイトル"
+  },
+  "historyDeleteAllMessage": "この端末の履歴がすべて削除されます。",
+  "@historyDeleteAllMessage": {
+    "description": "履歴全削除の確認ダイアログ本文"
+  },
+  "historyDeleteOne": "この履歴を削除",
+  "@historyDeleteOne": {
+    "description": "履歴1件削除ボタン"
+  },
+  "historyDeleteOneTitle": "この履歴を削除しますか？",
+  "@historyDeleteOneTitle": {
+    "description": "履歴1件削除の確認ダイアログタイトル"
+  },
+  "historyDeleteOneMessage": "この履歴は元に戻せません。",
+  "@historyDeleteOneMessage": {
+    "description": "履歴1件削除の確認ダイアログ本文"
+  },
+  "delete": "削除",
+  "@delete": {
+    "description": "削除ボタン"
+  },
+  "cancel": "キャンセル",
+  "@cancel": {
+    "description": "キャンセルボタン"
+  },
   "goToSessionSetup": "セッション設定へ",
   "@goToSessionSetup": {
     "description": "セッション設定画面へ遷移するボタン"

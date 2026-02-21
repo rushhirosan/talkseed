@@ -275,10 +275,6 @@ class _TopicsPageState extends State<TopicsPage> {
     });
   }
 
-  void _skipTimer() {
-    _timerService?.stop();
-  }
-
   /// 会議後用：候補カード（3問・レベル表示付き）
   Widget _buildCheckOutCandidateCards(AppLocalizations l10n) {
     final computed = _getCheckOutCandidates();
@@ -477,7 +473,6 @@ class _TopicsPageState extends State<TopicsPage> {
                   timerService: _timerService!,
                   onPause: _toggleTimer,
                   onResume: _toggleTimer,
-                  onSkip: _skipTimer,
                 ),
                 const SizedBox(height: 16),
               ],

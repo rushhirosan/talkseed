@@ -842,6 +842,138 @@ abstract class AppLocalizations {
   /// **'{player}のトピック'**
   String sessionSummaryPlayerTheme(String player);
 
+  /// 履歴一覧のタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'履歴'**
+  String get historyTitle;
+
+  /// 履歴が空のときのメッセージ
+  ///
+  /// In ja, this message translates to:
+  /// **'まだ記録がありません'**
+  String get historyEmptyMessage;
+
+  /// フィルタ結果が空のときのメッセージ
+  ///
+  /// In ja, this message translates to:
+  /// **'条件に合う履歴がありません'**
+  String get historyEmptyFiltered;
+
+  /// 履歴一覧の表示テキスト
+  ///
+  /// In ja, this message translates to:
+  /// **'{date} {mode}をプレイ'**
+  String historyListItemTitle(String date, String mode);
+
+  /// 履歴の参加人数表示
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}人でプレイ'**
+  String historyPlayerCount(int count);
+
+  /// 履歴詳細画面のタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'履歴詳細'**
+  String get historyDetailTitle;
+
+  /// 履歴詳細の概要セクション
+  ///
+  /// In ja, this message translates to:
+  /// **'概要'**
+  String get historySummaryTitle;
+
+  /// 履歴詳細の出たテーマセクション
+  ///
+  /// In ja, this message translates to:
+  /// **'出たテーマ'**
+  String get historyTopicsTitle;
+
+  /// 履歴詳細の選択カードセクション
+  ///
+  /// In ja, this message translates to:
+  /// **'選択したカード'**
+  String get historySelectedCardsTitle;
+
+  /// 履歴用のモード表示（サイコロ）
+  ///
+  /// In ja, this message translates to:
+  /// **'サイコロ'**
+  String get historyModeDice;
+
+  /// 履歴用のモード表示（価値観カード）
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観カード'**
+  String get historyModeValueCards;
+
+  /// 履歴フィルタ（全て）
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて'**
+  String get historyFilterAll;
+
+  /// 履歴フィルタ（サイコロ）
+  ///
+  /// In ja, this message translates to:
+  /// **'サイコロ'**
+  String get historyFilterDice;
+
+  /// 履歴フィルタ（価値観カード）
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観カード'**
+  String get historyFilterValueCards;
+
+  /// 履歴全削除ボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'履歴を全削除'**
+  String get historyDeleteAll;
+
+  /// 履歴全削除の確認ダイアログタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'履歴を全削除しますか？'**
+  String get historyDeleteAllTitle;
+
+  /// 履歴全削除の確認ダイアログ本文
+  ///
+  /// In ja, this message translates to:
+  /// **'この端末の履歴がすべて削除されます。'**
+  String get historyDeleteAllMessage;
+
+  /// 履歴1件削除ボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'この履歴を削除'**
+  String get historyDeleteOne;
+
+  /// 履歴1件削除の確認ダイアログタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'この履歴を削除しますか？'**
+  String get historyDeleteOneTitle;
+
+  /// 履歴1件削除の確認ダイアログ本文
+  ///
+  /// In ja, this message translates to:
+  /// **'この履歴は元に戻せません。'**
+  String get historyDeleteOneMessage;
+
+  /// 削除ボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'削除'**
+  String get delete;
+
+  /// キャンセルボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'キャンセル'**
+  String get cancel;
+
   /// セッション設定画面へ遷移するボタン
   ///
   /// In ja, this message translates to:

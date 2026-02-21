@@ -397,6 +397,76 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get historyTitle => '履歴';
+
+  @override
+  String get historyEmptyMessage => 'まだ記録がありません';
+
+  @override
+  String get historyEmptyFiltered => '条件に合う履歴がありません';
+
+  @override
+  String historyListItemTitle(String date, String mode) {
+    return '$date $modeをプレイ';
+  }
+
+  @override
+  String historyPlayerCount(int count) {
+    return '$count人でプレイ';
+  }
+
+  @override
+  String get historyDetailTitle => '履歴詳細';
+
+  @override
+  String get historySummaryTitle => '概要';
+
+  @override
+  String get historyTopicsTitle => '出たテーマ';
+
+  @override
+  String get historySelectedCardsTitle => '選択したカード';
+
+  @override
+  String get historyModeDice => 'サイコロ';
+
+  @override
+  String get historyModeValueCards => '価値観カード';
+
+  @override
+  String get historyFilterAll => 'すべて';
+
+  @override
+  String get historyFilterDice => 'サイコロ';
+
+  @override
+  String get historyFilterValueCards => '価値観カード';
+
+  @override
+  String get historyDeleteAll => '履歴を全削除';
+
+  @override
+  String get historyDeleteAllTitle => '履歴を全削除しますか？';
+
+  @override
+  String get historyDeleteAllMessage => 'この端末の履歴がすべて削除されます。';
+
+  @override
+  String get historyDeleteOne => 'この履歴を削除';
+
+  @override
+  String get historyDeleteOneTitle => 'この履歴を削除しますか？';
+
+  @override
+  String get historyDeleteOneMessage => 'この履歴は元に戻せません。';
+
+  @override
+  String get delete => '削除';
+
+  @override
+  String get cancel => 'キャンセル';
+
+  @override
   String get goToSessionSetup => 'セッション設定へ';
 
   @override

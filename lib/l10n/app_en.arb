@@ -173,6 +173,107 @@
       }
     }
   },
+  "historyTitle": "History",
+  "@historyTitle": {
+    "description": "History list title"
+  },
+  "historyEmptyMessage": "No records yet",
+  "@historyEmptyMessage": {
+    "description": "Message when history is empty"
+  },
+  "historyEmptyFiltered": "No records for this filter",
+  "@historyEmptyFiltered": {
+    "description": "Message when filter result is empty"
+  },
+  "historyListItemTitle": "Played {mode} on {date}",
+  "@historyListItemTitle": {
+    "description": "History list row text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "historyPlayerCount": "{count} players",
+  "@historyPlayerCount": {
+    "description": "History player count label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyDetailTitle": "History Details",
+  "@historyDetailTitle": {
+    "description": "History detail page title"
+  },
+  "historySummaryTitle": "Summary",
+  "@historySummaryTitle": {
+    "description": "History detail summary section"
+  },
+  "historyTopicsTitle": "Topics",
+  "@historyTopicsTitle": {
+    "description": "History detail topics section"
+  },
+  "historySelectedCardsTitle": "Selected cards",
+  "@historySelectedCardsTitle": {
+    "description": "History detail selected cards section"
+  },
+  "historyModeDice": "Dice",
+  "@historyModeDice": {
+    "description": "History mode label for dice"
+  },
+  "historyModeValueCards": "Value cards",
+  "@historyModeValueCards": {
+    "description": "History mode label for value cards"
+  },
+  "historyFilterAll": "All",
+  "@historyFilterAll": {
+    "description": "History filter (all)"
+  },
+  "historyFilterDice": "Dice",
+  "@historyFilterDice": {
+    "description": "History filter (dice)"
+  },
+  "historyFilterValueCards": "Value cards",
+  "@historyFilterValueCards": {
+    "description": "History filter (value cards)"
+  },
+  "historyDeleteAll": "Delete all history",
+  "@historyDeleteAll": {
+    "description": "Delete all history button"
+  },
+  "historyDeleteAllTitle": "Delete all history?",
+  "@historyDeleteAllTitle": {
+    "description": "Confirm delete all title"
+  },
+  "historyDeleteAllMessage": "All history on this device will be deleted.",
+  "@historyDeleteAllMessage": {
+    "description": "Confirm delete all message"
+  },
+  "historyDeleteOne": "Delete this history",
+  "@historyDeleteOne": {
+    "description": "Delete single history button"
+  },
+  "historyDeleteOneTitle": "Delete this history?",
+  "@historyDeleteOneTitle": {
+    "description": "Confirm delete one title"
+  },
+  "historyDeleteOneMessage": "This history cannot be restored.",
+  "@historyDeleteOneMessage": {
+    "description": "Confirm delete one message"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
   "goToSessionSetup": "Go to Session Setup",
   "backToThemeSettings": "Back to Theme Settings",
   "timer30Seconds": "30 seconds",

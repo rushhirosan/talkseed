@@ -7,6 +7,7 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/theme.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/models/session_config.dart';
+import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/models/game_session.dart';
 import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/dice_3d_utils.dart';
@@ -17,6 +18,7 @@ import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
+import 'package:theme_dice/services/session_record_service.dart';
 
 /// サイコロゲームのメインページ。
 /// 3Dサイコロのアニメーション、テーマ表示、セッション（複数プレイヤー・タイマー）を担当。
@@ -308,6 +310,12 @@ class _DicePageState extends State<DicePage>
         _timerService!.start();
       }
     }
+    if (_session == null && _selectedTheme != null) {
+      _saveDiceRecord(
+        topics: [_selectedTheme!],
+        playerCount: 1,
+      );
+    }
 
     // 成功時の演出
     _triggerVibration();
@@ -345,6 +353,12 @@ class _DicePageState extends State<DicePage>
   /// 振り返り画面で「セッションを終了」を押したときの処理
   void _onSessionSummaryEnd() {
     final l10n = AppLocalizations.of(context)!;
+    if (_session != null) {
+      _saveDiceRecord(
+        topics: _session!.rounds.map((e) => e.theme).toList(),
+        playerCount: _session!.config.playerCount,
+      );
+    }
     setState(() => _showingSessionSummary = false);
     if (widget.sessionConfig != null) {
       final themes = _themes ?? widget.initialThemes ?? {
@@ -358,6 +372,19 @@ class _DicePageState extends State<DicePage>
     } else {
       setState(() => _session = null);
     }
+  }
+
+  void _saveDiceRecord({
+    required List<String> topics,
+    required int? playerCount,
+  }) {
+    final record = SessionRecord.create(
+      mode: 'dice',
+      topics: topics,
+      selectedCardsByPlayer: {},
+      playerCount: playerCount,
+    );
+    SessionRecordService.addRecord(record);
   }
 
   /// セッション振り返り画面の本文を構築
@@ -503,15 +530,6 @@ class _DicePageState extends State<DicePage>
     });
   }
 
-  /// タイマーをスキップ
-  void _skipTimer() {
-    if (_timerService == null) return;
-
-    setState(() {
-      _timerService!.stop();
-    });
-  }
-
   // ============================================
   // 補助関数
   // ============================================
@@ -606,7 +624,6 @@ class _DicePageState extends State<DicePage>
                   timerService: _timerService,
                   onPause: _toggleTimer,
                   onResume: _toggleTimer,
-                  onSkip: _skipTimer,
                 ),
                 const SizedBox(height: 10),
               ],
