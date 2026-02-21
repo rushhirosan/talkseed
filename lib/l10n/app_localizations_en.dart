@@ -390,6 +390,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionSummaryScreenTitle => 'Session summary';
 
   @override
+  String get voteTitle => 'Who was the most fun?';
+
+  @override
+  String get voteSubtitle => 'Cast one vote for the most fun story this round.';
+
+  @override
+  String voteVoterLabel(String player) {
+    return 'Voter: $player';
+  }
+
+  @override
+  String get voteResultsTitle => 'Voting results';
+
+  @override
+  String voteCount(int count) {
+    return '$count votes';
+  }
+
+  @override
+  String get voteSkip => 'Skip voting';
+
+  @override
   String get sessionEndButton => 'End session';
 
   @override

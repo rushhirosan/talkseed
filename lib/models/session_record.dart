@@ -12,6 +12,8 @@ class SessionRecord {
   final Map<String, List<String>> selectedCardsByPlayer;
   /// 参加人数（不明なら null）
   final int? playerCount;
+  /// 投票結果（サイコロ用：プレイヤー名 -> 票数）
+  final Map<String, int> voteResults;
 
   SessionRecord({
     required this.id,
@@ -20,6 +22,7 @@ class SessionRecord {
     required this.topics,
     required this.selectedCardsByPlayer,
     this.playerCount,
+    required this.voteResults,
   });
 
   factory SessionRecord.create({
@@ -27,6 +30,7 @@ class SessionRecord {
     required List<String> topics,
     required Map<String, List<String>> selectedCardsByPlayer,
     int? playerCount,
+    Map<String, int>? voteResults,
   }) {
     final now = DateTime.now();
     final rand = Random().nextInt(1000000);
@@ -37,6 +41,7 @@ class SessionRecord {
       topics: topics,
       selectedCardsByPlayer: selectedCardsByPlayer,
       playerCount: playerCount,
+      voteResults: voteResults ?? {},
     );
   }
 
@@ -48,6 +53,7 @@ class SessionRecord {
       'topics': topics,
       'selectedCardsByPlayer': selectedCardsByPlayer,
       'playerCount': playerCount,
+      'voteResults': voteResults,
     };
   }
 
@@ -62,6 +68,23 @@ class SessionRecord {
         selectedConverted[key] = list;
       }
     }
+    final voteRaw = map['voteResults'] as Map<dynamic, dynamic>? ?? {};
+    final voteConverted = <String, int>{};
+    for (final entry in voteRaw.entries) {
+      final key = entry.key?.toString() ?? '';
+      if (key.isEmpty) {
+        continue;
+      }
+      final value = entry.value;
+      if (value is int) {
+        voteConverted[key] = value;
+      } else if (value != null) {
+        final parsed = int.tryParse(value.toString());
+        if (parsed != null) {
+          voteConverted[key] = parsed;
+        }
+      }
+    }
     return SessionRecord(
       id: map['id']?.toString() ?? '',
       playedAt: DateTime.tryParse(map['playedAt']?.toString() ?? '') ?? DateTime.now(),
@@ -69,6 +92,7 @@ class SessionRecord {
       topics: topicsRaw.map((e) => e.toString()).toList(),
       selectedCardsByPlayer: selectedConverted,
       playerCount: map['playerCount'] is int ? map['playerCount'] as int : null,
+      voteResults: voteConverted,
     );
   }
 }

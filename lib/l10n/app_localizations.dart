@@ -830,6 +830,42 @@ abstract class AppLocalizations {
   /// **'今話したセッションのまとめ'**
   String get sessionSummaryScreenTitle;
 
+  /// 投票画面のタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'一番面白かった人は？'**
+  String get voteTitle;
+
+  /// 投票画面のサブタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'今回のトピックで一番話が面白かった人に1票'**
+  String get voteSubtitle;
+
+  /// 投票しているプレイヤー表示
+  ///
+  /// In ja, this message translates to:
+  /// **'投票者：{player}'**
+  String voteVoterLabel(String player);
+
+  /// 投票結果の見出し
+  ///
+  /// In ja, this message translates to:
+  /// **'投票結果'**
+  String get voteResultsTitle;
+
+  /// 投票数の表示
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}票'**
+  String voteCount(int count);
+
+  /// 投票スキップボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'投票をスキップ'**
+  String get voteSkip;
+
   /// 振り返り画面でセッションを終了するボタン
   ///
   /// In ja, this message translates to:

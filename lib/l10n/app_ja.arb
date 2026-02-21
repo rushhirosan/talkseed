@@ -347,6 +347,40 @@
   "@sessionSummaryScreenTitle": {
     "description": "セッション振り返り画面のタイトル"
   },
+  "voteTitle": "一番面白かった人は？",
+  "@voteTitle": {
+    "description": "投票画面のタイトル"
+  },
+  "voteSubtitle": "今回のトピックで一番話が面白かった人に1票",
+  "@voteSubtitle": {
+    "description": "投票画面のサブタイトル"
+  },
+  "voteVoterLabel": "投票者：{player}",
+  "@voteVoterLabel": {
+    "description": "投票しているプレイヤー表示",
+    "placeholders": {
+      "player": {
+        "type": "String"
+      }
+    }
+  },
+  "voteResultsTitle": "投票結果",
+  "@voteResultsTitle": {
+    "description": "投票結果の見出し"
+  },
+  "voteCount": "{count}票",
+  "@voteCount": {
+    "description": "投票数の表示",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voteSkip": "投票をスキップ",
+  "@voteSkip": {
+    "description": "投票スキップボタン"
+  },
   "sessionEndButton": "セッションを終了",
   "@sessionEndButton": {
     "description": "振り返り画面でセッションを終了するボタン"

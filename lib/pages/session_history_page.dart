@@ -356,6 +356,39 @@ class SessionHistoryDetailPage extends StatelessWidget {
                 ),
               ),
             ],
+            if (record.voteResults.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _buildSectionCard(
+                title: l10n.voteResultsTitle,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: record.voteResults.entries.map((entry) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            entry.key,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: _black,
+                            ),
+                          ),
+                          Text(
+                            l10n.voteCount(entry.value),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _black.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -54,6 +54,14 @@ class _DicePageState extends State<DicePage>
   TimerService? _timerService;
   /// 全員振り終えた後に表示する振り返り画面を表示中か
   bool _showingSessionSummary = false;
+  /// 投票画面を表示中か
+  bool _showingVoteScreen = false;
+  /// 投票中のプレイヤー（0始まり）
+  int _currentVoterIndex = 0;
+  /// 投票結果（プレイヤーindex -> 票数）
+  final Map<int, int> _voteCounts = {};
+  /// 投票を実施したかどうか
+  bool _hasVoting = false;
 
   @override
   void initState() {
@@ -96,6 +104,11 @@ class _DicePageState extends State<DicePage>
         isActive: true,
       );
       _session!.startSession();
+      _showingSessionSummary = false;
+      _showingVoteScreen = false;
+      _currentVoterIndex = 0;
+      _voteCounts.clear();
+      _hasVoting = false;
 
       if (config.enableTimer) {
         _timerService = TimerService(
@@ -314,6 +327,7 @@ class _DicePageState extends State<DicePage>
       _saveDiceRecord(
         topics: [_selectedTheme!],
         playerCount: 1,
+        voteResults: const {},
       );
     }
 
@@ -346,7 +360,7 @@ class _DicePageState extends State<DicePage>
 
     // 最後のプレイヤーが終わってセッション終了したら振り返り画面を表示
     if (wasLastPlayer && _session != null && !_session!.isActive) {
-      setState(() => _showingSessionSummary = true);
+      _startVoting();
     }
   }
 
@@ -357,9 +371,16 @@ class _DicePageState extends State<DicePage>
       _saveDiceRecord(
         topics: _session!.rounds.map((e) => e.theme).toList(),
         playerCount: _session!.config.playerCount,
+        voteResults: _voteResultsForRecord(l10n),
       );
     }
-    setState(() => _showingSessionSummary = false);
+    setState(() {
+      _showingSessionSummary = false;
+      _showingVoteScreen = false;
+      _currentVoterIndex = 0;
+      _voteCounts.clear();
+      _hasVoting = false;
+    });
     if (widget.sessionConfig != null) {
       final themes = _themes ?? widget.initialThemes ?? {
         PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
@@ -377,19 +398,87 @@ class _DicePageState extends State<DicePage>
   void _saveDiceRecord({
     required List<String> topics,
     required int? playerCount,
+    Map<String, int>? voteResults,
   }) {
     final record = SessionRecord.create(
       mode: 'dice',
       topics: topics,
       selectedCardsByPlayer: {},
       playerCount: playerCount,
+      voteResults: voteResults ?? {},
     );
     SessionRecordService.addRecord(record);
+  }
+
+  /// 投票を開始
+  void _startVoting() {
+    if (_session == null) return;
+    final playerCount = _session!.config.playerCount;
+    if (playerCount < 2) {
+      setState(() => _showingSessionSummary = true);
+      return;
+    }
+    setState(() {
+      _showingVoteScreen = true;
+      _showingSessionSummary = false;
+      _currentVoterIndex = 0;
+      _voteCounts
+        ..clear()
+        ..addEntries(List.generate(playerCount, (i) => MapEntry(i, 0)));
+      _hasVoting = true;
+    });
+  }
+
+  /// 投票を確定
+  void _castVote(int targetIndex) {
+    if (_session == null) return;
+    setState(() {
+      _voteCounts[targetIndex] = (_voteCounts[targetIndex] ?? 0) + 1;
+      _currentVoterIndex++;
+      if (_currentVoterIndex >= _session!.config.playerCount) {
+        _showingVoteScreen = false;
+        _showingSessionSummary = true;
+      }
+    });
+  }
+
+  void _skipVote() {
+    if (_session == null) return;
+    setState(() {
+      _currentVoterIndex++;
+      if (_currentVoterIndex >= _session!.config.playerCount) {
+        _showingVoteScreen = false;
+        _showingSessionSummary = true;
+      }
+    });
+  }
+
+  /// プレイヤー表示名を取得
+  String _playerLabel(AppLocalizations l10n, int index) {
+    final name = _session?.config.getPlayerName(index);
+    if (name != null && name.isNotEmpty) {
+      return name;
+    }
+    return l10n.playerName(index + 1);
+  }
+
+  /// 投票結果を保存用に整形
+  Map<String, int> _voteResultsForRecord(AppLocalizations l10n) {
+    if (!_hasVoting || _voteCounts.isEmpty) {
+      return {};
+    }
+    final results = <String, int>{};
+    for (final entry in _voteCounts.entries) {
+      results[_playerLabel(l10n, entry.key)] = entry.value;
+    }
+    return results;
   }
 
   /// セッション振り返り画面の本文を構築
   Widget _buildSessionSummaryBody(AppLocalizations l10n) {
     final rounds = _session!.rounds;
+    final voteEntries = _voteCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -452,6 +541,64 @@ class _DicePageState extends State<DicePage>
                 ),
               );
             }),
+            if (_voteCounts.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: _white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: _black.withOpacity(0.3), width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _black.withOpacity(0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.voteResultsTitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: _black.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...voteEntries.map((entry) {
+                      final label = _playerLabel(l10n, entry.key);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              label,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: _black,
+                              ),
+                            ),
+                            Text(
+                              l10n.voteCount(entry.value),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: _black.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -592,9 +739,11 @@ class _DicePageState extends State<DicePage>
           tooltip: l10n.backToSettings,
         ),
       ),
-      body: _showingSessionSummary && _session != null
-          ? _buildSessionSummaryBody(l10n)
-          : SingleChildScrollView(
+      body: _showingVoteScreen && _session != null
+          ? _buildVoteBody(l10n)
+          : _showingSessionSummary && _session != null
+              ? _buildSessionSummaryBody(l10n)
+              : SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: MediaQuery.of(context).size.width,
@@ -743,6 +892,96 @@ class _DicePageState extends State<DicePage>
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVoteBody(AppLocalizations l10n) {
+    final playerCount = _session?.config.playerCount ?? 0;
+    final voterLabel = _playerLabel(l10n, _currentVoterIndex);
+    final candidates = List.generate(playerCount, (index) => index);
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 12),
+            Text(
+              l10n.voteTitle,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: _black.withOpacity(0.9),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              l10n.voteSubtitle,
+              style: TextStyle(
+                fontSize: 13,
+                color: _black.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              l10n.voteVoterLabel(voterLabel),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: _black.withOpacity(0.8),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ...candidates.map((index) {
+              final label = _playerLabel(l10n, index);
+              final isSelf = index == _currentVoterIndex;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Opacity(
+                  opacity: isSelf ? 0.45 : 1.0,
+                  child: ElevatedButton(
+                    onPressed: isSelf ? null : () => _castVote(index),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _white,
+                      foregroundColor: _black,
+                      side: BorderSide(color: _black.withOpacity(0.25), width: 1),
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+            TextButton(
+              onPressed: _skipVote,
+              child: Text(
+                l10n.voteSkip,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: _black.withOpacity(0.7),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 12),
+          ],
         ),
       ),
     );

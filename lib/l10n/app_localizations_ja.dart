@@ -389,6 +389,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sessionSummaryScreenTitle => '今話したセッションのまとめ';
 
   @override
+  String get voteTitle => '一番面白かった人は？';
+
+  @override
+  String get voteSubtitle => '今回のトピックで一番話が面白かった人に1票';
+
+  @override
+  String voteVoterLabel(String player) {
+    return '投票者：$player';
+  }
+
+  @override
+  String get voteResultsTitle => '投票結果';
+
+  @override
+  String voteCount(int count) {
+    return '$count票';
+  }
+
+  @override
+  String get voteSkip => '投票をスキップ';
+
+  @override
   String get sessionEndButton => 'セッションを終了';
 
   @override

@@ -160,6 +160,40 @@
   "@sessionSummaryScreenTitle": {
     "description": "Session reflection screen title"
   },
+  "voteTitle": "Who was the most fun?",
+  "@voteTitle": {
+    "description": "Voting screen title"
+  },
+  "voteSubtitle": "Cast one vote for the most fun story this round.",
+  "@voteSubtitle": {
+    "description": "Voting screen subtitle"
+  },
+  "voteVoterLabel": "Voter: {player}",
+  "@voteVoterLabel": {
+    "description": "Current voter label",
+    "placeholders": {
+      "player": {
+        "type": "String"
+      }
+    }
+  },
+  "voteResultsTitle": "Voting results",
+  "@voteResultsTitle": {
+    "description": "Voting results section title"
+  },
+  "voteCount": "{count} votes",
+  "@voteCount": {
+    "description": "Vote count label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voteSkip": "Skip voting",
+  "@voteSkip": {
+    "description": "Skip voting button"
+  },
   "sessionEndButton": "End session",
   "@sessionEndButton": {
     "description": "Button to end session from summary screen"
