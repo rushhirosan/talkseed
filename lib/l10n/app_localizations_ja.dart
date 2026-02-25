@@ -30,10 +30,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rollNow => 'すぐ振る';
 
   @override
-  String get playWithOthers => 'セッション設定へ';
+  String get playWithOthers => 'セッションへ';
 
   @override
-  String get playWithDice => 'サイコロに移動';
+  String get playWithDice => 'サイコロへ';
 
   @override
   String get playWithCards => 'カードで遊ぶ';
@@ -74,6 +74,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reset => 'リセット';
 
   @override
+  String get vibrationEnabled => 'バイブを有効にする';
+
+  @override
   String get faceThemesList => 'サイコロの面の表示';
 
   @override
@@ -87,21 +90,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialWelcomeBody =>
-      'サイコロでテーマを選んだり、カードで問いを引いて話を深めたり。\n\nみんなで盛り上がることも、仕事の場（チーム・会議・1on1）でも使えます。';
+      'サイコロでテーマを選ぶか、カードで自分の価値観を話します。盛り上がりにも仕事の場にも使えます。';
 
   @override
   String get tutorialSetTheme => 'テーマを設定しよう';
 
   @override
-  String get tutorialSetThemeBody =>
-      '「みんなで盛り上がる」で選ぶサイコロの、各面に表示するテーマを設定します。\n\n右側の候補からドラッグ＆ドロップするか、直接入力してください。';
+  String get tutorialSetThemeBody => '各面のテーマを、候補からドラッグまたは直接入力で設定します。';
 
   @override
   String get tutorialRollDice => 'サイコロを振る';
 
   @override
-  String get tutorialRollDiceBody =>
-      '設定が完了したら「サイコロを振る」ボタンを押してください。\n\n3Dアニメーションでサイコロが転がり、\nランダムなテーマが選ばれます。';
+  String get tutorialRollDiceBody => '「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。';
 
   @override
   String get tutorialCards => 'カードで遊ぶ';
@@ -114,15 +115,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialChangeSettings => '設定を変更する';
 
   @override
-  String get tutorialChangeSettingsBody =>
-      'いつでも戻るボタンでこの設定画面に戻り、サイコロのテーマを変更できます。';
+  String get tutorialChangeSettingsBody => 'いつでも戻るボタンで設定画面に戻り、人数やタイマーを変更できます。';
 
   @override
   String get tutorialReady => '準備完了！';
 
   @override
   String get tutorialReadyBody =>
-      'それでは、はじめましょう。\n\nサイコロでテーマを選んでも、カードで問いを引いてもOK。場に合わせて使ってください。';
+      'サイコロでテーマを選んでも、カードで価値観を話し合ってもOK。場に合わせて使いましょう。';
 
   @override
   String get skip => 'スキップ';
@@ -140,7 +140,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get yourThemes => '話すテーマを選ぼう';
 
   @override
-  String get useVariantsToChooseTheme => '右の候補を左の「各サイコロの面の表示」にドラッグ';
+  String get useVariantsToChooseTheme => '画面左にドラッグ';
 
   @override
   String get themeSurprised => 'びっくりしたこと';
@@ -516,7 +516,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get playerNamesOptional => 'プレイヤー名（オプション）';
 
   @override
-  String get playerNamesHint => '入力するとセッション中に表示。空欄は番号で表示されます。';
+  String get playerNamesHint => 'プレイヤー名を指定できます、下のボックスをタップ';
 
   @override
   String get sessionPreviewTitle => 'このセッション';
@@ -772,15 +772,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get valueTutorialPage1Title => '参加人数を選んでスタート';
 
   @override
-  String get valueTutorialPage1Body =>
-      '2〜10人で遊べます。人数を選んで「スタート」を押すと、山札からカードが配られ、ゲームが始まります。';
+  String get valueTutorialPage1Body => '2〜10人で遊べます。人数やタイマー設定をしてプレイを始めましょう。';
 
   @override
-  String get valueTutorialPage2Title => '1枚捨てて、6枚をランキング';
+  String get valueTutorialPage2Title => '価値観カードでは1枚捨てて、5枚をランキング';
 
   @override
   String get valueTutorialPage2Body =>
-      '各ラウンドで山札から1枚引きます。6枚になったら「自分の価値観から最も遠いカード」を1枚タップして捨ててください。残り6枚を重要度順に並べ替え、確定します。';
+      '各ラウンドで1枚引きます。6枚になったら価値観から遠いカードを1枚捨て、残り5枚を重要度順に並べて確定します。';
 
   @override
   String get valueTutorialPage3Title => '5ラウンドで残り5枚を共有';

@@ -9,6 +9,8 @@ class PreferencesHelper {
   static const String _keyLastCardThemes = 'last_card_themes';
   /// 案B: 起動時に開くモード 'dice' | 'topic_card' | 未設定は null
   static const String _keyDefaultPlayMode = 'default_play_mode';
+  /// バイブレーション（触覚フィードバック）の有効/無効
+  static const String _keyVibrationEnabled = 'vibration_enabled';
 
   /// 初回起動かどうかを確認
   static Future<bool> isFirstLaunch() async {
@@ -87,5 +89,18 @@ class PreferencesHelper {
     final v = prefs.getString(_keyDefaultPlayMode);
     if (v == 'dice' || v == 'topic_card') return v;
     return null;
+  }
+
+  /// バイブレーション（触覚フィードバック）が有効か
+  /// デフォルト true（従来どおりバイブする）
+  static Future<bool> loadVibrationEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyVibrationEnabled) ?? true;
+  }
+
+  /// バイブレーションの有効/無効を保存
+  static Future<void> saveVibrationEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyVibrationEnabled, enabled);
   }
 }

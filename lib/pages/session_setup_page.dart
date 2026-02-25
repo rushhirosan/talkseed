@@ -9,8 +9,6 @@ import 'initial_settings_page.dart';
 import 'value_card_page.dart';
 import 'mode_selection_page.dart';
 import 'card_settings_page.dart';
-import 'tutorial_page.dart';
-import 'value_card_tutorial_page.dart';
 
 /// セッション設定画面（設定画面とデザインテイストを統一）
 /// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
@@ -38,6 +36,7 @@ class SessionSetupPage extends StatefulWidget {
 class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
   final List<TextEditingController> _playerNameControllers = [];
+  final List<FocusNode> _playerNameFocusNodes = [];
 
   final ScrollController _rightScrollController = ScrollController();
 
@@ -61,9 +60,14 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     for (var controller in _playerNameControllers) {
       controller.dispose();
     }
+    for (var node in _playerNameFocusNodes) {
+      node.dispose();
+    }
     _playerNameControllers.clear();
+    _playerNameFocusNodes.clear();
     for (int i = 0; i < _config.playerCount; i++) {
       _playerNameControllers.add(TextEditingController());
+      _playerNameFocusNodes.add(FocusNode());
     }
   }
 
@@ -71,6 +75,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void dispose() {
     for (var controller in _playerNameControllers) {
       controller.dispose();
+    }
+    for (var node in _playerNameFocusNodes) {
+      node.dispose();
     }
     _rightScrollController.dispose();
     super.dispose();
@@ -93,25 +100,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     setState(() {
       _config = _config.copyWith(enableTimer: enabled);
     });
-  }
-
-  void _showTutorial() {
-    if (widget.forValueCard) {
-      Navigator.of(context).push(
-        RouteTransitions.forwardRoute(
-          page: const ValueCardTutorialPage(),
-        ),
-      );
-    } else {
-      Navigator.of(context).push(
-        RouteTransitions.forwardRoute(
-          page: TutorialPage(
-            onComplete: () => Navigator.of(context).pop(),
-            diceOnly: true,
-          ),
-        ),
-      );
-    }
   }
 
   void _startSession() {
@@ -157,6 +145,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: _white,
       appBar: AppBar(
         backgroundColor: _white,
@@ -198,13 +187,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             fontSize: 20,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline, color: _black),
-            onPressed: _showTutorial,
-            tooltip: l10n.showTutorial,
-          ),
-        ],
       ),
       body: Row(
         children: [
@@ -479,7 +461,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               controller: _rightScrollController,
               primary: false,
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(right: 20, bottom: 16),
+              padding: EdgeInsets.only(
+                right: 20,
+                bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+              ),
               children: [
                 ...List.generate(_config.playerCount, (index) {
                   return Padding(
@@ -521,31 +506,54 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   Widget _buildPlayerNameField(AppLocalizations l10n, int index) {
     final pastel = _getPastelColor(index);
-    return Container(
-      decoration: BoxDecoration(
-        color: pastel,
-        border: Border.all(color: _black, width: 1.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: TextField(
-        controller: _playerNameControllers[index],
-        style: const TextStyle(
-          fontSize: 14,
-          color: _black,
-          fontWeight: FontWeight.normal,
-        ),
-        decoration: InputDecoration(
-          labelText: l10n.playerName(index + 1),
-          labelStyle: TextStyle(
-            fontSize: 12,
-            color: _black.withOpacity(0.6),
-            fontWeight: FontWeight.normal,
+    final focusNode = _playerNameFocusNodes[index];
+    return Builder(
+      builder: (fieldContext) {
+        return Focus(
+          focusNode: focusNode,
+          onFocusChange: (hasFocus) {
+            if (hasFocus) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (fieldContext.mounted) {
+                  Scrollable.ensureVisible(
+                    fieldContext,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeInOut,
+                    alignment: 0.2,
+                  );
+                }
+              });
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: pastel,
+              border: Border.all(color: _black, width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TextField(
+              controller: _playerNameControllers[index],
+              focusNode: focusNode,
+              style: const TextStyle(
+                fontSize: 14,
+                color: _black,
+                fontWeight: FontWeight.normal,
+              ),
+              decoration: InputDecoration(
+                labelText: l10n.playerName(index + 1),
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: _black.withOpacity(0.6),
+                  fontWeight: FontWeight.normal,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                isDense: true,
+              ),
+            ),
           ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          isDense: true,
-        ),
-      ),
+        );
+      },
     );
   }
 }

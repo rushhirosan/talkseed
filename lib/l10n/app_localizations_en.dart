@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rollNow => 'Roll Now';
 
   @override
-  String get playWithOthers => 'Session Setup';
+  String get playWithOthers => 'To Session';
 
   @override
   String get playWithDice => 'Play with Dice';
@@ -74,6 +74,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
+  String get vibrationEnabled => 'Enable vibration';
+
+  @override
   String get faceThemesList => 'Display per face';
 
   @override
@@ -87,42 +90,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialWelcomeBody =>
-      'Pick a theme by rolling the dice, or draw a card to deepen the conversation.\n\nUse it to get everyone excited, or at work—in teams, meetings, or 1-on-1s.';
+      'Pick a theme by rolling dice, or draw a card to talk about your values. Use it to get everyone excited or at work.';
 
   @override
-  String get tutorialSetTheme => 'Set Themes';
+  String get tutorialSetTheme => 'Set your themes';
 
   @override
   String get tutorialSetThemeBody =>
-      'Set the themes shown on each face of the dice for \"Get excited together\".\n\nDrag & drop from the candidates on the right, or type them in.';
+      'Set themes for each face by dragging from the candidates or typing them in.';
 
   @override
   String get tutorialRollDice => 'Roll the Dice';
 
   @override
   String get tutorialRollDiceBody =>
-      'When you\'re ready, tap \"Roll Dice\".\n\nThe dice rolls with 3D animation\nand a random theme is selected.';
+      'Tap \"Roll Dice\" to roll the dice and pick a random theme.';
 
   @override
   String get tutorialCards => 'Play with Cards';
 
   @override
   String get tutorialCardsBody =>
-      '\"Get excited at work\" offers three card decks.\n\nTeam Building (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).';
+      '\"Get excited at work\" offers three card decks.\n\nValue cards (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).';
 
   @override
   String get tutorialChangeSettings => 'Change Settings';
 
   @override
   String get tutorialChangeSettingsBody =>
-      'You can go back to this settings screen anytime with the back button to change dice themes.';
+      'You can go back to the settings screen anytime with the back button to change the number of players and timer.';
 
   @override
-  String get tutorialReady => 'Ready!';
+  String get tutorialReady => 'All set!';
 
   @override
   String get tutorialReadyBody =>
-      'Let\'s go!\n\nRoll the dice for a theme, or draw a card for a question—use whichever fits the moment.';
+      'Roll the dice for a theme, or draw a card to talk about your values. Use whichever fits the moment.';
 
   @override
   String get skip => 'Skip';
@@ -134,14 +137,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showTutorial => 'Show Tutorial';
 
   @override
-  String get themeCube => 'Themes (Cube)';
+  String get themeCube => 'Themes';
 
   @override
-  String get yourThemes => 'Your Themes';
+  String get yourThemes => 'Choose topics to talk about';
 
   @override
-  String get useVariantsToChooseTheme =>
-      'Drag candidates from right to left faces.';
+  String get useVariantsToChooseTheme => 'Drag to the left side of the screen';
 
   @override
   String get themeSurprised => 'Something surprising';
@@ -282,10 +284,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playModeLabel => 'Play mode';
 
   @override
-  String get playModeDice => 'Dice';
+  String get playModeDice => 'With dice';
 
   @override
-  String get playModeTopicCard => 'Topic cards';
+  String get playModeTopicCard => 'With topic cards';
 
   @override
   String get drawTopic => 'Draw topic';
@@ -297,19 +299,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phaseCheckOut => 'After meeting';
 
   @override
-  String get checkInPickOnePrompt => 'Pick one question';
+  String get checkInPickOnePrompt => 'Choose one question from these';
 
   @override
   String get checkInHowManyPrompt => 'How many cards?';
 
   @override
-  String get checkInCardsOne => '1';
+  String get checkInCardsOne => '1 card';
 
   @override
-  String get checkInCardsTwo => '2';
+  String get checkInCardsTwo => '2 cards';
 
   @override
-  String get checkInCardsThree => '3';
+  String get checkInCardsThree => '3 cards';
 
   @override
   String get checkInDrawCountButton => 'Draw this many';
@@ -327,13 +329,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reselectQuestion => 'Choose again';
 
   @override
-  String get chosenCardLabelBefore => 'Your chosen question (before meeting)';
+  String get chosenCardLabelBefore => 'Question chosen (before meeting)';
 
   @override
-  String get chosenCardLabelAfter => 'Your chosen question (after meeting)';
+  String get chosenCardLabelAfter => 'Question chosen (after meeting)';
 
   @override
-  String get playerCount => 'Number of Players';
+  String get playerCount => 'Number of participants';
 
   @override
   String get timerSettings => 'Timer Settings';
@@ -354,7 +356,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String currentPlayer(int current, int total) {
-    return 'Player $current/$total';
+    return 'Player $current/$total\'s turn';
   }
 
   @override
@@ -387,7 +389,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newSession => 'New Session';
 
   @override
-  String get sessionSummaryScreenTitle => 'Session summary';
+  String get sessionSummaryScreenTitle => 'Summary of the session you just had';
 
   @override
   String get voteTitle => 'Who was the most fun?';
@@ -519,14 +521,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get playerNamesHint =>
-      'Names display during session. Blank shows numbers.';
+      'You can specify player names. Tap the box below.';
 
   @override
-  String get sessionPreviewTitle => 'Session Preview';
+  String get sessionPreviewTitle => 'This session';
 
   @override
   String sessionPreviewPlayers(int count) {
-    return '$count players';
+    return 'Play with $count players';
   }
 
   @override
@@ -538,16 +540,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionPreviewNoTimer => 'No timer';
 
   @override
-  String get modeSelectionTitle => 'Choose how to play';
+  String get modeSelectionTitle => 'Welcome to Talk Seed!\nChoose how to play';
 
   @override
-  String get homeSectionEveryone => 'Everyone gets excited';
+  String get homeSectionEveryone =>
+      'Roll the dice and get excited with random topics';
 
   @override
-  String get homeSectionWork => 'Get excited at work';
+  String get homeSectionWork =>
+      'Choose cards and share your values with each other';
 
   @override
-  String get homeDiceLabel => 'Dice';
+  String get homeDiceLabel => 'Random topics';
 
   @override
   String get backToModeSelection => 'Choose mode again';
@@ -562,18 +566,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playWithDeck => 'Play with this deck';
 
   @override
-  String get deckTeamBuilding => 'Team Building';
+  String get deckTeamBuilding => 'Value cards';
 
   @override
   String get deckTeamBuildingDesc =>
-      'Share values and build team understanding';
+      'Share values and deepen team understanding';
 
   @override
   String get deckCheckIn => 'Check-in & Check-out';
 
   @override
   String get deckCheckInDesc =>
-      'At meeting start and end. Everyone shares one word from a question';
+      'For meeting start and end. Everyone shares briefly based on a question';
 
   @override
   String get deckSelfReflection => 'Self-reflection & 1-on-1';
@@ -760,7 +764,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show your 5 remaining cards and share with everyone';
 
   @override
-  String get valuePlayerCount => 'Number of players';
+  String get valuePlayerCount => 'Number of participants';
 
   @override
   String get valueStart => 'Start';
@@ -791,7 +795,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valueTutorialPage2Body =>
-      'Each round, draw one card from the pile. When you have 6 cards, tap the card furthest from your values to discard it. Then rank the remaining 6 by importance and confirm.';
+      'Each round, draw 1 card. At 6 cards, discard the one furthest from your values, then rank the rest and confirm.';
 
   @override
   String get valueTutorialPage3Title => 'After 5 rounds, share your 5';

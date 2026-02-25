@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import '../utils/preferences_helper.dart';
 import '../models/session_config.dart';
 import '../models/game_session.dart';
 import '../models/polyhedron_type.dart';
@@ -12,7 +13,6 @@ import '../utils/route_transitions.dart';
 import '../widgets/player_indicator.dart';
 import '../widgets/timer_display.dart';
 import 'mode_selection_page.dart';
-import 'value_card_tutorial_page.dart';
 
 /// 価値観カード フルルールのゲーム画面
 /// ファシリテーター持ち or 場に置いて、スマホを回さずにプレイ
@@ -94,6 +94,8 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Future<void> _triggerVibration() async {
+    final enabled = await PreferencesHelper.loadVibrationEnabled();
+    if (!enabled) return;
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: 80);
     }
@@ -239,19 +241,6 @@ class _ValueCardPageState extends State<ValueCardPage> {
             fontSize: 20,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline, color: _black),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => const ValueCardTutorialPage(),
-                ),
-              );
-            },
-            tooltip: l10n.valueTutorialTooltip,
-          ),
-        ],
       ),
       body: SafeArea(
         child: _gameState == null && !_hasSessionConfig
@@ -363,23 +352,31 @@ class _ValueCardPageState extends State<ValueCardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PlayerIndicator(
-          currentPlayerIndex: _session!.currentPlayerIndex,
-          totalPlayers: _session!.config.playerCount,
-          currentPlayerName: _session!.currentPlayerName,
-        ),
-        if (_session!.config.enableTimer && _timerService != null) ...[
-          const SizedBox(height: 8),
-          TimerDisplay(
-            timerService: _timerService,
-            onPause: () => setState(() {
-              _timerService!.pause();
-            }),
-            onResume: () => setState(() {
-              _timerService!.resume();
-            }),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PlayerIndicator(
+                currentPlayerIndex: _session!.currentPlayerIndex,
+                totalPlayers: _session!.config.playerCount,
+                currentPlayerName: _session!.currentPlayerName,
+              ),
+              if (_session!.config.enableTimer && _timerService != null) ...[
+                const SizedBox(height: 8),
+                TimerDisplay(
+                  timerService: _timerService,
+                  onPause: () => setState(() {
+                    _timerService!.pause();
+                  }),
+                  onResume: () => setState(() {
+                    _timerService!.resume();
+                  }),
+                ),
+              ],
+            ],
           ),
-        ],
+        ),
         const SizedBox(height: 8),
         Expanded(child: content),
       ],

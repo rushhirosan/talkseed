@@ -16,6 +16,7 @@ import 'package:theme_dice/widgets/dice_widget.dart';
 import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
+import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/services/session_record_service.dart';
@@ -680,8 +681,10 @@ class _DicePageState extends State<DicePage>
   // ============================================
   // 補助関数
   // ============================================
-  /// 触覚フィードバックをトリガー
+  /// 触覚フィードバックをトリガー（設定がONのときのみ）
   Future<void> _triggerVibration() async {
+    final enabled = await PreferencesHelper.loadVibrationEnabled();
+    if (!enabled) return;
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: 100);
     }

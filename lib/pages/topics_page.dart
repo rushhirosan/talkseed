@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import '../utils/preferences_helper.dart';
 import '../models/card_deck.dart';
 import '../models/checkin_checkout_item.dart';
 import '../models/session_config.dart';
@@ -202,6 +203,8 @@ class _TopicsPageState extends State<TopicsPage> {
   }
 
   Future<void> _triggerVibration() async {
+    final enabled = await PreferencesHelper.loadVibrationEnabled();
+    if (!enabled) return;
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: 100);
     }

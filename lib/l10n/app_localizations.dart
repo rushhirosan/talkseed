@@ -143,13 +143,13 @@ abstract class AppLocalizations {
   /// セッション設定画面へ遷移するボタン
   ///
   /// In ja, this message translates to:
-  /// **'セッション設定へ'**
+  /// **'セッションへ'**
   String get playWithOthers;
 
   /// 案B: サイコロ画面へ遷移するボタン
   ///
   /// In ja, this message translates to:
-  /// **'サイコロに移動'**
+  /// **'サイコロへ'**
   String get playWithDice;
 
   /// 案B: トピックカード画面へ遷移するボタン
@@ -224,6 +224,12 @@ abstract class AppLocalizations {
   /// **'リセット'**
   String get reset;
 
+  /// サイコロ・価値観カードのバイブ設定
+  ///
+  /// In ja, this message translates to:
+  /// **'バイブを有効にする'**
+  String get vibrationEnabled;
+
   /// リセットと面リストの間の小タイトル
   ///
   /// In ja, this message translates to:
@@ -251,7 +257,7 @@ abstract class AppLocalizations {
   /// チュートリアル1ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'サイコロでテーマを選んだり、カードで問いを引いて話を深めたり。\n\nみんなで盛り上がることも、仕事の場（チーム・会議・1on1）でも使えます。'**
+  /// **'サイコロでテーマを選ぶか、カードで自分の価値観を話します。盛り上がりにも仕事の場にも使えます。'**
   String get tutorialWelcomeBody;
 
   /// チュートリアル2ページ目のタイトル
@@ -263,7 +269,7 @@ abstract class AppLocalizations {
   /// チュートリアル2ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'「みんなで盛り上がる」で選ぶサイコロの、各面に表示するテーマを設定します。\n\n右側の候補からドラッグ＆ドロップするか、直接入力してください。'**
+  /// **'各面のテーマを、候補からドラッグまたは直接入力で設定します。'**
   String get tutorialSetThemeBody;
 
   /// チュートリアル3ページ目のタイトル
@@ -275,7 +281,7 @@ abstract class AppLocalizations {
   /// チュートリアル3ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'設定が完了したら「サイコロを振る」ボタンを押してください。\n\n3Dアニメーションでサイコロが転がり、\nランダムなテーマが選ばれます。'**
+  /// **'「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。'**
   String get tutorialRollDiceBody;
 
   /// チュートリアル・カードページのタイトル
@@ -299,7 +305,7 @@ abstract class AppLocalizations {
   /// チュートリアル設定ページの本文
   ///
   /// In ja, this message translates to:
-  /// **'いつでも戻るボタンでこの設定画面に戻り、サイコロのテーマを変更できます。'**
+  /// **'いつでも戻るボタンで設定画面に戻り、人数やタイマーを変更できます。'**
   String get tutorialChangeSettingsBody;
 
   /// チュートリアル最終ページのタイトル
@@ -311,7 +317,7 @@ abstract class AppLocalizations {
   /// チュートリアル最終ページの本文
   ///
   /// In ja, this message translates to:
-  /// **'それでは、はじめましょう。\n\nサイコロでテーマを選んでも、カードで問いを引いてもOK。場に合わせて使ってください。'**
+  /// **'サイコロでテーマを選んでも、カードで価値観を話し合ってもOK。場に合わせて使いましょう。'**
   String get tutorialReadyBody;
 
   /// タイマースキップボタン
@@ -347,7 +353,7 @@ abstract class AppLocalizations {
   /// テーマ候補エリアの説明文
   ///
   /// In ja, this message translates to:
-  /// **'右の候補を左の「各サイコロの面の表示」にドラッグ'**
+  /// **'画面左にドラッグ'**
   String get useVariantsToChooseTheme;
 
   /// No description provided for @themeSurprised.
@@ -1067,7 +1073,7 @@ abstract class AppLocalizations {
   /// プレイヤー名入力の説明
   ///
   /// In ja, this message translates to:
-  /// **'入力するとセッション中に表示。空欄は番号で表示されます。'**
+  /// **'プレイヤー名を指定できます、下のボックスをタップ'**
   String get playerNamesHint;
 
   /// No description provided for @sessionPreviewTitle.
@@ -1559,19 +1565,19 @@ abstract class AppLocalizations {
   /// No description provided for @valueTutorialPage1Body.
   ///
   /// In ja, this message translates to:
-  /// **'2〜10人で遊べます。人数を選んで「スタート」を押すと、山札からカードが配られ、ゲームが始まります。'**
+  /// **'2〜10人で遊べます。人数やタイマー設定をしてプレイを始めましょう。'**
   String get valueTutorialPage1Body;
 
   /// No description provided for @valueTutorialPage2Title.
   ///
   /// In ja, this message translates to:
-  /// **'1枚捨てて、6枚をランキング'**
+  /// **'価値観カードでは1枚捨てて、5枚をランキング'**
   String get valueTutorialPage2Title;
 
   /// No description provided for @valueTutorialPage2Body.
   ///
   /// In ja, this message translates to:
-  /// **'各ラウンドで山札から1枚引きます。6枚になったら「自分の価値観から最も遠いカード」を1枚タップして捨ててください。残り6枚を重要度順に並べ替え、確定します。'**
+  /// **'各ラウンドで1枚引きます。6枚になったら価値観から遠いカードを1枚捨て、残り5枚を重要度順に並べて確定します。'**
   String get valueTutorialPage2Body;
 
   /// No description provided for @valueTutorialPage3Title.

@@ -178,92 +178,146 @@ class _ValueCardTutorialPageState extends State<ValueCardTutorialPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxHeight < 700;
-        return SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Transform.rotate(
-                          angle: -0.1,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _yellowBanner,
-                              border: Border.all(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  offset: const Offset(2, 2),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                            child: const Text(
-                              'Talk Seed',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: isSmallScreen ? 32 : 48),
-                        Text(
-                          pageData.title,
-                          style: TextStyle(
-                            color: _whiteText,
-                            fontSize: isSmallScreen ? 42 : 56,
-                            fontWeight: FontWeight.bold,
-                            height: 1.2,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        SizedBox(height: isSmallScreen ? 24 : 32),
-                        Text(
-                          pageData.body,
-                          style: TextStyle(
-                            color: _whiteText.withOpacity(0.95),
-                            fontSize: isSmallScreen ? 18 : 20,
-                            height: 1.6,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+        final isNarrowScreen = constraints.maxWidth < 400;
+        final titleFontSize = isSmallScreen
+            ? (isNarrowScreen ? 22.0 : 28.0)
+            : (isNarrowScreen ? 26.0 : 38.0);
+        final bodyFontSize = isSmallScreen
+            ? (isNarrowScreen ? 13.0 : 15.0)
+            : (isNarrowScreen ? 15.0 : 17.0);
+        final useColumnLayout = isNarrowScreen || constraints.maxHeight < 600;
+        final iconSize = useColumnLayout
+            ? (isSmallScreen ? 72.0 : 96.0)
+            : (isSmallScreen ? 120.0 : 180.0);
+        final iconSizeSingle = iconSize / 2;
+
+        Widget textColumn = SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Transform.rotate(
+                angle: -0.1,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isNarrowScreen ? 16 : 24,
+                    vertical: isNarrowScreen ? 8 : 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _yellowBanner,
+                    border: Border.all(color: Colors.black, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        offset: const Offset(2, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Talk Seed',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: isNarrowScreen ? 18 : 24,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(width: isSmallScreen ? 32 : 48),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Transform.rotate(
-                        angle: -0.1,
-                        child: _buildIconCircle(
-                          pageData.icon,
-                          size: isSmallScreen ? 180 : 240,
-                          iconSize: isSmallScreen ? 90 : 120,
+                ),
+              ),
+              SizedBox(height: isSmallScreen ? 20 : 32),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  pageData.title,
+                  style: TextStyle(
+                    color: _whiteText,
+                    fontSize: titleFontSize.clamp(20.0, 56.0),
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
+                    letterSpacing: -0.5,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(height: isSmallScreen ? 16 : 24),
+              Text(
+                pageData.body,
+                style: TextStyle(
+                  color: _whiteText.withOpacity(0.95),
+                  fontSize: bodyFontSize,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        );
+
+        Widget iconSection = Transform.rotate(
+          angle: -0.1,
+          child: _buildIconCircle(
+            pageData.icon,
+            size: iconSize,
+            iconSize: iconSizeSingle,
+          ),
+        );
+
+        final content = Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isNarrowScreen ? 20 : 32,
+            vertical: isNarrowScreen ? 16 : 24,
+          ),
+          child: useColumnLayout
+              ? SizedBox(
+                  height: constraints.maxHeight,
+                  child: Column(
+                    children: [
+                      // 上部: テキスト（スクロール可能）
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: textColumn,
                         ),
                       ),
-                    ),
+                      SizedBox(height: isNarrowScreen ? 20 : 28),
+                      // 中央付近: アイコン
+                      iconSection,
+                      // 下部: アイコンを視覚的に中央寄せするための余白
+                      Expanded(
+                        child: const SizedBox.shrink(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: textColumn,
+                      ),
+                    ),
+                    SizedBox(width: isSmallScreen ? 24 : 40),
+                    Expanded(
+                      flex: 1,
+                      child: Center(child: iconSection),
+                    ),
+                  ],
+                ),
+        );
+
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: content,
           ),
         );
       },

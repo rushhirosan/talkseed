@@ -7,7 +7,6 @@ import '../models/theme.dart';
 import '../utils/preferences_helper.dart';
 import '../utils/route_transitions.dart';
 import 'dice_page.dart';
-import 'tutorial_page.dart';
 import 'session_setup_page.dart';
 import 'topics_page.dart';
 import 'mode_selection_page.dart';
@@ -33,6 +32,7 @@ class InitialSettingsPage extends StatefulWidget {
 class _InitialSettingsPageState extends State<InitialSettingsPage> {
   PolyhedronType _selectedType = PolyhedronType.cube;
   Map<PolyhedronType, List<String>>? _themes;
+  bool _vibrationEnabled = true;
 
   final Map<PolyhedronType, List<TextEditingController>> _controllers = {};
   final Random _random = Random();
@@ -44,6 +44,17 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   /// 編集中の面インデックス（null のときは右側と同じ Center+Text で表示）
   int? _focusedFaceIndex;
   final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVibrationSetting();
+  }
+
+  Future<void> _loadVibrationSetting() async {
+    final enabled = await PreferencesHelper.loadVibrationEnabled();
+    if (mounted) setState(() => _vibrationEnabled = enabled);
+  }
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
@@ -226,20 +237,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     ];
   }
 
-  /// チュートリアルを表示（サイコロ設定画面なのでサイコロのチュートリアルのみ）
-  void _showTutorial() {
-    Navigator.of(context).push(
-      RouteTransitions.forwardRoute(
-        page: TutorialPage(
-          onComplete: () {
-            Navigator.of(context).pop();
-          },
-          diceOnly: true,
-        ),
-      ),
-    );
-  }
-
   // デザインカラーパレット（チュートリアル画面の黄色に合わせる）
   static const Color _mustardYellow = Color(0xFFFFEB3B); // 鮮やかな黄色（チュートリアル画面と同じ）
   static const Color _lightGreen = Color(0xFFB8E6B8); // ライトグリーン
@@ -253,6 +250,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: _white,
       appBar: AppBar(
         backgroundColor: _white,
@@ -270,13 +268,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             fontSize: 22,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline, color: _black),
-            onPressed: _showTutorial,
-            tooltip: l10n.showTutorial,
-          ),
-        ],
       ),
       body: SafeArea(
         bottom: true,
@@ -312,6 +303,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           ),
                           const SizedBox(height: 12),
                           _buildRandomResetRow(l10n),
+                          const SizedBox(height: 12),
+                          _buildVibrationRow(l10n),
                         ],
                       ),
                     ),
@@ -480,6 +473,35 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
+  /// バイブレーション ON/OFF スイッチ
+  Widget _buildVibrationRow(AppLocalizations l10n) {
+    return Row(
+      children: [
+        Icon(Icons.vibration, size: 20, color: _black.withOpacity(0.7)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            l10n.vibrationEnabled,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: _black.withOpacity(0.9),
+            ),
+          ),
+        ),
+        Switch(
+          value: _vibrationEnabled,
+          onChanged: (value) async {
+            await PreferencesHelper.saveVibrationEnabled(value);
+            if (mounted) setState(() => _vibrationEnabled = value);
+          },
+          activeTrackColor: _black.withOpacity(0.5),
+          activeThumbColor: _black,
+        ),
+      ],
+    );
+  }
+
   /// ランダムにセット・リセットをアイコンのみで1行に2つ表示
   Widget _buildRandomResetRow(AppLocalizations l10n) {
     return Row(
@@ -552,20 +574,24 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// 面1〜面6を縦一列に表示（利用可能な高さを均等に分割して敷き詰める）
+  /// 面1〜面6を縦一列に表示（スクロール可能・キーボード表示時に入力欄が見える）
   Widget _buildFaceColumn() {
     final l10n = AppLocalizations.of(context)!;
     _initializeThemes(l10n);
     final currentThemes = _themes![_selectedType] ?? [];
     final controllers = _controllers[_selectedType] ?? [];
+    const double slotHeight = 56;
 
-    return Column(
+    return ListView(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      physics: const BouncingScrollPhysics(),
+      itemExtent: slotHeight + 4,
       children: [
-        for (int i = 0; i < currentThemes.length; i++) ...[
-          if (i > 0) const SizedBox(height: 4),
-          Expanded(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 40),
+        for (int i = 0; i < currentThemes.length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: SizedBox(
+              height: slotHeight,
               child: _buildFaceSlot(
                 index: i,
                 currentThemes: currentThemes,
@@ -573,7 +599,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               ),
             ),
           ),
-        ],
       ],
     );
   }
@@ -590,10 +615,26 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     if (controllers[index].text != currentThemes[index]) {
       controllers[index].text = currentThemes[index];
     }
-    return _buildDraggableTextField(
-      index: index,
-      controller: controllers[index],
-      compact: true,
+    return Builder(
+      builder: (slotContext) {
+        return _buildDraggableTextField(
+          index: index,
+          controller: controllers[index],
+          compact: true,
+          onFocused: () {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (slotContext.mounted) {
+                Scrollable.ensureVisible(
+                  slotContext,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  alignment: 0.2,
+                );
+              }
+            });
+          },
+        );
+      },
     );
   }
 
@@ -624,10 +665,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
 
   /// ドラッグアンドドロップ対応のテキストフィールド
   /// [compact] trueの場合、一列表示用：面番号を明確に表示
+  /// [onFocused] フォーカス取得時に呼ばれる（キーボード表示で入力欄をスクロールするため）
   Widget _buildDraggableTextField({
     required int index,
     required TextEditingController controller,
     bool compact = false,
+    void Function()? onFocused,
   }) {
     final l10n = AppLocalizations.of(context)!;
     _initializeThemes(l10n);
@@ -686,40 +729,46 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           children: [
                             Expanded(
                               child: _focusedFaceIndex == index
-                                  ? TextField(
+                                  ? Focus(
                                       focusNode: _faceFocusNodes[index],
-                                      controller: controller,
-                                      style: TextStyle(
-                                        fontSize: currentFontSize,
-                                        color: _black,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      textAlignVertical: TextAlignVertical.center,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 14,
-                                        ),
-                                        hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
-                                        hintStyle: TextStyle(
-                                          color: _black.withOpacity(0.4),
-                                          fontSize: 12,
+                                      onFocusChange: (hasFocus) {
+                                        if (hasFocus) onFocused?.call();
+                                      },
+                                      child: TextField(
+                                        focusNode: _faceFocusNodes[index],
+                                        controller: controller,
+                                        style: TextStyle(
+                                          fontSize: currentFontSize,
+                                          color: _black,
                                           fontWeight: FontWeight.normal,
                                         ),
-                                        isDense: true,
-                                        filled: true,
-                                        fillColor: Colors.transparent,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        textAlignVertical: TextAlignVertical.center,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          contentPadding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 14,
+                                          ),
+                                          hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
+                                          hintStyle: TextStyle(
+                                            color: _black.withOpacity(0.4),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                          isDense: true,
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                        ),
+                                        onChanged: (value) {
+                                          _themes ??= {};
+                                          _themes![_selectedType]![index] = value;
+                                        },
+                                        onTapOutside: (_) {
+                                          setState(() => _focusedFaceIndex = null);
+                                        },
                                       ),
-                                      onChanged: (value) {
-                                        _themes ??= {};
-                                        _themes![_selectedType]![index] = value;
-                                      },
-                                      onTapOutside: (_) {
-                                        setState(() => _focusedFaceIndex = null);
-                                      },
                                     )
                                   : GestureDetector(
                                       onTap: () {
