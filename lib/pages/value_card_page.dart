@@ -403,94 +403,106 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
     return Stack(
       children: [
-        SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: _white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _black, width: 1.5),
-                ),
-                child: Text(
-                  l10n.valuePlayerTurn(playerLabel),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: _black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                l10n.valueRound(state.currentRound),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: _black.withOpacity(0.7),
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (state.needsToRank && _rankedCards != null) ...[
-                Text(
-                  l10n.valueRankPrompt,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: _black.withOpacity(0.8),
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _onConfirmRanking,
-                    icon: const Icon(Icons.check, color: _black, size: 20),
-                    label: Text(
-                      l10n.valueConfirmRanking,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: _black,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _mustardYellow,
-                      foregroundColor: _black,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final bottomPadding = MediaQuery.of(context).padding.bottom;
+            return SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 24 + bottomPadding),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: _white,
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _black, width: 1.5),
                       ),
-                      elevation: 2,
+                      child: Text(
+                        l10n.valuePlayerTurn(playerLabel),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: _black,
+                        ),
+                      ),
                     ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.valueRound(state.currentRound),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: _black.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (state.needsToRank && _rankedCards != null) ...[
+                      Text(
+                        l10n.valueRankPrompt,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _black.withOpacity(0.8),
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _onConfirmRanking,
+                          icon: const Icon(Icons.check, color: _black, size: 20),
+                          label: Text(
+                            l10n.valueConfirmRanking,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: _black,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _mustardYellow,
+                            foregroundColor: _black,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                        ),
+                      ),
+                    ],
+                      if (state.needsToDraw) ...[
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: CircularProgressIndicator(color: _black),
+                          ),
+                        ),
+                        Text(
+                          l10n.valueDrawCard,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: _black.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                    ],
                   ),
                 ),
-              ],
-              if (state.needsToDraw) ...[
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: CircularProgressIndicator(color: _black),
-                  ),
-                ),
-                Text(
-                  l10n.valueDrawCard,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: _black.withOpacity(0.7),
-                  ),
-                ),
-              ],
-            ],
-          ),
+              ),
+            );
+          },
         ),
         if (_playerSwitchBannerPlayer != null)
           _PlayerSwitchBanner(
@@ -582,88 +594,99 @@ class _ValueCardPageState extends State<ValueCardPage> {
     final hand = state.hands[playerIndex] ?? [];
     final playerLabel = playerIndex + 1;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: _white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _black, width: 1.5),
-            ),
-            child: Text(
-              l10n.valuePlayerFinalCards(playerLabel),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: _black,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            l10n.valueSharePrompt,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              color: _black.withOpacity(0.7),
-              height: 1.3,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildCardGrid(hand, compact: true),
-          const SizedBox(height: 14),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                if (playerIndex < state.playerCount - 1) {
-                  _onNextSharing();
-                } else {
-                  // 最後のプレイヤー: セッション中ならそのままセッション設定に戻る（お疲れ画面をスキップ）
-                  if (_session != null) {
-                    _saveValueCardRecord();
-                    Navigator.of(context).pop();
-                  } else {
-                    _onNextSharing();
-                  }
-                }
-              },
-              icon: Icon(
-                playerIndex < state.playerCount - 1
-                    ? Icons.arrow_forward
-                    : Icons.check_circle,
-                color: _black,
-                size: 20,
-              ),
-              label: Text(
-                playerIndex < state.playerCount - 1
-                    ? l10n.valueNext
-                    : l10n.valueSessionCompleteAndBack,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: _black,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bottomPadding = MediaQuery.of(context).padding.bottom;
+        return SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(20, 12, 20, 24 + bottomPadding),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: _white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _black, width: 1.5),
+                  ),
+                  child: Text(
+                    l10n.valuePlayerFinalCards(playerLabel),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: _black,
+                    ),
+                  ),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _mustardYellow,
-                foregroundColor: _black,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.valueSharePrompt,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: _black.withOpacity(0.7),
+                    height: 1.3,
+                  ),
                 ),
-                elevation: 2,
+                const SizedBox(height: 12),
+                _buildCardGrid(hand, compact: true),
+                const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        if (playerIndex < state.playerCount - 1) {
+                          _onNextSharing();
+                        } else {
+                          // 最後のプレイヤー: セッション中ならそのままセッション設定に戻る（お疲れ画面をスキップ）
+                          if (_session != null) {
+                            _saveValueCardRecord();
+                            Navigator.of(context).pop();
+                          } else {
+                            _onNextSharing();
+                          }
+                        }
+                      },
+                      icon: Icon(
+                        playerIndex < state.playerCount - 1
+                            ? Icons.arrow_forward
+                            : Icons.check_circle,
+                        color: _black,
+                        size: 20,
+                      ),
+                      label: Text(
+                        playerIndex < state.playerCount - 1
+                            ? l10n.valueNext
+                            : l10n.valueSessionCompleteAndBack,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: _black,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _mustardYellow,
+                        foregroundColor: _black,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

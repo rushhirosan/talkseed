@@ -167,7 +167,10 @@ class _TutorialPageState extends State<TutorialPage> {
                 itemCount: pages.length,
                 physics: const PageScrollPhysics(), // ページスクロールの物理挙動を明示
                 itemBuilder: (context, index) {
-                  return _buildTutorialPage(pages[index]);
+                  return _buildTutorialPage(
+                    pages[index],
+                    showVersion: index == 0,
+                  );
                 },
               ),
             ),
@@ -231,7 +234,7 @@ class _TutorialPageState extends State<TutorialPage> {
     );
   }
 
-  Widget _buildTutorialPage(TutorialPageData pageData) {
+  Widget _buildTutorialPage(TutorialPageData pageData, {bool showVersion = false}) {
     return LayoutBuilder(
       builder: (context, constraints) {
         // 画面サイズに応じてレイアウトを調整
@@ -313,14 +316,15 @@ class _TutorialPageState extends State<TutorialPage> {
                 ),
               ),
               SizedBox(height: isSmallScreen ? 16 : 24),
-              Text(
-                'v1.0 | ${DateTime.now().year}',
-                style: TextStyle(
-                  color: _whiteText.withOpacity(0.75),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+              if (showVersion)
+                Text(
+                  'v1.0 | ${DateTime.now().year}',
+                  style: TextStyle(
+                    color: _whiteText.withOpacity(0.75),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
             ],
           ),
         );

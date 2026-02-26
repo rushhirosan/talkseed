@@ -188,25 +188,47 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
         ),
       ),
-      body: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: _mustardYellow,
-              padding: const EdgeInsets.all(24),
-              child: _buildLeftSection(l10n),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // キーボード表示時はプレイヤー名入力エリアのみ全幅表示（横並びだと圧縮されて文字が重なる）
+          final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+          if (keyboardVisible) {
+            return SizedBox(
+              height: constraints.maxHeight,
+              child: Container(
+                color: _white,
+                padding: const EdgeInsets.all(24),
+                child: _buildRightSection(l10n),
+              ),
+            );
+          }
+          return SizedBox(
+            height: constraints.maxHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: _mustardYellow,
+                    padding: const EdgeInsets.all(24),
+                    child: SingleChildScrollView(
+                      child: _buildLeftSection(l10n),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: _white,
+                    padding: const EdgeInsets.all(24),
+                    child: _buildRightSection(l10n),
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: _white,
-              padding: const EdgeInsets.all(24),
-              child: _buildRightSection(l10n),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -278,7 +300,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             onChanged: (v) => v != null ? _updateTimerDuration(v) : null,
           ),
         ],
-        const Spacer(),
+        const SizedBox(height: 24),
         _buildSessionPreview(l10n),
       ],
     );
@@ -463,7 +485,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.only(
                 right: 20,
-                bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+                // iOS の入力候補バー分を加味
+                bottom: 16 + MediaQuery.of(context).viewInsets.bottom + 80,
               ),
               children: [
                 ...List.generate(_config.playerCount, (index) {
@@ -472,31 +495,31 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                     child: _buildPlayerNameField(l10n, index),
                   );
                 }),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _startSession,
+                    icon: const Icon(Icons.play_arrow, size: 22, color: _black),
+                    label: Text(
+                      l10n.startSession,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      side: const BorderSide(color: _black, width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: _mustardYellow.withOpacity(0.4),
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: _startSession,
-            icon: const Icon(Icons.play_arrow, size: 22, color: _black),
-            label: Text(
-              l10n.startSession,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: _black,
-              ),
-            ),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              side: const BorderSide(color: _black, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              backgroundColor: _mustardYellow.withOpacity(0.4),
             ),
           ),
         ),
@@ -509,47 +532,42 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     final focusNode = _playerNameFocusNodes[index];
     return Builder(
       builder: (fieldContext) {
-        return Focus(
-          focusNode: focusNode,
-          onFocusChange: (hasFocus) {
-            if (hasFocus) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
+        return Container(
+          decoration: BoxDecoration(
+            color: pastel,
+            border: Border.all(color: _black, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: TextField(
+            controller: _playerNameControllers[index],
+            focusNode: focusNode,
+            onTap: () {
+              Future.delayed(const Duration(milliseconds: 350), () {
                 if (fieldContext.mounted) {
                   Scrollable.ensureVisible(
                     fieldContext,
-                    duration: const Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
-                    alignment: 0.2,
+                    alignment: 0.3,
                   );
                 }
               });
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: pastel,
-              border: Border.all(color: _black, width: 1.5),
-              borderRadius: BorderRadius.circular(12),
+            },
+            style: const TextStyle(
+              fontSize: 14,
+              color: _black,
+              fontWeight: FontWeight.normal,
             ),
-            child: TextField(
-              controller: _playerNameControllers[index],
-              focusNode: focusNode,
-              style: const TextStyle(
-                fontSize: 14,
-                color: _black,
+            decoration: InputDecoration(
+              labelText: l10n.playerName(index + 1),
+              labelStyle: TextStyle(
+                fontSize: 12,
+                color: _black.withOpacity(0.6),
                 fontWeight: FontWeight.normal,
               ),
-              decoration: InputDecoration(
-                labelText: l10n.playerName(index + 1),
-                labelStyle: TextStyle(
-                  fontSize: 12,
-                  color: _black.withOpacity(0.6),
-                  fontWeight: FontWeight.normal,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                isDense: true,
-              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              isDense: true,
             ),
           ),
         );

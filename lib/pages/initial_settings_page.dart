@@ -44,6 +44,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   /// 編集中の面インデックス（null のときは右側と同じ Center+Text で表示）
   int? _focusedFaceIndex;
   final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
+  /// ensureVisible の重複呼び出し防止用
+  bool _ensureVisibleScheduled = false;
 
   @override
   void initState() {
@@ -271,21 +273,64 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       ),
       body: SafeArea(
         bottom: true,
-        child: Row(
-          children: [
-            // 左側: マスタードイエローの背景セクション
-            // スクロール領域（テーマ+面6つ）とボタン（常に下部に固定表示）を分離
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: _mustardYellow,
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // キーボード表示時は入力エリアのみ全幅表示（横並びだと圧縮されて文字が重なる）
+            final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+            final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+            if (keyboardVisible) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.only(top: 16, bottom: bottomPadding + 80),
+                child: Container(
+                  color: _mustardYellow,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildThemeTitleSection(),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.faceThemesList,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _black.withOpacity(0.85),
+                        ),
+                      ),
+                      // キーボード表示時はラベルとスロットの間を広げて重なりを防ぐ
+                      const SizedBox(height: 32),
+                      _buildFaceColumn(),
+                      const SizedBox(height: 12),
+                      _buildRandomResetRow(l10n),
+                      const SizedBox(height: 12),
+                      ..._buildPlayButtons(l10n),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.useVariantsToChooseTheme,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: _black.withOpacity(0.6),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            return Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: _mustardYellow,
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 80),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           _buildThemeTitleSection(),
                           const SizedBox(height: 8),
@@ -298,32 +343,27 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Expanded(
-                            child: _buildFaceColumn(),
-                          ),
+                          _buildFaceColumn(),
                           const SizedBox(height: 12),
                           _buildRandomResetRow(l10n),
                           const SizedBox(height: 12),
-                          _buildVibrationRow(l10n),
+                          ..._buildPlayButtons(l10n),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    ..._buildPlayButtons(l10n),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          // 右側: 白背景のテーマ候補エリア（左パネルと上下の高さを揃える）
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: _white,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-              child: _buildThemeCandidatesSection(),
-            ),
-          ),
-        ],
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: _white,
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    child: _buildThemeCandidatesSection(),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -473,36 +513,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// バイブレーション ON/OFF スイッチ
-  Widget _buildVibrationRow(AppLocalizations l10n) {
-    return Row(
-      children: [
-        Icon(Icons.vibration, size: 20, color: _black.withOpacity(0.7)),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            l10n.vibrationEnabled,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: _black.withOpacity(0.9),
-            ),
-          ),
-        ),
-        Switch(
-          value: _vibrationEnabled,
-          onChanged: (value) async {
-            await PreferencesHelper.saveVibrationEnabled(value);
-            if (mounted) setState(() => _vibrationEnabled = value);
-          },
-          activeTrackColor: _black.withOpacity(0.5),
-          activeThumbColor: _black,
-        ),
-      ],
-    );
-  }
-
-  /// ランダムにセット・リセットをアイコンのみで1行に2つ表示
+  /// ランダム・リセット・バイブをアイコンのみで1行に3つ表示
   Widget _buildRandomResetRow(AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -530,6 +541,17 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             });
           },
         ),
+        const SizedBox(width: 8),
+        _buildIconOnlyButton(
+          icon: Icons.vibration,
+          tooltip: l10n.vibrationEnabled,
+          isActive: _vibrationEnabled,
+          onPressed: () async {
+            final newValue = !_vibrationEnabled;
+            await PreferencesHelper.saveVibrationEnabled(newValue);
+            if (mounted) setState(() => _vibrationEnabled = newValue);
+          },
+        ),
       ],
     );
   }
@@ -539,6 +561,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required IconData icon,
     required String tooltip,
     required VoidCallback onPressed,
+    bool isActive = false,
   }) {
     return Tooltip(
       message: tooltip,
@@ -551,8 +574,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          backgroundColor: _white.withOpacity(0.6),
-          foregroundColor: _black,
+          backgroundColor: isActive ? _black : _white.withOpacity(0.6),
+          foregroundColor: isActive ? _white : _black,
         ).copyWith(
           side: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.focused) ||
@@ -564,7 +587,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           overlayColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.hovered) ||
                 states.contains(WidgetState.pressed)) {
-              return _black.withOpacity(0.08);
+              return isActive ? _white.withOpacity(0.12) : _black.withOpacity(0.08);
             }
             return null;
           }),
@@ -574,7 +597,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// 面1〜面6を縦一列に表示（スクロール可能・キーボード表示時に入力欄が見える）
+  /// 面1〜面6を縦一列に表示（Columnで単一スクロールに統合、ensureVisibleが正しく効く）
   Widget _buildFaceColumn() {
     final l10n = AppLocalizations.of(context)!;
     _initializeThemes(l10n);
@@ -582,10 +605,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     final controllers = _controllers[_selectedType] ?? [];
     const double slotHeight = 56;
 
-    return ListView(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      physics: const BouncingScrollPhysics(),
-      itemExtent: slotHeight + 4,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         for (int i = 0; i < currentThemes.length; i++)
           Padding(
@@ -622,15 +643,28 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           controller: controllers[index],
           compact: true,
           onFocused: () {
+            if (_ensureVisibleScheduled) return;
+            _ensureVisibleScheduled = true;
+            // キーボード表示のアニメーション後にスクロール（レイアウト遷移後の安全なタイミングで実行）
+            // 面1は alignment 1.0 でビューポート下部に配置し、ラベルが上に表示されるようにする
+            final alignment = index == 0 ? 1.0 : 0.3;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (slotContext.mounted) {
-                Scrollable.ensureVisible(
-                  slotContext,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  alignment: 0.2,
-                );
-              }
+              Future.delayed(const Duration(milliseconds: 450), () {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _ensureVisibleScheduled = false;
+                  if (!slotContext.mounted) return;
+                  try {
+                    Scrollable.ensureVisible(
+                      slotContext,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      alignment: alignment,
+                    );
+                  } catch (_) {
+                    // レイアウト競合時は握りつぶす（_debugMutationsLocked 等）
+                  }
+                });
+              });
             });
           },
         );
@@ -729,13 +763,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           children: [
                             Expanded(
                               child: _focusedFaceIndex == index
-                                  ? Focus(
+                                  ? TextField(
                                       focusNode: _faceFocusNodes[index],
-                                      onFocusChange: (hasFocus) {
-                                        if (hasFocus) onFocused?.call();
-                                      },
-                                      child: TextField(
-                                        focusNode: _faceFocusNodes[index],
                                         controller: controller,
                                         style: TextStyle(
                                           fontSize: currentFontSize,
@@ -768,13 +797,13 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                         onTapOutside: (_) {
                                           setState(() => _focusedFaceIndex = null);
                                         },
-                                      ),
-                                    )
+                                      )
                                   : GestureDetector(
                                       onTap: () {
                                         setState(() => _focusedFaceIndex = index);
                                         WidgetsBinding.instance.addPostFrameCallback((_) {
                                           _faceFocusNodes[index].requestFocus();
+                                          onFocused?.call();
                                         });
                                       },
                                       behavior: HitTestBehavior.opaque,
@@ -802,10 +831,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                               overflow: TextOverflow.visible,
                                             ),
                                           ),
-                                        ),
-                                      ),
                                     ),
-                            ),
+                                  ),
+                                ),
+                              ),
                           ],
                         )
                       : TextField(
@@ -870,7 +899,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.3,
-                    color: _black.withOpacity(0.85),
+                    color: Colors.black87.withOpacity(0.85),
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
@@ -914,14 +943,19 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
 
   /// パステルカラーを取得（インデックスに基づいて循環）
   Color _getPastelColor(int index) {
-    final colors = [_lightGreen, _lightOrange, _lightPink, _lightBlueGreen];
+    const colors = [
+      Color(0xFFB8E6B8), // _lightGreen
+      Color(0xFFFFE5CC), // _lightOrange
+      Color(0xFFFFCCCC), // _lightPink
+      Color(0xFFCCE5E5), // _lightBlueGreen
+    ];
     return colors[index % colors.length];
   }
 
   /// ドラッグ可能なテーマ候補アイテム
   Widget _buildDraggableCandidate(String theme, int index) {
     final pastelColor = _getPastelColor(index);
-    
+
     return Draggable<String>(
       data: theme,
       feedback: Material(
@@ -933,12 +967,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           decoration: BoxDecoration(
             color: pastelColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _black, width: 1.5),
+            border: Border.all(color: Colors.black87, width: 1.5),
           ),
           child: Text(
             theme,
             style: const TextStyle(
-              color: _black,
+              color: Colors.black87,
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
@@ -951,14 +985,14 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           decoration: BoxDecoration(
             color: pastelColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _black.withOpacity(0.3), width: 1.5),
+            border: Border.all(color: Colors.black87.withOpacity(0.3), width: 1.5),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Center(
             child: Text(
               theme,
               style: TextStyle(
-                color: _black.withOpacity(0.5),
+                color: Colors.black87.withOpacity(0.5),
                 fontSize: 12,
               ),
               textAlign: TextAlign.center,
@@ -975,7 +1009,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         decoration: BoxDecoration(
           color: pastelColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: _black, width: 1.5),
+          border: Border.all(color: Colors.black87, width: 1.5),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Center(
@@ -984,7 +1018,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             child: Text(
               theme,
               style: const TextStyle(
-                color: _black,
+                color: Colors.black87,
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
               ),
