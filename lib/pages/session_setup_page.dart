@@ -37,6 +37,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
   final List<TextEditingController> _playerNameControllers = [];
   final List<FocusNode> _playerNameFocusNodes = [];
+  bool _vibrationEnabled = true;
 
   final ScrollController _rightScrollController = ScrollController();
 
@@ -54,6 +55,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     super.initState();
     _config = SessionConfig.defaultConfig;
     _initializePlayerNames();
+    _loadVibrationSetting();
+  }
+
+  Future<void> _loadVibrationSetting() async {
+    final enabled = await PreferencesHelper.loadVibrationEnabled();
+    if (mounted) setState(() => _vibrationEnabled = enabled);
   }
 
   void _initializePlayerNames() {
@@ -102,6 +109,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     });
   }
 
+  Future<void> _toggleVibration(bool enabled) async {
+    await PreferencesHelper.saveVibrationEnabled(enabled);
+    if (mounted) setState(() => _vibrationEnabled = enabled);
+  }
+
   void _startSession() {
     final playerNames = List.generate(
       _config.playerCount,
@@ -144,6 +156,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isValueCardLayout = widget.forValueCard;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: _white,
@@ -208,20 +221,35 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: isValueCardLayout ? 9 : 1,
                   child: Container(
                     color: _mustardYellow,
-                    padding: const EdgeInsets.all(24),
-                    child: SingleChildScrollView(
-                      child: _buildLeftSection(l10n),
+                    padding: isValueCardLayout
+                        ? const EdgeInsets.fromLTRB(20, 20, 16, 20)
+                        : const EdgeInsets.all(24),
+                    child: LayoutBuilder(
+                      builder: (context, leftConstraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: leftConstraints.maxHeight,
+                            ),
+                            child: IntrinsicHeight(
+                              child: _buildLeftSection(l10n),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: isValueCardLayout ? 11 : 1,
                   child: Container(
                     color: _white,
-                    padding: const EdgeInsets.all(24),
+                    padding: isValueCardLayout
+                        ? const EdgeInsets.fromLTRB(16, 20, 20, 20)
+                        : const EdgeInsets.all(24),
                     child: _buildRightSection(l10n),
                   ),
                 ),
@@ -253,7 +281,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildLeftSection(AppLocalizations l10n) {
+    final compact = widget.forValueCard;
+    final sectionSpacing = compact ? 20.0 : 24.0;
+    final itemSpacing = compact ? 8.0 : 12.0;
     return Column(
+      mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
@@ -264,14 +296,14 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             color: _black,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: itemSpacing),
         _buildDropdown<int>(
           value: _config.playerCount,
           items: List.generate(9, (i) => i + 2),
           labelBuilder: (v) => '$v',
           onChanged: (v) => v != null ? _updatePlayerCount(v) : null,
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: sectionSpacing),
         Text(
           l10n.timerSettings,
           style: const TextStyle(
@@ -280,10 +312,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             color: _black,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: itemSpacing),
         SizedBox(width: double.infinity, child: _buildTimerToggle(l10n)),
         if (_config.enableTimer) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: itemSpacing),
           Text(
             l10n.timerDuration,
             style: TextStyle(
@@ -292,7 +324,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               color: _black.withOpacity(0.7),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: compact ? 6 : 8),
           _buildDropdown<Duration>(
             value: _config.timerDuration,
             items: _timerDurations,
@@ -300,7 +332,13 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             onChanged: (v) => v != null ? _updateTimerDuration(v) : null,
           ),
         ],
-        const SizedBox(height: 24),
+        SizedBox(height: sectionSpacing),
+        SizedBox(
+          width: double.infinity,
+          child: _buildVibrationToggle(l10n),
+        ),
+        if (compact) const Spacer(),
+        SizedBox(height: sectionSpacing),
         _buildSessionPreview(l10n),
       ],
     );
@@ -447,7 +485,62 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     );
   }
 
+  Widget _buildVibrationToggle(AppLocalizations l10n) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _toggleVibration(!_vibrationEnabled),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: _white.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _black, width: 1.5),
+          ),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: _vibrationEnabled,
+                  onChanged: (v) => _toggleVibration(v ?? false),
+                  activeColor: _black,
+                  fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) return _black;
+                    return _white;
+                  }),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    l10n.vibrationEnabled,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: _black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildRightSection(AppLocalizations l10n) {
+    final compact = widget.forValueCard;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -463,7 +556,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: compact ? 6 : 8),
         Text(
           l10n.playerNamesHint,
           style: TextStyle(
@@ -472,7 +565,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             color: _black.withOpacity(0.7),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: compact ? 16 : 24),
         Expanded(
           child: Scrollbar(
             controller: _rightScrollController,
@@ -484,42 +577,50 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               primary: false,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.only(
-                right: 20,
+                right: compact ? 12 : 20,
                 // iOS の入力候補バー分を加味
-                bottom: 16 + MediaQuery.of(context).viewInsets.bottom + 80,
+                bottom: (compact ? 16 : 12) +
+                    MediaQuery.of(context).viewInsets.bottom +
+                    (compact ? 12 : 24),
               ),
               children: [
                 ...List.generate(_config.playerCount, (index) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.only(bottom: compact ? 10 : 12),
                     child: _buildPlayerNameField(l10n, index),
                   );
                 }),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: _startSession,
-                    icon: const Icon(Icons.play_arrow, size: 22, color: _black),
-                    label: Text(
-                      l10n.startSession,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: _black,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                      side: const BorderSide(color: _black, width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      backgroundColor: _mustardYellow.withOpacity(0.4),
-                    ),
-                  ),
-                ),
               ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _startSession,
+              icon: const Icon(Icons.play_arrow, size: 22, color: _black),
+              label: Text(
+                l10n.startSession,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: _black,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: compact ? 12 : 14,
+                ),
+                side: const BorderSide(color: _black, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: _mustardYellow.withOpacity(0.4),
+              ),
             ),
           ),
         ),
@@ -530,6 +631,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   Widget _buildPlayerNameField(AppLocalizations l10n, int index) {
     final pastel = _getPastelColor(index);
     final focusNode = _playerNameFocusNodes[index];
+    final compact = widget.forValueCard;
     return Builder(
       builder: (fieldContext) {
         return Container(
@@ -566,7 +668,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                 fontWeight: FontWeight.normal,
               ),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: compact ? 10 : 12,
+              ),
               isDense: true,
             ),
           ),
