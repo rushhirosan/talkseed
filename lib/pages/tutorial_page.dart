@@ -337,25 +337,22 @@ class _TutorialPageState extends State<TutorialPage> {
             : (isSmallScreen ? 60.0 : 90.0);
 
         Widget iconSection = pageData.icon2 != null
-            ? Transform.rotate(
-                angle: -0.1,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildIconCircle(
-                      pageData.icon,
-                      size: iconSize,
-                      iconSize: iconSizeSingle,
-                    ),
-                    SizedBox(width: isSmallScreen ? 12 : 16),
-                    _buildIconCircle(
-                      pageData.icon2!,
-                      size: iconSize,
-                      iconSize: iconSizeSingle,
-                    ),
-                  ],
-                ),
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildIconCircle(
+                    pageData.icon,
+                    size: iconSize,
+                    iconSize: iconSizeSingle,
+                  ),
+                  SizedBox(width: isSmallScreen ? 12 : 16),
+                  _buildIconCircle(
+                    pageData.icon2!,
+                    size: iconSize,
+                    iconSize: iconSizeSingle,
+                  ),
+                ],
               )
             : Transform.rotate(
                 angle: -0.1,

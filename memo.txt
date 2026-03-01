@@ -153,7 +153,34 @@ SNS共有（Twitter、Instagramなど）
 まずは「タイマー機能」と「プレイヤー管理」を実装することをおすすめします。これらがあると、グループ用途として使えるようになります。
 実装を進めますか？それとも、まず設計を詳細化しますか？
 
+1) Android向け：adb monkey（最短でクラッシュ検出）
+Flutterでも有効。端末に大量イベントを投下して落ちるか見る。
+例:
+adb shell monkey -p <packageId> -v 5000
+画面遷移や入力のルールは無視なので、クラッシュ検出向け。
+2) Flutter公式の integration_test + ランダムジェスチャ
+アプリ内部のWidgetツリーを使って操作できる。
+“画面遷移ルールは守る”ランダム化ができるので UX崩れ検出向け。
+ざっくりの考え方：
+WidgetTester でボタンや入力対象を拾う
+Random でタップ／スクロール／入力を混ぜる
+失敗時はスクショ・ログ保存
+※ ランダム対象を “現在表示中の画面だけ” に絞ると現実的。
+3) 組み合わせ（おすすめ）
+短時間で落ちるか → adb monkey
+UXや表示崩れ → integration_testのランダム操作
+再現性 → Random(seed固定)で同じ乱数シーケンス
+
 claude
+
+F5AE243A-1E99-4F06-AA4E-915695B54281
+
+flutter install 00008030-000171662198402E
+
+flutter test integration_test/monkey_test.dart -d F5AE243A-1E99-4F06-AA4E-915695B54281 \
+  --dart-define=MONKEY_STEPS=200 \
+  --dart-define=MONKEY_SEED=123 \
+  --dart-define=MONKEY_SCREENSHOT_EVERY=25
 
 テスト、コミット、ビルドエラーチェック、秘密情報チェックをして
 

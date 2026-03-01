@@ -326,30 +326,37 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   child: Container(
                     color: _mustardYellow,
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(bottom: 80),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildThemeTitleSection(),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.faceThemesList,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: _black.withOpacity(0.85),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildThemeTitleSection(),
+                                const SizedBox(height: 8),
+                                Text(
+                                  l10n.faceThemesList,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: _black.withOpacity(0.85),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                _buildFaceColumn(),
+                                const SizedBox(height: 12),
+                                _buildRandomResetRow(l10n),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          _buildFaceColumn(),
-                          const SizedBox(height: 12),
-                          _buildRandomResetRow(l10n),
-                          const SizedBox(height: 12),
-                          ..._buildPlayButtons(l10n),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 12),
+                        ..._buildPlayButtons(l10n),
+                      ],
                     ),
                   ),
                 ),

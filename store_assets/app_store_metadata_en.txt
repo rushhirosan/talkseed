@@ -1,0 +1,40 @@
+App Name:
+Talk Seed
+
+Subtitle (30 chars max):
+Pick a topic fast
+
+Promotional Text:
+From team check-ins to 1:1 reflection, pick the right prompt in seconds with dice and curated card decks.
+
+Description:
+Talk Seed helps you choose a conversation topic quickly and naturally.
+Roll a 3D dice for a random prompt, or use curated card decks designed for work and reflection.
+
+Highlights
+- 3D dice to select a topic at random
+- Drag & drop to set your topic candidates
+- Card decks for work and reflection (values, check-in/out, self-reflection, 1:1)
+- Player count and name setup
+- Optional timer
+- Session history stored on device
+- Japanese / English support
+
+Great for
+- Team building and icebreakers
+- Meeting check-ins and wrap-ups
+- 1:1s and personal reflection
+- Casual chats and creative brainstorming
+
+Privacy
+Talk Seed works without account registration and does not send personal data to external servers.
+(Session history is stored locally on your device.)
+
+Keywords (100 chars max, comma-separated):
+icebreaker,team building,conversation prompts,dice,meeting,reflection,1on1,brainstorm
+
+Support URL:
+<SUPPORT_URL>
+
+Privacy Policy URL:
+<PRIVACY_POLICY_URL>
