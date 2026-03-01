@@ -339,7 +339,7 @@ class _TutorialPageState extends State<TutorialPage> {
         Widget iconSection = pageData.icon2 != null
             ? Transform.rotate(
                 angle: -0.1,
-                child: Column(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -348,7 +348,7 @@ class _TutorialPageState extends State<TutorialPage> {
                       size: iconSize,
                       iconSize: iconSizeSingle,
                     ),
-                    SizedBox(height: isSmallScreen ? 8 : 12),
+                    SizedBox(width: isSmallScreen ? 12 : 16),
                     _buildIconCircle(
                       pageData.icon2!,
                       size: iconSize,
