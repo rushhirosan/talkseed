@@ -402,6 +402,18 @@
   "@historyTitle": {
     "description": "履歴一覧のタイトル"
   },
+  "aboutApp": "アプリについて",
+  "@aboutApp": {
+    "description": "情報メニューのツールチップ"
+  },
+  "support": "サポート",
+  "@support": {
+    "description": "サポートページへのリンク"
+  },
+  "privacyPolicy": "プライバシーポリシー",
+  "@privacyPolicy": {
+    "description": "プライバシーポリシーへのリンク"
+  },
   "historyEmptyMessage": "まだ記録がありません",
   "@historyEmptyMessage": {
     "description": "履歴が空のときのメッセージ"

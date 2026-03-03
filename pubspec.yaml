@@ -57,6 +57,9 @@ dependencies:
   
   # チュートリアル表示用
   introduction_screen: ^3.1.14
+
+  # 外部URLを開く（サポート・プライバシーポリシー）
+  url_launcher: ^6.2.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 

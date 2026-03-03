@@ -890,6 +890,24 @@ abstract class AppLocalizations {
   /// **'履歴'**
   String get historyTitle;
 
+  /// 情報メニューのツールチップ
+  ///
+  /// In ja, this message translates to:
+  /// **'アプリについて'**
+  String get aboutApp;
+
+  /// サポートページへのリンク
+  ///
+  /// In ja, this message translates to:
+  /// **'サポート'**
+  String get support;
+
+  /// プライバシーポリシーへのリンク
+  ///
+  /// In ja, this message translates to:
+  /// **'プライバシーポリシー'**
+  String get privacyPolicy;
+
   /// 履歴が空のときのメッセージ
   ///
   /// In ja, this message translates to:

@@ -212,6 +212,18 @@
   "@historyTitle": {
     "description": "History list title"
   },
+  "aboutApp": "About App",
+  "@aboutApp": {
+    "description": "Info menu tooltip"
+  },
+  "support": "Support",
+  "@support": {
+    "description": "Link to support page"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Link to privacy policy"
+  },
   "historyEmptyMessage": "No records yet",
   "@historyEmptyMessage": {
     "description": "Message when history is empty"

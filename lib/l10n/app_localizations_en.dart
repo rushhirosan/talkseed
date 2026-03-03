@@ -425,6 +425,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyTitle => 'History';
 
   @override
+  String get aboutApp => 'About App';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
   String get historyEmptyMessage => 'No records yet';
 
   @override

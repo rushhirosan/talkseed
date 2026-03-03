@@ -11,6 +11,8 @@ Talk Seed ストア素材（ドラフト）
 - store_keywords_ja.txt
 - store_keywords_en.txt
 - screenshot_plan.md
+- store_release_todo.md（ストア公開までの To-Do リスト）
+- FIREBASE_DEPLOY.md（Firebase Hosting デプロイ手順）
 
 次にやること
 1) スクリーンショットを撮影（screenshot_plan.md を参照）

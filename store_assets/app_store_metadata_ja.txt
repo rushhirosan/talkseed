@@ -34,7 +34,7 @@ Keywords (100文字以内、カンマ区切り):
 チームビルディング,アイスブレイク,サイコロ,話題,会議,1on1,内省,ブレインストーミング
 
 Support URL:
-<SUPPORT_URL>
+https://talk-seed.web.app/support.html
 
 Privacy Policy URL:
-<PRIVACY_POLICY_URL>
+https://talk-seed.web.app/privacy.html

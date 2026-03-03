@@ -34,7 +34,7 @@ Keywords (100 chars max, comma-separated):
 icebreaker,team building,conversation prompts,dice,meeting,reflection,1on1,brainstorm
 
 Support URL:
-<SUPPORT_URL>
+https://talk-seed.web.app/support.html
 
 Privacy Policy URL:
-<PRIVACY_POLICY_URL>
+https://talk-seed.web.app/privacy.html

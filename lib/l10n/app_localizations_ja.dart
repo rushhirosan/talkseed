@@ -422,6 +422,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyTitle => '履歴';
 
   @override
+  String get aboutApp => 'アプリについて';
+
+  @override
+  String get support => 'サポート';
+
+  @override
+  String get privacyPolicy => 'プライバシーポリシー';
+
+  @override
   String get historyEmptyMessage => 'まだ記録がありません';
 
   @override
