@@ -1,4 +1,4 @@
-package com.example.theme_dice
+package com.talkseed.app
 
 import io.flutter.embedding.android.FlutterActivity
 

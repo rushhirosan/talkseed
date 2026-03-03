@@ -16,6 +16,7 @@ import 'package:theme_dice/widgets/dice_widget.dart';
 import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
+import 'package:theme_dice/utils/about_links_helper.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
@@ -741,6 +742,13 @@ class _DicePageState extends State<DicePage>
           onPressed: _goBackToSettings,
           tooltip: l10n.backToSettings,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: _black),
+            onPressed: () => AboutLinksHelper.showAboutSheet(context),
+            tooltip: l10n.aboutApp,
+          ),
+        ],
       ),
       body: _showingVoteScreen && _session != null
           ? _buildVoteBody(l10n)

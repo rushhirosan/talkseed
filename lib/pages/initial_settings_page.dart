@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/utils/about_links_helper.dart';
 import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
 import '../utils/preferences_helper.dart';
@@ -270,6 +271,13 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             fontSize: 22,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: _black),
+            onPressed: () => AboutLinksHelper.showAboutSheet(context),
+            tooltip: l10n.aboutApp,
+          ),
+        ],
       ),
       body: SafeArea(
         bottom: true,

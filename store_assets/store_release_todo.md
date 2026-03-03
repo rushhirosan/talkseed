@@ -2,20 +2,21 @@
 
 ## Phase 1: 事前準備（Android Studio 不要）
 
-- [ ] **1.1 アプリ ID / バンドル ID を決める**
+- [x] **1.1 アプリ ID / バンドル ID を決める**
   - 例: `com.yourdomain.talkseed`（`com.example.*` は避ける）
+  - 採用: `com.talkseed.app`
 
-- [ ] **1.2 プライバシーポリシーページを作成・公開**
+- [x] **1.2 プライバシーポリシーページを作成・公開**
   - `web/privacy.html` が作成済み
   - `store_assets/FIREBASE_DEPLOY.md` を参照して Firebase Hosting にデプロイ
   - 取得した URL をメモ（例: `https://<PROJECT_ID>.web.app/privacy.html`）
 
-- [ ] **1.3 サポートページを用意**
+- [x] **1.3 サポートページを用意**
   - `web/support.html` が作成済み（メールアドレスを実際の連絡先に差し替えること）
   - Firebase Hosting にデプロイ済みなら同じドメインで利用可能
   - 取得した URL をメモ（例: `https://<PROJECT_ID>.web.app/support.html`）
 
-- [ ] **1.4 メタデータに URL を反映**
+- [x] **1.4 メタデータに URL を反映**
   - `app_store_metadata_ja.txt` の `<SUPPORT_URL>`, `<PRIVACY_POLICY_URL>` を置き換え
   - `app_store_metadata_en.txt` も同様
 

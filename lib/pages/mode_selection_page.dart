@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
+import 'package:theme_dice/utils/about_links_helper.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
@@ -134,49 +134,8 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     }
   }
 
-  static const String _supportUrl =
-      'https://talk-seed.web.app/support.html';
-  static const String _privacyUrl =
-      'https://talk-seed.web.app/privacy.html';
-
-  Future<void> _openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
   void _showAboutSheet() {
-    final l10n = AppLocalizations.of(context)!;
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.support_agent),
-                title: Text(l10n.support),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  _openUrl(_supportUrl);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: Text(l10n.privacyPolicy),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  _openUrl(_privacyUrl);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    AboutLinksHelper.showAboutSheet(context);
   }
 
   void _showTutorial() {
