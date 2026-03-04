@@ -11,11 +11,12 @@ Talk Seed ストア素材（ドラフト）
 - store_keywords_ja.txt
 - store_keywords_en.txt
 - screenshot_plan.md
+- screenshots/（撮影した画像の保存先：ios/, android/）
 - store_release_todo.md（ストア公開までの To-Do リスト）
 - FIREBASE_DEPLOY.md（Firebase Hosting デプロイ手順）
 
 次にやること
-1) スクリーンショットを撮影（screenshot_plan.md を参照）
+1) スクリーンショットを撮影（screenshot_plan.md を参照）→ screenshots/ に保存
 2) 画像にキャッチコピーを入れる場合は統一デザインで制作
 3) 各ストアの入力フォームに本ファイルの文面を転記
 

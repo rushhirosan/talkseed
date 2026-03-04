@@ -42,26 +42,31 @@
 
 ## Phase 3: 開発環境・ビルド設定
 
-- [ ] **3.1 アプリ ID を変更**
+- [x] **3.1 アプリ ID を変更**
   - Android: `android/app/build.gradle.kts` の `applicationId` と `namespace`
   - iOS: Xcode の Bundle Identifier（`ios/Runner.xcodeproj/project.pbxproj`）
+  - 採用: `com.talkseed.app`
 
-- [ ] **3.2 Android リリース署名の設定**
-  - upload keystore を作成（`keytool`）
-  - `android/key.properties` を作成（`.gitignore` に追加）
+- [x] **3.2 Android リリース署名の設定**
+  - upload keystore を作成（`android/upload-keystore.jks`）
+  - `android/key.properties` を作成（`.gitignore` に追加済み）
   - `build.gradle.kts` に release signing config を追加
+  - ※ key.properties のパスワードはバックアップすること（`android/KEYSTORE_SETUP.md` 参照）
 
 ---
 
 ## Phase 4: ビルド・提出物作成
 
-- [ ] **4.1 Android AAB をビルド**
+- [x] **4.1 Android AAB をビルド**
   - `flutter build appbundle`
-  - 出力: `build/app/outputs/bundle/release/`
+  - 出力: `build/app/outputs/bundle/release/app-release.aab` ✓
 
-- [ ] **4.2 iOS IPA / Xcode Archive**
-  - `flutter build ipa` または Xcode で Archive
-  - Apple Developer 証明書・プロビジョニングの設定が必要
+- [x] **4.2 iOS IPA / Xcode Archive**
+  - Archive 作成済み: `build/ios/archive/Runner.xcarchive`
+  - IPA エクスポート: Apple Developer Program 登録・iOS Distribution 証明書が必要
+  - Xcode で開いて手動エクスポート: `open build/ios/archive/Runner.xcarchive`
+
+※ Android ビルドのため `vibration` を 1.8.4 → 2.1.0 にアップグレード済み（v1 embedding 対応）
 
 ---
 

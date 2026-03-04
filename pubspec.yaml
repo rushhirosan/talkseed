@@ -49,8 +49,8 @@ dependencies:
   # 成功時の紙吹雪演出
   confetti: ^0.7.0
   
-  # 触覚フィードバック
-  vibration: ^1.8.4
+  # 触覚フィードバック（v2 embedding 対応のため 2.x にアップグレード）
+  vibration: ^2.0.0
   
   # ローカルストレージ（初回起動フラグ管理用）
   shared_preferences: ^2.2.2
@@ -75,6 +75,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+# iOS 26.2 シミュレータでの objective_c.framework エラー回避のため
+# path_provider_foundation をプラグイン実装の 2.5.1 に固定
+dependency_overrides:
+  path_provider_foundation: 2.5.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/widgets/web_adaptive_layout.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
@@ -12,7 +13,7 @@ import 'package:theme_dice/pages/tutorial_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SessionRecordService.init();
-  runApp(const MyApp());
+  runApp(const WebAdaptiveLayout(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

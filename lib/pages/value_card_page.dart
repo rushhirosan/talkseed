@@ -64,7 +64,11 @@ class _ValueCardPageState extends State<ValueCardPage> {
     final config = widget.sessionConfig;
     if (config != null) {
       _playerCount = config.playerCount;
-      _gameState = ValueGameLogic.createGame(widget.themes, config.playerCount);
+      var state = ValueGameLogic.createGame(widget.themes, config.playerCount);
+      if (state.needsToDraw) {
+        state = ValueGameLogic.drawCard(state);
+      }
+      _gameState = state;
       _session = GameSession(
         config: config,
         themes: {PolyhedronType.cube: widget.themes},
@@ -103,7 +107,11 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
   void _startGame() {
     setState(() {
-      _gameState = ValueGameLogic.createGame(widget.themes, _playerCount);
+      var state = ValueGameLogic.createGame(widget.themes, _playerCount);
+      if (state.needsToDraw) {
+        state = ValueGameLogic.drawCard(state);
+      }
+      _gameState = state;
     });
   }
 
@@ -408,98 +416,92 @@ class _ValueCardPageState extends State<ValueCardPage> {
             final bottomPadding = MediaQuery.of(context).padding.bottom;
             return SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(20, 12, 20, 24 + bottomPadding),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: _white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: _black, width: 1.5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: _white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: _black, width: 1.5),
+                    ),
+                    child: Text(
+                      l10n.valuePlayerTurn(playerLabel),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
                       ),
-                      child: Text(
-                        l10n.valuePlayerTurn(playerLabel),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: _black,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.valueRound(state.currentRound),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _black.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (state.needsToRank && _rankedCards != null) ...[
+                    Text(
+                      l10n.valueRankPrompt,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: _black.withOpacity(0.8),
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    RepaintBoundary(child: _buildRankingList(_rankedCards!, l10n.valueDiscardLabel)),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _onConfirmRanking,
+                        icon: const Icon(Icons.check, color: _black, size: 20),
+                        label: Text(
+                          l10n.valueConfirmRanking,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: _black,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _mustardYellow,
+                          foregroundColor: _black,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 6),
+                  ],
+                  if (state.needsToDraw) ...[
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: CircularProgressIndicator(color: _black),
+                      ),
+                    ),
                     Text(
-                      l10n.valueRound(state.currentRound),
+                      l10n.valueDrawCard,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         color: _black.withOpacity(0.7),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    if (state.needsToRank && _rankedCards != null) ...[
-                      Text(
-                        l10n.valueRankPrompt,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: _black.withOpacity(0.8),
-                          height: 1.3,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _onConfirmRanking,
-                          icon: const Icon(Icons.check, color: _black, size: 20),
-                          label: Text(
-                            l10n.valueConfirmRanking,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: _black,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _mustardYellow,
-                            foregroundColor: _black,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
-                          ),
-                        ),
-                      ),
-                    ],
-                      if (state.needsToDraw) ...[
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: CircularProgressIndicator(color: _black),
-                          ),
-                        ),
-                        Text(
-                          l10n.valueDrawCard,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: _black.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                      const Spacer(),
-                    ],
-                  ),
-                ),
+                  ],
+                ],
               ),
             );
           },
@@ -520,24 +522,30 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildRankingList(List<String> cards, String discardLabel) {
-    return ReorderableListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      buildDefaultDragHandles: false,
-      itemCount: cards.length,
-      onReorder: _onReorderRanking,
-      itemBuilder: (context, index) {
-        final rank = index + 1;
-        final isLast = index == cards.length - 1;
-        return _RankableCard(
-          key: ValueKey('${cards[index]}-$index'),
-          text: cards[index],
-          rank: rank,
-          index: index,
-          isLast: isLast,
-          discardLabel: discardLabel,
-        );
-      },
+    // 各カード約56px+余白6、semantics エラー回避のため明示的な高さを指定
+    const itemHeight = 62.0;
+    final listHeight = cards.length * itemHeight;
+    return SizedBox(
+      height: listHeight,
+      child: ReorderableListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        buildDefaultDragHandles: false,
+        itemCount: cards.length,
+        onReorder: _onReorderRanking,
+        itemBuilder: (context, index) {
+          final rank = index + 1;
+          final isLast = index == cards.length - 1;
+          return _RankableCard(
+            key: ValueKey('${cards[index]}-$index'),
+            text: cards[index],
+            rank: rank,
+            index: index,
+            isLast: isLast,
+            discardLabel: discardLabel,
+          );
+        },
+      ),
     );
   }
 
@@ -594,99 +602,88 @@ class _ValueCardPageState extends State<ValueCardPage> {
     final hand = state.hands[playerIndex] ?? [];
     final playerLabel = playerIndex + 1;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final bottomPadding = MediaQuery.of(context).padding.bottom;
-        return SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20, 12, 20, 24 + bottomPadding),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: _white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _black, width: 1.5),
-                  ),
-                  child: Text(
-                    l10n.valuePlayerFinalCards(playerLabel),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.valueSharePrompt,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: _black.withOpacity(0.7),
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _buildCardGrid(hand, compact: true),
-                const SizedBox(height: 14),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        if (playerIndex < state.playerCount - 1) {
-                          _onNextSharing();
-                        } else {
-                          // 最後のプレイヤー: セッション中ならそのままセッション設定に戻る（お疲れ画面をスキップ）
-                          if (_session != null) {
-                            _saveValueCardRecord();
-                            Navigator.of(context).pop();
-                          } else {
-                            _onNextSharing();
-                          }
-                        }
-                      },
-                      icon: Icon(
-                        playerIndex < state.playerCount - 1
-                            ? Icons.arrow_forward
-                            : Icons.check_circle,
-                        color: _black,
-                        size: 20,
-                      ),
-                      label: Text(
-                        playerIndex < state.playerCount - 1
-                            ? l10n.valueNext
-                            : l10n.valueSessionCompleteAndBack,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: _black,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _mustardYellow,
-                        foregroundColor: _black,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                ],
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 24 + bottomPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              color: _white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _black, width: 1.5),
+            ),
+            child: Text(
+              l10n.valuePlayerFinalCards(playerLabel),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: _black,
               ),
             ),
           ),
-        );
-      },
+          const SizedBox(height: 6),
+          Text(
+            l10n.valueSharePrompt,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: _black.withOpacity(0.7),
+              height: 1.3,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildCardGrid(hand, compact: true),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                if (playerIndex < state.playerCount - 1) {
+                  _onNextSharing();
+                } else {
+                  if (_session != null) {
+                    _saveValueCardRecord();
+                    Navigator.of(context).pop();
+                  } else {
+                    _onNextSharing();
+                  }
+                }
+              },
+              icon: Icon(
+                playerIndex < state.playerCount - 1
+                    ? Icons.arrow_forward
+                    : Icons.check_circle,
+                color: _black,
+                size: 20,
+              ),
+              label: Text(
+                playerIndex < state.playerCount - 1
+                    ? l10n.valueNext
+                    : l10n.valueSessionCompleteAndBack,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: _black,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _mustardYellow,
+                foregroundColor: _black,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

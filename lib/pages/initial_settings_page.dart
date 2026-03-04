@@ -941,7 +941,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                 crossAxisCount: 1, // 1列表示
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 10,
-                childAspectRatio: 1.8, // 高さを十分に確保（幅:高さ = 1.8:1）
+                childAspectRatio: 1.5, // 英語など長文表示のため高さを多めに確保
               ),
               itemCount: ThemeModel.getThemeCandidates(l10n).length,
               itemBuilder: (context, index) {
@@ -989,7 +989,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             style: const TextStyle(
               color: Colors.black87,
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: 16,
             ),
           ),
         ),
@@ -1002,13 +1002,13 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.black87.withOpacity(0.3), width: 1.5),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Center(
             child: Text(
               theme,
               style: TextStyle(
                 color: Colors.black87.withOpacity(0.5),
-                fontSize: 12,
+                fontSize: 14,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -1026,21 +1026,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.black87, width: 1.5),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Center(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              theme,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.visible,
+          child: Text(
+            theme,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
