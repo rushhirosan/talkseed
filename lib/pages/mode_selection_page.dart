@@ -345,50 +345,56 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10n.modeSelectionTitle,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: _black.withOpacity(0.9),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.casino, size: 36, color: _black.withOpacity(0.85)),
-                  const SizedBox(width: 28),
-                  Icon(Icons.style, size: 36, color: _black.withOpacity(0.85)),
+                  Text(
+                    l10n.modeSelectionTitle,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: _black.withOpacity(0.9),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.casino, size: 36, color: _black.withOpacity(0.85)),
+                      const SizedBox(width: 28),
+                      Icon(Icons.style, size: 36, color: _black.withOpacity(0.85)),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  // みんなで盛り上がる
+                  _buildSectionTitle(l10n.homeSectionEveryone),
+                  const SizedBox(height: 12),
+                  _buildModeButton(
+                    icon: Icons.casino,
+                    label: l10n.homeDiceLabel,
+                    onPressed: _goToDice,
+                    isPrimary: true,
+                  ),
+                  const SizedBox(height: 32),
+                  // 仕事で盛り上がる
+                  _buildSectionTitle(l10n.homeSectionWork),
+                  const SizedBox(height: 12),
+                  _buildModeButton(
+                    icon: Icons.groups,
+                    label: l10n.deckTeamBuilding,
+                    onPressed: () => _goToWorkDeck(CardDeckType.teamBuilding),
+                    isPrimary: false,
+                  ),
+                  const SizedBox(height: 48),
+                  _buildAlwaysOpenCheckboxes(l10n),
                 ],
               ),
-              const SizedBox(height: 32),
-              // みんなで盛り上がる
-              _buildSectionTitle(l10n.homeSectionEveryone),
-              const SizedBox(height: 12),
-              _buildModeButton(
-                icon: Icons.casino,
-                label: l10n.homeDiceLabel,
-                onPressed: _goToDice,
-                isPrimary: true,
-              ),
-              const SizedBox(height: 32),
-              // 仕事で盛り上がる
-              _buildSectionTitle(l10n.homeSectionWork),
-              const SizedBox(height: 12),
-              _buildModeButton(
-                icon: Icons.groups,
-                label: l10n.deckTeamBuilding,
-                onPressed: () => _goToWorkDeck(CardDeckType.teamBuilding),
-                isPrimary: false,
-              ),
-              const SizedBox(height: 48),
-              _buildAlwaysOpenCheckboxes(l10n),
-            ],
+            ),
           ),
         ),
       ),
