@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import '../utils/about_links_helper.dart';
 import '../utils/preferences_helper.dart';
 import 'dart:math' as math;
 
@@ -140,17 +139,12 @@ class _TutorialPageState extends State<TutorialPage> {
         body: SafeArea(
         child: Column(
           children: [
-            // スキップボタンとアプリについて
+            // スキップボタン
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.info_outline, color: _whiteText),
-                    onPressed: () => AboutLinksHelper.showAboutSheet(context),
-                    tooltip: l10n.aboutApp,
-                  ),
                   TextButton(
                     onPressed: _completeTutorial,
                     child: Text(

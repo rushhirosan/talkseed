@@ -143,7 +143,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourThemes => 'Choose topics to talk about';
 
   @override
-  String get useVariantsToChooseTheme => 'Drag to the left side of the screen';
+  String get useVariantsToChooseTheme => 'Drag to the left';
 
   @override
   String get themeSurprised => 'Something surprising';

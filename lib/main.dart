@@ -13,7 +13,12 @@ import 'package:theme_dice/pages/tutorial_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SessionRecordService.init();
-  runApp(const WebAdaptiveLayout(child: MyApp()));
+  runApp(const WebAdaptiveLayout(
+    child: MyApp(),
+    maxContentWidth: 420,
+    maxContentHeight: 900,
+    breakpoint: 520,
+  ));
 }
 
 class MyApp extends StatelessWidget {
