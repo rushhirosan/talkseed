@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// Web 向けに画面幅を制限し、中央配置と背景デザインで体験を最適化するラッパー。
-/// モバイルでは透過（そのまま表示）。Web + 広い画面では中央に最大幅のコンテナで表示。
+/// 広い画面向けに全体の幅を制限し、中央配置で体験を最適化するラッパー。
+/// Web・デスクトップ: 広い画面で中央カード表示。モバイル: 透過。
 class WebAdaptiveLayout extends StatelessWidget {
   const WebAdaptiveLayout({
     super.key,
@@ -13,16 +13,22 @@ class WebAdaptiveLayout extends StatelessWidget {
   });
 
   final Widget child;
-  /// コンテンツの最大幅（px）。モバイルアプリの自然な幅を維持。
+  /// コンテンツの最大幅（px）
   final double maxContentWidth;
   /// コンテンツの最大高さ（px）。null なら制限なし。
   final double? maxContentHeight;
-  /// この幅を超えたら Web 向けレイアウトを適用
+  /// この幅を超えたら幅制限レイアウトを適用
   final double breakpoint;
+
+  bool get _isWideScreenPlatform =>
+      kIsWeb ||
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.linux;
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb) return child;
+    if (!_isWideScreenPlatform) return child;
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -76,6 +76,15 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
+  # アプリアイコン生成
+  flutter_launcher_icons: ^0.14.3
+
+# アプリアイコン設定
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+
 # iOS 26.2 シミュレータでの objective_c.framework エラー回避のため
 # path_provider_foundation をプラグイン実装の 2.5.1 に固定
 dependency_overrides:

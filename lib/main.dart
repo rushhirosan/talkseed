@@ -15,9 +15,9 @@ Future<void> main() async {
   await SessionRecordService.init();
   runApp(const WebAdaptiveLayout(
     child: MyApp(),
-    maxContentWidth: 420,
+    maxContentWidth: 380,
     maxContentHeight: 900,
-    breakpoint: 520,
+    breakpoint: 380,
   ));
 }
 

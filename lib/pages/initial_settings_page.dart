@@ -321,13 +321,16 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               );
             }
             return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
+                Flexible(
                   flex: 1,
-                  child: Container(
-                    color: _mustardYellow,
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    child: Column(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 360),
+                    child: Container(
+                      color: _mustardYellow,
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                      child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
@@ -361,12 +364,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                     ),
                   ),
                 ),
-                Expanded(
+                ),
+                Flexible(
                   flex: 1,
-                  child: Container(
-                    color: _white,
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    child: _buildThemeCandidatesSection(),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 380),
+                      child: Container(
+                        color: _white,
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                        child: _buildThemeCandidatesSection(),
+                      ),
+                    ),
                   ),
                 ),
               ],
