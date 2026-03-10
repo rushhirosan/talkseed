@@ -336,23 +336,27 @@ class _TutorialPageState extends State<TutorialPage> {
             ? (isSmallScreen ? 36.0 : 48.0)
             : (isSmallScreen ? 60.0 : 90.0);
 
+        // 2つアイコンの Row は FittedBox で包み、overflow を防止
         Widget iconSection = pageData.icon2 != null
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildIconCircle(
-                    pageData.icon,
-                    size: iconSize,
-                    iconSize: iconSizeSingle,
-                  ),
-                  SizedBox(width: isSmallScreen ? 12 : 16),
-                  _buildIconCircle(
-                    pageData.icon2!,
-                    size: iconSize,
-                    iconSize: iconSizeSingle,
-                  ),
-                ],
+            ? FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildIconCircle(
+                      pageData.icon,
+                      size: iconSize,
+                      iconSize: iconSizeSingle,
+                    ),
+                    SizedBox(width: isSmallScreen ? 12 : 16),
+                    _buildIconCircle(
+                      pageData.icon2!,
+                      size: iconSize,
+                      iconSize: iconSizeSingle,
+                    ),
+                  ],
+                ),
               )
             : Transform.rotate(
                 angle: -0.1,
