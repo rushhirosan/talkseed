@@ -333,9 +333,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
         ],
         SizedBox(height: sectionSpacing),
-        SizedBox(
-          width: double.infinity,
-          child: _buildVibrationToggle(l10n),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: _buildVibrationIconButton(l10n),
         ),
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),
@@ -485,56 +485,40 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     );
   }
 
-  Widget _buildVibrationToggle(AppLocalizations l10n) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _toggleVibration(!_vibrationEnabled),
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: _white.withOpacity(0.5),
+  /// バイブをアイコンボタンで表示（サイコロ設定と同じスタイル）
+  Widget _buildVibrationIconButton(AppLocalizations l10n) {
+    return Tooltip(
+      message: l10n.vibrationEnabled,
+      child: OutlinedButton(
+        onPressed: () => _toggleVibration(!_vibrationEnabled),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(12),
+          minimumSize: const Size(48, 48),
+          side: const BorderSide(color: _black, width: 1.5),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _black, width: 1.5),
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: _vibrationEnabled,
-                  onChanged: (v) => _toggleVibration(v ?? false),
-                  activeColor: _black,
-                  fillColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) return _black;
-                    return _white;
-                  }),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.vibrationEnabled,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: _black,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    maxLines: 1,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          backgroundColor: _vibrationEnabled ? _black : _white.withOpacity(0.6),
+          foregroundColor: _vibrationEnabled ? _white : _black,
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused) ||
+                states.contains(WidgetState.hovered)) {
+              return const BorderSide(color: _black, width: 2.5);
+            }
+            return const BorderSide(color: _black, width: 1.5);
+          }),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.pressed)) {
+              return _vibrationEnabled
+                  ? _white.withOpacity(0.12)
+                  : _black.withOpacity(0.08);
+            }
+            return null;
+          }),
         ),
+        child: const Icon(Icons.vibration, size: 24),
       ),
     );
   }
