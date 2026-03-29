@@ -1,113 +1,119 @@
-# Theme Dice プロジェクト - Cursor Rules
+# Project: Theme Dice
 
-## プロジェクト概要
-- Flutter アプリケーション（iOS/Android対応）
-- テーマをサイコロで選ぶアプリ
-- 3Dサイコロアニメーション機能
+## Project Overview
+- Flutter application (iOS / Android / Web)
+- Mobile-first experience
+- Dice-based theme selection app
+- 3D dice animation
 
-## 言語・フレームワーク
-- **言語**: Dart 3.10.4+
-- **フレームワーク**: Flutter
-- **UI**: Material Design 3（Material 3）
+---
 
-## UIコンポーネント規約
+## Tech Stack
+- Language: Dart 3.10.4+
+- Framework: Flutter
+- UI: Material Design 3
 
-### Material 3コンポーネントの使用が必須
-**UIコンポーネントは必ずFlutterのMaterial 3コンポーネントを使用し、公式ドキュメントに従うこと**
+---
 
-- 公式ドキュメント: https://docs.flutter.dev/ui/widgets/material
-- Material 3がデフォルト（Flutter 3.16以降）
-- `useMaterial3: true` を維持すること
+## UI Rules
 
-### 使用可能なMaterial 3コンポーネント
-公式ドキュメントに記載されている以下のカテゴリのコンポーネントを使用：
+### Material 3 (Required)
+- Always use Flutter Material 3 components
+- Follow official documentation:
+  https://docs.flutter.dev/ui/widgets/material
+- Keep `useMaterial3: true`
+
+### Component Usage
+Use official Material 3 components whenever possible.
 
 #### Actions
-- `ElevatedButton`, `FilledButton`, `OutlinedButton`, `TextButton`
-- `FloatingActionButton`, `ExtendedFloatingActionButton`
-- `IconButton`, `SegmentedButton`
+ElevatedButton, FilledButton, OutlinedButton, TextButton  
+FloatingActionButton, IconButton
 
-#### Communication
-- `Badge`, `LinearProgressIndicator`, `CircularProgressIndicator`
-- `SnackBar`
+#### Feedback
+SnackBar, LinearProgressIndicator, CircularProgressIndicator
 
-#### Containment
-- `AlertDialog`, `BottomSheet`
-- `Card`, `Divider`, `ListTile`
+#### Layout / Containment
+Card, Divider, ListTile, AlertDialog, BottomSheet
 
 #### Navigation
-- `AppBar`, `BottomAppBar`
-- `NavigationBar`, `NavigationDrawer`, `NavigationRail`
-- `TabBar`
+AppBar, NavigationBar, NavigationDrawer, TabBar
 
-#### Selection
-- `Checkbox`, `Chip`, `DatePicker`, `Menu`
-- `Radio`, `Slider`, `Switch`, `TimePicker`
+#### Inputs
+TextField, TextFormField, Switch, Checkbox, Slider
 
-#### Text inputs
-- `TextField`, `TextFormField`
+### Custom Widgets
+- Only create when Material components are insufficient
+- Prefer extending existing components
+- Follow Material 3 guidelines
 
-### カスタムウィジェット
-- 既存のMaterial 3コンポーネントで実現できない場合のみ、カスタムウィジェットを作成
-- カスタムウィジェットはMaterial 3のデザインガイドラインに従う
-- 既存のMaterial 3コンポーネントを拡張することを優先
+---
 
-### コンポーネントの使い方
-- 公式ドキュメント（https://docs.flutter.dev/ui/widgets/material）の例とAPIに従う
-- パラメータやスタイルは公式ドキュメントで推奨されている方法を使用
-- 不明な点がある場合は公式ドキュメントを参照
+## Architecture
 
-## コーディング規約
+### File Structure
+- lib/models/
+- lib/pages/
+- lib/widgets/
+- lib/services/
+- lib/utils/
+- lib/polyhedrons/
+- lib/l10n/
 
-### ファイル構造
-- `lib/models/` - データモデル
-- `lib/pages/` - ページ/画面
-- `lib/widgets/` - 再利用可能なウィジェット
-- `lib/utils/` - ユーティリティ関数
-- `lib/polyhedrons/` - 多面体関連のコード
+---
 
-### 命名規則
-- ファイル名: `snake_case.dart`
-- クラス名: `PascalCase`
-- 変数・関数名: `camelCase`
-- 定数: `lowerCamelCase` または `UPPER_SNAKE_CASE`
+## State Management Policy
+- 現状は StatefuleWidget + service層中心
+- Riverpod / provider を導入する場合はどちらかに統一
+- BLoCは採用しない
 
-### コメント
-- 日本語でのコメントを推奨
-- 重要な機能や複雑なロジックには説明を追加
-- 削除されたコードの理由を明記（例: `// 注意: 正六面体のみをサポート...`）
+---
 
-### コード品質
-- 一貫したスタイルを維持
-- 未使用コードは削除（または明確な理由を記載）
-- Widgetは適切に分割して再利用性を高める
-- `const`コンストラクタを積極的に使用
+## Platform Strategy
+- Mobile-first（最重要）
+- Webはレイアウト調整のみ（分岐しすぎない）
 
-## 現在の制約事項
-- 正六面体（cube）のみをサポート（他の多面体タイプは将来実装予定）
-- 正四面体・正八面体のコードは `lib/polyhedrons/tetrahedron_octahedron_preserved.dart` に保存
+---
 
-## 依存パッケージ
-- `vector_math`: 3D計算
-- `vibration`: 触覚フィードバック
-- `shared_preferences`: ローカルストレージ
-- `introduction_screen`: チュートリアル表示
+## Coding Conventions
 
-## セキュリティ
-- 環境変数や秘密情報は絶対にコミットしない
-- `.env` ファイルは `.gitignore` に含める
-- APIキーなどは環境変数で管理
-- コミット前には `git status` と `git diff` を確認
+### Naming
+- snake_case.dart
+- PascalCase
+- camelCase
 
-## UI/UX
-- Material Design 3 のガイドラインに従う
-- アクセシビリティを考慮（ツールチップ、セマンティクス）
-- 日本語UI対応
+### Code Quality
+- constを積極的に使用
+- Widgetは適切に分割
+- 未使用コードは削除
 
-## パフォーマンス
-- 不要な再ビルドを避ける（`const` コンストラクタの活用）
-- アニメーションは適切なカーブと持続時間を設定
+### Comments
+- 日本語コメントOK（whyを書く）
+- 複雑なロジックには説明を追加
 
-## テスト
-- 可能な限りテストを書く
-- Widget テストを推奨
+---
+
+## Performance
+- 不要なrebuildを避ける
+- Animationは適切なdurationとcurve
+
+---
+
+## Security
+- secretsは絶対にコミットしない
+- .envはgitignore
+- commit前に git status / diff確認
+
+---
+
+## AI Development Rules
+- 既存構造を理解してから変更する
+- 小さな差分で変更する
+- 不明点は確認する
+
+---
+
+## Pre-Commit Checklist
+- flutter analyze を通る前提で変更する
+- 不要ファイルが含まれていないか確認
+- commit messageは英語で提案（自動commitしない）

@@ -95,6 +95,10 @@ dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Flutter CLI が毎回 UIScene + ImplicitEngine に書き換えるのを止める（実機で真っ白になる構成の再発防止）
+  config:
+    enable-uiscene-migration: false
+
   generate: true
 
   # The following line ensures that the Material Icons font is

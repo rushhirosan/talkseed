@@ -264,3 +264,11 @@ flutter test integration_test/monkey_test.dart -d F5AE243A-1E99-4F06-AA4E-915695
   │ 保守性         │ ⭐⭐⭐ (テスト追加済み)     │
   └────────────────┴─────────────────────────────┘
   最優先で取り組むべき: main.dartの分割 済み・テスト実装 済み → 次: エラーハンドリング
+
+
+2つの方法の違い
+方法	説明
+Transporter	ローカルで flutter build ipa → IPA を Transporter でアップロード。今の運用でOK
+Xcode Cloud	Apple のクラウドで自動ビルド。Git への push でビルドを実行する仕組み
+
+# GitHub PAT はリポジトリに書かない。必要ならローカルの ~/.netrc や環境変数のみ。

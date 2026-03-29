@@ -33,32 +33,42 @@ class WebAdaptiveLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
+        // 制約が不正な場合（初回レイアウト等）は子をそのまま返す
+        if (!width.isFinite || width <= 0 || !height.isFinite || height <= 0) {
+          return child;
+        }
         if (width <= breakpoint) return child;
+
+        // 広い画面では余白を残しつつ maxContentWidth まで拡大
+        final effectiveWidth =
+            (width - 80).clamp(0.0, maxContentWidth).toDouble();
 
         return Container(
           width: double.infinity,
           height: constraints.maxHeight,
           decoration: const BoxDecoration(
+            // Web向け: 黄色と重ならない落ち着いた中性色。アプリ内の黄色アクセントが際立つ
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFFFEB3B), // mustard yellow (アプリのメイン背景と統一)
-                Color(0xFFFFF176),
-                Color(0xFFFFE082),
+                Color(0xFFF5F6F8), // 明るいグレー
+                Color(0xFFE8EAED), // ソフトグレー
+                Color(0xFFE1E4E8), // やや濃いめのグレー
               ],
               stops: [0.0, 0.5, 1.0],
             ),
           ),
           child: Center(
             child: Material(
-              elevation: 12,
-              shadowColor: Colors.black38,
-              borderRadius: BorderRadius.circular(20),
+              elevation: 16,
+              shadowColor: Colors.black26,
+              borderRadius: BorderRadius.circular(24),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(24),
                 child: SizedBox(
-                  width: maxContentWidth,
+                  width: effectiveWidth,
                   height: maxContentHeight != null
                       ? constraints.maxHeight.clamp(0, maxContentHeight!)
                       : constraints.maxHeight,

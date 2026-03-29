@@ -620,7 +620,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     _initializeThemes(l10n);
     final currentThemes = _themes![_selectedType] ?? [];
     final controllers = _controllers[_selectedType] ?? [];
-    const double slotHeight = 56;
+    const double slotHeight = 64;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -900,7 +900,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   Widget _buildThemeCandidatesSection() {
     final l10n = AppLocalizations.of(context)!;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // 中央の指示テキスト
         Padding(
@@ -927,31 +927,39 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           ),
         ),
         Expanded(
-          child: Scrollbar(
-            controller: _rightScrollController,
-            thumbVisibility: true,
-            thickness: 6,
-            radius: const Radius.circular(3),
-            child: GridView.builder(
-              controller: _rightScrollController,
-              primary: false,
-              physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics(),
-              ),
-              padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1, // 1列表示
-                crossAxisSpacing: 0,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.5, // 英語など長文表示のため高さを多めに確保
-              ),
-              itemCount: ThemeModel.getThemeCandidates(l10n).length,
-              itemBuilder: (context, index) {
-                final candidates = ThemeModel.getThemeCandidates(l10n);
-                final candidate = candidates[index];
-                return _buildDraggableCandidate(candidate, index);
-              },
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final w = constraints.maxWidth;
+              // モバイル（幅 280 未満）: 従来どおり 1 列・高さ多め
+              // 広い画面: 複数列・固定高さでコンパクトに
+              final isWide = w >= 280;
+              return Scrollbar(
+                controller: _rightScrollController,
+                thumbVisibility: true,
+                thickness: 6,
+                radius: const Radius.circular(3),
+                child: GridView.builder(
+                  controller: _rightScrollController,
+                  primary: false,
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: isWide ? 180 : w,
+                    mainAxisExtent: 64,
+                    crossAxisSpacing: isWide ? 8 : 0,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: ThemeModel.getThemeCandidates(l10n).length,
+                  itemBuilder: (context, index) {
+                    final candidates = ThemeModel.getThemeCandidates(l10n);
+                    final candidate = candidates[index];
+                    return _buildDraggableCandidate(candidate, index);
+                  },
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -1019,27 +1027,26 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           ),
         ),
       ),
-      child: Container(
-        constraints: const BoxConstraints(
-          minHeight: 60, // 最小高さを確保
-        ),
-        decoration: BoxDecoration(
-          color: pastelColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black87, width: 1.5),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Center(
-          child: Text(
-            theme,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 13,
-              fontWeight: FontWeight.normal,
+      child: SizedBox.expand(
+        child: Container(
+          decoration: BoxDecoration(
+            color: pastelColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.black87, width: 1.5),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Center(
+            child: Text(
+              theme,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 13,
+                fontWeight: FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),

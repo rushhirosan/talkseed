@@ -12,13 +12,75 @@ import 'package:theme_dice/pages/tutorial_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SessionRecordService.init();
-  runApp(const WebAdaptiveLayout(
-    child: MyApp(),
-    maxContentWidth: 380,
-    maxContentHeight: 900,
-    breakpoint: 380,
-  ));
+  // Hive 初期化を runApp 後に回し、最初のフレームまでブロックしない（端末差で真っ白に見えるのを防ぐ）
+  runApp(const _HiveBootstrapApp());
+}
+
+/// [SessionRecordService] 初期化後に本番の [MyApp] を載せる。
+class _HiveBootstrapApp extends StatefulWidget {
+  const _HiveBootstrapApp();
+
+  @override
+  State<_HiveBootstrapApp> createState() => _HiveBootstrapAppState();
+}
+
+class _HiveBootstrapAppState extends State<_HiveBootstrapApp> {
+  bool _ready = false;
+  Object? _initError;
+
+  @override
+  void initState() {
+    super.initState();
+    _initHive();
+  }
+
+  Future<void> _initHive() async {
+    try {
+      await SessionRecordService.init();
+      if (mounted) setState(() => _ready = true);
+    } catch (e) {
+      if (mounted) setState(() => _initError = e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_initError != null) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                '初期化に失敗しました。\n$_initError',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_ready) {
+      return MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: Scaffold(
+          backgroundColor: const Color(0xFFF3E5F5),
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+    return const WebAdaptiveLayout(
+      maxContentWidth: 720,
+      maxContentHeight: 900,
+      breakpoint: 480,
+      child: MyApp(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
