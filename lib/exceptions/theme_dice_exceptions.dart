@@ -1,4 +1,4 @@
-/// Talk Seed アプリのエラーハンドリング用基底例外
+/// Talk Shuffle アプリのエラーハンドリング用基底例外
 sealed class ThemeDiceException implements Exception {
   ThemeDiceException(this.message, [this.cause]);
 

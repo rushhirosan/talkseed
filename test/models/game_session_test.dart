@@ -64,6 +64,22 @@ void main() {
       expect(session.rounds.first.roundNumber, 1);
     });
 
+    test('replaceRoundResultForCurrentTurn keeps only last theme for same turn', () {
+      final session = GameSession(config: config, themes: {});
+      session.startSession();
+      session.replaceRoundResultForCurrentTurn('Theme A');
+      expect(session.rounds, hasLength(1));
+      expect(session.rounds.first.theme, 'Theme A');
+      session.replaceRoundResultForCurrentTurn('Theme B');
+      expect(session.rounds, hasLength(1));
+      expect(session.rounds.first.theme, 'Theme B');
+      session.nextPlayer();
+      session.replaceRoundResultForCurrentTurn('Theme C');
+      expect(session.rounds, hasLength(2));
+      expect(session.rounds.last.theme, 'Theme C');
+      expect(session.rounds.first.theme, 'Theme B');
+    });
+
     test('endSession sets isActive to false', () {
       final session = GameSession(config: config, themes: {});
       session.startSession();

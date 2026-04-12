@@ -733,8 +733,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeValueIntegrity => '信じていることに従って行動する';
 
   @override
-  String valuePlayerTurn(int player) {
-    return 'プレイヤー$playerの番';
+  String valuePlayerTurn(String displayName) {
+    return '$displayNameの番';
   }
 
   @override
@@ -750,8 +750,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get valueDiscardLabel => '手放す';
 
   @override
-  String valuePlayerFinalCards(int player) {
-    return 'プレイヤー$playerが残した5枚';
+  String valuePlayerFinalCards(String displayName) {
+    return '$displayNameが残した5枚';
   }
 
   @override

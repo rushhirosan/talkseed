@@ -1,4 +1,4 @@
-# Talk Seed ストア公開 To-Do リスト
+# Talk Shuffle ストア公開 To-Do リスト
 
 ## Phase 1: 事前準備（Android Studio 不要）
 

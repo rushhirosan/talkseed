@@ -188,7 +188,7 @@ flutter test integration_test/monkey_test.dart -d F5AE243A-1E99-4F06-AA4E-915695
 
   📊 プロジェクト概要
 
-  Talk Seed - Flutter製のコミュニケーション支援アプリ
+  Talk Shuffle - Flutter製のコミュニケーション支援アプリ
   - 3Dサイコロゲーム + 仕事用カードゲーム
   - マルチプラットフォーム対応（iOS/Android/macOS/Web）
   - 日本語・英語対応

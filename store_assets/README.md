@@ -1,4 +1,4 @@
-Talk Seed ストア素材（ドラフト）
+Talk Shuffle ストア素材（ドラフト）
 
 このフォルダは App Store / Google Play 提出用のテキスト素材と
 スクリーンショット作成ガイドをまとめたものです。

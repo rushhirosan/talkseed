@@ -217,7 +217,7 @@ class _ValueCardTutorialPageState extends State<ValueCardTutorialPage> {
                     ],
                   ),
                   child: Text(
-                    'Talk Seed',
+                    'Talk Shuffle',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,

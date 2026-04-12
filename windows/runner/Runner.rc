@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.talkseed" "\0"
-            VALUE "FileDescription", "theme_dice" "\0"
+            VALUE "FileDescription", "Talk Shuffle" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "theme_dice" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.talkseed. All rights reserved." "\0"
             VALUE "OriginalFilename", "theme_dice.exe" "\0"
-            VALUE "ProductName", "theme_dice" "\0"
+            VALUE "ProductName", "Talk Shuffle" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

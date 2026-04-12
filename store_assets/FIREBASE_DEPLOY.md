@@ -1,4 +1,4 @@
-# Talk Seed - Firebase Hosting デプロイ手順
+# Talk Shuffle - Firebase Hosting デプロイ手順
 
 プライバシーポリシー・サポートページを Firebase Hosting で公開する手順です。
 

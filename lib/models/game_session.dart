@@ -64,6 +64,16 @@ class GameSession {
       timestamp: DateTime.now(),
     ));
   }
+
+  /// 現在のプレイヤー・ラウンドの結果を記録（同ターンの直前の出目は破棄）
+  ///
+  /// サイコロの振り直しで履歴に複数行たまらないようにする。トピックの複数枚引きなどは [addRoundResult] を使う。
+  void replaceRoundResultForCurrentTurn(String theme) {
+    rounds.removeWhere(
+      (r) => r.roundNumber == currentRound && r.playerIndex == currentPlayerIndex,
+    );
+    addRoundResult(theme);
+  }
   
   /// セッションを終了
   void endSession() {

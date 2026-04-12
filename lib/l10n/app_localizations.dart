@@ -1499,8 +1499,8 @@ abstract class AppLocalizations {
   /// No description provided for @valuePlayerTurn.
   ///
   /// In ja, this message translates to:
-  /// **'プレイヤー{player}の番'**
-  String valuePlayerTurn(int player);
+  /// **'{displayName}の番'**
+  String valuePlayerTurn(String displayName);
 
   /// No description provided for @valueDiscardPrompt.
   ///
@@ -1529,8 +1529,8 @@ abstract class AppLocalizations {
   /// No description provided for @valuePlayerFinalCards.
   ///
   /// In ja, this message translates to:
-  /// **'プレイヤー{player}が残した5枚'**
-  String valuePlayerFinalCards(int player);
+  /// **'{displayName}が残した5枚'**
+  String valuePlayerFinalCards(String displayName);
 
   /// No description provided for @valueNext.
   ///

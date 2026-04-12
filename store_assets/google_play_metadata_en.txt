@@ -1,11 +1,11 @@
 App Name:
-Talk Seed
+Talk Shuffle
 
 Short description (80 chars max):
 Pick a topic fast with 3D dice and card decks for teams and 1:1s.
 
 Full description:
-Talk Seed helps you choose a conversation topic quickly and naturally.
+Talk Shuffle helps you choose a conversation topic quickly and naturally.
 Roll a 3D dice for a random prompt, or use curated card decks for work and reflection.
 
 Highlights

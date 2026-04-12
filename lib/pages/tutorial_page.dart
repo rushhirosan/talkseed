@@ -276,7 +276,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     ],
                   ),
                   child: Text(
-                    'Talk Seed',
+                    'Talk Shuffle',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,

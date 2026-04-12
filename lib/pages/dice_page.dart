@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -46,6 +47,9 @@ class _DicePageState extends State<DicePage>
   String? _selectedTheme;
   int? _selectedFaceNumber;
   final Random _random = Random();
+
+  /// セッションなしプレイで履歴に出すレコードID（振り直し時は直前を削除して差し替え）
+  String? _soloDiceRecordId;
 
   // 多面体タイプとテーマの管理
   late PolyhedronType _selectedPolyhedronType;
@@ -325,9 +329,9 @@ class _DicePageState extends State<DicePage>
       _startRotationZ = _endRotationZ;
     });
 
-    // セッションがある場合は結果を記録
+    // セッションがある場合は結果を記録（振り直しは同ターンの直前出目を上書き）
     if (_session != null && _selectedTheme != null) {
-      _session!.addRoundResult(_selectedTheme!);
+      _session!.replaceRoundResultForCurrentTurn(_selectedTheme!);
       // タイマーを開始（有効な場合）
       if (_session!.config.enableTimer && _timerService != null) {
         _timerService!.reset(_session!.config.timerDuration);
@@ -335,11 +339,7 @@ class _DicePageState extends State<DicePage>
       }
     }
     if (_session == null && _selectedTheme != null) {
-      _saveDiceRecord(
-        topics: [_selectedTheme!],
-        playerCount: 1,
-        voteResults: const {},
-      );
+      unawaited(_persistSoloDiceRecord(_selectedTheme!));
     }
 
     // 成功時の演出
@@ -419,6 +419,24 @@ class _DicePageState extends State<DicePage>
       voteResults: voteResults ?? {},
     );
     SessionRecordService.addRecord(record);
+  }
+
+  /// ソロ時は振り直しごとに履歴を差し替え（最後の出目だけ残す）
+  Future<void> _persistSoloDiceRecord(String theme) async {
+    if (_soloDiceRecordId != null) {
+      await SessionRecordService.deleteRecord(_soloDiceRecordId!);
+    }
+    final record = SessionRecord.create(
+      mode: 'dice',
+      topics: [theme],
+      selectedCardsByPlayer: {},
+      playerCount: 1,
+      voteResults: const {},
+    );
+    await SessionRecordService.addRecord(record);
+    if (mounted) {
+      _soloDiceRecordId = record.id;
+    }
   }
 
   /// 投票を開始

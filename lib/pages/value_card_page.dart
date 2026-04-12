@@ -238,6 +238,18 @@ class _ValueCardPageState extends State<ValueCardPage> {
   /// セッション設定ありのときは設定画面で人数を決めているためセットアップ画面をスキップ
   bool get _hasSessionConfig => widget.sessionConfig != null;
 
+  /// カード画面用の表示名（カスタム名があればそれ、なければ「プレイヤーn」）
+  String _playerDisplayLabel(AppLocalizations l10n, int index) {
+    final config = widget.sessionConfig;
+    if (config != null) {
+      final name = config.getPlayerName(index);
+      if (name != null && name.isNotEmpty) {
+        return name;
+      }
+    }
+    return l10n.playerName(index + 1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -405,7 +417,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
   Widget _buildPlaying(AppLocalizations l10n, ValueGameState state) {
     final hand = state.hands[state.currentPlayerIndex] ?? [];
-    final playerLabel = state.currentPlayerIndex + 1;
+    final showTurnBanner = _session == null;
 
     // 引く必要がある場合は自動で1枚引く
     if (state.needsToDraw) {
@@ -432,24 +444,28 @@ class _ValueCardPageState extends State<ValueCardPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: _white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _black, width: 1.5),
-                    ),
-                    child: Text(
-                      l10n.valuePlayerTurn(playerLabel),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: _black,
+                  if (showTurnBanner) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: _white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _black, width: 1.5),
+                      ),
+                      child: Text(
+                        l10n.valuePlayerTurn(
+                          _playerDisplayLabel(l10n, state.currentPlayerIndex),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: _black,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
+                    const SizedBox(height: 6),
+                  ],
                   Text(
                     l10n.valueRound(state.currentRound),
                     textAlign: TextAlign.center,
@@ -520,8 +536,9 @@ class _ValueCardPageState extends State<ValueCardPage> {
         ),
         if (_playerSwitchBannerPlayer != null)
           _PlayerSwitchBanner(
-            playerLabel: _playerSwitchBannerPlayer! + 1,
-            message: l10n.valuePlayerTurn(_playerSwitchBannerPlayer! + 1),
+            message: l10n.valuePlayerTurn(
+              _playerDisplayLabel(l10n, _playerSwitchBannerPlayer!),
+            ),
           ),
         if (_discardAnimationCard != null)
           _DiscardCardOverlay(
@@ -612,7 +629,6 @@ class _ValueCardPageState extends State<ValueCardPage> {
   Widget _buildSharing(AppLocalizations l10n, ValueGameState state) {
     final playerIndex = state.sharingPlayerIndex;
     final hand = state.hands[playerIndex] ?? [];
-    final playerLabel = playerIndex + 1;
 
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return SingleChildScrollView(
@@ -629,7 +645,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
               border: Border.all(color: _black, width: 1.5),
             ),
             child: Text(
-              l10n.valuePlayerFinalCards(playerLabel),
+              l10n.valuePlayerFinalCards(_playerDisplayLabel(l10n, playerIndex)),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -911,11 +927,9 @@ class _DiscardCardOverlayState extends State<_DiscardCardOverlay>
 
 /// プレイヤー切り替え時に表示するバナー
 class _PlayerSwitchBanner extends StatefulWidget {
-  final int playerLabel;
   final String message;
 
   const _PlayerSwitchBanner({
-    required this.playerLabel,
     required this.message,
   });
 

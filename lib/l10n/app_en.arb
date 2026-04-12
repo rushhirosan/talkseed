@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Talk Seed",
+  "appTitle": "Talk Shuffle",
   "settings": "Settings",
   "save": "Save",
   "backToSettings": "Back to Settings",
@@ -33,7 +33,7 @@
   "faceThemesList": "Display per face",
   "themeCandidates": "Theme Candidates",
   "dragAndDropHint": "Drag & drop to the text boxes on the left",
-  "tutorialWelcome": "Welcome to Talk Seed!",
+  "tutorialWelcome": "Welcome to Talk Shuffle!",
   "tutorialWelcomeBody": "Pick a theme by rolling dice, or draw a card to talk about your values. Use it to get everyone excited or at work.",
   "tutorialSetTheme": "Set your themes",
   "tutorialSetThemeBody": "Set themes for each face by dragging from the candidates or typing them in.",
@@ -348,7 +348,7 @@
     }
   },
   "sessionPreviewNoTimer": "No timer",
-  "modeSelectionTitle": "Welcome to Talk Seed!\nChoose how to play",
+  "modeSelectionTitle": "Welcome to Talk Shuffle!\nChoose how to play",
   "homeSectionEveryone": "Roll the dice and get excited with random topics",
   "homeSectionWork": "Choose cards and share your values with each other",
   "homeDiceLabel": "Random topics",
@@ -408,11 +408,11 @@
   "themeRespect": "Respect diversity",
   "themeValuePriority": "Prioritize what matters",
   "themeValueIntegrity": "Act on your beliefs",
-  "valuePlayerTurn": "Player {player}'s turn",
+  "valuePlayerTurn": "{displayName}'s turn",
   "@valuePlayerTurn": {
     "placeholders": {
-      "player": {
-        "type": "int"
+      "displayName": {
+        "type": "String"
       }
     }
   },
@@ -420,11 +420,11 @@
   "valueRankPrompt": "Rank the 6 cards by importance (top = keep, bottom = discard)",
   "valueConfirmRanking": "Confirm and discard",
   "valueDiscardLabel": "Discard",
-  "valuePlayerFinalCards": "Player {player}'s 5 remaining cards",
+  "valuePlayerFinalCards": "{displayName}'s 5 remaining cards",
   "@valuePlayerFinalCards": {
     "placeholders": {
-      "player": {
-        "type": "int"
+      "displayName": {
+        "type": "String"
       }
     }
   },

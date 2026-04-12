@@ -1,6 +1,6 @@
 {
   "@@locale": "ja",
-  "appTitle": "Talk Seed",
+  "appTitle": "Talk Shuffle",
   "@appTitle": {
     "description": "アプリのタイトル"
   },
@@ -109,7 +109,7 @@
   "@dragAndDropHint": {
     "description": "ドラッグ＆ドロップの説明"
   },
-  "tutorialWelcome": "Talk Seedへようこそ！",
+  "tutorialWelcome": "Talk Shuffleへようこそ！",
   "@tutorialWelcome": {
     "description": "チュートリアル1ページ目のタイトル"
   },
@@ -559,7 +559,7 @@
     }
   },
   "sessionPreviewNoTimer": "タイマーなし",
-  "modeSelectionTitle": "Welcome to TalkSeed!\n遊び方を選んでください",
+  "modeSelectionTitle": "Welcome to Talk Shuffle!\n遊び方を選んでください",
   "@modeSelectionTitle": {
     "description": "モード選択画面のタイトル"
   },
@@ -643,11 +643,11 @@
   "themeRespect": "多様性を尊重する",
   "themeValuePriority": "大切なことを優先する",
   "themeValueIntegrity": "信じていることに従って行動する",
-  "valuePlayerTurn": "プレイヤー{player}の番",
+  "valuePlayerTurn": "{displayName}の番",
   "@valuePlayerTurn": {
     "placeholders": {
-      "player": {
-        "type": "int"
+      "displayName": {
+        "type": "String"
       }
     }
   },
@@ -655,11 +655,11 @@
   "valueRankPrompt": "6枚を重要度順に並べてください（上＝大切、下＝手放す）",
   "valueConfirmRanking": "確定して手放す",
   "valueDiscardLabel": "手放す",
-  "valuePlayerFinalCards": "プレイヤー{player}が残した5枚",
+  "valuePlayerFinalCards": "{displayName}が残した5枚",
   "@valuePlayerFinalCards": {
     "placeholders": {
-      "player": {
-        "type": "int"
+      "displayName": {
+        "type": "String"
       }
     }
   },
