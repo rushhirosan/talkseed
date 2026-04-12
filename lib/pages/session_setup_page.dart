@@ -38,6 +38,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   final List<TextEditingController> _playerNameControllers = [];
   final List<FocusNode> _playerNameFocusNodes = [];
   bool _vibrationEnabled = true;
+  bool _timerSoundEnabled = true;
 
   final ScrollController _rightScrollController = ScrollController();
 
@@ -55,12 +56,18 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     super.initState();
     _config = SessionConfig.defaultConfig;
     _initializePlayerNames();
-    _loadVibrationSetting();
+    _loadFeedbackSettings();
   }
 
-  Future<void> _loadVibrationSetting() async {
-    final enabled = await PreferencesHelper.loadVibrationEnabled();
-    if (mounted) setState(() => _vibrationEnabled = enabled);
+  Future<void> _loadFeedbackSettings() async {
+    final vibration = await PreferencesHelper.loadVibrationEnabled();
+    final timerSound = await PreferencesHelper.loadTimerSoundEnabled();
+    if (mounted) {
+      setState(() {
+        _vibrationEnabled = vibration;
+        _timerSoundEnabled = timerSound;
+      });
+    }
   }
 
   void _initializePlayerNames() {
@@ -112,6 +119,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   Future<void> _toggleVibration(bool enabled) async {
     await PreferencesHelper.saveVibrationEnabled(enabled);
     if (mounted) setState(() => _vibrationEnabled = enabled);
+  }
+
+  Future<void> _toggleTimerSound(bool enabled) async {
+    await PreferencesHelper.saveTimerSoundEnabled(enabled);
+    if (mounted) setState(() => _timerSoundEnabled = enabled);
   }
 
   void _startSession() {
@@ -304,16 +316,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           onChanged: (v) => v != null ? _updatePlayerCount(v) : null,
         ),
         SizedBox(height: sectionSpacing),
-        Text(
-          l10n.timerSettings,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: _black,
-          ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: _buildTimerIconButton(l10n),
         ),
-        SizedBox(height: itemSpacing),
-        SizedBox(width: double.infinity, child: _buildTimerToggle(l10n)),
         if (_config.enableTimer) ...[
           SizedBox(height: itemSpacing),
           Text(
@@ -336,6 +342,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         Align(
           alignment: Alignment.centerLeft,
           child: _buildVibrationIconButton(l10n),
+        ),
+        SizedBox(height: itemSpacing),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: _buildTimerSoundIconButton(l10n),
         ),
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),
@@ -431,55 +442,43 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     );
   }
 
-  Widget _buildTimerToggle(AppLocalizations l10n) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _toggleTimer(!_config.enableTimer),
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: _white.withOpacity(0.5),
+  /// タイマーON/OFFをバイブと同じアイコンボタンスタイルで表示
+  Widget _buildTimerIconButton(AppLocalizations l10n) {
+    final enabled = _config.enableTimer;
+    return Tooltip(
+      message: l10n.timerSettings,
+      child: OutlinedButton(
+        onPressed: () => _toggleTimer(!enabled),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(12),
+          minimumSize: const Size(48, 48),
+          side: const BorderSide(color: _black, width: 1.5),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _black, width: 1.5),
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: _config.enableTimer,
-                  onChanged: (v) => _toggleTimer(v ?? false),
-                  activeColor: _black,
-                  fillColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) return _black;
-                    return _white;
-                  }),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.enableTimer,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: _black,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    maxLines: 1,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          backgroundColor: enabled ? _black : _white.withOpacity(0.6),
+          foregroundColor: enabled ? _white : _black,
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused) ||
+                states.contains(WidgetState.hovered)) {
+              return const BorderSide(color: _black, width: 2.5);
+            }
+            return const BorderSide(color: _black, width: 1.5);
+          }),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.pressed)) {
+              return enabled
+                  ? _white.withOpacity(0.12)
+                  : _black.withOpacity(0.08);
+            }
+            return null;
+          }),
+        ),
+        child: Icon(
+          enabled ? Icons.timer : Icons.timer_off,
+          size: 24,
         ),
       ),
     );
@@ -519,6 +518,47 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           }),
         ),
         child: const Icon(Icons.vibration, size: 24),
+      ),
+    );
+  }
+
+  /// タイマー終了音（バイブとは別設定）
+  Widget _buildTimerSoundIconButton(AppLocalizations l10n) {
+    return Tooltip(
+      message: l10n.timerSoundEnabled,
+      child: OutlinedButton(
+        onPressed: () => _toggleTimerSound(!_timerSoundEnabled),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.all(12),
+          minimumSize: const Size(48, 48),
+          side: const BorderSide(color: _black, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: _timerSoundEnabled ? _black : _white.withOpacity(0.6),
+          foregroundColor: _timerSoundEnabled ? _white : _black,
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused) ||
+                states.contains(WidgetState.hovered)) {
+              return const BorderSide(color: _black, width: 2.5);
+            }
+            return const BorderSide(color: _black, width: 1.5);
+          }),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.pressed)) {
+              return _timerSoundEnabled
+                  ? _white.withOpacity(0.12)
+                  : _black.withOpacity(0.08);
+            }
+            return null;
+          }),
+        ),
+        child: Icon(
+          _timerSoundEnabled ? Icons.volume_up : Icons.volume_off,
+          size: 24,
+        ),
       ),
     );
   }

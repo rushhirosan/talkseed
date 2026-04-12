@@ -77,6 +77,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get vibrationEnabled => 'バイブを有効にする';
 
   @override
+  String get timerSoundEnabled => 'タイマー終了音';
+
+  @override
   String get faceThemesList => 'サイコロの面の表示';
 
   @override
@@ -342,6 +345,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get timerDuration => '時間';
+
+  @override
+  String get timerTimeUp => '時間です';
+
+  @override
+  String get timerExtendOneMinute => '+1分';
 
   @override
   String playerName(int number) {

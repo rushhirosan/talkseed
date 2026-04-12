@@ -33,6 +33,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   PolyhedronType _selectedType = PolyhedronType.cube;
   Map<PolyhedronType, List<String>>? _themes;
   bool _vibrationEnabled = true;
+  bool _timerSoundEnabled = true;
 
   final Map<PolyhedronType, List<TextEditingController>> _controllers = {};
   final Random _random = Random();
@@ -50,12 +51,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadVibrationSetting();
+    _loadFeedbackSettings();
   }
 
-  Future<void> _loadVibrationSetting() async {
-    final enabled = await PreferencesHelper.loadVibrationEnabled();
-    if (mounted) setState(() => _vibrationEnabled = enabled);
+  Future<void> _loadFeedbackSettings() async {
+    final vibration = await PreferencesHelper.loadVibrationEnabled();
+    final timerSound = await PreferencesHelper.loadTimerSoundEnabled();
+    if (mounted) {
+      setState(() {
+        _vibrationEnabled = vibration;
+        _timerSoundEnabled = timerSound;
+      });
+    }
   }
 
   void _initializeThemes(AppLocalizations l10n) {
@@ -530,7 +537,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// ランダム・リセット・バイブをアイコンのみで1行に3つ表示
+  /// ランダム・リセット・バイブ・タイマー終了音をアイコンのみで1行に表示
   Widget _buildRandomResetRow(AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -567,6 +574,17 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             final newValue = !_vibrationEnabled;
             await PreferencesHelper.saveVibrationEnabled(newValue);
             if (mounted) setState(() => _vibrationEnabled = newValue);
+          },
+        ),
+        const SizedBox(width: 8),
+        _buildIconOnlyButton(
+          icon: _timerSoundEnabled ? Icons.volume_up : Icons.volume_off,
+          tooltip: l10n.timerSoundEnabled,
+          isActive: _timerSoundEnabled,
+          onPressed: () async {
+            final newValue = !_timerSoundEnabled;
+            await PreferencesHelper.saveTimerSoundEnabled(newValue);
+            if (mounted) setState(() => _timerSoundEnabled = newValue);
           },
         ),
       ],

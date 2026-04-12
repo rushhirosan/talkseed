@@ -230,6 +230,12 @@ abstract class AppLocalizations {
   /// **'バイブを有効にする'**
   String get vibrationEnabled;
 
+  /// タイマー終了時のシステム通知音（バイブとは別）
+  ///
+  /// In ja, this message translates to:
+  /// **'タイマー終了音'**
+  String get timerSoundEnabled;
+
   /// リセットと面リストの間の小タイトル
   ///
   /// In ja, this message translates to:
@@ -757,6 +763,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'時間'**
   String get timerDuration;
+
+  /// カウントダウン終了時の非モーダル表示
+  ///
+  /// In ja, this message translates to:
+  /// **'時間です'**
+  String get timerTimeUp;
+
+  /// タイマー終了後に1分延長するボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'+1分'**
+  String get timerExtendOneMinute;
 
   /// プレイヤー名のラベル
   ///

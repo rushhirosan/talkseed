@@ -17,6 +17,7 @@ import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
+import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/services/session_record_service.dart';
@@ -123,10 +124,19 @@ class _DicePageState extends State<DicePage>
     });
   }
 
-  /// タイマー終了時の処理
+  /// タイマー終了時の処理（非モーダル表示は [TimerDisplay]、通知音・バイブは [TimerFeedback]）
   void _onTimerFinished() {
-    _triggerVibration();
-    // タイマー終了を通知（必要に応じてダイアログ表示など）
+    TimerFeedback.play();
+    setState(() {});
+  }
+
+  void _extendTimerOneMinute() {
+    if (_timerService == null || _session == null) return;
+    if (!_session!.config.enableTimer) return;
+    setState(() {
+      _timerService!.addTime(const Duration(minutes: 1));
+      _timerService!.start();
+    });
   }
 
   void _initializeAnimationController() {
@@ -777,6 +787,7 @@ class _DicePageState extends State<DicePage>
                   timerService: _timerService,
                   onPause: _toggleTimer,
                   onResume: _toggleTimer,
+                  onExtendOneMinute: _extendTimerOneMinute,
                 ),
                 const SizedBox(height: 10),
               ],

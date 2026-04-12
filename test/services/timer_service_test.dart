@@ -75,5 +75,41 @@ void main() {
       expect(finished, true);
       service.dispose();
     });
+
+    test('hasFinished is true after natural completion', () async {
+      final service = TimerService(
+        initialDuration: const Duration(seconds: 1),
+      );
+      service.start();
+      expect(service.hasFinished, false);
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      expect(service.hasFinished, true);
+      service.dispose();
+    });
+
+    test('reset clears hasFinished', () async {
+      final service = TimerService(
+        initialDuration: const Duration(seconds: 1),
+      );
+      service.start();
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      expect(service.hasFinished, true);
+      service.reset(const Duration(seconds: 60));
+      expect(service.hasFinished, false);
+      service.dispose();
+    });
+
+    test('addTime clears hasFinished and adds remaining', () async {
+      final service = TimerService(
+        initialDuration: const Duration(seconds: 1),
+      );
+      service.start();
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      expect(service.hasFinished, true);
+      service.addTime(const Duration(minutes: 1));
+      expect(service.hasFinished, false);
+      expect(service.remainingTime, const Duration(minutes: 1));
+      service.dispose();
+    });
   });
 }

@@ -8,6 +8,8 @@ class TimerService {
   final VoidCallback? onTick;
   final VoidCallback? onFinished;
   bool _isPaused = false;
+  /// カウントダウンが 0 になって自然終了したとき true（[reset] や [addTime] で false）
+  bool _finished = false;
   
   TimerService({
     required Duration initialDuration,
@@ -27,6 +29,7 @@ class TimerService {
         onTick?.call();
       } else {
         stop();
+        _finished = true;
         onFinished?.call();
       }
     });
@@ -55,7 +58,19 @@ class TimerService {
   void reset(Duration duration) {
     stop();
     _remainingTime = duration;
+    _finished = false;
   }
+
+  /// 残り時間を増やす（延長）。自然終了フラグを解除する。
+  void addTime(Duration extra) {
+    final seconds = _remainingTime.inSeconds + extra.inSeconds;
+    _remainingTime =
+        seconds <= 0 ? Duration.zero : Duration(seconds: seconds);
+    _finished = false;
+  }
+
+  /// カウントダウン終了後、まだ [reset] / [addTime] されていない状態か
+  bool get hasFinished => _finished;
   
   /// 残り時間を取得
   Duration get remainingTime => _remainingTime;

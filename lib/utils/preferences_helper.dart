@@ -11,6 +11,8 @@ class PreferencesHelper {
   static const String _keyDefaultPlayMode = 'default_play_mode';
   /// バイブレーション（触覚フィードバック）の有効/無効
   static const String _keyVibrationEnabled = 'vibration_enabled';
+  /// タイマー終了時のシステム音（バイブとは独立）
+  static const String _keyTimerSoundEnabled = 'timer_sound_enabled';
 
   /// 初回起動かどうかを確認
   static Future<bool> isFirstLaunch() async {
@@ -102,5 +104,16 @@ class PreferencesHelper {
   static Future<void> saveVibrationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyVibrationEnabled, enabled);
+  }
+
+  /// タイマー終了時の通知音が有効か（デフォルト true）
+  static Future<bool> loadTimerSoundEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyTimerSoundEnabled) ?? true;
+  }
+
+  static Future<void> saveTimerSoundEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyTimerSoundEnabled, enabled);
   }
 }

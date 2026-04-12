@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import '../utils/preferences_helper.dart';
+import '../utils/timer_feedback.dart';
 import '../models/card_deck.dart';
 import '../models/checkin_checkout_item.dart';
 import '../models/session_config.dart';
@@ -193,7 +194,17 @@ class _TopicsPageState extends State<TopicsPage> {
   }
 
   void _onTimerFinished() {
-    _triggerVibration();
+    TimerFeedback.play();
+    setState(() {});
+  }
+
+  void _extendTimerOneMinute() {
+    if (_timerService == null || _session == null) return;
+    if (!_session!.config.enableTimer) return;
+    setState(() {
+      _timerService!.addTime(const Duration(minutes: 1));
+      _timerService!.start();
+    });
   }
 
   @override
@@ -476,6 +487,7 @@ class _TopicsPageState extends State<TopicsPage> {
                   timerService: _timerService!,
                   onPause: _toggleTimer,
                   onResume: _toggleTimer,
+                  onExtendOneMinute: _extendTimerOneMinute,
                 ),
                 const SizedBox(height: 16),
               ],

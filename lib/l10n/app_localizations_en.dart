@@ -77,6 +77,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vibrationEnabled => 'Enable vibration';
 
   @override
+  String get timerSoundEnabled => 'Timer end sound';
+
+  @override
   String get faceThemesList => 'Display per face';
 
   @override
@@ -345,6 +348,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timerDuration => 'Duration';
+
+  @override
+  String get timerTimeUp => 'Time\'s up';
+
+  @override
+  String get timerExtendOneMinute => '+1 min';
 
   @override
   String playerName(int number) {

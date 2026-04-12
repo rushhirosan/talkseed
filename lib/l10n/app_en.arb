@@ -29,6 +29,7 @@
   "randomSet": "Random Set",
   "reset": "Reset",
   "vibrationEnabled": "Enable vibration",
+  "timerSoundEnabled": "Timer end sound",
   "faceThemesList": "Display per face",
   "themeCandidates": "Theme Candidates",
   "dragAndDropHint": "Drag & drop to the text boxes on the left",
@@ -117,6 +118,8 @@
   "timerSettings": "Timer Settings",
   "enableTimer": "Enable Timer",
   "timerDuration": "Duration",
+  "timerTimeUp": "Time's up",
+  "timerExtendOneMinute": "+1 min",
   "playerName": "Player {number}",
   "@playerName": {
     "placeholders": {

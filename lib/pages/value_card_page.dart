@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import '../utils/preferences_helper.dart';
+import '../utils/timer_feedback.dart';
 import '../models/session_config.dart';
 import '../models/game_session.dart';
 import '../models/polyhedron_type.dart';
@@ -94,7 +95,17 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   void _onTimerFinished() {
-    _triggerVibration();
+    TimerFeedback.play();
+    setState(() {});
+  }
+
+  void _extendTimerOneMinute() {
+    if (_timerService == null || _session == null) return;
+    if (!_session!.config.enableTimer) return;
+    setState(() {
+      _timerService!.addTime(const Duration(minutes: 1));
+      _timerService!.start();
+    });
   }
 
   Future<void> _triggerVibration() async {
@@ -380,6 +391,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                   onResume: () => setState(() {
                     _timerService!.resume();
                   }),
+                  onExtendOneMinute: _extendTimerOneMinute,
                 ),
               ],
             ],

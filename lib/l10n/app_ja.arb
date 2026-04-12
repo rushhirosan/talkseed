@@ -93,6 +93,10 @@
   "@vibrationEnabled": {
     "description": "サイコロ・価値観カードのバイブ設定"
   },
+  "timerSoundEnabled": "タイマー終了音",
+  "@timerSoundEnabled": {
+    "description": "タイマー終了時のシステム通知音（バイブとは別）"
+  },
   "faceThemesList": "サイコロの面の表示",
   "@faceThemesList": {
     "description": "リセットと面リストの間の小タイトル"
@@ -276,6 +280,14 @@
   "timerDuration": "時間",
   "@timerDuration": {
     "description": "タイマー時間のラベル"
+  },
+  "timerTimeUp": "時間です",
+  "@timerTimeUp": {
+    "description": "カウントダウン終了時の非モーダル表示"
+  },
+  "timerExtendOneMinute": "+1分",
+  "@timerExtendOneMinute": {
+    "description": "タイマー終了後に1分延長するボタン"
   },
   "playerName": "プレイヤー{number}",
   "@playerName": {
