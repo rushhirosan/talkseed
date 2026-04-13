@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// アプリのタイトル
   ///
   /// In ja, this message translates to:
-  /// **'Talk Seed'**
+  /// **'Talk Shuffle'**
   String get appTitle;
 
   /// 設定画面のタイトル
@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// チュートリアル1ページ目のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'Talk Seedへようこそ！'**
+  /// **'Talk Shuffleへようこそ！'**
   String get tutorialWelcome;
 
   /// チュートリアル1ページ目の本文
@@ -1139,7 +1139,7 @@ abstract class AppLocalizations {
   /// モード選択画面のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'Welcome to TalkSeed!\n遊び方を選んでください'**
+  /// **'Welcome to Talk Shuffle!\n遊び方を選んでください'**
   String get modeSelectionTitle;
 
   /// 初回画面セクション見出し（みんなで）

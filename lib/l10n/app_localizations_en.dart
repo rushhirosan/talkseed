@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Talk Seed';
+  String get appTitle => 'Talk Shuffle';
 
   @override
   String get settings => 'Settings';
@@ -89,7 +89,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dragAndDropHint => 'Drag & drop to the text boxes on the left';
 
   @override
-  String get tutorialWelcome => 'Welcome to Talk Seed!';
+  String get tutorialWelcome => 'Welcome to Talk Shuffle!';
 
   @override
   String get tutorialWelcomeBody =>
@@ -558,7 +558,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionPreviewNoTimer => 'No timer';
 
   @override
-  String get modeSelectionTitle => 'Welcome to Talk Seed!\nChoose how to play';
+  String get modeSelectionTitle =>
+      'Welcome to Talk Shuffle!\nChoose how to play';
 
   @override
   String get homeSectionEveryone =>

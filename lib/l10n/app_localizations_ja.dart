@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'Talk Seed';
+  String get appTitle => 'Talk Shuffle';
 
   @override
   String get settings => '設定';
@@ -89,7 +89,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dragAndDropHint => '左のテキストボックスにドラッグ＆ドロップ';
 
   @override
-  String get tutorialWelcome => 'Talk Seedへようこそ！';
+  String get tutorialWelcome => 'Talk Shuffleへようこそ！';
 
   @override
   String get tutorialWelcomeBody =>
@@ -553,7 +553,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sessionPreviewNoTimer => 'タイマーなし';
 
   @override
-  String get modeSelectionTitle => 'Welcome to TalkSeed!\n遊び方を選んでください';
+  String get modeSelectionTitle => 'Welcome to Talk Shuffle!\n遊び方を選んでください';
 
   @override
   String get homeSectionEveryone => 'サイコロを振ってランダムな話題で盛り上がろう';

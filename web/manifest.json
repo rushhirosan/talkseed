@@ -1,6 +1,6 @@
 {
-    "name": "theme_dice",
-    "short_name": "theme_dice",
+    "name": "Talk Shuffle",
+    "short_name": "Talk Shuffle",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#F5F6F8",

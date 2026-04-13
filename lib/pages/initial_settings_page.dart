@@ -32,8 +32,6 @@ class InitialSettingsPage extends StatefulWidget {
 class _InitialSettingsPageState extends State<InitialSettingsPage> {
   PolyhedronType _selectedType = PolyhedronType.cube;
   Map<PolyhedronType, List<String>>? _themes;
-  bool _vibrationEnabled = true;
-  bool _timerSoundEnabled = true;
 
   final Map<PolyhedronType, List<TextEditingController>> _controllers = {};
   final Random _random = Random();
@@ -47,23 +45,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
   /// ensureVisible の重複呼び出し防止用
   bool _ensureVisibleScheduled = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFeedbackSettings();
-  }
-
-  Future<void> _loadFeedbackSettings() async {
-    final vibration = await PreferencesHelper.loadVibrationEnabled();
-    final timerSound = await PreferencesHelper.loadTimerSoundEnabled();
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = vibration;
-        _timerSoundEnabled = timerSound;
-      });
-    }
-  }
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
@@ -537,7 +518,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// ランダム・リセット・バイブ・タイマー終了音をアイコンのみで1行に表示
+  /// ランダム・リセットをアイコンのみで1行に表示
   Widget _buildRandomResetRow(AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -563,28 +544,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               }
               _controllers[_selectedType] = defaultThemes.map((theme) => TextEditingController(text: theme)).toList();
             });
-          },
-        ),
-        const SizedBox(width: 8),
-        _buildIconOnlyButton(
-          icon: Icons.vibration,
-          tooltip: l10n.vibrationEnabled,
-          isActive: _vibrationEnabled,
-          onPressed: () async {
-            final newValue = !_vibrationEnabled;
-            await PreferencesHelper.saveVibrationEnabled(newValue);
-            if (mounted) setState(() => _vibrationEnabled = newValue);
-          },
-        ),
-        const SizedBox(width: 8),
-        _buildIconOnlyButton(
-          icon: _timerSoundEnabled ? Icons.volume_up : Icons.volume_off,
-          tooltip: l10n.timerSoundEnabled,
-          isActive: _timerSoundEnabled,
-          onPressed: () async {
-            final newValue = !_timerSoundEnabled;
-            await PreferencesHelper.saveTimerSoundEnabled(newValue);
-            if (mounted) setState(() => _timerSoundEnabled = newValue);
           },
         ),
       ],

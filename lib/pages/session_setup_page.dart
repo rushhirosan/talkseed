@@ -316,9 +316,16 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           onChanged: (v) => v != null ? _updatePlayerCount(v) : null,
         ),
         SizedBox(height: sectionSpacing),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: _buildTimerIconButton(l10n),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildTimerIconButton(l10n),
+            SizedBox(width: itemSpacing),
+            _buildVibrationIconButton(l10n),
+            SizedBox(width: itemSpacing),
+            _buildTimerSoundIconButton(l10n),
+          ],
         ),
         if (_config.enableTimer) ...[
           SizedBox(height: itemSpacing),
@@ -338,16 +345,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             onChanged: (v) => v != null ? _updateTimerDuration(v) : null,
           ),
         ],
-        SizedBox(height: sectionSpacing),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: _buildVibrationIconButton(l10n),
-        ),
-        SizedBox(height: itemSpacing),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: _buildTimerSoundIconButton(l10n),
-        ),
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),
         _buildSessionPreview(l10n),
@@ -442,7 +439,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     );
   }
 
-  /// タイマーON/OFFをバイブと同じアイコンボタンスタイルで表示
+  /// タイマーON/OFF（左カラムのアイコン行の先頭）
   Widget _buildTimerIconButton(AppLocalizations l10n) {
     final enabled = _config.enableTimer;
     return Tooltip(
