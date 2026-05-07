@@ -11,7 +11,6 @@ import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/pages/topics_page.dart';
-import 'package:theme_dice/pages/value_card_page.dart';
 
 /// カード設定画面（デッキ選択方式）
 /// サイコロ設定とは別の、価値観カード・チェックインカード風のUI
@@ -33,7 +32,7 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     final l10n = AppLocalizations.of(context)!;
     if (!mounted) return;
 
-    // チームビルディングはセッション設定を経て価値観カードへ（サイコロと同様のUI/UX）
+    // チームビルディング → 重要度ランキングゲーム（価値観カード）
     if (deck.type == CardDeckType.teamBuilding) {
       final themes = deck.themes(l10n);
       await PreferencesHelper.saveLastCardThemes(themes);
@@ -44,6 +43,25 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
             themes: {PolyhedronType.cube: themes},
             forValueCard: true,
             fromCardSettings: true,
+          ),
+        ),
+      );
+      return;
+    }
+
+    // 問題解決・社会課題 → 議論モード（TopicsPage）
+    if (deck.type == CardDeckType.problemSolving ||
+        deck.type == CardDeckType.socialIssues) {
+      final themes = deck.themes(l10n);
+      await PreferencesHelper.saveLastCardThemes(themes);
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.forwardRoute(
+          page: SessionSetupPage(
+            themes: {PolyhedronType.cube: themes},
+            forDiscussion: true,
+            fromCardSettings: true,
+            deckLabel: deck.name(l10n),
           ),
         ),
       );
@@ -72,7 +90,7 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
             ),
           ),
         );
-      } else {
+      } else if (deck.type == CardDeckType.oneOnOne) {
         // 自己内省・1on1
         final data = await SelfReflectionService.loadThemesWithSections();
         await PreferencesHelper.saveLastCardThemes(data.themes);
@@ -116,6 +134,10 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     switch (type) {
       case CardDeckType.teamBuilding:
         return _cardBlue;
+      case CardDeckType.problemSolving:
+        return _cardTeal;
+      case CardDeckType.socialIssues:
+        return _cardPurple;
       case CardDeckType.checkIn:
         return _cardGreen;
       case CardDeckType.oneOnOne:
@@ -127,6 +149,10 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     switch (type) {
       case CardDeckType.teamBuilding:
         return Icons.groups;
+      case CardDeckType.problemSolving:
+        return Icons.fact_check_outlined;
+      case CardDeckType.socialIssues:
+        return Icons.public_outlined;
       case CardDeckType.checkIn:
         return Icons.wb_sunny;
       case CardDeckType.oneOnOne:

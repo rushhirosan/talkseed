@@ -158,11 +158,17 @@ abstract class AppLocalizations {
   /// **'カードで遊ぶ'**
   String get playWithCards;
 
-  /// 案B: いつもこれで遊ぶ（サイコロ）
+  /// 起動時デフォルト。randomLabel は homeRandomDecideLabel と同一に渡す
   ///
   /// In ja, this message translates to:
-  /// **'起動時にサイコロで開く'**
-  String get alwaysOpenWithDice;
+  /// **'次回起動も「{randomLabel}」と同じ流れで開く'**
+  String alwaysOpenWithDice(String randomLabel);
+
+  /// ランダム起動オプションの補足（サイコロという語を使わない）
+  ///
+  /// In ja, this message translates to:
+  /// **'この一覧を開かず、テーマを決める準備画面から始まります（上のボタンと同じ経路）'**
+  String get alwaysOpenWithDiceHint;
 
   /// 案B: いつもこれで遊ぶ（カード）
   ///
@@ -1004,6 +1010,18 @@ abstract class AppLocalizations {
   /// **'価値観カード'**
   String get historyFilterValueCards;
 
+  /// No description provided for @historyModeDiscussion.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論・お題'**
+  String get historyModeDiscussion;
+
+  /// No description provided for @historyFilterDiscussion.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論・お題'**
+  String get historyFilterDiscussion;
+
   /// 履歴全削除ボタン
   ///
   /// In ja, this message translates to:
@@ -1160,6 +1178,36 @@ abstract class AppLocalizations {
   /// **'ランダムトピック'**
   String get homeDiceLabel;
 
+  /// 案B：テーマ選択カード内の見出し
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマを選ぼう'**
+  String get homeThemePickTitle;
+
+  /// 案B：ランダム開始ボタン（サイコロ相当）
+  ///
+  /// In ja, this message translates to:
+  /// **'ランダムで決める'**
+  String get homeRandomDecideLabel;
+
+  /// No description provided for @homeThemeShortSocial.
+  ///
+  /// In ja, this message translates to:
+  /// **'社会課題'**
+  String get homeThemeShortSocial;
+
+  /// No description provided for @homeThemeShortProblem.
+  ///
+  /// In ja, this message translates to:
+  /// **'問題解決'**
+  String get homeThemeShortProblem;
+
+  /// No description provided for @homeThemeShortValues.
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観'**
+  String get homeThemeShortValues;
+
   /// モード選択画面に戻るボタン
   ///
   /// In ja, this message translates to:
@@ -1195,6 +1243,54 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'価値観を共有し、チームの理解を深める'**
   String get deckTeamBuildingDesc;
+
+  /// No description provided for @deckProblemSolving.
+  ///
+  /// In ja, this message translates to:
+  /// **'問題解決練習カード'**
+  String get deckProblemSolving;
+
+  /// No description provided for @deckProblemSolvingDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'課題の整理の練習：目的・選択肢・リスク・次の一歩'**
+  String get deckProblemSolvingDesc;
+
+  /// No description provided for @deckSocialIssues.
+  ///
+  /// In ja, this message translates to:
+  /// **'社会課題ディスカッション'**
+  String get deckSocialIssues;
+
+  /// No description provided for @deckSocialIssuesDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'現代のテーマを、構造的かつ尊重し合う形で議論する'**
+  String get deckSocialIssuesDesc;
+
+  /// No description provided for @discussionScreenTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論モード'**
+  String get discussionScreenTitle;
+
+  /// No description provided for @discussionHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'順位づけは不要です。このお題について話し、視点や論点を広げてください。'**
+  String get discussionHint;
+
+  /// No description provided for @discussionNextTopic.
+  ///
+  /// In ja, this message translates to:
+  /// **'次のお題'**
+  String get discussionNextTopic;
+
+  /// No description provided for @discussionProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'{current} / {total}'**
+  String discussionProgress(int current, int total);
 
   /// No description provided for @deckCheckIn.
   ///
@@ -1495,6 +1591,726 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'信じていることに従って行動する'**
   String get themeValueIntegrity;
+
+  /// No description provided for @themeProbLogical1.
+  ///
+  /// In ja, this message translates to:
+  /// **'売上が先月比30%ダウン。考えられる原因をMECEに分類せよ'**
+  String get themeProbLogical1;
+
+  /// No description provided for @themeProbLogical2.
+  ///
+  /// In ja, this message translates to:
+  /// **'施策AとB、どちらを優先する？判断軸を3つ挙げて説明せよ'**
+  String get themeProbLogical2;
+
+  /// No description provided for @themeProbLogical3.
+  ///
+  /// In ja, this message translates to:
+  /// **'会議が毎回長引く。根本原因はどこにあるか構造的に分析せよ'**
+  String get themeProbLogical3;
+
+  /// No description provided for @themeProbLogical4.
+  ///
+  /// In ja, this message translates to:
+  /// **'新規事業の参入可否を1分で判断するには？最低限必要な情報は何か'**
+  String get themeProbLogical4;
+
+  /// No description provided for @themeProbLogical5.
+  ///
+  /// In ja, this message translates to:
+  /// **'顧客からのクレームが増えている。どこから手をつけるか優先順位をつけよ'**
+  String get themeProbLogical5;
+
+  /// No description provided for @themeProbLogical6.
+  ///
+  /// In ja, this message translates to:
+  /// **'チームの生産性が下がっている。ボトルネックを特定するために何を調べるか'**
+  String get themeProbLogical6;
+
+  /// No description provided for @themeProbLogical7.
+  ///
+  /// In ja, this message translates to:
+  /// **'「コストを20%削減せよ」と言われた。どのカテゴリから削るか論理的に説明せよ'**
+  String get themeProbLogical7;
+
+  /// No description provided for @themeProbLogical8.
+  ///
+  /// In ja, this message translates to:
+  /// **'A案とB案でデータが相反している。どちらを信頼するか、判断基準を示せ'**
+  String get themeProbLogical8;
+
+  /// No description provided for @themeProbLogical9.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトが炎上しかけている。まず誰に何を報告するか、優先順位をつけよ'**
+  String get themeProbLogical9;
+
+  /// No description provided for @themeProbLogical10.
+  ///
+  /// In ja, this message translates to:
+  /// **'「忙しいのに成果が出ない」状態を構造的に説明し、打ち手を示せ'**
+  String get themeProbLogical10;
+
+  /// No description provided for @themeProbCreative1.
+  ///
+  /// In ja, this message translates to:
+  /// **'「待ち時間」を価値に変えるビジネスを3つ考えよ'**
+  String get themeProbCreative1;
+
+  /// No description provided for @themeProbCreative2.
+  ///
+  /// In ja, this message translates to:
+  /// **'社内の紙をゼロにするには？常識を疑って発想せよ'**
+  String get themeProbCreative2;
+
+  /// No description provided for @themeProbCreative3.
+  ///
+  /// In ja, this message translates to:
+  /// **'競合と全く逆の戦略を取るとしたら何をする？'**
+  String get themeProbCreative3;
+
+  /// No description provided for @themeProbCreative4.
+  ///
+  /// In ja, this message translates to:
+  /// **'10年後、あなたの職種はどう変わる？それを逆手にとるアイデアは'**
+  String get themeProbCreative4;
+
+  /// No description provided for @themeProbCreative5.
+  ///
+  /// In ja, this message translates to:
+  /// **'自社のサービスを「子ども向け」にリデザインするとしたら？'**
+  String get themeProbCreative5;
+
+  /// No description provided for @themeProbCreative6.
+  ///
+  /// In ja, this message translates to:
+  /// **'予算ゼロで社員のモチベーションを上げる方法を5つ出せ'**
+  String get themeProbCreative6;
+
+  /// No description provided for @themeProbCreative7.
+  ///
+  /// In ja, this message translates to:
+  /// **'「失敗したプロジェクト」を資産に変えるアイデアを考えよ'**
+  String get themeProbCreative7;
+
+  /// No description provided for @themeProbCreative8.
+  ///
+  /// In ja, this message translates to:
+  /// **'他業界から1つビジネスモデルを借りてきて、自社に応用せよ'**
+  String get themeProbCreative8;
+
+  /// No description provided for @themeProbCreative9.
+  ///
+  /// In ja, this message translates to:
+  /// **'「通勤時間」を会社の強みに変えるにはどうする？'**
+  String get themeProbCreative9;
+
+  /// No description provided for @themeProbCreative10.
+  ///
+  /// In ja, this message translates to:
+  /// **'もし価格を10倍にするとしたら、何を変える必要があるか？'**
+  String get themeProbCreative10;
+
+  /// No description provided for @themeProbFermi1.
+  ///
+  /// In ja, this message translates to:
+  /// **'渋谷駅を1日に通過する人は何人？'**
+  String get themeProbFermi1;
+
+  /// No description provided for @themeProbFermi2.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本全国のオフィスの椅子の数は？'**
+  String get themeProbFermi2;
+
+  /// No description provided for @themeProbFermi3.
+  ///
+  /// In ja, this message translates to:
+  /// **'自社の社員が1年間に書くメールの総文字数は？'**
+  String get themeProbFermi3;
+
+  /// No description provided for @themeProbFermi4.
+  ///
+  /// In ja, this message translates to:
+  /// **'東京都内に信号機はいくつある？'**
+  String get themeProbFermi4;
+
+  /// No description provided for @themeProbFermi5.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本で1日に消費されるコーヒーのカップ数は？'**
+  String get themeProbFermi5;
+
+  /// No description provided for @themeProbFermi6.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本全国のコンビニで1日に捨てられる弁当の数は？'**
+  String get themeProbFermi6;
+
+  /// No description provided for @themeProbFermi7.
+  ///
+  /// In ja, this message translates to:
+  /// **'自社のオフィスで1年間に使われる電力量はどのくらい？'**
+  String get themeProbFermi7;
+
+  /// No description provided for @themeProbFermi8.
+  ///
+  /// In ja, this message translates to:
+  /// **'東京都内を走るタクシーの総走行距離（1日）は？'**
+  String get themeProbFermi8;
+
+  /// No description provided for @themeProbFermi9.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本全国のスマートフォンのバッテリーを合計すると何Wh？'**
+  String get themeProbFermi9;
+
+  /// No description provided for @themeProbFermi10.
+  ///
+  /// In ja, this message translates to:
+  /// **'今この瞬間、日本で会議をしている人は何人いる？'**
+  String get themeProbFermi10;
+
+  /// No description provided for @themeProbDilemma1.
+  ///
+  /// In ja, this message translates to:
+  /// **'優秀だが協調性のないメンバー。残す？外す？判断基準を言語化せよ'**
+  String get themeProbDilemma1;
+
+  /// No description provided for @themeProbDilemma2.
+  ///
+  /// In ja, this message translates to:
+  /// **'締め切り厳守 vs クオリティ死守。どちらを選ぶ？条件は？'**
+  String get themeProbDilemma2;
+
+  /// No description provided for @themeProbDilemma3.
+  ///
+  /// In ja, this message translates to:
+  /// **'上司の判断が明らかに間違っている。あなたはどう動く？'**
+  String get themeProbDilemma3;
+
+  /// No description provided for @themeProbDilemma4.
+  ///
+  /// In ja, this message translates to:
+  /// **'短期利益 vs 長期ブランド。トレードオフが生じたときの優先順位は？'**
+  String get themeProbDilemma4;
+
+  /// No description provided for @themeProbDilemma5.
+  ///
+  /// In ja, this message translates to:
+  /// **'チームの仲が良すぎて馴れ合いになっている。どう介入する？'**
+  String get themeProbDilemma5;
+
+  /// No description provided for @themeProbDilemma6.
+  ///
+  /// In ja, this message translates to:
+  /// **'正直に言うと相手を傷つける。でも黙ると組織が傷つく。どうする？'**
+  String get themeProbDilemma6;
+
+  /// No description provided for @themeProbDilemma7.
+  ///
+  /// In ja, this message translates to:
+  /// **'実力はあるが自己主張が強すぎる部下と、素直だが成長が遅い部下。どちらを昇進させる？'**
+  String get themeProbDilemma7;
+
+  /// No description provided for @themeProbDilemma8.
+  ///
+  /// In ja, this message translates to:
+  /// **'成功確率20%だが成功すれば大きいA案と、確実だが小さく終わるB案。どちらを取る？'**
+  String get themeProbDilemma8;
+
+  /// No description provided for @themeProbDilemma9.
+  ///
+  /// In ja, this message translates to:
+  /// **'自分のミスを報告すると、チームの評価が下がる可能性がある。どうする？'**
+  String get themeProbDilemma9;
+
+  /// No description provided for @themeProbDilemma10.
+  ///
+  /// In ja, this message translates to:
+  /// **'リソースが足りない。既存顧客の満足度を守る vs 新規顧客を獲得する。どちらを優先？'**
+  String get themeProbDilemma10;
+
+  /// No description provided for @themeSocGeo1.
+  ///
+  /// In ja, this message translates to:
+  /// **'米中対立が激化したとき、企業はどちらの経済圏を選ぶべきか？'**
+  String get themeSocGeo1;
+
+  /// No description provided for @themeSocGeo2.
+  ///
+  /// In ja, this message translates to:
+  /// **'関税・貿易戦争は「国を守る手段」か、「世界を貧しくする愚策」か？'**
+  String get themeSocGeo2;
+
+  /// No description provided for @themeSocGeo3.
+  ///
+  /// In ja, this message translates to:
+  /// **'経済安全保障のために、企業はどこまでサプライチェーンを自国回帰すべきか？'**
+  String get themeSocGeo3;
+
+  /// No description provided for @themeSocGeo4.
+  ///
+  /// In ja, this message translates to:
+  /// **'ロシア・ウクライナ戦争が長期化すると、グローバルビジネスにどんな影響が続くか？'**
+  String get themeSocGeo4;
+
+  /// No description provided for @themeSocGeo5.
+  ///
+  /// In ja, this message translates to:
+  /// **'「友好国とだけ貿易するフレンドショアリング」は現実的な戦略か？'**
+  String get themeSocGeo5;
+
+  /// No description provided for @themeSocGeo6.
+  ///
+  /// In ja, this message translates to:
+  /// **'中東情勢が不安定なまま続く場合、エネルギーコストに企業はどう備えるか？'**
+  String get themeSocGeo6;
+
+  /// No description provided for @themeSocGeo7.
+  ///
+  /// In ja, this message translates to:
+  /// **'国連・WTOへの信頼が崩れたとき、世界秩序はどう維持されるか？'**
+  String get themeSocGeo7;
+
+  /// No description provided for @themeSocGeo8.
+  ///
+  /// In ja, this message translates to:
+  /// **'地政学リスクを「経営課題」として扱えていない企業は生き残れるか？'**
+  String get themeSocGeo8;
+
+  /// No description provided for @themeSocGeo9.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバルサウス（新興国・途上国）の台頭は、世界にとってチャンスか脅威か？'**
+  String get themeSocGeo9;
+
+  /// No description provided for @themeSocGeo10.
+  ///
+  /// In ja, this message translates to:
+  /// **'「どの国とも仲良くする」外交戦略は、これからも通用するか？'**
+  String get themeSocGeo10;
+
+  /// No description provided for @themeSocAiGap1.
+  ///
+  /// In ja, this message translates to:
+  /// **'AIの恩恵を受けるのは結局、お金と技術を持つ国や企業だけではないか？'**
+  String get themeSocAiGap1;
+
+  /// No description provided for @themeSocAiGap2.
+  ///
+  /// In ja, this message translates to:
+  /// **'AIが意思決定した結果に問題が起きたとき、責任は誰が取るのか？'**
+  String get themeSocAiGap2;
+
+  /// No description provided for @themeSocAiGap3.
+  ///
+  /// In ja, this message translates to:
+  /// **'採用・融資・医療診断をAIが決める社会は、公平か？危険か？'**
+  String get themeSocAiGap3;
+
+  /// No description provided for @themeSocAiGap4.
+  ///
+  /// In ja, this message translates to:
+  /// **'特定の企業がAIを独占することは、民主主義への脅威になるか？'**
+  String get themeSocAiGap4;
+
+  /// No description provided for @themeSocAiGap5.
+  ///
+  /// In ja, this message translates to:
+  /// **'国境を越えて動くAIを誰が規制すべきか？各国政府？国際機関？企業自身？'**
+  String get themeSocAiGap5;
+
+  /// No description provided for @themeSocAiGap6.
+  ///
+  /// In ja, this message translates to:
+  /// **'AIによる雇用喪失に対し、ベーシックインカムは解決策になるか？'**
+  String get themeSocAiGap6;
+
+  /// No description provided for @themeSocAiGap7.
+  ///
+  /// In ja, this message translates to:
+  /// **'AI格差により先進国と途上国の生産性の差が広がることを、誰が止めるべきか？'**
+  String get themeSocAiGap7;
+
+  /// No description provided for @themeSocAiGap8.
+  ///
+  /// In ja, this message translates to:
+  /// **'生成AIで大量の偽情報が拡散する社会で、「本物」をどう見分けるか？'**
+  String get themeSocAiGap8;
+
+  /// No description provided for @themeSocAiGap9.
+  ///
+  /// In ja, this message translates to:
+  /// **'AIを「兵器」として使う国が増えた場合、国際的なルールは作れるか？'**
+  String get themeSocAiGap9;
+
+  /// No description provided for @themeSocAiGap10.
+  ///
+  /// In ja, this message translates to:
+  /// **'10年後、AIが「持てる国」と「持たざる国」の差をどう変えると思うか？'**
+  String get themeSocAiGap10;
+
+  /// No description provided for @themeSocClimate1.
+  ///
+  /// In ja, this message translates to:
+  /// **'気候変動対策に消極的な国の製品に「炭素関税」をかけることは公平か？'**
+  String get themeSocClimate1;
+
+  /// No description provided for @themeSocClimate2.
+  ///
+  /// In ja, this message translates to:
+  /// **'再生可能エネルギーのリーダーが中国になりつつある。世界はそれでいいか？'**
+  String get themeSocClimate2;
+
+  /// No description provided for @themeSocClimate3.
+  ///
+  /// In ja, this message translates to:
+  /// **'企業のESGレポートはほとんど「グリーンウォッシュ」だと思うか？'**
+  String get themeSocClimate3;
+
+  /// No description provided for @themeSocClimate4.
+  ///
+  /// In ja, this message translates to:
+  /// **'気候変動で住めなくなった地域からの「気候難民」を、豊かな国はどう受け入れるべきか？'**
+  String get themeSocClimate4;
+
+  /// No description provided for @themeSocClimate5.
+  ///
+  /// In ja, this message translates to:
+  /// **'経済成長と脱炭素は本当に両立できるか？'**
+  String get themeSocClimate5;
+
+  /// No description provided for @themeSocClimate6.
+  ///
+  /// In ja, this message translates to:
+  /// **'肉食・航空機利用など個人の行動変容で、気候は本当に変わるか？'**
+  String get themeSocClimate6;
+
+  /// No description provided for @themeSocClimate7.
+  ///
+  /// In ja, this message translates to:
+  /// **'先進国と途上国で、気候変動対策の「責任」は同じであるべきか？'**
+  String get themeSocClimate7;
+
+  /// No description provided for @themeSocClimate8.
+  ///
+  /// In ja, this message translates to:
+  /// **'原子力を「グリーンエネルギー」と呼ぶことに、賛成か反対か？'**
+  String get themeSocClimate8;
+
+  /// No description provided for @themeSocClimate9.
+  ///
+  /// In ja, this message translates to:
+  /// **'2050年ゼロカーボンが達成できない場合、次の世代にどう説明するか？'**
+  String get themeSocClimate9;
+
+  /// No description provided for @themeSocClimate10.
+  ///
+  /// In ja, this message translates to:
+  /// **'気候変動対策として、今すぐ一つだけ実行するとしたら何を選ぶか？'**
+  String get themeSocClimate10;
+
+  /// No description provided for @themeSocDemocracy1.
+  ///
+  /// In ja, this message translates to:
+  /// **'富裕層への課税を強化して格差を縮めることに、賛成か反対か？'**
+  String get themeSocDemocracy1;
+
+  /// No description provided for @themeSocDemocracy2.
+  ///
+  /// In ja, this message translates to:
+  /// **'SNSのアルゴリズムは民主主義を壊しているか？それとも強化しているか？'**
+  String get themeSocDemocracy2;
+
+  /// No description provided for @themeSocDemocracy3.
+  ///
+  /// In ja, this message translates to:
+  /// **'選挙にAIや偽情報が介入した場合、選挙結果は有効か？'**
+  String get themeSocDemocracy3;
+
+  /// No description provided for @themeSocDemocracy4.
+  ///
+  /// In ja, this message translates to:
+  /// **'「強いリーダーシップ」と「独裁」の境界線はどこか？'**
+  String get themeSocDemocracy4;
+
+  /// No description provided for @themeSocDemocracy5.
+  ///
+  /// In ja, this message translates to:
+  /// **'フェイクニュースを拡散した人は、法的に罰せられるべきか？'**
+  String get themeSocDemocracy5;
+
+  /// No description provided for @themeSocDemocracy6.
+  ///
+  /// In ja, this message translates to:
+  /// **'SNSプラットフォームは「言論の場」か、「メディア企業」として規制されるべきか？'**
+  String get themeSocDemocracy6;
+
+  /// No description provided for @themeSocDemocracy7.
+  ///
+  /// In ja, this message translates to:
+  /// **'「エコーチェンバー」から抜け出すために、個人は何ができるか？'**
+  String get themeSocDemocracy7;
+
+  /// No description provided for @themeSocDemocracy8.
+  ///
+  /// In ja, this message translates to:
+  /// **'世界各地で「エリートへの怒り」が高まっている。その根本原因は何か？'**
+  String get themeSocDemocracy8;
+
+  /// No description provided for @themeSocDemocracy9.
+  ///
+  /// In ja, this message translates to:
+  /// **'先進国が「民主主義を広める」と言うとき、それは本当に善意か？'**
+  String get themeSocDemocracy9;
+
+  /// No description provided for @themeSocDemocracy10.
+  ///
+  /// In ja, this message translates to:
+  /// **'「社会の分断」を一番深めているのは何か？メディア？政治家？アルゴリズム？'**
+  String get themeSocDemocracy10;
+
+  /// No description provided for @themeSocJapanDecline1.
+  ///
+  /// In ja, this message translates to:
+  /// **'人口が今の半分になる社会で、あなたの仕事は存在しているか？'**
+  String get themeSocJapanDecline1;
+
+  /// No description provided for @themeSocJapanDecline2.
+  ///
+  /// In ja, this message translates to:
+  /// **'少子化対策として「最も効果が高い」施策は何だと思うか？'**
+  String get themeSocJapanDecline2;
+
+  /// No description provided for @themeSocJapanDecline3.
+  ///
+  /// In ja, this message translates to:
+  /// **'人口減少を「問題」ではなく「チャンス」と捉えるとしたら、何が見えてくるか？'**
+  String get themeSocJapanDecline3;
+
+  /// No description provided for @themeSocJapanDecline4.
+  ///
+  /// In ja, this message translates to:
+  /// **'高齢者の医療費を現役世代が支え続ける仕組みは、持続可能か？'**
+  String get themeSocJapanDecline4;
+
+  /// No description provided for @themeSocJapanDecline5.
+  ///
+  /// In ja, this message translates to:
+  /// **'定年を80歳に引き上げることに、賛成か反対か？'**
+  String get themeSocJapanDecline5;
+
+  /// No description provided for @themeSocJapanDecline6.
+  ///
+  /// In ja, this message translates to:
+  /// **'子どもを産まない選択をする人を、社会はどう扱うべきか？'**
+  String get themeSocJapanDecline6;
+
+  /// No description provided for @themeSocJapanDecline7.
+  ///
+  /// In ja, this message translates to:
+  /// **'「子どもを産んだ人が得をする税制」は公平か？不公平か？'**
+  String get themeSocJapanDecline7;
+
+  /// No description provided for @themeSocJapanDecline8.
+  ///
+  /// In ja, this message translates to:
+  /// **'介護ロボットが普及しても、家族が介護すべき場面はあるか？'**
+  String get themeSocJapanDecline8;
+
+  /// No description provided for @themeSocJapanDecline9.
+  ///
+  /// In ja, this message translates to:
+  /// **'2026年は丙午。迷信が出生数に影響する社会をどう思うか？'**
+  String get themeSocJapanDecline9;
+
+  /// No description provided for @themeSocJapanDecline10.
+  ///
+  /// In ja, this message translates to:
+  /// **'あなたが80歳になったとき、どんな社会に生きていたいか？'**
+  String get themeSocJapanDecline10;
+
+  /// No description provided for @themeSocJapanImmigration1.
+  ///
+  /// In ja, this message translates to:
+  /// **'人手不足を外国人労働者で補うことへの、あなたのリアルな本音は？'**
+  String get themeSocJapanImmigration1;
+
+  /// No description provided for @themeSocJapanImmigration2.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本語が話せない子どもへの教育コストは、誰が負うべきか？'**
+  String get themeSocJapanImmigration2;
+
+  /// No description provided for @themeSocJapanImmigration3.
+  ///
+  /// In ja, this message translates to:
+  /// **'高度人材の外国人が日本を選ばない理由は何か？どうすれば変わるか？'**
+  String get themeSocJapanImmigration3;
+
+  /// No description provided for @themeSocJapanImmigration4.
+  ///
+  /// In ja, this message translates to:
+  /// **'「移民を受け入れるべき」と言いながら、自分の隣人には嫌だと感じるのはなぜか？'**
+  String get themeSocJapanImmigration4;
+
+  /// No description provided for @themeSocJapanImmigration5.
+  ///
+  /// In ja, this message translates to:
+  /// **'少子化対策として移民を増やすことは、文化的アイデンティティを変えるか？'**
+  String get themeSocJapanImmigration5;
+
+  /// No description provided for @themeSocJapanImmigration6.
+  ///
+  /// In ja, this message translates to:
+  /// **'「日本人らしさ」とは何か？それは守るべきものか、変わっていいものか？'**
+  String get themeSocJapanImmigration6;
+
+  /// No description provided for @themeSocJapanImmigration7.
+  ///
+  /// In ja, this message translates to:
+  /// **'外国人が多い職場で、チームとしてまとまるために何が必要か？'**
+  String get themeSocJapanImmigration7;
+
+  /// No description provided for @themeSocJapanImmigration8.
+  ///
+  /// In ja, this message translates to:
+  /// **'欧米で外国人問題が国家分断につながっている。日本は同じ道をたどるか？'**
+  String get themeSocJapanImmigration8;
+
+  /// No description provided for @themeSocJapanImmigration9.
+  ///
+  /// In ja, this message translates to:
+  /// **'外国人の土地取得を制限することに、賛成か反対か？'**
+  String get themeSocJapanImmigration9;
+
+  /// No description provided for @themeSocJapanImmigration10.
+  ///
+  /// In ja, this message translates to:
+  /// **'50年後の日本が多民族国家になっていたとしたら、それはよいことか？'**
+  String get themeSocJapanImmigration10;
+
+  /// No description provided for @themeSocJapanWork1.
+  ///
+  /// In ja, this message translates to:
+  /// **'週4日勤務が標準になったとき、会社と個人はそれぞれ何を変える必要があるか？'**
+  String get themeSocJapanWork1;
+
+  /// No description provided for @themeSocJapanWork2.
+  ///
+  /// In ja, this message translates to:
+  /// **'新卒一括採用・終身雇用は、今の時代に合っているか？'**
+  String get themeSocJapanWork2;
+
+  /// No description provided for @themeSocJapanWork3.
+  ///
+  /// In ja, this message translates to:
+  /// **'成果が同じなら、働く時間が短い人と長い人の評価は同じにすべきか？'**
+  String get themeSocJapanWork3;
+
+  /// No description provided for @themeSocJapanWork4.
+  ///
+  /// In ja, this message translates to:
+  /// **'副業を全員に解禁すると、組織への忠誠心は下がるか？'**
+  String get themeSocJapanWork4;
+
+  /// No description provided for @themeSocJapanWork5.
+  ///
+  /// In ja, this message translates to:
+  /// **'「やりがい搾取」はなぜなくならないのか？誰が変えるべきか？'**
+  String get themeSocJapanWork5;
+
+  /// No description provided for @themeSocJapanWork6.
+  ///
+  /// In ja, this message translates to:
+  /// **'上司が部下より給与が低い逆転現象は、問題か？健全か？'**
+  String get themeSocJapanWork6;
+
+  /// No description provided for @themeSocJapanWork7.
+  ///
+  /// In ja, this message translates to:
+  /// **'燃え尽き症候群（バーンアウト）を防ぐ責任は、個人か？会社か？'**
+  String get themeSocJapanWork7;
+
+  /// No description provided for @themeSocJapanWork8.
+  ///
+  /// In ja, this message translates to:
+  /// **'テレワークと出社、チームにとって本当にいいのはどちらか？'**
+  String get themeSocJapanWork8;
+
+  /// No description provided for @themeSocJapanWork9.
+  ///
+  /// In ja, this message translates to:
+  /// **'「会社の飲み会」は業務か？プライベートか？'**
+  String get themeSocJapanWork9;
+
+  /// No description provided for @themeSocJapanWork10.
+  ///
+  /// In ja, this message translates to:
+  /// **'10年後、「会社員」という働き方は主流であり続けるか？'**
+  String get themeSocJapanWork10;
+
+  /// No description provided for @themeSocJapanLocal1.
+  ///
+  /// In ja, this message translates to:
+  /// **'バスも電車もなくなった地方に、住み続ける権利を社会は保障すべきか？'**
+  String get themeSocJapanLocal1;
+
+  /// No description provided for @themeSocJapanLocal2.
+  ///
+  /// In ja, this message translates to:
+  /// **'廃校になった学校の跡地を、何に使うべきか？'**
+  String get themeSocJapanLocal2;
+
+  /// No description provided for @themeSocJapanLocal3.
+  ///
+  /// In ja, this message translates to:
+  /// **'リモートワークは地方創生の救世主になれるか？それとも幻想か？'**
+  String get themeSocJapanLocal3;
+
+  /// No description provided for @themeSocJapanLocal4.
+  ///
+  /// In ja, this message translates to:
+  /// **'人口が100人を切った村に、公共サービスを提供し続けるべきか？'**
+  String get themeSocJapanLocal4;
+
+  /// No description provided for @themeSocJapanLocal5.
+  ///
+  /// In ja, this message translates to:
+  /// **'老朽化したインフラを維持するために増税することに、賛成か反対か？'**
+  String get themeSocJapanLocal5;
+
+  /// No description provided for @themeSocJapanLocal6.
+  ///
+  /// In ja, this message translates to:
+  /// **'都市への人口集中は「問題」か？それとも「効率的な選択」か？'**
+  String get themeSocJapanLocal6;
+
+  /// No description provided for @themeSocJapanLocal7.
+  ///
+  /// In ja, this message translates to:
+  /// **'地方に本社機能を移転した企業は、本当に成功できるか？'**
+  String get themeSocJapanLocal7;
+
+  /// No description provided for @themeSocJapanLocal8.
+  ///
+  /// In ja, this message translates to:
+  /// **'「消滅可能性都市」というレッテルを貼ることは、地方にとってプラスかマイナスか？'**
+  String get themeSocJapanLocal8;
+
+  /// No description provided for @themeSocJapanLocal9.
+  ///
+  /// In ja, this message translates to:
+  /// **'あなたが地方移住を決断するとしたら、最低限必要な条件は何か？'**
+  String get themeSocJapanLocal9;
+
+  /// No description provided for @themeSocJapanLocal10.
+  ///
+  /// In ja, this message translates to:
+  /// **'地方の問題を解決する責任は、国・自治体・企業・個人のどこにあるか？'**
+  String get themeSocJapanLocal10;
 
   /// No description provided for @valuePlayerTurn.
   ///

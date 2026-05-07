@@ -15,10 +15,9 @@ import 'initial_settings_page.dart';
 import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'topics_page.dart';
-import 'value_card_page.dart';
 import 'session_history_page.dart';
 
-/// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（チームビルディング・チェックイン・自己内省・1on1）
+/// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（価値観・問題解決・社会課題などカードデッキ）
 class ModeSelectionPage extends StatefulWidget {
   const ModeSelectionPage({super.key});
 
@@ -80,6 +79,24 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       return;
     }
 
+    if (deck.type == CardDeckType.problemSolving ||
+        deck.type == CardDeckType.socialIssues) {
+      final themes = deck.themes(l10n);
+      await PreferencesHelper.saveLastCardThemes(themes);
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.forwardRoute(
+          page: SessionSetupPage(
+            themes: {PolyhedronType.cube: themes},
+            forDiscussion: true,
+            fromCardSettings: false,
+            deckLabel: deck.name(l10n),
+          ),
+        ),
+      );
+      return;
+    }
+
     try {
       if (deck.type == CardDeckType.checkIn) {
         final checkInItems =
@@ -102,7 +119,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             ),
           ),
         );
-      } else {
+      } else if (deck.type == CardDeckType.oneOnOne) {
         // 自己内省・1on1
         final data = await SelfReflectionService.loadThemesWithSections();
         await PreferencesHelper.saveLastCardThemes(data.themes);
@@ -150,156 +167,173 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: _black.withOpacity(0.85),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          height: 2,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: _black.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(1),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildModeButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    required bool isPrimary,
-  }) {
-    const Color white = Colors.white;
-    const Color black = Colors.black87;
-
-    if (isPrimary) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon, color: white, size: 28),
-          label: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: white,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: black,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-        ),
-      );
-    }
+  /// 案B：ランダム＝紫の主ボタン（リスト先頭）
+  Widget _buildRandomPrimaryButton(AppLocalizations l10n, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
-      child: OutlinedButton.icon(
+      child: ElevatedButton(
         onPressed: onPressed,
-        icon: Icon(icon, color: black, size: 24),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: black,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _brandPurple,
+          foregroundColor: _white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
         ),
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-          side: const BorderSide(color: black, width: 1.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          backgroundColor: white.withOpacity(0.8),
-          foregroundColor: black,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('🎲', style: TextStyle(fontSize: 22)),
+            const SizedBox(width: 10),
+            Text(
+              l10n.homeRandomDecideLabel,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  /// 次回起動時はサイコロのみ選択可能（カードは複数あるため起動時指定は行わない）
-  Widget _buildAlwaysOpenCheckboxes(AppLocalizations l10n) {
-    const Color white = Colors.white;
-    const Color black = Colors.black87;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: black.withOpacity(0.3), width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            l10n.startupDefaultSection,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: black.withOpacity(0.7),
-            ),
+  /// テーマ行（白／薄紫ボーダー、絵文字＋短いラベル）
+  Widget _buildThemeRow({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required VoidCallback onPressed,
+    Color? backgroundColor,
+  }) {
+    const borderColor = Color(0xFFD4CFE8);
+    final bg = backgroundColor ?? _white;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 1.5),
           ),
-          const SizedBox(height: 8),
-          InkWell(
-            onTap: () async {
-              setState(() => _alwaysOpenWithDice = !_alwaysOpenWithDice);
-              await PreferencesHelper.saveDefaultPlayMode(
-                _alwaysOpenWithDice ? 'dice' : null,
-              );
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: Checkbox(
-                    value: _alwaysOpenWithDice,
-                    onChanged: (v) async {
-                      setState(() => _alwaysOpenWithDice = v ?? false);
-                      await PreferencesHelper.saveDefaultPlayMode(
-                        _alwaysOpenWithDice ? 'dice' : null,
-                      );
-                    },
-                    activeColor: black,
-                    fillColor: WidgetStateProperty.resolveWith((states) {
-                      if (states.contains(WidgetState.selected)) return black;
-                      return white;
-                    }),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 20, color: iconColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: _black,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(child: Text(l10n.alwaysOpenWithDice, style: const TextStyle(fontSize: 13, color: black))),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
+  /// 上の「ランダムで決める」と同じ経路で次回起動する（文言は homeRandomDecideLabel を埋め込む）
+  Widget _buildStartupFollowRandomOption(AppLocalizations l10n) {
+    const accent = _brandPurple;
+
+    Future<void> toggle(bool v) async {
+      setState(() => _alwaysOpenWithDice = v);
+      await PreferencesHelper.saveDefaultPlayMode(
+        _alwaysOpenWithDice ? 'dice' : null,
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 12, 14, 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F2FC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      child: InkWell(
+        onTap: () async => toggle(!_alwaysOpenWithDice),
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: _alwaysOpenWithDice,
+                  onChanged: (v) async => toggle(v ?? false),
+                  activeColor: accent,
+                  side: BorderSide(color: accent.withValues(alpha: 0.7)),
+                  fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) return accent;
+                    return Colors.white;
+                  }),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.alwaysOpenWithDice(l10n.homeRandomDecideLabel),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: _black,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.alwaysOpenWithDiceHint,
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.4,
+                        color: _black.withValues(alpha: 0.62),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static const Color _brandPurple = Color(0xFF5A3FC0);
+  static const Color _brandYellow = Color(0xFFFFEA5A);
+  static const Color _cardIvory = Color(0xFFF8F3E8);
+  static const Color _mustardYellow = _brandYellow;
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
+  /// 問題解決行のハイライト（モックの薄ラベンダー）
+  static const Color _themeRowHighlight = Color(0xFFE8E2F5);
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +378,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
@@ -352,46 +386,63 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    l10n.modeSelectionTitle,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: _black.withOpacity(0.9),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                    decoration: BoxDecoration(
+                      color: _cardIvory,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _black.withValues(alpha: 0.08),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          l10n.homeThemePickTitle,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: _black,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 22),
+                        _buildRandomPrimaryButton(l10n, _goToDice),
+                        const SizedBox(height: 12),
+                        _buildStartupFollowRandomOption(l10n),
+                        const SizedBox(height: 18),
+                        _buildThemeRow(
+                          icon: Icons.groups_rounded,
+                          iconColor: const Color(0xFF5E52C8),
+                          label: l10n.homeThemeShortValues,
+                          onPressed: () =>
+                              _goToWorkDeck(CardDeckType.teamBuilding),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildThemeRow(
+                          icon: Icons.psychology_alt_rounded,
+                          iconColor: const Color(0xFF7B5ED4),
+                          label: l10n.homeThemeShortProblem,
+                          backgroundColor: _themeRowHighlight,
+                          onPressed: () =>
+                              _goToWorkDeck(CardDeckType.problemSolving),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildThemeRow(
+                          icon: Icons.public_rounded,
+                          iconColor: const Color(0xFF4B64C9),
+                          label: l10n.homeThemeShortSocial,
+                          onPressed: () =>
+                              _goToWorkDeck(CardDeckType.socialIssues),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.casino, size: 36, color: _black.withOpacity(0.85)),
-                      const SizedBox(width: 28),
-                      Icon(Icons.style, size: 36, color: _black.withOpacity(0.85)),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  // みんなで盛り上がる
-                  _buildSectionTitle(l10n.homeSectionEveryone),
-                  const SizedBox(height: 12),
-                  _buildModeButton(
-                    icon: Icons.casino,
-                    label: l10n.homeDiceLabel,
-                    onPressed: _goToDice,
-                    isPrimary: true,
-                  ),
-                  const SizedBox(height: 32),
-                  // 仕事で盛り上がる
-                  _buildSectionTitle(l10n.homeSectionWork),
-                  const SizedBox(height: 12),
-                  _buildModeButton(
-                    icon: Icons.groups,
-                    label: l10n.deckTeamBuilding,
-                    onPressed: () => _goToWorkDeck(CardDeckType.teamBuilding),
-                    isPrimary: false,
-                  ),
-                  const SizedBox(height: 48),
-                  _buildAlwaysOpenCheckboxes(l10n),
                 ],
               ),
             ),

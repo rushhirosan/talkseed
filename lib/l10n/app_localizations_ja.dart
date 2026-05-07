@@ -39,7 +39,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get playWithCards => 'カードで遊ぶ';
 
   @override
-  String get alwaysOpenWithDice => '起動時にサイコロで開く';
+  String alwaysOpenWithDice(String randomLabel) {
+    return '次回起動も「$randomLabel」と同じ流れで開く';
+  }
+
+  @override
+  String get alwaysOpenWithDiceHint =>
+      'この一覧を開かず、テーマを決める準備画面から始まります（上のボタンと同じ経路）';
 
   @override
   String get alwaysOpenWithCards => '起動時にカードで開く';
@@ -483,6 +489,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyFilterValueCards => '価値観カード';
 
   @override
+  String get historyModeDiscussion => '議論・お題';
+
+  @override
+  String get historyFilterDiscussion => '議論・お題';
+
+  @override
   String get historyDeleteAll => '履歴を全削除';
 
   @override
@@ -565,6 +577,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeDiceLabel => 'ランダムトピック';
 
   @override
+  String get homeThemePickTitle => 'テーマを選ぼう';
+
+  @override
+  String get homeRandomDecideLabel => 'ランダムで決める';
+
+  @override
+  String get homeThemeShortSocial => '社会課題';
+
+  @override
+  String get homeThemeShortProblem => '問題解決';
+
+  @override
+  String get homeThemeShortValues => '価値観';
+
+  @override
   String get backToModeSelection => 'モードを選び直す';
 
   @override
@@ -581,6 +608,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get deckTeamBuildingDesc => '価値観を共有し、チームの理解を深める';
+
+  @override
+  String get deckProblemSolving => '問題解決練習カード';
+
+  @override
+  String get deckProblemSolvingDesc => '課題の整理の練習：目的・選択肢・リスク・次の一歩';
+
+  @override
+  String get deckSocialIssues => '社会課題ディスカッション';
+
+  @override
+  String get deckSocialIssuesDesc => '現代のテーマを、構造的かつ尊重し合う形で議論する';
+
+  @override
+  String get discussionScreenTitle => '議論モード';
+
+  @override
+  String get discussionHint => '順位づけは不要です。このお題について話し、視点や論点を広げてください。';
+
+  @override
+  String get discussionNextTopic => '次のお題';
+
+  @override
+  String discussionProgress(int current, int total) {
+    return '$current / $total';
+  }
 
   @override
   String get deckCheckIn => '会議前・振り返り';
@@ -731,6 +784,367 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get themeValueIntegrity => '信じていることに従って行動する';
+
+  @override
+  String get themeProbLogical1 => '売上が先月比30%ダウン。考えられる原因をMECEに分類せよ';
+
+  @override
+  String get themeProbLogical2 => '施策AとB、どちらを優先する？判断軸を3つ挙げて説明せよ';
+
+  @override
+  String get themeProbLogical3 => '会議が毎回長引く。根本原因はどこにあるか構造的に分析せよ';
+
+  @override
+  String get themeProbLogical4 => '新規事業の参入可否を1分で判断するには？最低限必要な情報は何か';
+
+  @override
+  String get themeProbLogical5 => '顧客からのクレームが増えている。どこから手をつけるか優先順位をつけよ';
+
+  @override
+  String get themeProbLogical6 => 'チームの生産性が下がっている。ボトルネックを特定するために何を調べるか';
+
+  @override
+  String get themeProbLogical7 => '「コストを20%削減せよ」と言われた。どのカテゴリから削るか論理的に説明せよ';
+
+  @override
+  String get themeProbLogical8 => 'A案とB案でデータが相反している。どちらを信頼するか、判断基準を示せ';
+
+  @override
+  String get themeProbLogical9 => 'プロジェクトが炎上しかけている。まず誰に何を報告するか、優先順位をつけよ';
+
+  @override
+  String get themeProbLogical10 => '「忙しいのに成果が出ない」状態を構造的に説明し、打ち手を示せ';
+
+  @override
+  String get themeProbCreative1 => '「待ち時間」を価値に変えるビジネスを3つ考えよ';
+
+  @override
+  String get themeProbCreative2 => '社内の紙をゼロにするには？常識を疑って発想せよ';
+
+  @override
+  String get themeProbCreative3 => '競合と全く逆の戦略を取るとしたら何をする？';
+
+  @override
+  String get themeProbCreative4 => '10年後、あなたの職種はどう変わる？それを逆手にとるアイデアは';
+
+  @override
+  String get themeProbCreative5 => '自社のサービスを「子ども向け」にリデザインするとしたら？';
+
+  @override
+  String get themeProbCreative6 => '予算ゼロで社員のモチベーションを上げる方法を5つ出せ';
+
+  @override
+  String get themeProbCreative7 => '「失敗したプロジェクト」を資産に変えるアイデアを考えよ';
+
+  @override
+  String get themeProbCreative8 => '他業界から1つビジネスモデルを借りてきて、自社に応用せよ';
+
+  @override
+  String get themeProbCreative9 => '「通勤時間」を会社の強みに変えるにはどうする？';
+
+  @override
+  String get themeProbCreative10 => 'もし価格を10倍にするとしたら、何を変える必要があるか？';
+
+  @override
+  String get themeProbFermi1 => '渋谷駅を1日に通過する人は何人？';
+
+  @override
+  String get themeProbFermi2 => '日本全国のオフィスの椅子の数は？';
+
+  @override
+  String get themeProbFermi3 => '自社の社員が1年間に書くメールの総文字数は？';
+
+  @override
+  String get themeProbFermi4 => '東京都内に信号機はいくつある？';
+
+  @override
+  String get themeProbFermi5 => '日本で1日に消費されるコーヒーのカップ数は？';
+
+  @override
+  String get themeProbFermi6 => '日本全国のコンビニで1日に捨てられる弁当の数は？';
+
+  @override
+  String get themeProbFermi7 => '自社のオフィスで1年間に使われる電力量はどのくらい？';
+
+  @override
+  String get themeProbFermi8 => '東京都内を走るタクシーの総走行距離（1日）は？';
+
+  @override
+  String get themeProbFermi9 => '日本全国のスマートフォンのバッテリーを合計すると何Wh？';
+
+  @override
+  String get themeProbFermi10 => '今この瞬間、日本で会議をしている人は何人いる？';
+
+  @override
+  String get themeProbDilemma1 => '優秀だが協調性のないメンバー。残す？外す？判断基準を言語化せよ';
+
+  @override
+  String get themeProbDilemma2 => '締め切り厳守 vs クオリティ死守。どちらを選ぶ？条件は？';
+
+  @override
+  String get themeProbDilemma3 => '上司の判断が明らかに間違っている。あなたはどう動く？';
+
+  @override
+  String get themeProbDilemma4 => '短期利益 vs 長期ブランド。トレードオフが生じたときの優先順位は？';
+
+  @override
+  String get themeProbDilemma5 => 'チームの仲が良すぎて馴れ合いになっている。どう介入する？';
+
+  @override
+  String get themeProbDilemma6 => '正直に言うと相手を傷つける。でも黙ると組織が傷つく。どうする？';
+
+  @override
+  String get themeProbDilemma7 => '実力はあるが自己主張が強すぎる部下と、素直だが成長が遅い部下。どちらを昇進させる？';
+
+  @override
+  String get themeProbDilemma8 => '成功確率20%だが成功すれば大きいA案と、確実だが小さく終わるB案。どちらを取る？';
+
+  @override
+  String get themeProbDilemma9 => '自分のミスを報告すると、チームの評価が下がる可能性がある。どうする？';
+
+  @override
+  String get themeProbDilemma10 => 'リソースが足りない。既存顧客の満足度を守る vs 新規顧客を獲得する。どちらを優先？';
+
+  @override
+  String get themeSocGeo1 => '米中対立が激化したとき、企業はどちらの経済圏を選ぶべきか？';
+
+  @override
+  String get themeSocGeo2 => '関税・貿易戦争は「国を守る手段」か、「世界を貧しくする愚策」か？';
+
+  @override
+  String get themeSocGeo3 => '経済安全保障のために、企業はどこまでサプライチェーンを自国回帰すべきか？';
+
+  @override
+  String get themeSocGeo4 => 'ロシア・ウクライナ戦争が長期化すると、グローバルビジネスにどんな影響が続くか？';
+
+  @override
+  String get themeSocGeo5 => '「友好国とだけ貿易するフレンドショアリング」は現実的な戦略か？';
+
+  @override
+  String get themeSocGeo6 => '中東情勢が不安定なまま続く場合、エネルギーコストに企業はどう備えるか？';
+
+  @override
+  String get themeSocGeo7 => '国連・WTOへの信頼が崩れたとき、世界秩序はどう維持されるか？';
+
+  @override
+  String get themeSocGeo8 => '地政学リスクを「経営課題」として扱えていない企業は生き残れるか？';
+
+  @override
+  String get themeSocGeo9 => 'グローバルサウス（新興国・途上国）の台頭は、世界にとってチャンスか脅威か？';
+
+  @override
+  String get themeSocGeo10 => '「どの国とも仲良くする」外交戦略は、これからも通用するか？';
+
+  @override
+  String get themeSocAiGap1 => 'AIの恩恵を受けるのは結局、お金と技術を持つ国や企業だけではないか？';
+
+  @override
+  String get themeSocAiGap2 => 'AIが意思決定した結果に問題が起きたとき、責任は誰が取るのか？';
+
+  @override
+  String get themeSocAiGap3 => '採用・融資・医療診断をAIが決める社会は、公平か？危険か？';
+
+  @override
+  String get themeSocAiGap4 => '特定の企業がAIを独占することは、民主主義への脅威になるか？';
+
+  @override
+  String get themeSocAiGap5 => '国境を越えて動くAIを誰が規制すべきか？各国政府？国際機関？企業自身？';
+
+  @override
+  String get themeSocAiGap6 => 'AIによる雇用喪失に対し、ベーシックインカムは解決策になるか？';
+
+  @override
+  String get themeSocAiGap7 => 'AI格差により先進国と途上国の生産性の差が広がることを、誰が止めるべきか？';
+
+  @override
+  String get themeSocAiGap8 => '生成AIで大量の偽情報が拡散する社会で、「本物」をどう見分けるか？';
+
+  @override
+  String get themeSocAiGap9 => 'AIを「兵器」として使う国が増えた場合、国際的なルールは作れるか？';
+
+  @override
+  String get themeSocAiGap10 => '10年後、AIが「持てる国」と「持たざる国」の差をどう変えると思うか？';
+
+  @override
+  String get themeSocClimate1 => '気候変動対策に消極的な国の製品に「炭素関税」をかけることは公平か？';
+
+  @override
+  String get themeSocClimate2 => '再生可能エネルギーのリーダーが中国になりつつある。世界はそれでいいか？';
+
+  @override
+  String get themeSocClimate3 => '企業のESGレポートはほとんど「グリーンウォッシュ」だと思うか？';
+
+  @override
+  String get themeSocClimate4 => '気候変動で住めなくなった地域からの「気候難民」を、豊かな国はどう受け入れるべきか？';
+
+  @override
+  String get themeSocClimate5 => '経済成長と脱炭素は本当に両立できるか？';
+
+  @override
+  String get themeSocClimate6 => '肉食・航空機利用など個人の行動変容で、気候は本当に変わるか？';
+
+  @override
+  String get themeSocClimate7 => '先進国と途上国で、気候変動対策の「責任」は同じであるべきか？';
+
+  @override
+  String get themeSocClimate8 => '原子力を「グリーンエネルギー」と呼ぶことに、賛成か反対か？';
+
+  @override
+  String get themeSocClimate9 => '2050年ゼロカーボンが達成できない場合、次の世代にどう説明するか？';
+
+  @override
+  String get themeSocClimate10 => '気候変動対策として、今すぐ一つだけ実行するとしたら何を選ぶか？';
+
+  @override
+  String get themeSocDemocracy1 => '富裕層への課税を強化して格差を縮めることに、賛成か反対か？';
+
+  @override
+  String get themeSocDemocracy2 => 'SNSのアルゴリズムは民主主義を壊しているか？それとも強化しているか？';
+
+  @override
+  String get themeSocDemocracy3 => '選挙にAIや偽情報が介入した場合、選挙結果は有効か？';
+
+  @override
+  String get themeSocDemocracy4 => '「強いリーダーシップ」と「独裁」の境界線はどこか？';
+
+  @override
+  String get themeSocDemocracy5 => 'フェイクニュースを拡散した人は、法的に罰せられるべきか？';
+
+  @override
+  String get themeSocDemocracy6 => 'SNSプラットフォームは「言論の場」か、「メディア企業」として規制されるべきか？';
+
+  @override
+  String get themeSocDemocracy7 => '「エコーチェンバー」から抜け出すために、個人は何ができるか？';
+
+  @override
+  String get themeSocDemocracy8 => '世界各地で「エリートへの怒り」が高まっている。その根本原因は何か？';
+
+  @override
+  String get themeSocDemocracy9 => '先進国が「民主主義を広める」と言うとき、それは本当に善意か？';
+
+  @override
+  String get themeSocDemocracy10 => '「社会の分断」を一番深めているのは何か？メディア？政治家？アルゴリズム？';
+
+  @override
+  String get themeSocJapanDecline1 => '人口が今の半分になる社会で、あなたの仕事は存在しているか？';
+
+  @override
+  String get themeSocJapanDecline2 => '少子化対策として「最も効果が高い」施策は何だと思うか？';
+
+  @override
+  String get themeSocJapanDecline3 => '人口減少を「問題」ではなく「チャンス」と捉えるとしたら、何が見えてくるか？';
+
+  @override
+  String get themeSocJapanDecline4 => '高齢者の医療費を現役世代が支え続ける仕組みは、持続可能か？';
+
+  @override
+  String get themeSocJapanDecline5 => '定年を80歳に引き上げることに、賛成か反対か？';
+
+  @override
+  String get themeSocJapanDecline6 => '子どもを産まない選択をする人を、社会はどう扱うべきか？';
+
+  @override
+  String get themeSocJapanDecline7 => '「子どもを産んだ人が得をする税制」は公平か？不公平か？';
+
+  @override
+  String get themeSocJapanDecline8 => '介護ロボットが普及しても、家族が介護すべき場面はあるか？';
+
+  @override
+  String get themeSocJapanDecline9 => '2026年は丙午。迷信が出生数に影響する社会をどう思うか？';
+
+  @override
+  String get themeSocJapanDecline10 => 'あなたが80歳になったとき、どんな社会に生きていたいか？';
+
+  @override
+  String get themeSocJapanImmigration1 => '人手不足を外国人労働者で補うことへの、あなたのリアルな本音は？';
+
+  @override
+  String get themeSocJapanImmigration2 => '日本語が話せない子どもへの教育コストは、誰が負うべきか？';
+
+  @override
+  String get themeSocJapanImmigration3 => '高度人材の外国人が日本を選ばない理由は何か？どうすれば変わるか？';
+
+  @override
+  String get themeSocJapanImmigration4 =>
+      '「移民を受け入れるべき」と言いながら、自分の隣人には嫌だと感じるのはなぜか？';
+
+  @override
+  String get themeSocJapanImmigration5 => '少子化対策として移民を増やすことは、文化的アイデンティティを変えるか？';
+
+  @override
+  String get themeSocJapanImmigration6 => '「日本人らしさ」とは何か？それは守るべきものか、変わっていいものか？';
+
+  @override
+  String get themeSocJapanImmigration7 => '外国人が多い職場で、チームとしてまとまるために何が必要か？';
+
+  @override
+  String get themeSocJapanImmigration8 => '欧米で外国人問題が国家分断につながっている。日本は同じ道をたどるか？';
+
+  @override
+  String get themeSocJapanImmigration9 => '外国人の土地取得を制限することに、賛成か反対か？';
+
+  @override
+  String get themeSocJapanImmigration10 => '50年後の日本が多民族国家になっていたとしたら、それはよいことか？';
+
+  @override
+  String get themeSocJapanWork1 => '週4日勤務が標準になったとき、会社と個人はそれぞれ何を変える必要があるか？';
+
+  @override
+  String get themeSocJapanWork2 => '新卒一括採用・終身雇用は、今の時代に合っているか？';
+
+  @override
+  String get themeSocJapanWork3 => '成果が同じなら、働く時間が短い人と長い人の評価は同じにすべきか？';
+
+  @override
+  String get themeSocJapanWork4 => '副業を全員に解禁すると、組織への忠誠心は下がるか？';
+
+  @override
+  String get themeSocJapanWork5 => '「やりがい搾取」はなぜなくならないのか？誰が変えるべきか？';
+
+  @override
+  String get themeSocJapanWork6 => '上司が部下より給与が低い逆転現象は、問題か？健全か？';
+
+  @override
+  String get themeSocJapanWork7 => '燃え尽き症候群（バーンアウト）を防ぐ責任は、個人か？会社か？';
+
+  @override
+  String get themeSocJapanWork8 => 'テレワークと出社、チームにとって本当にいいのはどちらか？';
+
+  @override
+  String get themeSocJapanWork9 => '「会社の飲み会」は業務か？プライベートか？';
+
+  @override
+  String get themeSocJapanWork10 => '10年後、「会社員」という働き方は主流であり続けるか？';
+
+  @override
+  String get themeSocJapanLocal1 => 'バスも電車もなくなった地方に、住み続ける権利を社会は保障すべきか？';
+
+  @override
+  String get themeSocJapanLocal2 => '廃校になった学校の跡地を、何に使うべきか？';
+
+  @override
+  String get themeSocJapanLocal3 => 'リモートワークは地方創生の救世主になれるか？それとも幻想か？';
+
+  @override
+  String get themeSocJapanLocal4 => '人口が100人を切った村に、公共サービスを提供し続けるべきか？';
+
+  @override
+  String get themeSocJapanLocal5 => '老朽化したインフラを維持するために増税することに、賛成か反対か？';
+
+  @override
+  String get themeSocJapanLocal6 => '都市への人口集中は「問題」か？それとも「効率的な選択」か？';
+
+  @override
+  String get themeSocJapanLocal7 => '地方に本社機能を移転した企業は、本当に成功できるか？';
+
+  @override
+  String get themeSocJapanLocal8 => '「消滅可能性都市」というレッテルを貼ることは、地方にとってプラスかマイナスか？';
+
+  @override
+  String get themeSocJapanLocal9 => 'あなたが地方移住を決断するとしたら、最低限必要な条件は何か？';
+
+  @override
+  String get themeSocJapanLocal10 => '地方の問題を解決する責任は、国・自治体・企業・個人のどこにあるか？';
 
   @override
   String valuePlayerTurn(String displayName) {

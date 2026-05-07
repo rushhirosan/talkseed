@@ -7,9 +7,9 @@ import '../utils/route_transitions.dart';
 import 'dice_page.dart';
 import 'initial_settings_page.dart';
 import 'value_card_page.dart';
+import 'discussion_prompt_page.dart';
 import 'mode_selection_page.dart';
 import 'card_settings_page.dart';
-
 /// セッション設定画面（設定画面とデザインテイストを統一）
 /// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
 class SessionSetupPage extends StatefulWidget {
@@ -18,15 +18,21 @@ class SessionSetupPage extends StatefulWidget {
   final bool fromDicePage;
   /// true のとき「スタート」で ValueCardPage へ遷移（価値観カード用セッション設定）
   final bool forValueCard;
-  /// forValueCard 時のみ。true なら戻るで CardSettingsPage、false なら ModeSelectionPage
+  /// true のとき「スタート」で DiscussionPromptPage へ遷移（問題解決・社会課題デッキ）
+  final bool forDiscussion;
+  /// forValueCard / forDiscussion 時のみ。true なら戻るで CardSettingsPage、false なら ModeSelectionPage
   final bool fromCardSettings;
+  /// セッションプレビューに表示するデッキ名（forDiscussion 時に使用）
+  final String? deckLabel;
 
   const SessionSetupPage({
     super.key,
     required this.themes,
     this.fromDicePage = false,
     this.forValueCard = false,
+    this.forDiscussion = false,
     this.fromCardSettings = false,
+    this.deckLabel,
   });
 
   @override
@@ -148,6 +154,17 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
         ),
       );
+    } else if (widget.forDiscussion && themes != null) {
+      final l10n = AppLocalizations.of(context)!;
+      Navigator.of(context).push(
+        RouteTransitions.forwardRoute(
+          page: DiscussionPromptPage(
+            themes: themes,
+            sessionConfig: finalConfig,
+            deckTitle: widget.deckLabel ?? l10n.discussionScreenTitle,
+          ),
+        ),
+      );
     } else {
       Navigator.of(context).pushReplacement(
         RouteTransitions.forwardRoute(
@@ -168,7 +185,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isValueCardLayout = widget.forValueCard;
+    final isValueCardLayout = widget.forValueCard || widget.forDiscussion;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: _white,
@@ -184,7 +201,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                   page: const InitialSettingsPage(),
                 ),
               );
-            } else if (widget.forValueCard) {
+            } else if (widget.forValueCard || widget.forDiscussion) {
               if (widget.fromCardSettings) {
                 Navigator.of(context).pushReplacement(
                   RouteTransitions.backRoute(
@@ -202,7 +219,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               Navigator.of(context).pop();
             }
           },
-          tooltip: widget.forValueCard ? l10n.backToModeSelection : l10n.backToThemeSettings,
+          tooltip: (widget.forValueCard || widget.forDiscussion) ? l10n.backToModeSelection : l10n.backToThemeSettings,
         ),
         title: Text(
           l10n.sessionSetup,
@@ -293,7 +310,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildLeftSection(AppLocalizations l10n) {
-    final compact = widget.forValueCard;
+    final compact = widget.forValueCard || widget.forDiscussion;
     final sectionSpacing = compact ? 20.0 : 24.0;
     final itemSpacing = compact ? 8.0 : 12.0;
     return Column(
@@ -383,7 +400,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            widget.forValueCard ? l10n.deckTeamBuilding : l10n.playModeDice,
+            widget.deckLabel ??
+                (widget.forValueCard
+                    ? l10n.deckTeamBuilding
+                    : widget.forDiscussion
+                        ? l10n.discussionScreenTitle
+                        : l10n.playModeDice),
             style: TextStyle(
               fontSize: 14,
               color: _black.withOpacity(0.8),
@@ -561,7 +583,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildRightSection(AppLocalizations l10n) {
-    final compact = widget.forValueCard;
+    final compact = widget.forValueCard || widget.forDiscussion;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -652,7 +674,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   Widget _buildPlayerNameField(AppLocalizations l10n, int index) {
     final pastel = _getPastelColor(index);
     final focusNode = _playerNameFocusNodes[index];
-    final compact = widget.forValueCard;
+    final compact = widget.forValueCard || widget.forDiscussion;
     return Builder(
       builder: (fieldContext) {
         return Container(

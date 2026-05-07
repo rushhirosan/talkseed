@@ -23,9 +23,9 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // デザインの色定義（Figmaデザインのテイストに合わせて調整）
-  static const Color _purpleBackground = Color(0xFF4F20D1); // 明るい紫色（Figmaデザインに合わせて）
-  static const Color _yellowBanner = Color(0xFFFFEB3B); // 黄色
+  // モード選択画面と同じブランドトーンに統一
+  static const Color _purpleBackground = Color(0xFF5A3FC0);
+  static const Color _yellowBanner = Color(0xFFFFEA5A);
   static const Color _whiteText = Colors.white;
 
   // チュートリアルページのデータ
@@ -269,7 +269,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         offset: const Offset(2, 2),
                         blurRadius: 4,
                       ),
@@ -309,7 +309,7 @@ class _TutorialPageState extends State<TutorialPage> {
               Text(
                 pageData.body,
                 style: TextStyle(
-                  color: _whiteText.withOpacity(0.95),
+                  color: _whiteText.withValues(alpha: 0.95),
                   fontSize: bodyFontSize,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
@@ -320,7 +320,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 Text(
                   'v1.0 | ${DateTime.now().year}',
                   style: TextStyle(
-                    color: _whiteText.withOpacity(0.75),
+                    color: _whiteText.withValues(alpha: 0.75),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -433,15 +433,15 @@ class _TutorialPageState extends State<TutorialPage> {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: _whiteText.withOpacity(0.08),
+        color: _whiteText.withValues(alpha: 0.08),
         shape: BoxShape.circle,
         border: Border.all(
-          color: _whiteText.withOpacity(0.25),
+          color: _whiteText.withValues(alpha: 0.25),
           width: 3,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -450,7 +450,7 @@ class _TutorialPageState extends State<TutorialPage> {
       child: Icon(
         icon,
         size: iconSize,
-        color: _whiteText.withOpacity(0.9),
+        color: _whiteText.withValues(alpha: 0.9),
       ),
     );
   }
@@ -461,7 +461,7 @@ class _TutorialPageState extends State<TutorialPage> {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? _yellowBanner : _whiteText.withOpacity(0.3),
+        color: isActive ? _yellowBanner : _whiteText.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );

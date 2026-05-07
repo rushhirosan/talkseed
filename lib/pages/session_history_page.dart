@@ -12,7 +12,7 @@ class SessionHistoryPage extends StatefulWidget {
 }
 
 class _SessionHistoryPageState extends State<SessionHistoryPage> {
-  String _filter = 'all'; // all | dice | value_cards
+  String _filter = 'all'; // all | dice | value_cards | discussion
 
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
@@ -22,6 +22,8 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
     switch (record.mode) {
       case 'value_cards':
         return l10n.historyModeValueCards;
+      case 'discussion':
+        return l10n.historyModeDiscussion;
       case 'dice':
       default:
         return l10n.historyModeDice;
@@ -186,6 +188,11 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
           selected: _filter == 'value_cards',
           onSelected: (_) => setState(() => _filter = 'value_cards'),
         ),
+        ChoiceChip(
+          label: Text(l10n.historyFilterDiscussion),
+          selected: _filter == 'discussion',
+          onSelected: (_) => setState(() => _filter = 'discussion'),
+        ),
       ],
     );
   }
@@ -234,6 +241,8 @@ class SessionHistoryDetailPage extends StatelessWidget {
     switch (record.mode) {
       case 'value_cards':
         return l10n.historyModeValueCards;
+      case 'discussion':
+        return l10n.historyModeDiscussion;
       case 'dice':
       default:
         return l10n.historyModeDice;
