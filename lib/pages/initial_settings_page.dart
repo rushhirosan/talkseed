@@ -11,6 +11,7 @@ import 'session_setup_page.dart';
 import 'topics_page.dart';
 import 'mode_selection_page.dart';
 import '../models/preselected_mode.dart';
+import '../theme/talk_shuffle_theme.dart';
 
 /// テーマ設定画面（モード選択後、テーマ編集して遊ぶ画面へ遷移）
 class InitialSettingsPage extends StatefulWidget {
@@ -227,12 +228,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     ];
   }
 
-  // デザインカラーパレット（チュートリアル画面の黄色に合わせる）
-  static const Color _mustardYellow = Color(0xFFFFEB3B); // 鮮やかな黄色（チュートリアル画面と同じ）
-  static const Color _lightGreen = Color(0xFFB8E6B8); // ライトグリーン
-  static const Color _lightOrange = Color(0xFFFFE5CC); // ライトオレンジ
-  static const Color _lightPink = Color(0xFFFFCCCC); // ライトレッド/ピンク
-  static const Color _lightBlueGreen = Color(0xFFCCE5E5); // ライトブルーグリーン
+  // 色は [TalkShuffleTokens] に統一
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
 
@@ -271,7 +267,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               return SingleChildScrollView(
                 padding: EdgeInsets.only(top: 16, bottom: bottomPadding + 80),
                 child: Container(
-                  color: _mustardYellow,
+                  color: context.talkShuffle.scaffoldHome,
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -316,7 +312,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 360),
                     child: Container(
-                      color: _mustardYellow,
+                      color: context.talkShuffle.scaffoldHome,
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                       child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -932,7 +928,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   itemBuilder: (context, index) {
                     final candidates = ThemeModel.getThemeCandidates(l10n);
                     final candidate = candidates[index];
-                    return _buildDraggableCandidate(candidate, index);
+                    return _buildDraggableCandidate(context, candidate, index);
                   },
                 ),
               );
@@ -944,19 +940,17 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }
 
   /// パステルカラーを取得（インデックスに基づいて循環）
-  Color _getPastelColor(int index) {
-    const colors = [
-      Color(0xFFB8E6B8), // _lightGreen
-      Color(0xFFFFE5CC), // _lightOrange
-      Color(0xFFFFCCCC), // _lightPink
-      Color(0xFFCCE5E5), // _lightBlueGreen
-    ];
-    return colors[index % colors.length];
+  Color _getPastelColor(BuildContext context, int index) {
+    return context.talkShuffle.playerPastel(index);
   }
 
   /// ドラッグ可能なテーマ候補アイテム
-  Widget _buildDraggableCandidate(String theme, int index) {
-    final pastelColor = _getPastelColor(index);
+  Widget _buildDraggableCandidate(
+    BuildContext context,
+    String theme,
+    int index,
+  ) {
+    final pastelColor = _getPastelColor(context, index);
 
     return Draggable<String>(
       data: theme,

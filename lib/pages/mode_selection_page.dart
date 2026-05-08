@@ -16,6 +16,7 @@ import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'topics_page.dart';
 import 'session_history_page.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
 /// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（価値観・問題解決・社会課題などカードデッキ）
 class ModeSelectionPage extends StatefulWidget {
@@ -168,13 +169,18 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
   }
 
   /// 案B：ランダム＝紫の主ボタン（リスト先頭）
-  Widget _buildRandomPrimaryButton(AppLocalizations l10n, VoidCallback onPressed) {
+  Widget _buildRandomPrimaryButton(
+    BuildContext context,
+    AppLocalizations l10n,
+    VoidCallback onPressed,
+  ) {
+    final purple = context.talkShuffle.brandPurple;
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _brandPurple,
+          backgroundColor: purple,
           foregroundColor: _white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
@@ -202,13 +208,14 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
 
   /// テーマ行（白／薄紫ボーダー、絵文字＋短いラベル）
   Widget _buildThemeRow({
+    required BuildContext context,
     required IconData icon,
     required Color iconColor,
     required String label,
     required VoidCallback onPressed,
     Color? backgroundColor,
   }) {
-    const borderColor = Color(0xFFD4CFE8);
+    final borderColor = context.talkShuffle.borderLavender;
     final bg = backgroundColor ?? _white;
     return Material(
       color: Colors.transparent,
@@ -253,8 +260,11 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
   }
 
   /// 上の「ランダムで決める」と同じ経路で次回起動する（文言は homeRandomDecideLabel を埋め込む）
-  Widget _buildStartupFollowRandomOption(AppLocalizations l10n) {
-    const accent = _brandPurple;
+  Widget _buildStartupFollowRandomOption(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    final accent = context.talkShuffle.brandPurple;
 
     Future<void> toggle(bool v) async {
       setState(() => _alwaysOpenWithDice = v);
@@ -267,7 +277,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 12, 14, 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F2FC),
+        color: context.talkShuffle.shellLavender,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: accent.withValues(alpha: 0.35)),
       ),
@@ -326,20 +336,15 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  static const Color _brandPurple = Color(0xFF5A3FC0);
-  static const Color _brandYellow = Color(0xFFFFEA5A);
-  static const Color _cardIvory = Color(0xFFF8F3E8);
-  static const Color _mustardYellow = _brandYellow;
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  /// 問題解決行のハイライト（モックの薄ラベンダー）
-  static const Color _themeRowHighlight = Color(0xFFE8E2F5);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final ts = context.talkShuffle;
     return Scaffold(
-      backgroundColor: _mustardYellow,
+      backgroundColor: ts.scaffoldHome,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -389,7 +394,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                     decoration: BoxDecoration(
-                      color: _cardIvory,
+                      color: ts.surfaceCard,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -412,30 +417,33 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 22),
-                        _buildRandomPrimaryButton(l10n, _goToDice),
+                        _buildRandomPrimaryButton(context, l10n, _goToDice),
                         const SizedBox(height: 12),
-                        _buildStartupFollowRandomOption(l10n),
+                        _buildStartupFollowRandomOption(context, l10n),
                         const SizedBox(height: 18),
                         _buildThemeRow(
+                          context: context,
                           icon: Icons.groups_rounded,
-                          iconColor: const Color(0xFF5E52C8),
+                          iconColor: ts.deckIconValues,
                           label: l10n.homeThemeShortValues,
                           onPressed: () =>
                               _goToWorkDeck(CardDeckType.teamBuilding),
                         ),
                         const SizedBox(height: 12),
                         _buildThemeRow(
+                          context: context,
                           icon: Icons.psychology_alt_rounded,
-                          iconColor: const Color(0xFF7B5ED4),
+                          iconColor: ts.deckIconProblem,
                           label: l10n.homeThemeShortProblem,
-                          backgroundColor: _themeRowHighlight,
+                          backgroundColor: ts.rowHighlightLavender,
                           onPressed: () =>
                               _goToWorkDeck(CardDeckType.problemSolving),
                         ),
                         const SizedBox(height: 12),
                         _buildThemeRow(
+                          context: context,
                           icon: Icons.public_rounded,
-                          iconColor: const Color(0xFF4B64C9),
+                          iconColor: ts.deckIconSocial,
                           label: l10n.homeThemeShortSocial,
                           onPressed: () =>
                               _goToWorkDeck(CardDeckType.socialIssues),

@@ -16,8 +16,6 @@ class ThemeDisplay extends StatelessWidget {
 
   // カラーパレット（設定画面と統一）
   static const Color _black = Colors.black87;
-  static const Color _white = Colors.white;
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,7 @@ class ThemeDisplay extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
-            color: _black.withOpacity(0.7),
+            color: _black.withValues(alpha: 0.7),
           ),
         ),
       );
@@ -61,7 +59,6 @@ class _BounceThemeResult extends StatelessWidget {
 
   static const Color _black = Colors.black87;
   static const Color _white = Colors.white;
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +77,10 @@ class _BounceThemeResult extends StatelessWidget {
         decoration: BoxDecoration(
           color: _white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _black.withOpacity(0.2), width: 1),
+          border: Border.all(color: _black.withValues(alpha: 0.2), width: 1),
           boxShadow: [
             BoxShadow(
-              color: _black.withOpacity(0.08),
+              color: _black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

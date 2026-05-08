@@ -16,6 +16,7 @@ import '../widgets/timer_display.dart';
 import '../widgets/card_draw_widget.dart';
 import 'mode_selection_page.dart';
 import 'session_setup_page.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
 /// トピックカード/リストでテーマを引いて遊ぶ画面（案B: 初期画面「カードで遊ぶ」またはセッション設定で選択）
 class TopicsPage extends StatefulWidget {
@@ -438,16 +439,15 @@ class _TopicsPageState extends State<TopicsPage> {
     }
   }
 
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _lightYellow = Color(0xFFFFFDE7);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final ts = context.talkShuffle;
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -526,7 +526,7 @@ class _TopicsPageState extends State<TopicsPage> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _mustardYellow,
+                          backgroundColor: ts.brandYellow,
                           foregroundColor: _black,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
@@ -574,7 +574,7 @@ class _TopicsPageState extends State<TopicsPage> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _mustardYellow,
+                        backgroundColor: ts.brandYellow,
                         foregroundColor: _black,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
@@ -633,7 +633,7 @@ class _TopicsPageState extends State<TopicsPage> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _mustardYellow,
+                        backgroundColor: ts.brandYellow,
                         foregroundColor: _black,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
@@ -670,7 +670,7 @@ class _TopicsPageState extends State<TopicsPage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _mustardYellow,
+                    backgroundColor: ts.brandYellow,
                     foregroundColor: _black,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
@@ -737,10 +737,10 @@ class _PhaseSegmentButton extends StatelessWidget {
   });
 
   static const Color _black = Colors.black87;
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.talkShuffle.brandYellow;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -750,7 +750,7 @@ class _PhaseSegmentButton extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? _mustardYellow : Colors.transparent,
+            color: isSelected ? accent : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: isSelected
                 ? Border.all(color: _black, width: 1.5)

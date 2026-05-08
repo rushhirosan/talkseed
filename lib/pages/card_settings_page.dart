@@ -9,6 +9,7 @@ import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/pages/topics_page.dart';
 
@@ -124,24 +125,20 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
 
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _cardBlue = Color(0xFFE3F2FD);
-  static const Color _cardGreen = Color(0xFFE8F5E9);
-  static const Color _cardOrange = Color(0xFFFFF3E0);
-  static const Color _cardPurple = Color(0xFFF3E5F5);
-  static const Color _cardTeal = Color(0xFFE0F2F1);
 
-  Color _getDeckColor(CardDeckType type) {
+  Color _getDeckColor(BuildContext context, CardDeckType type) {
+    final t = context.talkShuffle;
     switch (type) {
       case CardDeckType.teamBuilding:
-        return _cardBlue;
+        return t.deckTileTeamBuilding;
       case CardDeckType.problemSolving:
-        return _cardTeal;
+        return t.deckTileProblemSolving;
       case CardDeckType.socialIssues:
-        return _cardPurple;
+        return t.deckTileSocialIssues;
       case CardDeckType.checkIn:
-        return _cardGreen;
+        return t.deckTileCheckIn;
       case CardDeckType.oneOnOne:
-        return _cardOrange;
+        return t.deckTileOneOnOne;
     }
   }
 
@@ -203,7 +200,7 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _DeckCard(
                     deck: deck,
-                    deckColor: _getDeckColor(deck.type),
+                    deckColor: _getDeckColor(context, deck.type),
                     icon: _getDeckIcon(deck.type),
                     onTap: () => _playWithDeck(deck),
                   ),

@@ -22,6 +22,7 @@ import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
 /// サイコロゲームのメインページ。
 /// 3Dサイコロのアニメーション、テーマ表示、セッション（複数プレイヤー・タイマー）を担当。
@@ -505,6 +506,7 @@ class _DicePageState extends State<DicePage>
 
   /// セッション振り返り画面の本文を構築
   Widget _buildSessionSummaryBody(AppLocalizations l10n) {
+    final ts = context.talkShuffle;
     final rounds = _session!.rounds;
     final voteEntries = _voteCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
@@ -643,7 +645,7 @@ class _DicePageState extends State<DicePage>
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _mustardYellow,
+                  backgroundColor: ts.brandYellow,
                   foregroundColor: _black,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -740,19 +742,17 @@ class _DicePageState extends State<DicePage>
     }
   }
 
-  // デザインカラーパレット（設定画面と統一）
-  static const Color _mustardYellow = Color(0xFFFFEB3B); // マスタードイエロー
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _lightYellow = Color(0xFFFFFDE7); // 非常に薄い黄色の背景
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final ts = context.talkShuffle;
     // テーマが初期化されていない場合はデフォルト値を設定
     _themes ??= {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n)};
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -868,7 +868,7 @@ class _DicePageState extends State<DicePage>
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _mustardYellow,
+                  backgroundColor: ts.brandYellow,
                   foregroundColor: _black,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,

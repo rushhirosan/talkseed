@@ -13,6 +13,7 @@ import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import 'mode_selection_page.dart';
 
 /// 問題解決・社会課題デッキ用：お題を1枚ずつ表示し、順位づけなく話す
@@ -41,8 +42,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   TimerService? _timerService;
   bool _didSaveHistory = false;
 
-  static const Color _lightYellow = Color(0xFFFFFDE7);
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
 
@@ -198,9 +197,10 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final total = _ordered.length;
+    final ts = context.talkShuffle;
 
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -306,7 +306,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _mustardYellow,
+                  backgroundColor: ts.brandYellow,
                   foregroundColor: _black,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,

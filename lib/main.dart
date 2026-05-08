@@ -9,6 +9,7 @@ import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/tutorial_page.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,12 +63,9 @@ class _HiveBootstrapAppState extends State<_HiveBootstrapApp> {
     }
     if (!_ready) {
       return MaterialApp(
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: buildTalkShuffleTheme(),
         home: Scaffold(
-          backgroundColor: const Color(0xFFF3E5F5),
+          backgroundColor: TalkShuffleTokens.standard.bootstrapSurface,
           body: const Center(
             child: CircularProgressIndicator(),
           ),
@@ -91,10 +89,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Talk Shuffle',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: buildTalkShuffleTheme(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

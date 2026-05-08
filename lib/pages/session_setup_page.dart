@@ -10,6 +10,7 @@ import 'value_card_page.dart';
 import 'discussion_prompt_page.dart';
 import 'mode_selection_page.dart';
 import 'card_settings_page.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 /// セッション設定画面（設定画面とデザインテイストを統一）
 /// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
 class SessionSetupPage extends StatefulWidget {
@@ -48,12 +49,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   final ScrollController _rightScrollController = ScrollController();
 
-  // デザインカラーパレット（設定画面と同じ）
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
-  static const Color _lightGreen = Color(0xFFB8E6B8);
-  static const Color _lightOrange = Color(0xFFFFE5CC);
-  static const Color _lightPink = Color(0xFFFFCCCC);
-  static const Color _lightBlueGreen = Color(0xFFCCE5E5);
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
 
@@ -177,15 +172,15 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     }
   }
 
-  Color _getPastelColor(int index) {
-    final colors = [_lightGreen, _lightOrange, _lightPink, _lightBlueGreen];
-    return colors[index % colors.length];
+  Color _getPastelColor(BuildContext context, int index) {
+    return context.talkShuffle.playerPastel(index);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isValueCardLayout = widget.forValueCard || widget.forDiscussion;
+    final ts = context.talkShuffle;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: _white,
@@ -252,7 +247,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                 Expanded(
                   flex: isValueCardLayout ? 9 : 1,
                   child: Container(
-                    color: _mustardYellow,
+                    color: ts.scaffoldHome,
                     padding: isValueCardLayout
                         ? const EdgeInsets.fromLTRB(20, 20, 16, 20)
                         : const EdgeInsets.all(24),
@@ -583,6 +578,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildRightSection(AppLocalizations l10n) {
+    final ts = context.talkShuffle;
     final compact = widget.forValueCard || widget.forDiscussion;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,7 +658,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: _mustardYellow.withOpacity(0.4),
+                backgroundColor: ts.brandYellow.withValues(alpha: 0.4),
               ),
             ),
           ),
@@ -672,7 +668,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildPlayerNameField(AppLocalizations l10n, int index) {
-    final pastel = _getPastelColor(index);
+    final pastel = _getPastelColor(context, index);
     final focusNode = _playerNameFocusNodes[index];
     final compact = widget.forValueCard || widget.forDiscussion;
     return Builder(

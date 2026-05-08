@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
 class SessionHistoryPage extends StatefulWidget {
   const SessionHistoryPage({super.key});
@@ -16,7 +17,6 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
 
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _lightYellow = Color(0xFFFFFDE7);
 
   String _modeLabel(AppLocalizations l10n, SessionRecord record) {
     switch (record.mode) {
@@ -34,9 +34,10 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat.yMMMMd(l10n.localeName);
+    final ts = context.talkShuffle;
 
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -235,7 +236,6 @@ class SessionHistoryDetailPage extends StatelessWidget {
 
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _lightYellow = Color(0xFFFFFDE7);
 
   String _modeLabel(AppLocalizations l10n) {
     switch (record.mode) {
@@ -255,9 +255,10 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final dateFormat = DateFormat.yMMMMd(l10n.localeName);
     final dateLabel = dateFormat.format(record.playedAt);
     final modeLabel = _modeLabel(l10n);
+    final ts = context.talkShuffle;
 
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,

@@ -13,6 +13,7 @@ import '../services/timer_service.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/player_indicator.dart';
 import '../widgets/timer_display.dart';
+import '../theme/talk_shuffle_theme.dart';
 import 'mode_selection_page.dart';
 
 /// 価値観カード フルルールのゲーム画面
@@ -54,10 +55,8 @@ class _ValueCardPageState extends State<ValueCardPage> {
   /// 履歴を保存済みか（重複保存防止）
   bool _didSaveHistory = false;
 
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _white = Colors.white;
   static const Color _black = Colors.black87;
-  static const Color _lightYellow = Color(0xFFFFFDE7);
 
   @override
   void initState() {
@@ -253,9 +252,10 @@ class _ValueCardPageState extends State<ValueCardPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final ts = context.talkShuffle;
 
     return Scaffold(
-      backgroundColor: _lightYellow,
+      backgroundColor: ts.scaffoldPlayWarm,
       appBar: AppBar(
         backgroundColor: _white,
         elevation: 0,
@@ -282,6 +282,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildSetup(AppLocalizations l10n) {
+    final ts = context.talkShuffle;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -348,7 +349,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _mustardYellow,
+                backgroundColor: ts.brandYellow,
                 foregroundColor: _black,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -416,6 +417,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildPlaying(AppLocalizations l10n, ValueGameState state) {
+    final ts = context.talkShuffle;
     final hand = state.hands[state.currentPlayerIndex] ?? [];
     final showTurnBanner = _session == null;
 
@@ -502,7 +504,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _mustardYellow,
+                          backgroundColor: ts.brandYellow,
                           foregroundColor: _black,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -627,6 +629,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildSharing(AppLocalizations l10n, ValueGameState state) {
+    final ts = context.talkShuffle;
     final playerIndex = state.sharingPlayerIndex;
     final hand = state.hands[playerIndex] ?? [];
 
@@ -700,7 +703,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _mustardYellow,
+                backgroundColor: ts.brandYellow,
                 foregroundColor: _black,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -939,7 +942,6 @@ class _PlayerSwitchBanner extends StatefulWidget {
 
 class _PlayerSwitchBannerState extends State<_PlayerSwitchBanner>
     with SingleTickerProviderStateMixin {
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
   static const Color _black = Colors.black87;
 
   late final AnimationController _controller;
@@ -969,6 +971,7 @@ class _PlayerSwitchBannerState extends State<_PlayerSwitchBanner>
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.talkShuffle.brandYellow;
     return Positioned.fill(
       child: IgnorePointer(
         child: AnimatedBuilder(
@@ -983,18 +986,18 @@ class _PlayerSwitchBannerState extends State<_PlayerSwitchBanner>
             );
           },
           child: Container(
-            color: _black.withOpacity(0.4),
+            color: _black.withValues(alpha: 0.4),
             alignment: Alignment.center,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 32),
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
               decoration: BoxDecoration(
-                color: _mustardYellow,
+                color: accent,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: _black, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: _black.withOpacity(0.2),
+                    color: _black.withValues(alpha: 0.2),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import '../utils/preferences_helper.dart';
 import 'dart:math' as math;
 
@@ -23,10 +24,7 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // モード選択画面と同じブランドトーンに統一
-  static const Color _purpleBackground = Color(0xFF5A3FC0);
-  static const Color _yellowBanner = Color(0xFFFFEA5A);
-  static const Color _whiteText = Colors.white;
+  // 色は Theme / TalkShuffleTokens に統一（ここではローカル定義しない）
 
   // チュートリアルページのデータ
   List<TutorialPageData>? _pages;
@@ -127,7 +125,9 @@ class _TutorialPageState extends State<TutorialPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final pages = _pages ?? [];
-    
+    final scheme = Theme.of(context).colorScheme;
+    final ts = context.talkShuffle;
+
     if (pages.isEmpty) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -135,7 +135,7 @@ class _TutorialPageState extends State<TutorialPage> {
     }
     
     return Scaffold(
-        backgroundColor: _purpleBackground,
+        backgroundColor: ts.scaffoldTutorial,
         body: SafeArea(
         child: Column(
           children: [
@@ -149,8 +149,8 @@ class _TutorialPageState extends State<TutorialPage> {
                     onPressed: _completeTutorial,
                     child: Text(
                       l10n.skip,
-                      style: const TextStyle(
-                        color: _whiteText,
+                      style: TextStyle(
+                        color: scheme.onPrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
@@ -168,6 +168,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 physics: const PageScrollPhysics(), // ページスクロールの物理挙動を明示
                 itemBuilder: (context, index) {
                   return _buildTutorialPage(
+                    context,
                     pages[index],
                     showVersion: index == 0,
                   );
@@ -184,7 +185,10 @@ class _TutorialPageState extends State<TutorialPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       pages.length,
-                      (index) => _buildPageIndicator(index == _currentPage),
+                      (index) => _buildPageIndicator(
+                        context,
+                        index == _currentPage,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -196,15 +200,18 @@ class _TutorialPageState extends State<TutorialPage> {
                       _currentPage > 0
                           ? IconButton(
                               onPressed: _previousPage,
-                              icon: const Icon(Icons.arrow_back, color: _whiteText),
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: scheme.onPrimary,
+                              ),
                             )
                           : const SizedBox(width: 48),
                       // 次へ/完了ボタン
                       FilledButton(
                         onPressed: _nextPage,
                         style: FilledButton.styleFrom(
-                          backgroundColor: _yellowBanner,
-                          foregroundColor: Colors.black,
+                          backgroundColor: ts.brandYellow,
+                          foregroundColor: scheme.onSecondary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 16,
@@ -234,9 +241,15 @@ class _TutorialPageState extends State<TutorialPage> {
     );
   }
 
-  Widget _buildTutorialPage(TutorialPageData pageData, {bool showVersion = false}) {
+  Widget _buildTutorialPage(
+    BuildContext context,
+    TutorialPageData pageData, {
+    bool showVersion = false,
+  }) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final scheme = Theme.of(context).colorScheme;
+        final ts = context.talkShuffle;
         // 画面サイズに応じてレイアウトを調整
         final isSmallScreen = constraints.maxHeight < 700;
         final isNarrowScreen = constraints.maxWidth < 400;
@@ -264,7 +277,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     vertical: isNarrowScreen ? 8 : 12,
                   ),
                   decoration: BoxDecoration(
-                    color: _yellowBanner,
+                    color: ts.brandYellow,
                     border: Border.all(color: Colors.black, width: 2),
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
@@ -294,7 +307,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 child: Text(
                   pageData.title,
                   style: TextStyle(
-                    color: _whiteText,
+                    color: scheme.onPrimary,
                     fontSize: math.max(titleFontSize, 20),
                     fontWeight: FontWeight.bold,
                     height: 1.2,
@@ -309,7 +322,7 @@ class _TutorialPageState extends State<TutorialPage> {
               Text(
                 pageData.body,
                 style: TextStyle(
-                  color: _whiteText.withValues(alpha: 0.95),
+                  color: scheme.onPrimary.withValues(alpha: 0.95),
                   fontSize: bodyFontSize,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
@@ -320,7 +333,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 Text(
                   'v1.0 | ${DateTime.now().year}',
                   style: TextStyle(
-                    color: _whiteText.withValues(alpha: 0.75),
+                    color: scheme.onPrimary.withValues(alpha: 0.75),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -345,12 +358,14 @@ class _TutorialPageState extends State<TutorialPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildIconCircle(
+                      context,
                       pageData.icon,
                       size: iconSize,
                       iconSize: iconSizeSingle,
                     ),
                     SizedBox(width: isSmallScreen ? 12 : 16),
                     _buildIconCircle(
+                      context,
                       pageData.icon2!,
                       size: iconSize,
                       iconSize: iconSizeSingle,
@@ -361,6 +376,7 @@ class _TutorialPageState extends State<TutorialPage> {
             : Transform.rotate(
                 angle: -0.1,
                 child: _buildIconCircle(
+                  context,
                   pageData.icon,
                   size: iconSize,
                   iconSize: iconSizeSingle,
@@ -425,18 +441,20 @@ class _TutorialPageState extends State<TutorialPage> {
   }
 
   Widget _buildIconCircle(
+    BuildContext context,
     IconData icon, {
     required double size,
     required double iconSize,
   }) {
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: _whiteText.withValues(alpha: 0.08),
+        color: onPrimary.withValues(alpha: 0.08),
         shape: BoxShape.circle,
         border: Border.all(
-          color: _whiteText.withValues(alpha: 0.25),
+          color: onPrimary.withValues(alpha: 0.25),
           width: 3,
         ),
         boxShadow: [
@@ -450,18 +468,20 @@ class _TutorialPageState extends State<TutorialPage> {
       child: Icon(
         icon,
         size: iconSize,
-        color: _whiteText.withValues(alpha: 0.9),
+        color: onPrimary.withValues(alpha: 0.9),
       ),
     );
   }
 
-  Widget _buildPageIndicator(bool isActive) {
+  Widget _buildPageIndicator(BuildContext context, bool isActive) {
+    final scheme = Theme.of(context).colorScheme;
+    final ts = context.talkShuffle;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? _yellowBanner : _whiteText.withValues(alpha: 0.3),
+        color: isActive ? ts.brandYellow : scheme.onPrimary.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );
