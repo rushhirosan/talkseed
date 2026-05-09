@@ -48,10 +48,23 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   String get _currentPrompt =>
       _ordered.isEmpty ? '' : _ordered[_index.clamp(0, _ordered.length - 1)];
 
+  /// [SessionConfig.discussionPromptCap] を反映してシャッフル順を組み直す（ラップ時も同じルール）
+  void _rebuildShuffledOrder() {
+    final full = List<String>.from(widget.themes)..shuffle(_random);
+    final deckLen = full.length;
+    final cap = widget.sessionConfig.discussionPromptCap;
+    if (cap != null && cap < deckLen) {
+      _ordered = full.sublist(0, cap);
+    } else {
+      _ordered = full;
+    }
+    _index = 0;
+  }
+
   @override
   void initState() {
     super.initState();
-    _ordered = List<String>.from(widget.themes)..shuffle(_random);
+    _rebuildShuffledOrder();
     _session = GameSession(
       config: widget.sessionConfig,
       themes: {PolyhedronType.cube: widget.themes},
@@ -122,9 +135,10 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     setState(() {
       final nextIndex = (_index + 1) % _ordered.length;
       if (nextIndex == 0) {
-        _ordered = List<String>.from(widget.themes)..shuffle(_random);
+        _rebuildShuffledOrder();
+      } else {
+        _index = nextIndex;
       }
-      _index = nextIndex;
       _session?.addRoundResult(_ordered[_index]);
     });
     _resetTimerFromConfig();
@@ -224,6 +238,45 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: _white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: _black, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _black.withOpacity(0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.discussionSessionEndTitle,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.discussionSessionEndBody,
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.4,
+                        color: _black.withOpacity(0.78),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
               Text(
                 l10n.discussionHint,
                 style: TextStyle(
@@ -255,7 +308,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               ],
               if (total > 0)
                 Text(
-                  l10n.discussionProgress(_index + 1, total),
+                  l10n.discussionPromptQueue(_index + 1, total),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
@@ -294,29 +347,44 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                 ),
               ),
               const SizedBox(height: 28),
-              ElevatedButton.icon(
-                onPressed: total == 0 ? null : _nextTopic,
-                icon: const Icon(Icons.navigate_next, color: _black),
-                label: Text(
-                  l10n.discussionNextTopic,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: _black,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: total == 0 ? null : _nextTopic,
+                    icon: const Icon(Icons.navigate_next, color: _black),
+                    label: Text(
+                      l10n.discussionNextTopic,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ts.brandYellow,
+                      foregroundColor: _black,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 2,
+                    ),
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ts.brandYellow,
-                  foregroundColor: _black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.discussionNextTopicHelp,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.35,
+                      color: _black.withOpacity(0.55),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 2,
-                ),
+                ],
               ),
               const SizedBox(height: 20),
               if (_session != null && _session!.isActive) ...[

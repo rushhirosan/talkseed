@@ -621,10 +621,11 @@
   "deckSocialIssues": "社会課題ディスカッション",
   "deckSocialIssuesDesc": "現代のテーマを、構造的かつ尊重し合う形で議論する",
   "discussionScreenTitle": "議論モード",
-  "discussionHint": "順位づけは不要です。このお題について話し、視点や論点を広げてください。",
-  "discussionNextTopic": "次のお題",
-  "discussionProgress": "{current} / {total}",
-  "@discussionProgress": {
+  "discussionHint": "順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。",
+  "discussionNextTopic": "別のお題へ",
+  "discussionNextTopicHelp": "別の切り口がほしくなったら（任意）",
+  "discussionPromptQueue": "お題の並び · {current}/{total} · いつでもスキップOK",
+  "@discussionPromptQueue": {
     "placeholders": {
       "current": {
         "type": "int"
@@ -634,6 +635,33 @@
       }
     }
   },
+  "discussionSessionEndTitle": "このセッションの終わり",
+  "discussionSessionEndBody": "お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。",
+  "discussionDeckScopeTitle": "このセッションで使うお題",
+  "discussionDeckScopeFull": "デッキ全枚（シャッフル）",
+  "discussionDeckScopeTen": "10枚だけランダム",
+  "discussionDeckScopeSix": "6枚だけランダム",
+  "discussionDeckScopeThree": "3枚だけ（深掘り向け）",
+  "discussionPreviewAllPrompts": "お題: 全{deck}枚をシャッフル",
+  "@discussionPreviewAllPrompts": {
+    "placeholders": {
+      "deck": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewSampledPrompts": "お題: {deck}枚中から{n}枚をランダム抽出",
+  "@discussionPreviewSampledPrompts": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "deck": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewSessionEnd": "終了: 全員が一度話したとき",
   "deckCheckIn": "会議前・振り返り",
   "deckCheckInDesc": "会議の開始・終了に。問いを元に全員が一言ずつ",
   "deckSelfReflection": "自己内省・1on1",

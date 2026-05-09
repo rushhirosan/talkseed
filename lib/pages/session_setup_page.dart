@@ -42,6 +42,8 @@ class SessionSetupPage extends StatefulWidget {
 
 class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
+  /// 議論モードのみ: null = デッキ全枚、それ以外 = その枚数までランダム抽出（デッキより大きい場合は全枚）
+  int? _discussionPromptCap;
   final List<TextEditingController> _playerNameControllers = [];
   final List<FocusNode> _playerNameFocusNodes = [];
   bool _vibrationEnabled = true;
@@ -56,6 +58,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void initState() {
     super.initState();
     _config = SessionConfig.defaultConfig;
+    _discussionPromptCap = null;
     _initializePlayerNames();
     _loadFeedbackSettings();
   }
@@ -133,7 +136,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       (i) => _playerNameControllers[i].text.trim(),
     );
 
-    final finalConfig = _config.copyWith(playerNames: playerNames);
+    final finalConfig = _config.copyWith(
+      playerNames: playerNames,
+      applyDiscussionPromptCap: widget.forDiscussion,
+      discussionPromptCap: widget.forDiscussion ? _discussionPromptCap : null,
+    );
     final themes = widget.themes[PolyhedronType.cube];
     if (themes != null) {
       PreferencesHelper.saveLastThemes(themes);
@@ -357,6 +364,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             onChanged: (v) => v != null ? _updateTimerDuration(v) : null,
           ),
         ],
+        if (widget.forDiscussion) ...[
+          SizedBox(height: sectionSpacing),
+          _buildDiscussionDeckScope(l10n),
+        ],
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),
         _buildSessionPreview(l10n),
@@ -416,8 +427,73 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               color: _black.withOpacity(0.8),
             ),
           ),
+          if (widget.forDiscussion) ...[
+            const SizedBox(height: 8),
+            Text(
+              _discussionPromptPreviewSummary(l10n),
+              style: TextStyle(
+                fontSize: 14,
+                color: _black.withOpacity(0.85),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.discussionPreviewSessionEnd,
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.35,
+                color: _black.withOpacity(0.72),
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  String _discussionPromptPreviewSummary(AppLocalizations l10n) {
+    final deck = widget.themes[PolyhedronType.cube]?.length ?? 0;
+    final cap = _discussionPromptCap;
+    if (deck <= 0) {
+      return l10n.discussionPreviewAllPrompts(0);
+    }
+    if (cap == null) {
+      return l10n.discussionPreviewAllPrompts(deck);
+    }
+    final use = cap < deck ? cap : deck;
+    if (use >= deck) {
+      return l10n.discussionPreviewAllPrompts(deck);
+    }
+    return l10n.discussionPreviewSampledPrompts(use, deck);
+  }
+
+  Widget _buildDiscussionDeckScope(AppLocalizations l10n) {
+    const itemSpacing = 8.0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.discussionDeckScopeTitle,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: _black,
+          ),
+        ),
+        const SizedBox(height: itemSpacing),
+        _buildDropdown<int?>(
+          value: _discussionPromptCap,
+          items: const [null, 10, 6, 3],
+          labelBuilder: (v) {
+            if (v == null) return l10n.discussionDeckScopeFull;
+            if (v == 10) return l10n.discussionDeckScopeTen;
+            if (v == 6) return l10n.discussionDeckScopeSix;
+            return l10n.discussionDeckScopeThree;
+          },
+          onChanged: (v) => setState(() => _discussionPromptCap = v),
+        ),
+      ],
     );
   }
 

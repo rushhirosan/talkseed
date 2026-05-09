@@ -625,15 +625,52 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionScreenTitle => '議論モード';
 
   @override
-  String get discussionHint => '順位づけは不要です。このお題について話し、視点や論点を広げてください。';
+  String get discussionHint => '順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。';
 
   @override
-  String get discussionNextTopic => '次のお題';
+  String get discussionNextTopic => '別のお題へ';
 
   @override
-  String discussionProgress(int current, int total) {
-    return '$current / $total';
+  String get discussionNextTopicHelp => '別の切り口がほしくなったら（任意）';
+
+  @override
+  String discussionPromptQueue(int current, int total) {
+    return 'お題の並び · $current/$total · いつでもスキップOK';
   }
+
+  @override
+  String get discussionSessionEndTitle => 'このセッションの終わり';
+
+  @override
+  String get discussionSessionEndBody => 'お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。';
+
+  @override
+  String get discussionDeckScopeTitle => 'このセッションで使うお題';
+
+  @override
+  String get discussionDeckScopeFull => 'デッキ全枚（シャッフル）';
+
+  @override
+  String get discussionDeckScopeTen => '10枚だけランダム';
+
+  @override
+  String get discussionDeckScopeSix => '6枚だけランダム';
+
+  @override
+  String get discussionDeckScopeThree => '3枚だけ（深掘り向け）';
+
+  @override
+  String discussionPreviewAllPrompts(int deck) {
+    return 'お題: 全$deck枚をシャッフル';
+  }
+
+  @override
+  String discussionPreviewSampledPrompts(int n, int deck) {
+    return 'お題: $deck枚中から$n枚をランダム抽出';
+  }
+
+  @override
+  String get discussionPreviewSessionEnd => '終了: 全員が一度話したとき';
 
   @override
   String get deckCheckIn => '会議前・振り返り';

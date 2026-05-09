@@ -637,15 +637,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'No ranking needed. Talk about the prompt and explore perspectives together.';
+      'No ranking needed. When the conversation feels complete, move on—no need to cover every card.';
 
   @override
-  String get discussionNextTopic => 'Next prompt';
+  String get discussionNextTopic => 'Another prompt';
 
   @override
-  String discussionProgress(int current, int total) {
-    return '$current / $total';
+  String get discussionNextTopicHelp =>
+      'Optional: switch when you want a new angle';
+
+  @override
+  String discussionPromptQueue(int current, int total) {
+    return 'Prompt queue · $current/$total · skip anytime';
   }
+
+  @override
+  String get discussionSessionEndTitle => 'How this session ends';
+
+  @override
+  String get discussionSessionEndBody =>
+      'It ends after everyone has spoken once—not after you\'ve gone through every prompt.';
+
+  @override
+  String get discussionDeckScopeTitle => 'Prompts in play';
+
+  @override
+  String get discussionDeckScopeFull => 'Full deck (shuffled)';
+
+  @override
+  String get discussionDeckScopeTen => '10 cards (random)';
+
+  @override
+  String get discussionDeckScopeSix => '6 cards (random)';
+
+  @override
+  String get discussionDeckScopeThree => '3 cards — deep dive';
+
+  @override
+  String discussionPreviewAllPrompts(int deck) {
+    return 'Prompts: all $deck cards (shuffled)';
+  }
+
+  @override
+  String discussionPreviewSampledPrompts(int n, int deck) {
+    return 'Prompts: $n of $deck cards, picked at random';
+  }
+
+  @override
+  String get discussionPreviewSessionEnd =>
+      'Ends when everyone has spoken once';
 
   @override
   String get deckCheckIn => 'Check-in & Check-out';

@@ -22,6 +22,9 @@ class SessionConfig {
   
   /// プレイヤー名のリスト（オプション、nullの場合は番号のみ使用）
   final List<String>? playerNames;
+
+  /// 議論モードのみ: デッキから使うお題の最大枚数。null ならデッキ全枚（シャッフル後にそのまま使う）
+  final int? discussionPromptCap;
   
   const SessionConfig({
     this.playMode = PlayMode.dice,
@@ -29,6 +32,7 @@ class SessionConfig {
     required this.timerDuration,
     this.enableTimer = true,
     this.playerNames,
+    this.discussionPromptCap,
   }) : assert(playerCount >= 2 && playerCount <= 10, '参加人数は2-10人の範囲で設定してください');
   
   /// デフォルト設定
@@ -37,6 +41,7 @@ class SessionConfig {
     playerCount: 4,
     timerDuration: Duration(minutes: 3),
     enableTimer: true,
+    discussionPromptCap: null,
   );
   
   /// プレイヤー名を取得（インデックスは0始まり、カスタム名がない場合はnull）
@@ -55,6 +60,8 @@ class SessionConfig {
     Duration? timerDuration,
     bool? enableTimer,
     List<String>? playerNames,
+    int? discussionPromptCap,
+    bool applyDiscussionPromptCap = false,
   }) {
     return SessionConfig(
       playMode: playMode ?? this.playMode,
@@ -62,6 +69,9 @@ class SessionConfig {
       timerDuration: timerDuration ?? this.timerDuration,
       enableTimer: enableTimer ?? this.enableTimer,
       playerNames: playerNames ?? this.playerNames,
+      discussionPromptCap: applyDiscussionPromptCap
+          ? discussionPromptCap
+          : this.discussionPromptCap,
     );
   }
 }

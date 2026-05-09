@@ -379,10 +379,11 @@
   "deckSocialIssues": "Social issues discussion",
   "deckSocialIssuesDesc": "Discuss contemporary topics with structure and mutual respect",
   "discussionScreenTitle": "Discussion",
-  "discussionHint": "No ranking needed. Talk about the prompt and explore perspectives together.",
-  "discussionNextTopic": "Next prompt",
-  "discussionProgress": "{current} / {total}",
-  "@discussionProgress": {
+  "discussionHint": "No ranking needed. When the conversation feels complete, move on—no need to cover every card.",
+  "discussionNextTopic": "Another prompt",
+  "discussionNextTopicHelp": "Optional: switch when you want a new angle",
+  "discussionPromptQueue": "Prompt queue · {current}/{total} · skip anytime",
+  "@discussionPromptQueue": {
     "placeholders": {
       "current": {
         "type": "int"
@@ -392,6 +393,33 @@
       }
     }
   },
+  "discussionSessionEndTitle": "How this session ends",
+  "discussionSessionEndBody": "It ends after everyone has spoken once—not after you've gone through every prompt.",
+  "discussionDeckScopeTitle": "Prompts in play",
+  "discussionDeckScopeFull": "Full deck (shuffled)",
+  "discussionDeckScopeTen": "10 cards (random)",
+  "discussionDeckScopeSix": "6 cards (random)",
+  "discussionDeckScopeThree": "3 cards — deep dive",
+  "discussionPreviewAllPrompts": "Prompts: all {deck} cards (shuffled)",
+  "@discussionPreviewAllPrompts": {
+    "placeholders": {
+      "deck": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewSampledPrompts": "Prompts: {n} of {deck} cards, picked at random",
+  "@discussionPreviewSampledPrompts": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "deck": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewSessionEnd": "Ends when everyone has spoken once",
   "deckCheckIn": "Check-in & Check-out",
   "deckCheckInDesc": "For meeting start and end. Everyone shares briefly based on a question",
   "deckSelfReflection": "Self-reflection & 1-on-1",

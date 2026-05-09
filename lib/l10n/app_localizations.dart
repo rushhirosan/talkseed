@@ -1277,20 +1277,86 @@ abstract class AppLocalizations {
   /// No description provided for @discussionHint.
   ///
   /// In ja, this message translates to:
-  /// **'順位づけは不要です。このお題について話し、視点や論点を広げてください。'**
+  /// **'順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。'**
   String get discussionHint;
 
   /// No description provided for @discussionNextTopic.
   ///
   /// In ja, this message translates to:
-  /// **'次のお題'**
+  /// **'別のお題へ'**
   String get discussionNextTopic;
 
-  /// No description provided for @discussionProgress.
+  /// No description provided for @discussionNextTopicHelp.
   ///
   /// In ja, this message translates to:
-  /// **'{current} / {total}'**
-  String discussionProgress(int current, int total);
+  /// **'別の切り口がほしくなったら（任意）'**
+  String get discussionNextTopicHelp;
+
+  /// No description provided for @discussionPromptQueue.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題の並び · {current}/{total} · いつでもスキップOK'**
+  String discussionPromptQueue(int current, int total);
+
+  /// No description provided for @discussionSessionEndTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッションの終わり'**
+  String get discussionSessionEndTitle;
+
+  /// No description provided for @discussionSessionEndBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。'**
+  String get discussionSessionEndBody;
+
+  /// No description provided for @discussionDeckScopeTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッションで使うお題'**
+  String get discussionDeckScopeTitle;
+
+  /// No description provided for @discussionDeckScopeFull.
+  ///
+  /// In ja, this message translates to:
+  /// **'デッキ全枚（シャッフル）'**
+  String get discussionDeckScopeFull;
+
+  /// No description provided for @discussionDeckScopeTen.
+  ///
+  /// In ja, this message translates to:
+  /// **'10枚だけランダム'**
+  String get discussionDeckScopeTen;
+
+  /// No description provided for @discussionDeckScopeSix.
+  ///
+  /// In ja, this message translates to:
+  /// **'6枚だけランダム'**
+  String get discussionDeckScopeSix;
+
+  /// No description provided for @discussionDeckScopeThree.
+  ///
+  /// In ja, this message translates to:
+  /// **'3枚だけ（深掘り向け）'**
+  String get discussionDeckScopeThree;
+
+  /// No description provided for @discussionPreviewAllPrompts.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題: 全{deck}枚をシャッフル'**
+  String discussionPreviewAllPrompts(int deck);
+
+  /// No description provided for @discussionPreviewSampledPrompts.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題: {deck}枚中から{n}枚をランダム抽出'**
+  String discussionPreviewSampledPrompts(int n, int deck);
+
+  /// No description provided for @discussionPreviewSessionEnd.
+  ///
+  /// In ja, this message translates to:
+  /// **'終了: 全員が一度話したとき'**
+  String get discussionPreviewSessionEnd;
 
   /// No description provided for @deckCheckIn.
   ///

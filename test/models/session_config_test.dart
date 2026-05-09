@@ -10,6 +10,7 @@ void main() {
       expect(config.timerDuration, const Duration(minutes: 3));
       expect(config.enableTimer, true);
       expect(config.playerNames, isNull);
+      expect(config.discussionPromptCap, isNull);
     });
 
     test('getPlayerName returns null when playerNames is null', () {
@@ -71,6 +72,33 @@ void main() {
       expect(copied.playMode, config.playMode);
       expect(copied.timerDuration, config.timerDuration);
       expect(copied.enableTimer, config.enableTimer);
+    });
+
+    test('copyWith updates discussionPromptCap when applyDiscussionPromptCap is true', () {
+      const config = SessionConfig(
+        playerCount: 4,
+        timerDuration: Duration(minutes: 3),
+      );
+      final withCap = config.copyWith(
+        applyDiscussionPromptCap: true,
+        discussionPromptCap: 6,
+      );
+      expect(withCap.discussionPromptCap, 6);
+      final cleared = withCap.copyWith(
+        applyDiscussionPromptCap: true,
+        discussionPromptCap: null,
+      );
+      expect(cleared.discussionPromptCap, isNull);
+    });
+
+    test('copyWith preserves discussionPromptCap when applyDiscussionPromptCap is false', () {
+      final config = SessionConfig.defaultConfig.copyWith(
+        applyDiscussionPromptCap: true,
+        discussionPromptCap: 10,
+      );
+      final copied = config.copyWith(playerCount: 6);
+      expect(copied.discussionPromptCap, 10);
+      expect(copied.playerCount, 6);
     });
 
     test('copyWith updates timerDuration', () {
