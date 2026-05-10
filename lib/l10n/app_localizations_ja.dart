@@ -384,6 +384,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sessionCompleteMessage => '全員の番が終わりました。';
 
   @override
+  String get sessionCompleteAcknowledgeMessage =>
+      '全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。';
+
+  @override
+  String get sessionCompleteAcknowledgeButton => '閉じる';
+
+  @override
   String round(int number) {
     return 'ラウンド $number';
   }
@@ -472,6 +479,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get historySelectedCardsTitle => '選択したカード';
+
+  @override
+  String get historyDiscussionPromptsTitle => 'プレイヤーごとのお題';
+
+  @override
+  String get historyDiscussionPromptsFootnote =>
+      '上から表示された順です。「別のお題へ」で差し替えたときは、そのたびに行が増えます。';
 
   @override
   String get historyModeDice => 'サイコロ';
@@ -625,7 +639,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionScreenTitle => '議論モード';
 
   @override
-  String get discussionHint => '順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。';
+  String get discussionHint =>
+      'カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。';
 
   @override
   String get discussionNextTopic => '別のお題へ';
@@ -671,6 +686,87 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discussionPreviewSessionEnd => '終了: 全員が一度話したとき';
+
+  @override
+  String promptBelongsToTurn(String turnLabel) {
+    return 'このお題に話すのは、$turnLabel。';
+  }
+
+  @override
+  String get discussionSessionPromptsTitle => 'このセッションのお題（プレイヤー別）';
+
+  @override
+  String get discussionPromptTimelineTitle => 'お題の記録（時系列）';
+
+  @override
+  String get discussionPromptTimelineSubtitle => '確定したお題が時系列で並びます。';
+
+  @override
+  String get discussionTurnNotYet => '（このあと）';
+
+  @override
+  String get discussionWaitingPick => 'カードをタップしてお題を選んでください';
+
+  @override
+  String get discussionPickFromCardsHeading => '裏向きのカード（横にスクロール）';
+
+  @override
+  String get discussionDiscussionCardWithTimer =>
+      'いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。';
+
+  @override
+  String get discussionDiscussionCardNoTimer => 'いまから議論の時間です。一覧のお題にそって話しましょう。';
+
+  @override
+  String get discussionEndDiscussionButton => '議論を終了';
+
+  @override
+  String get discussionConfirmTopic => 'このお題で話す';
+
+  @override
+  String get discussionFlipBack => '裏に戻す';
+
+  @override
+  String get discussionLockedPick => 'お題が決まりました。準備ができたら「次のプレイヤー」をタップ';
+
+  @override
+  String get discussionUncategorizedTitle => 'お題';
+
+  @override
+  String get discussionCatProbLogical => '論理的に組み立てる';
+
+  @override
+  String get discussionCatProbCreative => '創造的に考える';
+
+  @override
+  String get discussionCatProbFermi => 'フェルミ推定';
+
+  @override
+  String get discussionCatProbDilemma => 'ジレンマ・倫理';
+
+  @override
+  String get discussionCatSocGeo => '地理・地政学';
+
+  @override
+  String get discussionCatSocAiGap => 'AI・デジタル格差';
+
+  @override
+  String get discussionCatSocClimate => '気候・環境';
+
+  @override
+  String get discussionCatSocDemocracy => '民主主義・ガバナンス';
+
+  @override
+  String get discussionCatSocJapanDecline => '日本：衰退・人口';
+
+  @override
+  String get discussionCatSocJapanImmigration => '日本：移民';
+
+  @override
+  String get discussionCatSocJapanWork => '日本：働き方・雇用';
+
+  @override
+  String get discussionCatSocJapanLocal => '日本：地域・コミュニティ';
 
   @override
   String get deckCheckIn => '会議前・振り返り';

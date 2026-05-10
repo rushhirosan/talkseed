@@ -1,3 +1,5 @@
+import 'package:theme_dice/l10n/app_localizations.dart';
+
 /// 遊び方（サイコロ or トピックカード/リスト）
 enum PlayMode {
   /// サイコロを振ってテーマを選ぶ
@@ -73,5 +75,16 @@ class SessionConfig {
           ? discussionPromptCap
           : this.discussionPromptCap,
     );
+  }
+
+  /// [PlayerIndicator] / [GameSession.playerLabelAt] と同じ表示規則
+  String displayLabelForPlayer(int playerIndex, AppLocalizations l10n) {
+    if (playerNames != null && playerIndex < playerNames!.length) {
+      final name = playerNames![playerIndex];
+      if (name.isNotEmpty) {
+        return '$name (${playerIndex + 1}/$playerCount)';
+      }
+    }
+    return l10n.currentPlayer(playerIndex + 1, playerCount);
   }
 }

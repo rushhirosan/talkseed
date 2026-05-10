@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import '../models/card_deck.dart';
 import '../models/session_config.dart' show SessionConfig;
 import '../models/polyhedron_type.dart';
 import '../utils/preferences_helper.dart';
@@ -25,6 +26,8 @@ class SessionSetupPage extends StatefulWidget {
   final bool fromCardSettings;
   /// セッションプレビューに表示するデッキ名（forDiscussion 時に使用）
   final String? deckLabel;
+  /// 議論モード時カテゴリー別カード配置に使う（問題解決・社会課題）
+  final CardDeckType? discussionDeckType;
 
   const SessionSetupPage({
     super.key,
@@ -34,6 +37,7 @@ class SessionSetupPage extends StatefulWidget {
     this.forDiscussion = false,
     this.fromCardSettings = false,
     this.deckLabel,
+    this.discussionDeckType,
   });
 
   @override
@@ -164,6 +168,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             themes: themes,
             sessionConfig: finalConfig,
             deckTitle: widget.deckLabel ?? l10n.discussionScreenTitle,
+            discussionDeckType: widget.discussionDeckType,
           ),
         ),
       );

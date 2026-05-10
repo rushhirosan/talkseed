@@ -63,6 +63,7 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
             forDiscussion: true,
             fromCardSettings: true,
             deckLabel: deck.name(l10n),
+            discussionDeckType: deck.type,
           ),
         ),
       );

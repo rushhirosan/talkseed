@@ -256,6 +256,8 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final dateLabel = dateFormat.format(record.playedAt);
     final modeLabel = _modeLabel(l10n);
     final ts = context.talkShuffle;
+    final hideFlatTopics = record.mode == 'discussion' &&
+        record.selectedCardsByPlayer.isNotEmpty;
 
     return Scaffold(
       backgroundColor: ts.scaffoldPlayWarm,
@@ -308,8 +310,8 @@ class SessionHistoryDetailPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            if (record.topics.isNotEmpty)
+            if (record.topics.isNotEmpty && !hideFlatTopics) ...[
+              const SizedBox(height: 16),
               _buildSectionCard(
                 title: l10n.historyTopicsTitle,
                 child: Column(
@@ -328,41 +330,58 @@ class SessionHistoryDetailPage extends StatelessWidget {
                       .toList(),
                 ),
               ),
+            ],
             if (record.selectedCardsByPlayer.isNotEmpty) ...[
               const SizedBox(height: 16),
               _buildSectionCard(
-                title: l10n.historySelectedCardsTitle,
+                title: record.mode == 'discussion'
+                    ? l10n.historyDiscussionPromptsTitle
+                    : l10n.historySelectedCardsTitle,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: record.selectedCardsByPlayer.entries.map((entry) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.key,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _black.withOpacity(0.7),
+                  children: [
+                    ...record.selectedCardsByPlayer.entries.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              entry.key,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: _black.withOpacity(0.7),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          ...entry.value.map((card) => Padding(
-                                padding: const EdgeInsets.only(bottom: 6),
-                                child: Text(
-                                  '・$card',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: _black,
+                            const SizedBox(height: 6),
+                            ...entry.value.map((card) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Text(
+                                    '・$card',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: _black,
+                                    ),
                                   ),
-                                ),
-                              )),
-                        ],
+                                )),
+                          ],
+                        ),
+                      );
+                    }),
+                    if (record.mode == 'discussion')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          l10n.historyDiscussionPromptsFootnote,
+                          style: TextStyle(
+                            fontSize: 12,
+                            height: 1.35,
+                            color: _black.withOpacity(0.55),
+                          ),
+                        ),
                       ),
-                    );
-                  }).toList(),
+                  ],
                 ),
               ),
             ],

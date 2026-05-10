@@ -1,3 +1,4 @@
+import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/models/session_config.dart';
 
@@ -37,6 +38,19 @@ class GameSession {
       return name.isNotEmpty ? name : null;
     }
     return null;
+  }
+
+  /// [playerIndex] 番目のプレイヤーの表示名（[PlayerIndicator] と同じ規則）
+  String playerLabelAt(int playerIndex, AppLocalizations l10n) =>
+      config.displayLabelForPlayer(playerIndex, l10n);
+
+  /// 各プレイヤーの直近に記録されたお題（「別のお題へ」で差し替えた結果も最後の1件）
+  Map<int, String> get lastThemeByPlayerIndex {
+    final m = <int, String>{};
+    for (final r in rounds) {
+      m[r.playerIndex] = r.theme;
+    }
+    return m;
   }
   
   /// 全プレイヤーが1回ずつ話したかどうか（ラウンド完了）

@@ -6,7 +6,20 @@ class PlayerIndicator extends StatelessWidget {
   final int currentPlayerIndex;
   final int totalPlayers;
   final String? currentPlayerName;
-  
+
+  /// [build] と同じ規則で、番のラベル文字列だけを返す（お題との対応説明用）
+  static String turnDisplayText({
+    required AppLocalizations l10n,
+    required int currentPlayerIndex,
+    required int totalPlayers,
+    String? currentPlayerName,
+  }) {
+    if (currentPlayerName != null) {
+      return '$currentPlayerName (${currentPlayerIndex + 1}/$totalPlayers)';
+    }
+    return l10n.currentPlayer(currentPlayerIndex + 1, totalPlayers);
+  }
+
   const PlayerIndicator({
     super.key,
     required this.currentPlayerIndex,
@@ -22,10 +35,12 @@ class PlayerIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
-    // カスタムプレイヤー名がある場合はそれを表示、ない場合は番号のみ
-    final displayText = currentPlayerName != null
-        ? '$currentPlayerName (${currentPlayerIndex + 1}/$totalPlayers)'
-        : l10n.currentPlayer(currentPlayerIndex + 1, totalPlayers);
+    final displayText = turnDisplayText(
+      l10n: l10n,
+      currentPlayerIndex: currentPlayerIndex,
+      totalPlayers: totalPlayers,
+      currentPlayerName: currentPlayerName,
+    );
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),

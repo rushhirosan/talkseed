@@ -824,6 +824,18 @@ abstract class AppLocalizations {
   /// **'全員の番が終わりました。'**
   String get sessionCompleteMessage;
 
+  /// カード／議論モードで終了後、画面に留まる場合のダイアログ本文
+  ///
+  /// In ja, this message translates to:
+  /// **'全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。'**
+  String get sessionCompleteAcknowledgeMessage;
+
+  /// 終了ダイアログを閉じるだけのボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'閉じる'**
+  String get sessionCompleteAcknowledgeButton;
+
   /// ラウンド番号
   ///
   /// In ja, this message translates to:
@@ -979,6 +991,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'選択したカード'**
   String get historySelectedCardsTitle;
+
+  /// 履歴詳細・議論モードでプレイヤー別のお題を表示
+  ///
+  /// In ja, this message translates to:
+  /// **'プレイヤーごとのお題'**
+  String get historyDiscussionPromptsTitle;
+
+  /// 履歴詳細・議論モードのプレイヤー別リストの注記
+  ///
+  /// In ja, this message translates to:
+  /// **'上から表示された順です。「別のお題へ」で差し替えたときは、そのたびに行が増えます。'**
+  String get historyDiscussionPromptsFootnote;
 
   /// 履歴用のモード表示（サイコロ）
   ///
@@ -1277,7 +1301,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionHint.
   ///
   /// In ja, this message translates to:
-  /// **'順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。'**
+  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。'**
   String get discussionHint;
 
   /// No description provided for @discussionNextTopic.
@@ -1357,6 +1381,162 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'終了: 全員が一度話したとき'**
   String get discussionPreviewSessionEnd;
+
+  /// 表示中のお題と現在番のプレイヤーを対応づける
+  ///
+  /// In ja, this message translates to:
+  /// **'このお題に話すのは、{turnLabel}。'**
+  String promptBelongsToTurn(String turnLabel);
+
+  /// No description provided for @discussionSessionPromptsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッションのお題（プレイヤー別）'**
+  String get discussionSessionPromptsTitle;
+
+  /// No description provided for @discussionPromptTimelineTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題の記録（時系列）'**
+  String get discussionPromptTimelineTitle;
+
+  /// No description provided for @discussionPromptTimelineSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'確定したお題が時系列で並びます。'**
+  String get discussionPromptTimelineSubtitle;
+
+  /// No description provided for @discussionTurnNotYet.
+  ///
+  /// In ja, this message translates to:
+  /// **'（このあと）'**
+  String get discussionTurnNotYet;
+
+  /// No description provided for @discussionWaitingPick.
+  ///
+  /// In ja, this message translates to:
+  /// **'カードをタップしてお題を選んでください'**
+  String get discussionWaitingPick;
+
+  /// No description provided for @discussionPickFromCardsHeading.
+  ///
+  /// In ja, this message translates to:
+  /// **'裏向きのカード（横にスクロール）'**
+  String get discussionPickFromCardsHeading;
+
+  /// No description provided for @discussionDiscussionCardWithTimer.
+  ///
+  /// In ja, this message translates to:
+  /// **'いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。'**
+  String get discussionDiscussionCardWithTimer;
+
+  /// No description provided for @discussionDiscussionCardNoTimer.
+  ///
+  /// In ja, this message translates to:
+  /// **'いまから議論の時間です。一覧のお題にそって話しましょう。'**
+  String get discussionDiscussionCardNoTimer;
+
+  /// No description provided for @discussionEndDiscussionButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論を終了'**
+  String get discussionEndDiscussionButton;
+
+  /// No description provided for @discussionConfirmTopic.
+  ///
+  /// In ja, this message translates to:
+  /// **'このお題で話す'**
+  String get discussionConfirmTopic;
+
+  /// No description provided for @discussionFlipBack.
+  ///
+  /// In ja, this message translates to:
+  /// **'裏に戻す'**
+  String get discussionFlipBack;
+
+  /// No description provided for @discussionLockedPick.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題が決まりました。準備ができたら「次のプレイヤー」をタップ'**
+  String get discussionLockedPick;
+
+  /// No description provided for @discussionUncategorizedTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題'**
+  String get discussionUncategorizedTitle;
+
+  /// No description provided for @discussionCatProbLogical.
+  ///
+  /// In ja, this message translates to:
+  /// **'論理的に組み立てる'**
+  String get discussionCatProbLogical;
+
+  /// No description provided for @discussionCatProbCreative.
+  ///
+  /// In ja, this message translates to:
+  /// **'創造的に考える'**
+  String get discussionCatProbCreative;
+
+  /// No description provided for @discussionCatProbFermi.
+  ///
+  /// In ja, this message translates to:
+  /// **'フェルミ推定'**
+  String get discussionCatProbFermi;
+
+  /// No description provided for @discussionCatProbDilemma.
+  ///
+  /// In ja, this message translates to:
+  /// **'ジレンマ・倫理'**
+  String get discussionCatProbDilemma;
+
+  /// No description provided for @discussionCatSocGeo.
+  ///
+  /// In ja, this message translates to:
+  /// **'地理・地政学'**
+  String get discussionCatSocGeo;
+
+  /// No description provided for @discussionCatSocAiGap.
+  ///
+  /// In ja, this message translates to:
+  /// **'AI・デジタル格差'**
+  String get discussionCatSocAiGap;
+
+  /// No description provided for @discussionCatSocClimate.
+  ///
+  /// In ja, this message translates to:
+  /// **'気候・環境'**
+  String get discussionCatSocClimate;
+
+  /// No description provided for @discussionCatSocDemocracy.
+  ///
+  /// In ja, this message translates to:
+  /// **'民主主義・ガバナンス'**
+  String get discussionCatSocDemocracy;
+
+  /// No description provided for @discussionCatSocJapanDecline.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本：衰退・人口'**
+  String get discussionCatSocJapanDecline;
+
+  /// No description provided for @discussionCatSocJapanImmigration.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本：移民'**
+  String get discussionCatSocJapanImmigration;
+
+  /// No description provided for @discussionCatSocJapanWork.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本：働き方・雇用'**
+  String get discussionCatSocJapanWork;
+
+  /// No description provided for @discussionCatSocJapanLocal.
+  ///
+  /// In ja, this message translates to:
+  /// **'日本：地域・コミュニティ'**
+  String get discussionCatSocJapanLocal;
 
   /// No description provided for @deckCheckIn.
   ///

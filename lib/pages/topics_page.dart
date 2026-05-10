@@ -265,14 +265,14 @@ class _TopicsPageState extends State<TopicsPage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(l10n.sessionSummary),
-        content: Text(l10n.sessionCompleteMessage),
+        content: Text(l10n.sessionCompleteAcknowledgeMessage),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               setState(() => _session = null);
             },
-            child: Text(l10n.newSession),
+            child: Text(l10n.sessionCompleteAcknowledgeButton),
           ),
         ],
       ),
@@ -649,6 +649,26 @@ class _TopicsPageState extends State<TopicsPage> {
                 ],
               ] else ...[
                 // 通常のトピックカード（自己内省・チームビルディング等）
+                if (_session != null && _currentTopic != null) ...[
+                  Text(
+                    l10n.promptBelongsToTurn(
+                      PlayerIndicator.turnDisplayText(
+                        l10n: l10n,
+                        currentPlayerIndex: _session!.currentPlayerIndex,
+                        totalPlayers: _session!.config.playerCount,
+                        currentPlayerName: _session!.currentPlayerName,
+                      ),
+                    ),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                      color: _black.withOpacity(0.82),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Center(
                   child: CardDrawWidget(
                     theme: _currentTopic,

@@ -156,6 +156,14 @@
   "@sessionCompleteMessage": {
     "description": "Session end dialog body"
   },
+  "sessionCompleteAcknowledgeMessage": "Everyone has had their turn. The topics selected in this session have been saved to history. To play again, go back and start from the setup screen.",
+  "@sessionCompleteAcknowledgeMessage": {
+    "description": "Session end dialog when the only action is dismiss (card/discussion modes)"
+  },
+  "sessionCompleteAcknowledgeButton": "Close",
+  "@sessionCompleteAcknowledgeButton": {
+    "description": "Dismiss session-complete dialog without starting a new session"
+  },
   "round": "Round {number}",
   "@round": {
     "placeholders": {
@@ -281,6 +289,14 @@
   "@historySelectedCardsTitle": {
     "description": "History detail selected cards section"
   },
+  "historyDiscussionPromptsTitle": "Prompts by player",
+  "@historyDiscussionPromptsTitle": {
+    "description": "History detail discussion prompts per player"
+  },
+  "historyDiscussionPromptsFootnote": "Order is the order each prompt was shown. Each time you used “Another prompt,” a new line is added.",
+  "@historyDiscussionPromptsFootnote": {
+    "description": "History detail footnote for discussion prompt list"
+  },
   "historyModeDice": "Dice",
   "@historyModeDice": {
     "description": "History mode label for dice"
@@ -379,7 +395,7 @@
   "deckSocialIssues": "Social issues discussion",
   "deckSocialIssuesDesc": "Discuss contemporary topics with structure and mutual respect",
   "discussionScreenTitle": "Discussion",
-  "discussionHint": "No ranking needed. When the conversation feels complete, move on—no need to cover every card.",
+  "discussionHint": "Cards are grouped by category, face down. Tap one to peek—confirm when you’re ready to speak to that prompt, or flip back and choose another.",
   "discussionNextTopic": "Another prompt",
   "discussionNextTopicHelp": "Optional: switch when you want a new angle",
   "discussionPromptQueue": "Prompt queue · {current}/{total} · skip anytime",
@@ -420,6 +436,40 @@
     }
   },
   "discussionPreviewSessionEnd": "Ends when everyone has spoken once",
+  "promptBelongsToTurn": "Speaking to this prompt: {turnLabel}.",
+  "@promptBelongsToTurn": {
+    "description": "Ties the visible prompt/card to the current player turn",
+    "placeholders": {
+      "turnLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionSessionPromptsTitle": "Prompts by player (this session)",
+  "discussionPromptTimelineTitle": "Prompt log (chronological)",
+  "discussionPromptTimelineSubtitle": "Every confirmed prompt is logged here.",
+  "discussionTurnNotYet": "(Up next)",
+  "discussionWaitingPick": "Tap a card to choose your prompt.",
+  "discussionPickFromCardsHeading": "Face-down cards (scroll sideways)",
+  "discussionDiscussionCardWithTimer": "Discussion time — use the timer below. Follow the prompts everyone chose (see the list).",
+  "discussionDiscussionCardNoTimer": "Discussion time — use the prompts everyone chose (see the list below).",
+  "discussionEndDiscussionButton": "End discussion",
+  "discussionConfirmTopic": "Use this prompt",
+  "discussionFlipBack": "Flip back",
+  "discussionLockedPick": "Prompt locked — tap Next player when ready",
+  "discussionUncategorizedTitle": "Prompts",
+  "discussionCatProbLogical": "Logical structuring",
+  "discussionCatProbCreative": "Creative thinking",
+  "discussionCatProbFermi": "Fermi estimation",
+  "discussionCatProbDilemma": "Ethical dilemmas",
+  "discussionCatSocGeo": "Geography & geopolitics",
+  "discussionCatSocAiGap": "AI & the digital divide",
+  "discussionCatSocClimate": "Climate & environment",
+  "discussionCatSocDemocracy": "Democracy & governance",
+  "discussionCatSocJapanDecline": "Japan: decline & demographics",
+  "discussionCatSocJapanImmigration": "Japan: immigration",
+  "discussionCatSocJapanWork": "Japan: work & employment",
+  "discussionCatSocJapanLocal": "Japan: local communities",
   "deckCheckIn": "Check-in & Check-out",
   "deckCheckInDesc": "For meeting start and end. Everyone shares briefly based on a question",
   "deckSelfReflection": "Self-reflection & 1-on-1",

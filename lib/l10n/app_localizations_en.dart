@@ -387,6 +387,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionCompleteMessage => 'Everyone has had their turn.';
 
   @override
+  String get sessionCompleteAcknowledgeMessage =>
+      'Everyone has had their turn. The topics selected in this session have been saved to history. To play again, go back and start from the setup screen.';
+
+  @override
+  String get sessionCompleteAcknowledgeButton => 'Close';
+
+  @override
   String round(int number) {
     return 'Round $number';
   }
@@ -475,6 +482,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historySelectedCardsTitle => 'Selected cards';
+
+  @override
+  String get historyDiscussionPromptsTitle => 'Prompts by player';
+
+  @override
+  String get historyDiscussionPromptsFootnote =>
+      'Order is the order each prompt was shown. Each time you used “Another prompt,” a new line is added.';
 
   @override
   String get historyModeDice => 'Dice';
@@ -637,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'No ranking needed. When the conversation feels complete, move on—no need to cover every card.';
+      'Cards are grouped by category, face down. Tap one to peek—confirm when you’re ready to speak to that prompt, or flip back and choose another.';
 
   @override
   String get discussionNextTopic => 'Another prompt';
@@ -686,6 +700,92 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get discussionPreviewSessionEnd =>
       'Ends when everyone has spoken once';
+
+  @override
+  String promptBelongsToTurn(String turnLabel) {
+    return 'Speaking to this prompt: $turnLabel.';
+  }
+
+  @override
+  String get discussionSessionPromptsTitle =>
+      'Prompts by player (this session)';
+
+  @override
+  String get discussionPromptTimelineTitle => 'Prompt log (chronological)';
+
+  @override
+  String get discussionPromptTimelineSubtitle =>
+      'Every confirmed prompt is logged here.';
+
+  @override
+  String get discussionTurnNotYet => '(Up next)';
+
+  @override
+  String get discussionWaitingPick => 'Tap a card to choose your prompt.';
+
+  @override
+  String get discussionPickFromCardsHeading =>
+      'Face-down cards (scroll sideways)';
+
+  @override
+  String get discussionDiscussionCardWithTimer =>
+      'Discussion time — use the timer below. Follow the prompts everyone chose (see the list).';
+
+  @override
+  String get discussionDiscussionCardNoTimer =>
+      'Discussion time — use the prompts everyone chose (see the list below).';
+
+  @override
+  String get discussionEndDiscussionButton => 'End discussion';
+
+  @override
+  String get discussionConfirmTopic => 'Use this prompt';
+
+  @override
+  String get discussionFlipBack => 'Flip back';
+
+  @override
+  String get discussionLockedPick =>
+      'Prompt locked — tap Next player when ready';
+
+  @override
+  String get discussionUncategorizedTitle => 'Prompts';
+
+  @override
+  String get discussionCatProbLogical => 'Logical structuring';
+
+  @override
+  String get discussionCatProbCreative => 'Creative thinking';
+
+  @override
+  String get discussionCatProbFermi => 'Fermi estimation';
+
+  @override
+  String get discussionCatProbDilemma => 'Ethical dilemmas';
+
+  @override
+  String get discussionCatSocGeo => 'Geography & geopolitics';
+
+  @override
+  String get discussionCatSocAiGap => 'AI & the digital divide';
+
+  @override
+  String get discussionCatSocClimate => 'Climate & environment';
+
+  @override
+  String get discussionCatSocDemocracy => 'Democracy & governance';
+
+  @override
+  String get discussionCatSocJapanDecline => 'Japan: decline & demographics';
+
+  @override
+  String get discussionCatSocJapanImmigration => 'Japan: immigration';
+
+  @override
+  String get discussionCatSocJapanWork => 'Japan: work & employment';
+
+  @override
+  String get discussionCatSocJapanLocal => 'Japan: local communities';
 
   @override
   String get deckCheckIn => 'Check-in & Check-out';

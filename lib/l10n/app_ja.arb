@@ -340,6 +340,14 @@
   "@sessionCompleteMessage": {
     "description": "セッション終了ダイアログの本文"
   },
+  "sessionCompleteAcknowledgeMessage": "全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。",
+  "@sessionCompleteAcknowledgeMessage": {
+    "description": "カード／議論モードで終了後、画面に留まる場合のダイアログ本文"
+  },
+  "sessionCompleteAcknowledgeButton": "閉じる",
+  "@sessionCompleteAcknowledgeButton": {
+    "description": "終了ダイアログを閉じるだけのボタン"
+  },
   "round": "ラウンド {number}",
   "@round": {
     "description": "ラウンド番号",
@@ -481,6 +489,14 @@
   "@historySelectedCardsTitle": {
     "description": "履歴詳細の選択カードセクション"
   },
+  "historyDiscussionPromptsTitle": "プレイヤーごとのお題",
+  "@historyDiscussionPromptsTitle": {
+    "description": "履歴詳細・議論モードでプレイヤー別のお題を表示"
+  },
+  "historyDiscussionPromptsFootnote": "上から表示された順です。「別のお題へ」で差し替えたときは、そのたびに行が増えます。",
+  "@historyDiscussionPromptsFootnote": {
+    "description": "履歴詳細・議論モードのプレイヤー別リストの注記"
+  },
   "historyModeDice": "サイコロ",
   "@historyModeDice": {
     "description": "履歴用のモード表示（サイコロ）"
@@ -621,7 +637,7 @@
   "deckSocialIssues": "社会課題ディスカッション",
   "deckSocialIssuesDesc": "現代のテーマを、構造的かつ尊重し合う形で議論する",
   "discussionScreenTitle": "議論モード",
-  "discussionHint": "順位づけは不要です。話がひと段落したら、別のお題へ進んで大丈夫です。",
+  "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。",
   "discussionNextTopic": "別のお題へ",
   "discussionNextTopicHelp": "別の切り口がほしくなったら（任意）",
   "discussionPromptQueue": "お題の並び · {current}/{total} · いつでもスキップOK",
@@ -662,6 +678,40 @@
     }
   },
   "discussionPreviewSessionEnd": "終了: 全員が一度話したとき",
+  "promptBelongsToTurn": "このお題に話すのは、{turnLabel}。",
+  "@promptBelongsToTurn": {
+    "description": "表示中のお題と現在番のプレイヤーを対応づける",
+    "placeholders": {
+      "turnLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionSessionPromptsTitle": "このセッションのお題（プレイヤー別）",
+  "discussionPromptTimelineTitle": "お題の記録（時系列）",
+  "discussionPromptTimelineSubtitle": "確定したお題が時系列で並びます。",
+  "discussionTurnNotYet": "（このあと）",
+  "discussionWaitingPick": "カードをタップしてお題を選んでください",
+  "discussionPickFromCardsHeading": "裏向きのカード（横にスクロール）",
+  "discussionDiscussionCardWithTimer": "いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。",
+  "discussionDiscussionCardNoTimer": "いまから議論の時間です。一覧のお題にそって話しましょう。",
+  "discussionEndDiscussionButton": "議論を終了",
+  "discussionConfirmTopic": "このお題で話す",
+  "discussionFlipBack": "裏に戻す",
+  "discussionLockedPick": "お題が決まりました。準備ができたら「次のプレイヤー」をタップ",
+  "discussionUncategorizedTitle": "お題",
+  "discussionCatProbLogical": "論理的に組み立てる",
+  "discussionCatProbCreative": "創造的に考える",
+  "discussionCatProbFermi": "フェルミ推定",
+  "discussionCatProbDilemma": "ジレンマ・倫理",
+  "discussionCatSocGeo": "地理・地政学",
+  "discussionCatSocAiGap": "AI・デジタル格差",
+  "discussionCatSocClimate": "気候・環境",
+  "discussionCatSocDemocracy": "民主主義・ガバナンス",
+  "discussionCatSocJapanDecline": "日本：衰退・人口",
+  "discussionCatSocJapanImmigration": "日本：移民",
+  "discussionCatSocJapanWork": "日本：働き方・雇用",
+  "discussionCatSocJapanLocal": "日本：地域・コミュニティ",
   "deckCheckIn": "会議前・振り返り",
   "deckCheckInDesc": "会議の開始・終了に。問いを元に全員が一言ずつ",
   "deckSelfReflection": "自己内省・1on1",

@@ -1,5 +1,8 @@
+import 'dart:math' show Random;
+
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/discussion_category_group.dart';
 
 /// 自己内省・1on1デッキのセクション（色・アイコン用）
 /// 軽さ×深さのレイヤー: チェックイン → 自己内省 → 成長・関係性
@@ -644,6 +647,163 @@ class CardDeck {
       .where((d) =>
           d.type != CardDeckType.checkIn && d.type != CardDeckType.oneOnOne)
       .toList();
+
+  /// [themeKey]（ARB のキー名）から議論デッキのカテゴリーIDを返す
+  static String discussionCategoryIdForThemeKey(String themeKey) {
+    if (themeKey.startsWith('themeProbLogical')) return 'prob_logical';
+    if (themeKey.startsWith('themeProbCreative')) return 'prob_creative';
+    if (themeKey.startsWith('themeProbFermi')) return 'prob_fermi';
+    if (themeKey.startsWith('themeProbDilemma')) return 'prob_dilemma';
+    if (themeKey.startsWith('themeSocGeo')) return 'soc_geo';
+    if (themeKey.startsWith('themeSocAiGap')) return 'soc_ai_gap';
+    if (themeKey.startsWith('themeSocClimate')) return 'soc_climate';
+    if (themeKey.startsWith('themeSocDemocracy')) return 'soc_democracy';
+    if (themeKey.startsWith('themeSocJapanDecline')) return 'soc_japan_decline';
+    if (themeKey.startsWith('themeSocJapanImmigration')) {
+      return 'soc_japan_immigration';
+    }
+    if (themeKey.startsWith('themeSocJapanWork')) return 'soc_japan_work';
+    if (themeKey.startsWith('themeSocJapanLocal')) return 'soc_japan_local';
+    return 'uncategorized';
+  }
+
+  static List<String> discussionCategoryDisplayOrder(CardDeckType deckType) {
+    switch (deckType) {
+      case CardDeckType.problemSolving:
+        return const [
+          'prob_logical',
+          'prob_creative',
+          'prob_fermi',
+          'prob_dilemma',
+        ];
+      case CardDeckType.socialIssues:
+        return const [
+          'soc_geo',
+          'soc_ai_gap',
+          'soc_climate',
+          'soc_democracy',
+          'soc_japan_decline',
+          'soc_japan_immigration',
+          'soc_japan_work',
+          'soc_japan_local',
+        ];
+      default:
+        return const ['uncategorized'];
+    }
+  }
+
+  /// l10n のカテゴリー見出し（議論画面の行タイトル）
+  static String discussionCategoryTitle(
+    AppLocalizations l10n,
+    String categoryId,
+  ) {
+    switch (categoryId) {
+      case 'prob_logical':
+        return l10n.discussionCatProbLogical;
+      case 'prob_creative':
+        return l10n.discussionCatProbCreative;
+      case 'prob_fermi':
+        return l10n.discussionCatProbFermi;
+      case 'prob_dilemma':
+        return l10n.discussionCatProbDilemma;
+      case 'soc_geo':
+        return l10n.discussionCatSocGeo;
+      case 'soc_ai_gap':
+        return l10n.discussionCatSocAiGap;
+      case 'soc_climate':
+        return l10n.discussionCatSocClimate;
+      case 'soc_democracy':
+        return l10n.discussionCatSocDemocracy;
+      case 'soc_japan_decline':
+        return l10n.discussionCatSocJapanDecline;
+      case 'soc_japan_immigration':
+        return l10n.discussionCatSocJapanImmigration;
+      case 'soc_japan_work':
+        return l10n.discussionCatSocJapanWork;
+      case 'soc_japan_local':
+        return l10n.discussionCatSocJapanLocal;
+      default:
+        return l10n.discussionUncategorizedTitle;
+    }
+  }
+
+  /// [discussionPromptCap] を適用したうえでシャッフルし、カテゴリー別の行に分割する
+  static List<DiscussionCategoryGroup> buildShuffledDiscussionCategories({
+    required CardDeckType deckType,
+    required AppLocalizations l10n,
+    required Random random,
+    int? cap,
+  }) {
+    final deck = allDecks.firstWhere((d) => d.type == deckType);
+    final n = deck.themeKeys.length;
+    if (n == 0) return [];
+    var pairs = List.generate(
+      n,
+      (i) => (
+        deck.themeKeys[i],
+        _getThemeString(deck.themeKeys[i], l10n),
+      ),
+    );
+    pairs.shuffle(random);
+    final maxCap = cap ?? pairs.length;
+    if (maxCap < pairs.length) {
+      pairs = pairs.sublist(0, maxCap);
+    }
+    final byCat = <String, List<String>>{};
+    for (final p in pairs) {
+      final id = discussionCategoryIdForThemeKey(p.$1);
+      byCat.putIfAbsent(id, () => []).add(p.$2);
+    }
+    final order = discussionCategoryDisplayOrder(deckType);
+    final out = <DiscussionCategoryGroup>[];
+    final seen = <String>{};
+    for (final id in order) {
+      final list = byCat[id];
+      if (list != null && list.isNotEmpty) {
+        seen.add(id);
+        out.add(
+          DiscussionCategoryGroup(
+            categoryId: id,
+            title: discussionCategoryTitle(l10n, id),
+            prompts: list,
+          ),
+        );
+      }
+    }
+    for (final e in byCat.entries) {
+      if (seen.contains(e.key)) continue;
+      out.add(
+        DiscussionCategoryGroup(
+          categoryId: e.key,
+          title: discussionCategoryTitle(l10n, e.key),
+          prompts: e.value,
+        ),
+      );
+    }
+    return out;
+  }
+
+  /// デッキ種別なし（後方互換）: フラットなお題リストだけから1行のグループを作る
+  static List<DiscussionCategoryGroup> buildFlatDiscussionCategories({
+    required List<String> themes,
+    required AppLocalizations l10n,
+    required Random random,
+    int? cap,
+  }) {
+    var list = List<String>.from(themes)..shuffle(random);
+    final maxCap = cap ?? list.length;
+    if (maxCap < list.length) {
+      list = list.sublist(0, maxCap);
+    }
+    if (list.isEmpty) return [];
+    return [
+      DiscussionCategoryGroup(
+        categoryId: 'uncategorized',
+        title: l10n.discussionUncategorizedTitle,
+        prompts: list,
+      ),
+    ];
+  }
 
   /// 自己内省デッキ用: 問い→セクションIDのマップから themeCategoryMap を組み立てる
   static Map<String, ReflectionDeckCategory> buildReflectionCategoryMap(

@@ -92,6 +92,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             forDiscussion: true,
             fromCardSettings: false,
             deckLabel: deck.name(l10n),
+            discussionDeckType: deck.type,
           ),
         ),
       );
