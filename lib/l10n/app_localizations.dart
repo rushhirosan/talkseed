@@ -1301,7 +1301,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionHint.
   ///
   /// In ja, this message translates to:
-  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。'**
+  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。'**
   String get discussionHint;
 
   /// No description provided for @discussionNextTopic.
@@ -1337,7 +1337,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionDeckScopeTitle.
   ///
   /// In ja, this message translates to:
-  /// **'このセッションで使うお題'**
+  /// **'表示する候補カード'**
   String get discussionDeckScopeTitle;
 
   /// No description provided for @discussionDeckScopeFull.
@@ -1424,16 +1424,58 @@ abstract class AppLocalizations {
   /// **'裏向きのカード（横にスクロール）'**
   String get discussionPickFromCardsHeading;
 
+  /// No description provided for @discussionKickoffTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'全員のお題がそろいました'**
+  String get discussionKickoffTitle;
+
+  /// No description provided for @discussionKickoffSpeakingLead.
+  ///
+  /// In ja, this message translates to:
+  /// **'話す順の目安: {order}。まずは {first} から。一人ずつ短く共有してから、自由に深掘りしましょう。'**
+  String discussionKickoffSpeakingLead(String order, String first);
+
+  /// No description provided for @discussionKickoffTimerNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'「{buttonLabel}」を押すと、{duration} からタイマーのカウントがはじまります。'**
+  String discussionKickoffTimerNote(String buttonLabel, String duration);
+
+  /// No description provided for @discussionKickoffStartButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論を始める'**
+  String get discussionKickoffStartButton;
+
+  /// No description provided for @discussionActiveFirstSpeakerCaption.
+  ///
+  /// In ja, this message translates to:
+  /// **'まず話を始める目安'**
+  String get discussionActiveFirstSpeakerCaption;
+
+  /// No description provided for @discussionActiveOrderLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'このあとの順番: {order}'**
+  String discussionActiveOrderLine(String order);
+
+  /// No description provided for @discussionFirstSpeakerTag.
+  ///
+  /// In ja, this message translates to:
+  /// **'最初'**
+  String get discussionFirstSpeakerTag;
+
   /// No description provided for @discussionDiscussionCardWithTimer.
   ///
   /// In ja, this message translates to:
-  /// **'いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。'**
+  /// **'タイマーは目安です。全員が一度ずつ共有したら、一緒に深掘りしてOKです。'**
   String get discussionDiscussionCardWithTimer;
 
   /// No description provided for @discussionDiscussionCardNoTimer.
   ///
   /// In ja, this message translates to:
-  /// **'いまから議論の時間です。一覧のお題にそって話しましょう。'**
+  /// **'全員が一度ずつ共有したら、そのまま一緒に深掘りしてOKです。'**
   String get discussionDiscussionCardNoTimer;
 
   /// No description provided for @discussionEndDiscussionButton.
@@ -1447,12 +1489,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'このお題で話す'**
   String get discussionConfirmTopic;
-
-  /// No description provided for @discussionFlipBack.
-  ///
-  /// In ja, this message translates to:
-  /// **'裏に戻す'**
-  String get discussionFlipBack;
 
   /// No description provided for @discussionLockedPick.
   ///

@@ -637,7 +637,7 @@
   "deckSocialIssues": "社会課題ディスカッション",
   "deckSocialIssuesDesc": "現代のテーマを、構造的かつ尊重し合う形で議論する",
   "discussionScreenTitle": "議論モード",
-  "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。",
+  "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。",
   "discussionNextTopic": "別のお題へ",
   "discussionNextTopicHelp": "別の切り口がほしくなったら（任意）",
   "discussionPromptQueue": "お題の並び · {current}/{total} · いつでもスキップOK",
@@ -653,7 +653,7 @@
   },
   "discussionSessionEndTitle": "このセッションの終わり",
   "discussionSessionEndBody": "お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。",
-  "discussionDeckScopeTitle": "このセッションで使うお題",
+  "discussionDeckScopeTitle": "表示する候補カード",
   "discussionDeckScopeFull": "デッキ全枚（シャッフル）",
   "discussionDeckScopeTen": "10枚だけランダム",
   "discussionDeckScopeSix": "6枚だけランダム",
@@ -693,11 +693,44 @@
   "discussionTurnNotYet": "（このあと）",
   "discussionWaitingPick": "カードをタップしてお題を選んでください",
   "discussionPickFromCardsHeading": "裏向きのカード（横にスクロール）",
-  "discussionDiscussionCardWithTimer": "いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。",
-  "discussionDiscussionCardNoTimer": "いまから議論の時間です。一覧のお題にそって話しましょう。",
+  "discussionKickoffTitle": "全員のお題がそろいました",
+  "discussionKickoffSpeakingLead": "話す順の目安: {order}。まずは {first} から。一人ずつ短く共有してから、自由に深掘りしましょう。",
+  "@discussionKickoffSpeakingLead": {
+    "placeholders": {
+      "order": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionKickoffTimerNote": "「{buttonLabel}」を押すと、{duration} からタイマーのカウントがはじまります。",
+  "@discussionKickoffTimerNote": {
+    "placeholders": {
+      "buttonLabel": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionKickoffStartButton": "議論を始める",
+  "discussionActiveFirstSpeakerCaption": "まず話を始める目安",
+  "discussionActiveOrderLine": "このあとの順番: {order}",
+  "@discussionActiveOrderLine": {
+    "placeholders": {
+      "order": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionFirstSpeakerTag": "最初",
+  "discussionDiscussionCardWithTimer": "タイマーは目安です。全員が一度ずつ共有したら、一緒に深掘りしてOKです。",
+  "discussionDiscussionCardNoTimer": "全員が一度ずつ共有したら、そのまま一緒に深掘りしてOKです。",
   "discussionEndDiscussionButton": "議論を終了",
   "discussionConfirmTopic": "このお題で話す",
-  "discussionFlipBack": "裏に戻す",
   "discussionLockedPick": "お題が決まりました。準備ができたら「次のプレイヤー」をタップ",
   "discussionUncategorizedTitle": "お題",
   "discussionCatProbLogical": "論理的に組み立てる",

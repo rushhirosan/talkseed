@@ -651,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'Cards are grouped by category, face down. Tap one to peek—confirm when you’re ready to speak to that prompt, or flip back and choose another.';
+      'Cards are grouped by category, face down. Tap a card to peek; tap it again to flip back. Confirm when you’re ready to speak to that prompt, or pick another card.';
 
   @override
   String get discussionNextTopic => 'Another prompt';
@@ -673,7 +673,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'It ends after everyone has spoken once—not after you\'ve gone through every prompt.';
 
   @override
-  String get discussionDeckScopeTitle => 'Prompts in play';
+  String get discussionDeckScopeTitle => 'Visible candidate cards';
 
   @override
   String get discussionDeckScopeFull => 'Full deck (shuffled)';
@@ -728,21 +728,46 @@ class AppLocalizationsEn extends AppLocalizations {
       'Face-down cards (scroll sideways)';
 
   @override
+  String get discussionKickoffTitle => 'Everyone has a prompt';
+
+  @override
+  String discussionKickoffSpeakingLead(String order, String first) {
+    return 'Suggested order: $order. Start with $first, then go one at a time so each prompt is heard before opening the floor.';
+  }
+
+  @override
+  String discussionKickoffTimerNote(String buttonLabel, String duration) {
+    return 'The group timer starts only after you tap \"$buttonLabel\" below. It counts down from $duration.';
+  }
+
+  @override
+  String get discussionKickoffStartButton => 'Start discussion';
+
+  @override
+  String get discussionActiveFirstSpeakerCaption =>
+      'Who speaks first (suggested)';
+
+  @override
+  String discussionActiveOrderLine(String order) {
+    return 'Then continue in order: $order';
+  }
+
+  @override
+  String get discussionFirstSpeakerTag => 'Starts';
+
+  @override
   String get discussionDiscussionCardWithTimer =>
-      'Discussion time — use the timer below. Follow the prompts everyone chose (see the list).';
+      'Use the timer as a soft guide. After everyone has shared once, keep digging in together.';
 
   @override
   String get discussionDiscussionCardNoTimer =>
-      'Discussion time — use the prompts everyone chose (see the list below).';
+      'After everyone has shared once using their prompts, keep the conversation going together.';
 
   @override
   String get discussionEndDiscussionButton => 'End discussion';
 
   @override
   String get discussionConfirmTopic => 'Use this prompt';
-
-  @override
-  String get discussionFlipBack => 'Flip back';
 
   @override
   String get discussionLockedPick =>

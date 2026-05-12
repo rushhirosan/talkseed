@@ -395,7 +395,7 @@
   "deckSocialIssues": "Social issues discussion",
   "deckSocialIssuesDesc": "Discuss contemporary topics with structure and mutual respect",
   "discussionScreenTitle": "Discussion",
-  "discussionHint": "Cards are grouped by category, face down. Tap one to peek—confirm when you’re ready to speak to that prompt, or flip back and choose another.",
+  "discussionHint": "Cards are grouped by category, face down. Tap a card to peek; tap it again to flip back. Confirm when you’re ready to speak to that prompt, or pick another card.",
   "discussionNextTopic": "Another prompt",
   "discussionNextTopicHelp": "Optional: switch when you want a new angle",
   "discussionPromptQueue": "Prompt queue · {current}/{total} · skip anytime",
@@ -411,7 +411,7 @@
   },
   "discussionSessionEndTitle": "How this session ends",
   "discussionSessionEndBody": "It ends after everyone has spoken once—not after you've gone through every prompt.",
-  "discussionDeckScopeTitle": "Prompts in play",
+  "discussionDeckScopeTitle": "Visible candidate cards",
   "discussionDeckScopeFull": "Full deck (shuffled)",
   "discussionDeckScopeTen": "10 cards (random)",
   "discussionDeckScopeSix": "6 cards (random)",
@@ -451,11 +451,41 @@
   "discussionTurnNotYet": "(Up next)",
   "discussionWaitingPick": "Tap a card to choose your prompt.",
   "discussionPickFromCardsHeading": "Face-down cards (scroll sideways)",
-  "discussionDiscussionCardWithTimer": "Discussion time — use the timer below. Follow the prompts everyone chose (see the list).",
-  "discussionDiscussionCardNoTimer": "Discussion time — use the prompts everyone chose (see the list below).",
+  "discussionKickoffTitle": "Everyone has a prompt",
+  "discussionKickoffSpeakingLead": "Suggested order: {order}. Start with {first}, then go one at a time so each prompt is heard before opening the floor.",
+  "@discussionKickoffSpeakingLead": {
+    "placeholders": {
+      "order": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionKickoffTimerNote": "The group timer starts only after you tap \"{buttonLabel}\" below. It counts down from {duration}.",
+  "@discussionKickoffTimerNote": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionKickoffStartButton": "Start discussion",
+  "discussionActiveFirstSpeakerCaption": "Who speaks first (suggested)",
+  "discussionActiveOrderLine": "Then continue in order: {order}",
+  "@discussionActiveOrderLine": {
+    "placeholders": {
+      "order": {
+        "type": "String"
+      }
+    }
+  },
+  "discussionFirstSpeakerTag": "Starts",
+  "discussionDiscussionCardWithTimer": "Use the timer as a soft guide. After everyone has shared once, keep digging in together.",
+  "discussionDiscussionCardNoTimer": "After everyone has shared once using their prompts, keep the conversation going together.",
   "discussionEndDiscussionButton": "End discussion",
   "discussionConfirmTopic": "Use this prompt",
-  "discussionFlipBack": "Flip back",
   "discussionLockedPick": "Prompt locked — tap Next player when ready",
   "discussionUncategorizedTitle": "Prompts",
   "discussionCatProbLogical": "Logical structuring",

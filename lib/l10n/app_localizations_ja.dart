@@ -640,7 +640,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'カテゴリーごとに裏向きのカードがあります。タップで表面を見て、このお題で話すなら確定。別のカードにしたいときは裏に戻してください。';
+      'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。';
 
   @override
   String get discussionNextTopic => '別のお題へ';
@@ -660,7 +660,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionSessionEndBody => 'お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。';
 
   @override
-  String get discussionDeckScopeTitle => 'このセッションで使うお題';
+  String get discussionDeckScopeTitle => '表示する候補カード';
 
   @override
   String get discussionDeckScopeFull => 'デッキ全枚（シャッフル）';
@@ -711,20 +711,45 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionPickFromCardsHeading => '裏向きのカード（横にスクロール）';
 
   @override
-  String get discussionDiscussionCardWithTimer =>
-      'いまから議論の時間です。下のタイマーを使ってください。お題は全員が選んだもの（一覧）にそって話しましょう。';
+  String get discussionKickoffTitle => '全員のお題がそろいました';
 
   @override
-  String get discussionDiscussionCardNoTimer => 'いまから議論の時間です。一覧のお題にそって話しましょう。';
+  String discussionKickoffSpeakingLead(String order, String first) {
+    return '話す順の目安: $order。まずは $first から。一人ずつ短く共有してから、自由に深掘りしましょう。';
+  }
+
+  @override
+  String discussionKickoffTimerNote(String buttonLabel, String duration) {
+    return '「$buttonLabel」を押すと、$duration からタイマーのカウントがはじまります。';
+  }
+
+  @override
+  String get discussionKickoffStartButton => '議論を始める';
+
+  @override
+  String get discussionActiveFirstSpeakerCaption => 'まず話を始める目安';
+
+  @override
+  String discussionActiveOrderLine(String order) {
+    return 'このあとの順番: $order';
+  }
+
+  @override
+  String get discussionFirstSpeakerTag => '最初';
+
+  @override
+  String get discussionDiscussionCardWithTimer =>
+      'タイマーは目安です。全員が一度ずつ共有したら、一緒に深掘りしてOKです。';
+
+  @override
+  String get discussionDiscussionCardNoTimer =>
+      '全員が一度ずつ共有したら、そのまま一緒に深掘りしてOKです。';
 
   @override
   String get discussionEndDiscussionButton => '議論を終了';
 
   @override
   String get discussionConfirmTopic => 'このお題で話す';
-
-  @override
-  String get discussionFlipBack => '裏に戻す';
 
   @override
   String get discussionLockedPick => 'お題が決まりました。準備ができたら「次のプレイヤー」をタップ';
