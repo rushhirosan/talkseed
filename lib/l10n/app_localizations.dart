@@ -1307,7 +1307,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionDeckScopeTitle.
   ///
   /// In ja, this message translates to:
-  /// **'表示する候補カード'**
+  /// **'話し合うテーマの数'**
   String get discussionDeckScopeTitle;
 
   /// No description provided for @discussionThemeFilterTitle.
@@ -1361,8 +1361,50 @@ abstract class AppLocalizations {
   /// No description provided for @discussionPreviewSessionEnd.
   ///
   /// In ja, this message translates to:
-  /// **'終了: 全員が一度話したとき'**
+  /// **'全員で同じお題について話し合います'**
   String get discussionPreviewSessionEnd;
+
+  /// No description provided for @discussionGroupKickoffTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'グループディスカッションを始めよう'**
+  String get discussionGroupKickoffTitle;
+
+  /// No description provided for @discussionGroupKickoffLead.
+  ///
+  /// In ja, this message translates to:
+  /// **'全員で {count} 個のお題について話し合います。'**
+  String discussionGroupKickoffLead(int count);
+
+  /// No description provided for @discussionGroupTopicsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'今回のお題'**
+  String get discussionGroupTopicsTitle;
+
+  /// No description provided for @discussionGroupTopicsCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のお題'**
+  String discussionGroupTopicsCount(int count);
+
+  /// No description provided for @discussionGroupHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'全員で順番に話したり、自由に深掘りしたりしてOKです。'**
+  String get discussionGroupHint;
+
+  /// No description provided for @discussionGroupTopicsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題がありません。テーマの絞り込みを見直してください。'**
+  String get discussionGroupTopicsEmpty;
+
+  /// No description provided for @discussionGroupReshuffle.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題をシャッフルし直す'**
+  String get discussionGroupReshuffle;
 
   /// 表示中のお題と現在番のプレイヤーを対応づける
   ///
@@ -1535,25 +1577,25 @@ abstract class AppLocalizations {
   /// No description provided for @discussionCatSocJapanDecline.
   ///
   /// In ja, this message translates to:
-  /// **'日本：衰退・人口'**
+  /// **'人口動態・少子化'**
   String get discussionCatSocJapanDecline;
 
   /// No description provided for @discussionCatSocJapanImmigration.
   ///
   /// In ja, this message translates to:
-  /// **'日本：移民'**
+  /// **'移民・多文化社会'**
   String get discussionCatSocJapanImmigration;
 
   /// No description provided for @discussionCatSocJapanWork.
   ///
   /// In ja, this message translates to:
-  /// **'日本：働き方・雇用'**
+  /// **'働き方・雇用・組織'**
   String get discussionCatSocJapanWork;
 
   /// No description provided for @discussionCatSocJapanLocal.
   ///
   /// In ja, this message translates to:
-  /// **'日本：地域・コミュニティ'**
+  /// **'地方・インフラ・コミュニティ'**
   String get discussionCatSocJapanLocal;
 
   /// No description provided for @deckCheckIn.
@@ -2339,241 +2381,241 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocJapanDecline1.
   ///
   /// In ja, this message translates to:
-  /// **'人口が今の半分になる社会で、あなたの仕事は存在しているか？'**
+  /// **'働き世代の人口が一世代で半分になった社会で、あなたの仕事は残ると思うか？'**
   String get themeSocJapanDecline1;
 
   /// No description provided for @themeSocJapanDecline2.
   ///
   /// In ja, this message translates to:
-  /// **'少子化対策として「最も効果が高い」施策は何だと思うか？'**
+  /// **'出生率を上げる政策のうち、最も効きそうなものは何か。そもそも政策で上げるべきか？'**
   String get themeSocJapanDecline2;
 
   /// No description provided for @themeSocJapanDecline3.
   ///
   /// In ja, this message translates to:
-  /// **'人口減少を「問題」ではなく「チャンス」と捉えるとしたら、何が見えてくるか？'**
+  /// **'人口減少を「問題」ではなく「チャンス」と捉えるなら、最初に投資したい分野は？'**
   String get themeSocJapanDecline3;
 
   /// No description provided for @themeSocJapanDecline4.
   ///
   /// In ja, this message translates to:
-  /// **'高齢者の医療費を現役世代が支え続ける仕組みは、持続可能か？'**
+  /// **'高齢者医療を現役世代の拠出で支える仕組みは、長期的に持続可能か？'**
   String get themeSocJapanDecline4;
 
   /// No description provided for @themeSocJapanDecline5.
   ///
   /// In ja, this message translates to:
-  /// **'定年を80歳に引き上げることに、賛成か反対か？'**
+  /// **'法定退職年齢を80歳に引き上げる案に、賛成か反対か？'**
   String get themeSocJapanDecline5;
 
   /// No description provided for @themeSocJapanDecline6.
   ///
   /// In ja, this message translates to:
-  /// **'子どもを産まない選択をする人を、社会はどう扱うべきか？'**
+  /// **'子どもを持たない選択をする人を、社会はどう扱うべきか？'**
   String get themeSocJapanDecline6;
 
   /// No description provided for @themeSocJapanDecline7.
   ///
   /// In ja, this message translates to:
-  /// **'「子どもを産んだ人が得をする税制」は公平か？不公平か？'**
+  /// **'子育て支援や税制優遇は、持たない人にとって公平か？'**
   String get themeSocJapanDecline7;
 
   /// No description provided for @themeSocJapanDecline8.
   ///
   /// In ja, this message translates to:
-  /// **'介護ロボットが普及しても、家族が介護すべき場面はあるか？'**
+  /// **'介護ロボットが普及しても、家族が担うべきケアは残るか？'**
   String get themeSocJapanDecline8;
 
   /// No description provided for @themeSocJapanDecline9.
   ///
   /// In ja, this message translates to:
-  /// **'2026年は丙午。迷信が出生数に影響する社会をどう思うか？'**
+  /// **'暦や吉凶の迷信が結婚・出生のタイミングに影響する慣習をどう捉えるか？'**
   String get themeSocJapanDecline9;
 
   /// No description provided for @themeSocJapanDecline10.
   ///
   /// In ja, this message translates to:
-  /// **'あなたが80歳になったとき、どんな社会に生きていたいか？'**
+  /// **'あなたが80歳のとき、次の世代のためにどんな社会にしていたいか？'**
   String get themeSocJapanDecline10;
 
   /// No description provided for @themeSocJapanImmigration1.
   ///
   /// In ja, this message translates to:
-  /// **'人手不足を外国人労働者で補うことへの、あなたのリアルな本音は？'**
+  /// **'人手不足を移民労働で補うことへの、メリットと懸念は？'**
   String get themeSocJapanImmigration1;
 
   /// No description provided for @themeSocJapanImmigration2.
   ///
   /// In ja, this message translates to:
-  /// **'日本語が話せない子どもへの教育コストは、誰が負うべきか？'**
+  /// **'公用語が話せない子どもの教育コストは、誰が負担すべきか？'**
   String get themeSocJapanImmigration2;
 
   /// No description provided for @themeSocJapanImmigration3.
   ///
   /// In ja, this message translates to:
-  /// **'高度人材の外国人が日本を選ばない理由は何か？どうすれば変わるか？'**
+  /// **'高度人材に自国が選ばれない理由は何か。変えるには？'**
   String get themeSocJapanImmigration3;
 
   /// No description provided for @themeSocJapanImmigration4.
   ///
   /// In ja, this message translates to:
-  /// **'「移民を受け入れるべき」と言いながら、自分の隣人には嫌だと感じるのはなぜか？'**
+  /// **'「移民は必要」と答えつつ身近には避けたくなる心理は何か？'**
   String get themeSocJapanImmigration4;
 
   /// No description provided for @themeSocJapanImmigration5.
   ///
   /// In ja, this message translates to:
-  /// **'少子化対策として移民を増やすことは、文化的アイデンティティを変えるか？'**
+  /// **'低出生を補うために移民を増やすと、社会のアイデンティティはどう変わるか？'**
   String get themeSocJapanImmigration5;
 
   /// No description provided for @themeSocJapanImmigration6.
   ///
   /// In ja, this message translates to:
-  /// **'「日本人らしさ」とは何か？それは守るべきものか、変わっていいものか？'**
+  /// **'「自国らしさ」とは何か。守るべきか、更新していいか？'**
   String get themeSocJapanImmigration6;
 
   /// No description provided for @themeSocJapanImmigration7.
   ///
   /// In ja, this message translates to:
-  /// **'外国人が多い職場で、チームとしてまとまるために何が必要か？'**
+  /// **'多国籍チームが機能するために、制度や文化で何が必要か？'**
   String get themeSocJapanImmigration7;
 
   /// No description provided for @themeSocJapanImmigration8.
   ///
   /// In ja, this message translates to:
-  /// **'欧米で外国人問題が国家分断につながっている。日本は同じ道をたどるか？'**
+  /// **'移民をめぐる政治対立が社会を分断する事例から、何を学ぶべきか？'**
   String get themeSocJapanImmigration8;
 
   /// No description provided for @themeSocJapanImmigration9.
   ///
   /// In ja, this message translates to:
-  /// **'外国人の土地取得を制限することに、賛成か反対か？'**
+  /// **'外国籍による土地取得を制限することに、賛成か反対か。根拠は？'**
   String get themeSocJapanImmigration9;
 
   /// No description provided for @themeSocJapanImmigration10.
   ///
   /// In ja, this message translates to:
-  /// **'50年後の日本が多民族国家になっていたとしたら、それはよいことか？'**
+  /// **'50年後、自国がより多民族化していたとしたら、プラスかリスクか？'**
   String get themeSocJapanImmigration10;
 
   /// No description provided for @themeSocJapanWork1.
   ///
   /// In ja, this message translates to:
-  /// **'週4日勤務が標準になったとき、会社と個人はそれぞれ何を変える必要があるか？'**
+  /// **'週4日労働が標準になったとき、企業と個人はそれぞれ何を変える必要があるか？'**
   String get themeSocJapanWork1;
 
   /// No description provided for @themeSocJapanWork2.
   ///
   /// In ja, this message translates to:
-  /// **'新卒一括採用・終身雇用は、今の時代に合っているか？'**
+  /// **'大学卒の大量一括採用と長期雇用を前提にしたモデルは、今も通用するか？'**
   String get themeSocJapanWork2;
 
   /// No description provided for @themeSocJapanWork3.
   ///
   /// In ja, this message translates to:
-  /// **'成果が同じなら、働く時間が短い人と長い人の評価は同じにすべきか？'**
+  /// **'成果が同じなら、労働時間が短い人と長い人の評価は同じにすべきか？'**
   String get themeSocJapanWork3;
 
   /// No description provided for @themeSocJapanWork4.
   ///
   /// In ja, this message translates to:
-  /// **'副業を全員に解禁すると、組織への忠誠心は下がるか？'**
+  /// **'副業を全面解禁すると、組織への忠誠や機密管理はどうなるか？'**
   String get themeSocJapanWork4;
 
   /// No description provided for @themeSocJapanWork5.
   ///
   /// In ja, this message translates to:
-  /// **'「やりがい搾取」はなぜなくならないのか？誰が変えるべきか？'**
+  /// **'「やりがい搾取」はなぜなくならないのか。誰が変えるべきか？'**
   String get themeSocJapanWork5;
 
   /// No description provided for @themeSocJapanWork6.
   ///
   /// In ja, this message translates to:
-  /// **'上司が部下より給与が低い逆転現象は、問題か？健全か？'**
+  /// **'マネージャーがスター社員より給与が低い逆転は、健全か問題か？'**
   String get themeSocJapanWork6;
 
   /// No description provided for @themeSocJapanWork7.
   ///
   /// In ja, this message translates to:
-  /// **'燃え尽き症候群（バーンアウト）を防ぐ責任は、個人か？会社か？'**
+  /// **'燃え尽きを防ぐ責任は、個人か雇用者か、二者で分担か？'**
   String get themeSocJapanWork7;
 
   /// No description provided for @themeSocJapanWork8.
   ///
   /// In ja, this message translates to:
-  /// **'テレワークと出社、チームにとって本当にいいのはどちらか？'**
+  /// **'リモートと出社、協働の質ではどちらが優れているか。誰が決めるべきか？'**
   String get themeSocJapanWork8;
 
   /// No description provided for @themeSocJapanWork9.
   ///
   /// In ja, this message translates to:
-  /// **'「会社の飲み会」は業務か？プライベートか？'**
+  /// **'同僚との飲食の集まりは、労務か文化か。境界線は？'**
   String get themeSocJapanWork9;
 
   /// No description provided for @themeSocJapanWork10.
   ///
   /// In ja, this message translates to:
-  /// **'10年後、「会社員」という働き方は主流であり続けるか？'**
+  /// **'10年後も「正社員中心」の雇用が主流だと思うか？'**
   String get themeSocJapanWork10;
 
   /// No description provided for @themeSocJapanLocal1.
   ///
   /// In ja, this message translates to:
-  /// **'バスも電車もなくなった地方に、住み続ける権利を社会は保障すべきか？'**
+  /// **'公共交通が細った地域でも、生活に必要な移動権は保障すべきか？'**
   String get themeSocJapanLocal1;
 
   /// No description provided for @themeSocJapanLocal2.
   ///
   /// In ja, this message translates to:
-  /// **'廃校になった学校の跡地を、何に使うべきか？'**
+  /// **'子どもが減り閉校した施設の跡地に、何を置くべきか？'**
   String get themeSocJapanLocal2;
 
   /// No description provided for @themeSocJapanLocal3.
   ///
   /// In ja, this message translates to:
-  /// **'リモートワークは地方創生の救世主になれるか？それとも幻想か？'**
+  /// **'リモートワークは地方・中小都市の活性化の切り札になり得るか、限界か？'**
   String get themeSocJapanLocal3;
 
   /// No description provided for @themeSocJapanLocal4.
   ///
   /// In ja, this message translates to:
-  /// **'人口が100人を切った村に、公共サービスを提供し続けるべきか？'**
+  /// **'住民が極小規模の集落に、都市部と同等の公共サービスを供給し続けるべきか？'**
   String get themeSocJapanLocal4;
 
   /// No description provided for @themeSocJapanLocal5.
   ///
   /// In ja, this message translates to:
-  /// **'老朽化したインフラを維持するために増税することに、賛成か反対か？'**
+  /// **'老朽化インフラの安全のための増税に、賛成か反対か？'**
   String get themeSocJapanLocal5;
 
   /// No description provided for @themeSocJapanLocal6.
   ///
   /// In ja, this message translates to:
-  /// **'都市への人口集中は「問題」か？それとも「効率的な選択」か？'**
+  /// **'大都市への人口集中は問題か、効率的な結果か？'**
   String get themeSocJapanLocal6;
 
   /// No description provided for @themeSocJapanLocal7.
   ///
   /// In ja, this message translates to:
-  /// **'地方に本社機能を移転した企業は、本当に成功できるか？'**
+  /// **'本社機能を中小都市や地方へ移す企業が成功するために必要な条件は？'**
   String get themeSocJapanLocal7;
 
   /// No description provided for @themeSocJapanLocal8.
   ///
   /// In ja, this message translates to:
-  /// **'「消滅可能性都市」というレッテルを貼ることは、地方にとってプラスかマイナスか？'**
+  /// **'人口減少地域に「消滅リスク」などのラベルを付けることは、プラスかマイナスか？'**
   String get themeSocJapanLocal8;
 
   /// No description provided for @themeSocJapanLocal9.
   ///
   /// In ja, this message translates to:
-  /// **'あなたが地方移住を決断するとしたら、最低限必要な条件は何か？'**
+  /// **'大都市から地方・中小都市へ移住するなら、最低限ほしい条件は？'**
   String get themeSocJapanLocal9;
 
   /// No description provided for @themeSocJapanLocal10.
   ///
   /// In ja, this message translates to:
-  /// **'地方の問題を解決する責任は、国・自治体・企業・個人のどこにあるか？'**
+  /// **'地域格差の解消の主責任は、中央政府・地方政府・企業・個人のどこにあるか？'**
   String get themeSocJapanLocal10;
 
   /// No description provided for @valuePlayerTurn.

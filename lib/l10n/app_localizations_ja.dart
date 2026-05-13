@@ -645,7 +645,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => '表示する候補カード';
+  String get discussionDeckScopeTitle => '話し合うテーマの数';
 
   @override
   String get discussionThemeFilterTitle => 'テーマを絞る';
@@ -676,7 +676,32 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionPreviewSessionEnd => '終了: 全員が一度話したとき';
+  String get discussionPreviewSessionEnd => '全員で同じお題について話し合います';
+
+  @override
+  String get discussionGroupKickoffTitle => 'グループディスカッションを始めよう';
+
+  @override
+  String discussionGroupKickoffLead(int count) {
+    return '全員で $count 個のお題について話し合います。';
+  }
+
+  @override
+  String get discussionGroupTopicsTitle => '今回のお題';
+
+  @override
+  String discussionGroupTopicsCount(int count) {
+    return '$count 個のお題';
+  }
+
+  @override
+  String get discussionGroupHint => '全員で順番に話したり、自由に深掘りしたりしてOKです。';
+
+  @override
+  String get discussionGroupTopicsEmpty => 'お題がありません。テーマの絞り込みを見直してください。';
+
+  @override
+  String get discussionGroupReshuffle => 'お題をシャッフルし直す';
 
   @override
   String promptBelongsToTurn(String turnLabel) {
@@ -773,16 +798,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionCatSocDemocracy => '民主主義・ガバナンス';
 
   @override
-  String get discussionCatSocJapanDecline => '日本：衰退・人口';
+  String get discussionCatSocJapanDecline => '人口動態・少子化';
 
   @override
-  String get discussionCatSocJapanImmigration => '日本：移民';
+  String get discussionCatSocJapanImmigration => '移民・多文化社会';
 
   @override
-  String get discussionCatSocJapanWork => '日本：働き方・雇用';
+  String get discussionCatSocJapanWork => '働き方・雇用・組織';
 
   @override
-  String get discussionCatSocJapanLocal => '日本：地域・コミュニティ';
+  String get discussionCatSocJapanLocal => '地方・インフラ・コミュニティ';
 
   @override
   String get deckCheckIn => '会議前・振り返り';
@@ -1175,125 +1200,126 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocDemocracy10 => '「社会の分断」を一番深めているのは何か？メディア？政治家？アルゴリズム？';
 
   @override
-  String get themeSocJapanDecline1 => '人口が今の半分になる社会で、あなたの仕事は存在しているか？';
+  String get themeSocJapanDecline1 => '働き世代の人口が一世代で半分になった社会で、あなたの仕事は残ると思うか？';
 
   @override
-  String get themeSocJapanDecline2 => '少子化対策として「最も効果が高い」施策は何だと思うか？';
+  String get themeSocJapanDecline2 =>
+      '出生率を上げる政策のうち、最も効きそうなものは何か。そもそも政策で上げるべきか？';
 
   @override
-  String get themeSocJapanDecline3 => '人口減少を「問題」ではなく「チャンス」と捉えるとしたら、何が見えてくるか？';
+  String get themeSocJapanDecline3 => '人口減少を「問題」ではなく「チャンス」と捉えるなら、最初に投資したい分野は？';
 
   @override
-  String get themeSocJapanDecline4 => '高齢者の医療費を現役世代が支え続ける仕組みは、持続可能か？';
+  String get themeSocJapanDecline4 => '高齢者医療を現役世代の拠出で支える仕組みは、長期的に持続可能か？';
 
   @override
-  String get themeSocJapanDecline5 => '定年を80歳に引き上げることに、賛成か反対か？';
+  String get themeSocJapanDecline5 => '法定退職年齢を80歳に引き上げる案に、賛成か反対か？';
 
   @override
-  String get themeSocJapanDecline6 => '子どもを産まない選択をする人を、社会はどう扱うべきか？';
+  String get themeSocJapanDecline6 => '子どもを持たない選択をする人を、社会はどう扱うべきか？';
 
   @override
-  String get themeSocJapanDecline7 => '「子どもを産んだ人が得をする税制」は公平か？不公平か？';
+  String get themeSocJapanDecline7 => '子育て支援や税制優遇は、持たない人にとって公平か？';
 
   @override
-  String get themeSocJapanDecline8 => '介護ロボットが普及しても、家族が介護すべき場面はあるか？';
+  String get themeSocJapanDecline8 => '介護ロボットが普及しても、家族が担うべきケアは残るか？';
 
   @override
-  String get themeSocJapanDecline9 => '2026年は丙午。迷信が出生数に影響する社会をどう思うか？';
+  String get themeSocJapanDecline9 => '暦や吉凶の迷信が結婚・出生のタイミングに影響する慣習をどう捉えるか？';
 
   @override
-  String get themeSocJapanDecline10 => 'あなたが80歳になったとき、どんな社会に生きていたいか？';
+  String get themeSocJapanDecline10 => 'あなたが80歳のとき、次の世代のためにどんな社会にしていたいか？';
 
   @override
-  String get themeSocJapanImmigration1 => '人手不足を外国人労働者で補うことへの、あなたのリアルな本音は？';
+  String get themeSocJapanImmigration1 => '人手不足を移民労働で補うことへの、メリットと懸念は？';
 
   @override
-  String get themeSocJapanImmigration2 => '日本語が話せない子どもへの教育コストは、誰が負うべきか？';
+  String get themeSocJapanImmigration2 => '公用語が話せない子どもの教育コストは、誰が負担すべきか？';
 
   @override
-  String get themeSocJapanImmigration3 => '高度人材の外国人が日本を選ばない理由は何か？どうすれば変わるか？';
+  String get themeSocJapanImmigration3 => '高度人材に自国が選ばれない理由は何か。変えるには？';
 
   @override
-  String get themeSocJapanImmigration4 =>
-      '「移民を受け入れるべき」と言いながら、自分の隣人には嫌だと感じるのはなぜか？';
+  String get themeSocJapanImmigration4 => '「移民は必要」と答えつつ身近には避けたくなる心理は何か？';
 
   @override
-  String get themeSocJapanImmigration5 => '少子化対策として移民を増やすことは、文化的アイデンティティを変えるか？';
+  String get themeSocJapanImmigration5 =>
+      '低出生を補うために移民を増やすと、社会のアイデンティティはどう変わるか？';
 
   @override
-  String get themeSocJapanImmigration6 => '「日本人らしさ」とは何か？それは守るべきものか、変わっていいものか？';
+  String get themeSocJapanImmigration6 => '「自国らしさ」とは何か。守るべきか、更新していいか？';
 
   @override
-  String get themeSocJapanImmigration7 => '外国人が多い職場で、チームとしてまとまるために何が必要か？';
+  String get themeSocJapanImmigration7 => '多国籍チームが機能するために、制度や文化で何が必要か？';
 
   @override
-  String get themeSocJapanImmigration8 => '欧米で外国人問題が国家分断につながっている。日本は同じ道をたどるか？';
+  String get themeSocJapanImmigration8 => '移民をめぐる政治対立が社会を分断する事例から、何を学ぶべきか？';
 
   @override
-  String get themeSocJapanImmigration9 => '外国人の土地取得を制限することに、賛成か反対か？';
+  String get themeSocJapanImmigration9 => '外国籍による土地取得を制限することに、賛成か反対か。根拠は？';
 
   @override
-  String get themeSocJapanImmigration10 => '50年後の日本が多民族国家になっていたとしたら、それはよいことか？';
+  String get themeSocJapanImmigration10 => '50年後、自国がより多民族化していたとしたら、プラスかリスクか？';
 
   @override
-  String get themeSocJapanWork1 => '週4日勤務が標準になったとき、会社と個人はそれぞれ何を変える必要があるか？';
+  String get themeSocJapanWork1 => '週4日労働が標準になったとき、企業と個人はそれぞれ何を変える必要があるか？';
 
   @override
-  String get themeSocJapanWork2 => '新卒一括採用・終身雇用は、今の時代に合っているか？';
+  String get themeSocJapanWork2 => '大学卒の大量一括採用と長期雇用を前提にしたモデルは、今も通用するか？';
 
   @override
-  String get themeSocJapanWork3 => '成果が同じなら、働く時間が短い人と長い人の評価は同じにすべきか？';
+  String get themeSocJapanWork3 => '成果が同じなら、労働時間が短い人と長い人の評価は同じにすべきか？';
 
   @override
-  String get themeSocJapanWork4 => '副業を全員に解禁すると、組織への忠誠心は下がるか？';
+  String get themeSocJapanWork4 => '副業を全面解禁すると、組織への忠誠や機密管理はどうなるか？';
 
   @override
-  String get themeSocJapanWork5 => '「やりがい搾取」はなぜなくならないのか？誰が変えるべきか？';
+  String get themeSocJapanWork5 => '「やりがい搾取」はなぜなくならないのか。誰が変えるべきか？';
 
   @override
-  String get themeSocJapanWork6 => '上司が部下より給与が低い逆転現象は、問題か？健全か？';
+  String get themeSocJapanWork6 => 'マネージャーがスター社員より給与が低い逆転は、健全か問題か？';
 
   @override
-  String get themeSocJapanWork7 => '燃え尽き症候群（バーンアウト）を防ぐ責任は、個人か？会社か？';
+  String get themeSocJapanWork7 => '燃え尽きを防ぐ責任は、個人か雇用者か、二者で分担か？';
 
   @override
-  String get themeSocJapanWork8 => 'テレワークと出社、チームにとって本当にいいのはどちらか？';
+  String get themeSocJapanWork8 => 'リモートと出社、協働の質ではどちらが優れているか。誰が決めるべきか？';
 
   @override
-  String get themeSocJapanWork9 => '「会社の飲み会」は業務か？プライベートか？';
+  String get themeSocJapanWork9 => '同僚との飲食の集まりは、労務か文化か。境界線は？';
 
   @override
-  String get themeSocJapanWork10 => '10年後、「会社員」という働き方は主流であり続けるか？';
+  String get themeSocJapanWork10 => '10年後も「正社員中心」の雇用が主流だと思うか？';
 
   @override
-  String get themeSocJapanLocal1 => 'バスも電車もなくなった地方に、住み続ける権利を社会は保障すべきか？';
+  String get themeSocJapanLocal1 => '公共交通が細った地域でも、生活に必要な移動権は保障すべきか？';
 
   @override
-  String get themeSocJapanLocal2 => '廃校になった学校の跡地を、何に使うべきか？';
+  String get themeSocJapanLocal2 => '子どもが減り閉校した施設の跡地に、何を置くべきか？';
 
   @override
-  String get themeSocJapanLocal3 => 'リモートワークは地方創生の救世主になれるか？それとも幻想か？';
+  String get themeSocJapanLocal3 => 'リモートワークは地方・中小都市の活性化の切り札になり得るか、限界か？';
 
   @override
-  String get themeSocJapanLocal4 => '人口が100人を切った村に、公共サービスを提供し続けるべきか？';
+  String get themeSocJapanLocal4 => '住民が極小規模の集落に、都市部と同等の公共サービスを供給し続けるべきか？';
 
   @override
-  String get themeSocJapanLocal5 => '老朽化したインフラを維持するために増税することに、賛成か反対か？';
+  String get themeSocJapanLocal5 => '老朽化インフラの安全のための増税に、賛成か反対か？';
 
   @override
-  String get themeSocJapanLocal6 => '都市への人口集中は「問題」か？それとも「効率的な選択」か？';
+  String get themeSocJapanLocal6 => '大都市への人口集中は問題か、効率的な結果か？';
 
   @override
-  String get themeSocJapanLocal7 => '地方に本社機能を移転した企業は、本当に成功できるか？';
+  String get themeSocJapanLocal7 => '本社機能を中小都市や地方へ移す企業が成功するために必要な条件は？';
 
   @override
-  String get themeSocJapanLocal8 => '「消滅可能性都市」というレッテルを貼ることは、地方にとってプラスかマイナスか？';
+  String get themeSocJapanLocal8 => '人口減少地域に「消滅リスク」などのラベルを付けることは、プラスかマイナスか？';
 
   @override
-  String get themeSocJapanLocal9 => 'あなたが地方移住を決断するとしたら、最低限必要な条件は何か？';
+  String get themeSocJapanLocal9 => '大都市から地方・中小都市へ移住するなら、最低限ほしい条件は？';
 
   @override
-  String get themeSocJapanLocal10 => '地方の問題を解決する責任は、国・自治体・企業・個人のどこにあるか？';
+  String get themeSocJapanLocal10 => '地域格差の解消の主責任は、中央政府・地方政府・企業・個人のどこにあるか？';
 
   @override
   String valuePlayerTurn(String displayName) {

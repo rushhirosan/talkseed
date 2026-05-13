@@ -642,7 +642,8 @@ class CardDeck {
           d.type != CardDeckType.checkIn && d.type != CardDeckType.oneOnOne)
       .toList();
 
-  /// [themeKey]（ARB のキー名）から議論デッキのカテゴリーIDを返す
+  /// [themeKey]（ARB のキー名）から議論デッキのカテゴリーIDを返す。
+  /// `themeSocJapan*` / `soc_japan_*` はキー・ID の歴史的経緯のみ（文言は l10n で地域中立）。
   static String discussionCategoryIdForThemeKey(String themeKey) {
     if (themeKey.startsWith('themeProbLogical')) return 'prob_logical';
     if (themeKey.startsWith('themeProbCreative')) return 'prob_creative';

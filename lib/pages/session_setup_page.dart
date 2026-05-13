@@ -64,7 +64,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void initState() {
     super.initState();
     _config = SessionConfig.defaultConfig;
-    _discussionPromptCap = null;
+    // グループディスカッションは「設定で絞った N 枚を全員で話す」運用なので、
+    // デフォルトは深掘りしやすい 3 枚にしておく（全枚は意図的に選んだときだけ使う）
+    _discussionPromptCap = widget.forDiscussion ? 3 : null;
     if (widget.forDiscussion && widget.discussionDeckType != null) {
       _discussionIncludedCategories = Set<String>.from(
         CardDeck.discussionCategoryDisplayOrder(widget.discussionDeckType!),
@@ -536,6 +538,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     if (dt == null) return const SizedBox.shrink();
     final order = CardDeck.discussionCategoryDisplayOrder(dt);
     if (order.length <= 1) return const SizedBox.shrink();
+    final ts = context.talkShuffle;
     const itemSpacing = 8.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -559,23 +562,33 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         ),
         const SizedBox(height: itemSpacing),
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: 8,
+          runSpacing: 8,
           children: order.map((id) {
             final selected = _discussionIncludedCategories.contains(id);
             return FilterChip(
               label: Text(
                 CardDeck.discussionCategoryTitle(l10n, id),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: _black,
+                  fontWeight: FontWeight.w700,
+                  color: selected ? Colors.white : _black,
+                  height: 1.25,
                 ),
               ),
               selected: selected,
-              showCheckmark: false,
-              selectedColor: _black.withOpacity(0.12),
-              side: const BorderSide(color: _black, width: 1.2),
+              showCheckmark: true,
+              checkmarkColor: Colors.white,
+              selectedColor: ts.brandPurple,
+              backgroundColor: _white,
+              side: BorderSide(
+                color: selected ? ts.brandPurple : _black,
+                width: selected ? 2.2 : 1.4,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               onSelected: (_) => _toggleDiscussionCategory(id),
             );
           }).toList(),

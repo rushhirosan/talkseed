@@ -656,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => 'Visible candidate cards';
+  String get discussionDeckScopeTitle => 'Number of prompts to discuss';
 
   @override
   String get discussionThemeFilterTitle => 'Filter topics';
@@ -689,7 +689,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionPreviewSessionEnd =>
-      'Ends when everyone has spoken once';
+      'Discuss the same prompts together as a group';
+
+  @override
+  String get discussionGroupKickoffTitle => 'Let\'s start the group discussion';
+
+  @override
+  String discussionGroupKickoffLead(int count) {
+    return 'Discuss $count prompts together as a group.';
+  }
+
+  @override
+  String get discussionGroupTopicsTitle => 'Today\'s prompts';
+
+  @override
+  String discussionGroupTopicsCount(int count) {
+    return '$count prompts';
+  }
+
+  @override
+  String get discussionGroupHint =>
+      'Take turns or jump in freely — discuss as a group however you like.';
+
+  @override
+  String get discussionGroupTopicsEmpty =>
+      'No prompts available. Try adjusting the topic filters.';
+
+  @override
+  String get discussionGroupReshuffle => 'Reshuffle prompts';
 
   @override
   String promptBelongsToTurn(String turnLabel) {
@@ -791,16 +818,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discussionCatSocDemocracy => 'Democracy & governance';
 
   @override
-  String get discussionCatSocJapanDecline => 'Japan: decline & demographics';
+  String get discussionCatSocJapanDecline => 'Demographics & birth rates';
 
   @override
-  String get discussionCatSocJapanImmigration => 'Japan: immigration';
+  String get discussionCatSocJapanImmigration => 'Migration & plural societies';
 
   @override
-  String get discussionCatSocJapanWork => 'Japan: work & employment';
+  String get discussionCatSocJapanWork => 'Work, pay & organizations';
 
   @override
-  String get discussionCatSocJapanLocal => 'Japan: local communities';
+  String get discussionCatSocJapanLocal => 'Rural areas & community services';
 
   @override
   String get deckCheckIn => 'Check-in & Check-out';
@@ -1236,125 +1263,164 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeSocDemocracy10 => '「社会の分断」を一番深めているのは何か？メディア？政治家？アルゴリズム？';
 
   @override
-  String get themeSocJapanDecline1 => '人口が今の半分になる社会で、あなたの仕事は存在しているか？';
+  String get themeSocJapanDecline1 =>
+      'If the working-age population halved in one generation where you live, would your role likely still exist?';
 
   @override
-  String get themeSocJapanDecline2 => '少子化対策として「最も効果が高い」施策は何だと思うか？';
+  String get themeSocJapanDecline2 =>
+      'Which policy would most raise birth rates—or should governments avoid trying to engineer that number?';
 
   @override
-  String get themeSocJapanDecline3 => '人口減少を「問題」ではなく「チャンス」と捉えるとしたら、何が見えてくるか？';
+  String get themeSocJapanDecline3 =>
+      'If population decline were framed as an opportunity, what would you invest in first?';
 
   @override
-  String get themeSocJapanDecline4 => '高齢者の医療費を現役世代が支え続ける仕組みは、持続可能か？';
+  String get themeSocJapanDecline4 =>
+      'Is it sustainable for workers to keep funding elder care through payroll taxes and premiums?';
 
   @override
-  String get themeSocJapanDecline5 => '定年を80歳に引き上げることに、賛成か反対か？';
+  String get themeSocJapanDecline5 =>
+      'Raising the statutory retirement age to 80: support or oppose—and why?';
 
   @override
-  String get themeSocJapanDecline6 => '子どもを産まない選択をする人を、社会はどう扱うべきか？';
+  String get themeSocJapanDecline6 =>
+      'How should society treat people who choose not to have children—neutrally, supportively, or with concern?';
 
   @override
-  String get themeSocJapanDecline7 => '「子どもを産んだ人が得をする税制」は公平か？不公平か？';
+  String get themeSocJapanDecline7 =>
+      'Are child tax credits and parenting benefits \"fair\" to people without children?';
 
   @override
-  String get themeSocJapanDecline8 => '介護ロボットが普及しても、家族が介護すべき場面はあるか？';
+  String get themeSocJapanDecline8 =>
+      'If robots handle most elder care, where (if anywhere) should families still step in personally?';
 
   @override
-  String get themeSocJapanDecline9 => '2026年は丙午。迷信が出生数に影響する社会をどう思うか？';
+  String get themeSocJapanDecline9 =>
+      'When calendar superstitions shape marriage or birth timing, is that harmless tradition or a problem?';
 
   @override
-  String get themeSocJapanDecline10 => 'あなたが80歳になったとき、どんな社会に生きていたいか？';
+  String get themeSocJapanDecline10 =>
+      'At age 80, what kind of society do you want to help build for the next generation?';
 
   @override
-  String get themeSocJapanImmigration1 => '人手不足を外国人労働者で補うことへの、あなたのリアルな本音は？';
+  String get themeSocJapanImmigration1 =>
+      'Using immigration to fill labor gaps—your honest take on upside and downside?';
 
   @override
-  String get themeSocJapanImmigration2 => '日本語が話せない子どもへの教育コストは、誰が負うべきか？';
+  String get themeSocJapanImmigration2 =>
+      'Who should pay for schooling children who arrive without speaking the local language?';
 
   @override
-  String get themeSocJapanImmigration3 => '高度人材の外国人が日本を選ばない理由は何か？どうすれば変わるか？';
+  String get themeSocJapanImmigration3 =>
+      'Why might highly skilled migrants avoid your country—and what would change their minds?';
 
   @override
   String get themeSocJapanImmigration4 =>
-      '「移民を受け入れるべき」と言いながら、自分の隣人には嫌だと感じるのはなぜか？';
+      'Supporting immigration in polls but not wanting newcomers nearby—what explains the gap?';
 
   @override
-  String get themeSocJapanImmigration5 => '少子化対策として移民を増やすことは、文化的アイデンティティを変えるか？';
+  String get themeSocJapanImmigration5 =>
+      'If immigration rises to offset low birth rates, how does national identity change—and is that avoidable?';
 
   @override
-  String get themeSocJapanImmigration6 => '「日本人らしさ」とは何か？それは守るべきものか、変わっていいものか？';
+  String get themeSocJapanImmigration6 =>
+      'What does \"national character\" mean today—preserve it, evolve it, or retire the idea?';
 
   @override
-  String get themeSocJapanImmigration7 => '外国人が多い職場で、チームとしてまとまるために何が必要か？';
+  String get themeSocJapanImmigration7 =>
+      'What helps multicultural teams actually work together—not just get hired?';
 
   @override
-  String get themeSocJapanImmigration8 => '欧米で外国人問題が国家分断につながっている。日本は同じ道をたどるか？';
+  String get themeSocJapanImmigration8 =>
+      'When immigration becomes a wedge issue, what should other countries learn from those cases?';
 
   @override
-  String get themeSocJapanImmigration9 => '外国人の土地取得を制限することに、賛成か反対か？';
+  String get themeSocJapanImmigration9 =>
+      'Restricting land purchases by non-citizens: support or oppose—and on what principle?';
 
   @override
-  String get themeSocJapanImmigration10 => '50年後の日本が多民族国家になっていたとしたら、それはよいことか？';
+  String get themeSocJapanImmigration10 =>
+      'If your country were far more multicultural in 50 years, would that be mostly positive or risky?';
 
   @override
-  String get themeSocJapanWork1 => '週4日勤務が標準になったとき、会社と個人はそれぞれ何を変える必要があるか？';
+  String get themeSocJapanWork1 =>
+      'If four-day weeks became the norm, what must employers and workers each change?';
 
   @override
-  String get themeSocJapanWork2 => '新卒一括採用・終身雇用は、今の時代に合っているか？';
+  String get themeSocJapanWork2 =>
+      'Are bulk campus hiring and long-job-tenure models still fit for purpose?';
 
   @override
-  String get themeSocJapanWork3 => '成果が同じなら、働く時間が短い人と長い人の評価は同じにすべきか？';
+  String get themeSocJapanWork3 =>
+      'Same output in fewer hours—should pay and recognition match longer-hour peers?';
 
   @override
-  String get themeSocJapanWork4 => '副業を全員に解禁すると、組織への忠誠心は下がるか？';
+  String get themeSocJapanWork4 =>
+      'If everyone can moonlight openly, does organizational loyalty still matter—and how should rules adapt?';
 
   @override
-  String get themeSocJapanWork5 => '「やりがい搾取」はなぜなくならないのか？誰が変えるべきか？';
+  String get themeSocJapanWork5 =>
+      'Passion-as-pay (\"do it for the mission\"): why does it persist—and whose job is it to end it?';
 
   @override
-  String get themeSocJapanWork6 => '上司が部下より給与が低い逆転現象は、問題か？健全か？';
+  String get themeSocJapanWork6 =>
+      'Managers earning less than star individual contributors: unfair, fine, or context-dependent?';
 
   @override
-  String get themeSocJapanWork7 => '燃え尽き症候群（バーンアウト）を防ぐ責任は、個人か？会社か？';
+  String get themeSocJapanWork7 =>
+      'Preventing burnout: primarily the employer, the individual—or genuinely shared?';
 
   @override
-  String get themeSocJapanWork8 => 'テレワークと出社、チームにとって本当にいいのはどちらか？';
+  String get themeSocJapanWork8 =>
+      'Remote vs office: where is collaboration actually better—and who gets to decide?';
 
   @override
-  String get themeSocJapanWork9 => '「会社の飲み会」は業務か？プライベートか？';
+  String get themeSocJapanWork9 =>
+      'After-work socializing with colleagues: work, culture, or a gray zone—and where should the line be?';
 
   @override
-  String get themeSocJapanWork10 => '10年後、「会社員」という働き方は主流であり続けるか？';
+  String get themeSocJapanWork10 =>
+      'In a decade, will traditional full-time employment still be the default career shape?';
 
   @override
-  String get themeSocJapanLocal1 => 'バスも電車もなくなった地方に、住み続ける権利を社会は保障すべきか？';
+  String get themeSocJapanLocal1 =>
+      'If public transit shrinks in a region, do residents still deserve guaranteed everyday mobility?';
 
   @override
-  String get themeSocJapanLocal2 => '廃校になった学校の跡地を、何に使うべきか？';
+  String get themeSocJapanLocal2 =>
+      'A school closes for lack of children—what should happen to the site?';
 
   @override
-  String get themeSocJapanLocal3 => 'リモートワークは地方創生の救世主になれるか？それとも幻想か？';
+  String get themeSocJapanLocal3 =>
+      'Can remote work revitalize smaller cities and towns, or is that oversold?';
 
   @override
-  String get themeSocJapanLocal4 => '人口が100人を切った村に、公共サービスを提供し続けるべきか？';
+  String get themeSocJapanLocal4 =>
+      'Should micro-communities of under ~100 people get the same service bundle as large cities?';
 
   @override
-  String get themeSocJapanLocal5 => '老朽化したインフラを維持するために増税することに、賛成か反対か？';
+  String get themeSocJapanLocal5 =>
+      'Pay higher taxes to keep aging infrastructure safe—worth it where you live?';
 
   @override
-  String get themeSocJapanLocal6 => '都市への人口集中は「問題」か？それとも「効率的な選択」か？';
+  String get themeSocJapanLocal6 =>
+      'Is urbanization a problem to fix—or an efficient sorting mechanism?';
 
   @override
-  String get themeSocJapanLocal7 => '地方に本社機能を移転した企業は、本当に成功できるか？';
+  String get themeSocJapanLocal7 =>
+      'For headquarters moves to smaller cities, what must be true for them to succeed at scale?';
 
   @override
-  String get themeSocJapanLocal8 => '「消滅可能性都市」というレッテルを貼ることは、地方にとってプラスかマイナスか？';
+  String get themeSocJapanLocal8 =>
+      'Labeling shrinking towns \"at risk of disappearing\": help or stigma?';
 
   @override
-  String get themeSocJapanLocal9 => 'あなたが地方移住を決断するとしたら、最低限必要な条件は何か？';
+  String get themeSocJapanLocal9 =>
+      'What minimum conditions would you need to move from a major metro to a rural or small-town area?';
 
   @override
-  String get themeSocJapanLocal10 => '地方の問題を解決する責任は、国・自治体・企業・個人のどこにあるか？';
+  String get themeSocJapanLocal10 =>
+      'Who owns fixing regional decline—national government, regions, firms, or individuals?';
 
   @override
   String valuePlayerTurn(String displayName) {
