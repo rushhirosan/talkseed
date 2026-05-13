@@ -605,10 +605,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeRandomDecideLabel => 'Decide randomly';
 
   @override
-  String get homeThemeShortSocial => 'Social issues';
-
-  @override
-  String get homeThemeShortProblem => 'Problem solving';
+  String get homeThemeShortGroupDiscussion => 'Group discussion';
 
   @override
   String get homeThemeShortValues => 'Values';
@@ -633,18 +630,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Share values and deepen team understanding';
 
   @override
-  String get deckProblemSolving => 'Problem-solving practice';
+  String get deckGroupDiscussion => 'Group discussion';
 
   @override
-  String get deckProblemSolvingDesc =>
-      'Practice structuring issues: goals, options, risks, and next steps';
-
-  @override
-  String get deckSocialIssues => 'Social issues discussion';
-
-  @override
-  String get deckSocialIssuesDesc =>
-      'Discuss contemporary topics with structure and mutual respect';
+  String get deckGroupDiscussionDesc =>
+      'Team prompts from logic and creativity to Fermi estimates, dilemmas, and contemporary social issues';
 
   @override
   String get discussionScreenTitle => 'Discussion';

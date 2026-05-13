@@ -22,13 +22,13 @@ import 'mode_selection_page.dart';
 /// 選定フェーズ（タイマーなし）→ 全員確定後に議論フェーズ（案内後にタイマー開始可）
 enum _FlowPhase { pickingTopics, discussion }
 
-/// 問題解決・社会課題デッキ用：カテゴリー別に裏向きカードを並べ、めくってお題を選ぶ
+/// グループディスカッションデッキ用：カテゴリー別に裏向きカードを並べ、めくってお題を選ぶ
 class DiscussionPromptPage extends StatefulWidget {
   final List<String> themes;
   final SessionConfig sessionConfig;
   /// AppBar タイトル（デッキ名）
   final String deckTitle;
-  /// [problemSolving] / [socialIssues] のときカテゴリー別レイアウト。null なら1列のフラットデッキ
+  /// [groupDiscussion] のときカテゴリー別レイアウト。null なら1列のフラットデッキ
   final CardDeckType? discussionDeckType;
 
   const DiscussionPromptPage({
@@ -118,8 +118,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final l10n = AppLocalizations.of(context)!;
     final cap = widget.sessionConfig.discussionPromptCap;
     final dt = widget.discussionDeckType;
-    if (dt != null &&
-        (dt == CardDeckType.problemSolving || dt == CardDeckType.socialIssues)) {
+    if (dt != null && cardDeckTypeUsesCategorizedDiscussion(dt)) {
       _groups = CardDeck.buildShuffledDiscussionCategories(
         deckType: dt,
         l10n: l10n,

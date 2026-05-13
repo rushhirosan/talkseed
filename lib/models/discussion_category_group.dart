@@ -1,4 +1,4 @@
-/// 議論デッキ（問題解決・社会課題）のカテゴリー行：見出しとその列のお題テキスト
+/// 議論デッキ（グループディスカッション）のカテゴリー行：見出しとその列のお題テキスト
 class DiscussionCategoryGroup {
   final String categoryId;
   final String title;

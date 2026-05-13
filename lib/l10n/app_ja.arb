@@ -611,8 +611,10 @@
   "@homeRandomDecideLabel": {
     "description": "案B：ランダム開始ボタン（サイコロ相当）"
   },
-  "homeThemeShortSocial": "社会課題",
-  "homeThemeShortProblem": "問題解決",
+  "homeThemeShortGroupDiscussion": "グループ議論",
+  "@homeThemeShortGroupDiscussion": {
+    "description": "案B：統合デッキ（問題解決＋社会課題）のショートラベル"
+  },
   "homeThemeShortValues": "価値観",
   "backToModeSelection": "モードを選び直す",
   "@backToModeSelection": {
@@ -632,10 +634,11 @@
   },
   "deckTeamBuilding": "価値観カード",
   "deckTeamBuildingDesc": "価値観を共有し、チームの理解を深める",
-  "deckProblemSolving": "問題解決練習カード",
-  "deckProblemSolvingDesc": "課題の整理の練習：目的・選択肢・リスク・次の一歩",
-  "deckSocialIssues": "社会課題ディスカッション",
-  "deckSocialIssuesDesc": "現代のテーマを、構造的かつ尊重し合う形で議論する",
+  "deckGroupDiscussion": "グループディスカッション",
+  "@deckGroupDiscussion": {
+    "description": "問題解決系と社会課題を統合したデッキ名"
+  },
+  "deckGroupDiscussionDesc": "論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題",
   "discussionScreenTitle": "議論モード",
   "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。",
   "discussionNextTopic": "別のお題へ",

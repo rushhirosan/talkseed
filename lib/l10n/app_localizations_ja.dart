@@ -597,10 +597,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeRandomDecideLabel => 'ランダムで決める';
 
   @override
-  String get homeThemeShortSocial => '社会課題';
-
-  @override
-  String get homeThemeShortProblem => '問題解決';
+  String get homeThemeShortGroupDiscussion => 'グループ議論';
 
   @override
   String get homeThemeShortValues => '価値観';
@@ -624,16 +621,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deckTeamBuildingDesc => '価値観を共有し、チームの理解を深める';
 
   @override
-  String get deckProblemSolving => '問題解決練習カード';
+  String get deckGroupDiscussion => 'グループディスカッション';
 
   @override
-  String get deckProblemSolvingDesc => '課題の整理の練習：目的・選択肢・リスク・次の一歩';
-
-  @override
-  String get deckSocialIssues => '社会課題ディスカッション';
-
-  @override
-  String get deckSocialIssuesDesc => '現代のテーマを、構造的かつ尊重し合う形で議論する';
+  String get deckGroupDiscussionDesc => '論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題';
 
   @override
   String get discussionScreenTitle => '議論モード';

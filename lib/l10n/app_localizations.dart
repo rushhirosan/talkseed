@@ -1214,17 +1214,11 @@ abstract class AppLocalizations {
   /// **'ランダムで決める'**
   String get homeRandomDecideLabel;
 
-  /// No description provided for @homeThemeShortSocial.
+  /// 案B：統合デッキ（問題解決＋社会課題）のショートラベル
   ///
   /// In ja, this message translates to:
-  /// **'社会課題'**
-  String get homeThemeShortSocial;
-
-  /// No description provided for @homeThemeShortProblem.
-  ///
-  /// In ja, this message translates to:
-  /// **'問題解決'**
-  String get homeThemeShortProblem;
+  /// **'グループ議論'**
+  String get homeThemeShortGroupDiscussion;
 
   /// No description provided for @homeThemeShortValues.
   ///
@@ -1268,29 +1262,17 @@ abstract class AppLocalizations {
   /// **'価値観を共有し、チームの理解を深める'**
   String get deckTeamBuildingDesc;
 
-  /// No description provided for @deckProblemSolving.
+  /// 問題解決系と社会課題を統合したデッキ名
   ///
   /// In ja, this message translates to:
-  /// **'問題解決練習カード'**
-  String get deckProblemSolving;
+  /// **'グループディスカッション'**
+  String get deckGroupDiscussion;
 
-  /// No description provided for @deckProblemSolvingDesc.
+  /// No description provided for @deckGroupDiscussionDesc.
   ///
   /// In ja, this message translates to:
-  /// **'課題の整理の練習：目的・選択肢・リスク・次の一歩'**
-  String get deckProblemSolvingDesc;
-
-  /// No description provided for @deckSocialIssues.
-  ///
-  /// In ja, this message translates to:
-  /// **'社会課題ディスカッション'**
-  String get deckSocialIssues;
-
-  /// No description provided for @deckSocialIssuesDesc.
-  ///
-  /// In ja, this message translates to:
-  /// **'現代のテーマを、構造的かつ尊重し合う形で議論する'**
-  String get deckSocialIssuesDesc;
+  /// **'論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題'**
+  String get deckGroupDiscussionDesc;
 
   /// No description provided for @discussionScreenTitle.
   ///

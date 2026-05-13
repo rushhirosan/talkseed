@@ -66,11 +66,8 @@ enum CardDeckType {
   /// チームビルディング（価値観カード風）
   teamBuilding,
 
-  /// 問題解決の型を練習するカード（ゴール・選択肢・リスク・次アクション）
-  problemSolving,
-
-  /// 現代の社会課題を議論するカード
-  socialIssues,
+  /// グループディスカッション（論理・創造・フェルミ・ジレンマ・社会課題など）
+  groupDiscussion,
 
   /// チェックイン・チェックアウト（checkin_checkout_work.json の両方）
   checkIn,
@@ -78,6 +75,10 @@ enum CardDeckType {
   /// 自己内省・1on1（self_reflection_1on1.json・軽さ×深さの3セクション）
   oneOnOne,
 }
+
+/// [DiscussionPromptPage] などでカテゴリー行レイアウトを使うデッキ
+bool cardDeckTypeUsesCategorizedDiscussion(CardDeckType? type) =>
+    type == CardDeckType.groupDiscussion;
 
 /// 仕事用カードデッキの定義
 class CardDeck {
@@ -493,9 +494,9 @@ class CardDeck {
       ],
     ),
     CardDeck(
-      type: CardDeckType.problemSolving,
-      nameBuilder: (l10n) => l10n.deckProblemSolving,
-      descriptionBuilder: (l10n) => l10n.deckProblemSolvingDesc,
+      type: CardDeckType.groupDiscussion,
+      nameBuilder: (l10n) => l10n.deckGroupDiscussion,
+      descriptionBuilder: (l10n) => l10n.deckGroupDiscussionDesc,
       themeKeys: const [
         'themeProbLogical1',
         'themeProbLogical2',
@@ -537,13 +538,6 @@ class CardDeck {
         'themeProbDilemma8',
         'themeProbDilemma9',
         'themeProbDilemma10',
-      ],
-    ),
-    CardDeck(
-      type: CardDeckType.socialIssues,
-      nameBuilder: (l10n) => l10n.deckSocialIssues,
-      descriptionBuilder: (l10n) => l10n.deckSocialIssuesDesc,
-      themeKeys: const [
         'themeSocGeo1',
         'themeSocGeo2',
         'themeSocGeo3',
@@ -669,15 +663,12 @@ class CardDeck {
 
   static List<String> discussionCategoryDisplayOrder(CardDeckType deckType) {
     switch (deckType) {
-      case CardDeckType.problemSolving:
+      case CardDeckType.groupDiscussion:
         return const [
           'prob_logical',
           'prob_creative',
           'prob_fermi',
           'prob_dilemma',
-        ];
-      case CardDeckType.socialIssues:
-        return const [
           'soc_geo',
           'soc_ai_gap',
           'soc_climate',

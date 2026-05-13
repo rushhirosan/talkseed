@@ -20,13 +20,13 @@ class SessionSetupPage extends StatefulWidget {
   final bool fromDicePage;
   /// true のとき「スタート」で ValueCardPage へ遷移（価値観カード用セッション設定）
   final bool forValueCard;
-  /// true のとき「スタート」で DiscussionPromptPage へ遷移（問題解決・社会課題デッキ）
+  /// true のとき「スタート」で DiscussionPromptPage へ遷移（グループディスカッションデッキ）
   final bool forDiscussion;
   /// forValueCard / forDiscussion 時のみ。true なら戻るで CardSettingsPage、false なら ModeSelectionPage
   final bool fromCardSettings;
   /// セッションプレビューに表示するデッキ名（forDiscussion 時に使用）
   final String? deckLabel;
-  /// 議論モード時カテゴリー別カード配置に使う（問題解決・社会課題）
+  /// 議論モード時カテゴリー別カード配置に使う（グループディスカッション）
   final CardDeckType? discussionDeckType;
 
   const SessionSetupPage({

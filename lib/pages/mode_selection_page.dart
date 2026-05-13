@@ -18,7 +18,7 @@ import 'topics_page.dart';
 import 'session_history_page.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
-/// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（価値観・問題解決・社会課題などカードデッキ）
+/// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（価値観・グループディスカッションなどカードデッキ）
 class ModeSelectionPage extends StatefulWidget {
   const ModeSelectionPage({super.key});
 
@@ -80,8 +80,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       return;
     }
 
-    if (deck.type == CardDeckType.problemSolving ||
-        deck.type == CardDeckType.socialIssues) {
+    if (deck.type == CardDeckType.groupDiscussion) {
       final themes = deck.themes(l10n);
       await PreferencesHelper.saveLastCardThemes(themes);
       if (!mounted) return;
@@ -433,21 +432,12 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                         const SizedBox(height: 12),
                         _buildThemeRow(
                           context: context,
-                          icon: Icons.psychology_alt_rounded,
+                          icon: Icons.forum_outlined,
                           iconColor: ts.deckIconProblem,
-                          label: l10n.homeThemeShortProblem,
+                          label: l10n.homeThemeShortGroupDiscussion,
                           backgroundColor: ts.rowHighlightLavender,
                           onPressed: () =>
-                              _goToWorkDeck(CardDeckType.problemSolving),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildThemeRow(
-                          context: context,
-                          icon: Icons.public_rounded,
-                          iconColor: ts.deckIconSocial,
-                          label: l10n.homeThemeShortSocial,
-                          onPressed: () =>
-                              _goToWorkDeck(CardDeckType.socialIssues),
+                              _goToWorkDeck(CardDeckType.groupDiscussion),
                         ),
                       ],
                     ),

@@ -50,9 +50,8 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
       return;
     }
 
-    // 問題解決・社会課題 → 議論モード（TopicsPage）
-    if (deck.type == CardDeckType.problemSolving ||
-        deck.type == CardDeckType.socialIssues) {
+    // グループディスカッション → 議論モード
+    if (deck.type == CardDeckType.groupDiscussion) {
       final themes = deck.themes(l10n);
       await PreferencesHelper.saveLastCardThemes(themes);
       if (!mounted) return;
@@ -132,10 +131,8 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     switch (type) {
       case CardDeckType.teamBuilding:
         return t.deckTileTeamBuilding;
-      case CardDeckType.problemSolving:
+      case CardDeckType.groupDiscussion:
         return t.deckTileProblemSolving;
-      case CardDeckType.socialIssues:
-        return t.deckTileSocialIssues;
       case CardDeckType.checkIn:
         return t.deckTileCheckIn;
       case CardDeckType.oneOnOne:
@@ -147,10 +144,8 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
     switch (type) {
       case CardDeckType.teamBuilding:
         return Icons.groups;
-      case CardDeckType.problemSolving:
-        return Icons.fact_check_outlined;
-      case CardDeckType.socialIssues:
-        return Icons.public_outlined;
+      case CardDeckType.groupDiscussion:
+        return Icons.forum_outlined;
       case CardDeckType.checkIn:
         return Icons.wb_sunny;
       case CardDeckType.oneOnOne:
