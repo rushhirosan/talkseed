@@ -656,14 +656,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get discussionSessionEndTitle => 'How this session ends';
-
-  @override
-  String get discussionSessionEndBody =>
-      'It ends after everyone has spoken once—not after you\'ve gone through every prompt.';
-
-  @override
   String get discussionDeckScopeTitle => 'Visible candidate cards';
+
+  @override
+  String get discussionThemeFilterTitle => 'Filter topics';
+
+  @override
+  String get discussionThemeFilterHint =>
+      'Tap categories to include. At least one must stay on.';
 
   @override
   String get discussionDeckScopeFull => 'Full deck (shuffled)';

@@ -406,9 +406,9 @@
       }
     }
   },
-  "discussionSessionEndTitle": "How this session ends",
-  "discussionSessionEndBody": "It ends after everyone has spoken once—not after you've gone through every prompt.",
   "discussionDeckScopeTitle": "Visible candidate cards",
+  "discussionThemeFilterTitle": "Filter topics",
+  "discussionThemeFilterHint": "Tap categories to include. At least one must stay on.",
   "discussionDeckScopeFull": "Full deck (shuffled)",
   "discussionDeckScopeTen": "10 cards (random)",
   "discussionDeckScopeSix": "6 cards (random)",

@@ -654,9 +654,9 @@
       }
     }
   },
-  "discussionSessionEndTitle": "このセッションの終わり",
-  "discussionSessionEndBody": "お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。",
   "discussionDeckScopeTitle": "表示する候補カード",
+  "discussionThemeFilterTitle": "テーマを絞る",
+  "discussionThemeFilterHint": "タップで含めるカテゴリーを選べます。最低1つはオンにしてください。",
   "discussionDeckScopeFull": "デッキ全枚（シャッフル）",
   "discussionDeckScopeTen": "10枚だけランダム",
   "discussionDeckScopeSix": "6枚だけランダム",

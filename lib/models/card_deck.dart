@@ -718,12 +718,27 @@ class CardDeck {
     }
   }
 
+  /// [deckType] のうち [categoryIds] に含まれるお題の件数（空集合なら 0）
+  static int discussionPromptCountForCategories({
+    required CardDeckType deckType,
+    required Set<String> categoryIds,
+  }) {
+    if (categoryIds.isEmpty) return 0;
+    final deck = allDecks.firstWhere((d) => d.type == deckType);
+    var n = 0;
+    for (final k in deck.themeKeys) {
+      if (categoryIds.contains(discussionCategoryIdForThemeKey(k))) n++;
+    }
+    return n;
+  }
+
   /// [discussionPromptCap] を適用したうえでシャッフルし、カテゴリー別の行に分割する
   static List<DiscussionCategoryGroup> buildShuffledDiscussionCategories({
     required CardDeckType deckType,
     required AppLocalizations l10n,
     required Random random,
     int? cap,
+    Set<String>? allowedCategoryIds,
   }) {
     final deck = allDecks.firstWhere((d) => d.type == deckType);
     final n = deck.themeKeys.length;
@@ -735,6 +750,13 @@ class CardDeck {
         _getThemeString(deck.themeKeys[i], l10n),
       ),
     );
+    if (allowedCategoryIds != null && allowedCategoryIds.isNotEmpty) {
+      pairs = pairs
+          .where((p) => allowedCategoryIds
+              .contains(discussionCategoryIdForThemeKey(p.$1)))
+          .toList();
+    }
+    if (pairs.isEmpty) return [];
     pairs.shuffle(random);
     final maxCap = cap ?? pairs.length;
     if (maxCap < pairs.length) {

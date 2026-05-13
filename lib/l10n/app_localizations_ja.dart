@@ -645,13 +645,13 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionSessionEndTitle => 'このセッションの終わり';
-
-  @override
-  String get discussionSessionEndBody => 'お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。';
-
-  @override
   String get discussionDeckScopeTitle => '表示する候補カード';
+
+  @override
+  String get discussionThemeFilterTitle => 'テーマを絞る';
+
+  @override
+  String get discussionThemeFilterHint => 'タップで含めるカテゴリーを選べます。最低1つはオンにしてください。';
 
   @override
   String get discussionDeckScopeFull => 'デッキ全枚（シャッフル）';

@@ -1304,23 +1304,23 @@ abstract class AppLocalizations {
   /// **'お題の並び · {current}/{total} · いつでもスキップOK'**
   String discussionPromptQueue(int current, int total);
 
-  /// No description provided for @discussionSessionEndTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'このセッションの終わり'**
-  String get discussionSessionEndTitle;
-
-  /// No description provided for @discussionSessionEndBody.
-  ///
-  /// In ja, this message translates to:
-  /// **'お題をすべて使い切らなくて大丈夫です。全員が一度ずつ話したら終了です。'**
-  String get discussionSessionEndBody;
-
   /// No description provided for @discussionDeckScopeTitle.
   ///
   /// In ja, this message translates to:
   /// **'表示する候補カード'**
   String get discussionDeckScopeTitle;
+
+  /// No description provided for @discussionThemeFilterTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマを絞る'**
+  String get discussionThemeFilterTitle;
+
+  /// No description provided for @discussionThemeFilterHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'タップで含めるカテゴリーを選べます。最低1つはオンにしてください。'**
+  String get discussionThemeFilterHint;
 
   /// No description provided for @discussionDeckScopeFull.
   ///

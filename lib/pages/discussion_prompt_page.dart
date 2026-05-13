@@ -119,11 +119,14 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final cap = widget.sessionConfig.discussionPromptCap;
     final dt = widget.discussionDeckType;
     if (dt != null && cardDeckTypeUsesCategorizedDiscussion(dt)) {
+      final allowed = widget.sessionConfig.discussionCategoryIds;
       _groups = CardDeck.buildShuffledDiscussionCategories(
         deckType: dt,
         l10n: l10n,
         random: _random,
         cap: cap,
+        allowedCategoryIds:
+            allowed == null ? null : Set<String>.from(allowed),
       );
     } else {
       _groups = CardDeck.buildFlatDiscussionCategories(
@@ -779,45 +782,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                decoration: BoxDecoration(
-                  color: _white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _black, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _black.withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.discussionSessionEndTitle,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: _black,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.discussionSessionEndBody,
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.4,
-                        color: _black.withOpacity(0.78),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
               if (_flowPhase == _FlowPhase.discussion &&
                   _session != null &&
                   _session!.isActive) ...[

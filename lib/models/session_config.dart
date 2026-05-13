@@ -27,7 +27,11 @@ class SessionConfig {
 
   /// 議論モードのみ: デッキから使うお題の最大枚数。null ならデッキ全枚（シャッフル後にそのまま使う）
   final int? discussionPromptCap;
-  
+
+  /// 議論モードのみ: 出題するカテゴリー ID（CardDeck の theme キーから導出される ID と同じ体系）。
+  /// null なら全カテゴリ。非 null のときはリストに含まれるカテゴリのお題だけをプールする。
+  final List<String>? discussionCategoryIds;
+
   const SessionConfig({
     this.playMode = PlayMode.dice,
     required this.playerCount,
@@ -35,6 +39,7 @@ class SessionConfig {
     this.enableTimer = true,
     this.playerNames,
     this.discussionPromptCap,
+    this.discussionCategoryIds,
   }) : assert(playerCount >= 2 && playerCount <= 10, '参加人数は2-10人の範囲で設定してください');
   
   /// デフォルト設定
@@ -44,6 +49,7 @@ class SessionConfig {
     timerDuration: Duration(minutes: 3),
     enableTimer: true,
     discussionPromptCap: null,
+    discussionCategoryIds: null,
   );
   
   /// プレイヤー名を取得（インデックスは0始まり、カスタム名がない場合はnull）
@@ -64,6 +70,8 @@ class SessionConfig {
     List<String>? playerNames,
     int? discussionPromptCap,
     bool applyDiscussionPromptCap = false,
+    List<String>? discussionCategoryIds,
+    bool applyDiscussionCategoryIds = false,
   }) {
     return SessionConfig(
       playMode: playMode ?? this.playMode,
@@ -74,6 +82,9 @@ class SessionConfig {
       discussionPromptCap: applyDiscussionPromptCap
           ? discussionPromptCap
           : this.discussionPromptCap,
+      discussionCategoryIds: applyDiscussionCategoryIds
+          ? discussionCategoryIds
+          : this.discussionCategoryIds,
     );
   }
 

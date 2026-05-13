@@ -11,6 +11,7 @@ void main() {
       expect(config.enableTimer, true);
       expect(config.playerNames, isNull);
       expect(config.discussionPromptCap, isNull);
+      expect(config.discussionCategoryIds, isNull);
     });
 
     test('getPlayerName returns null when playerNames is null', () {
@@ -98,6 +99,33 @@ void main() {
       );
       final copied = config.copyWith(playerCount: 6);
       expect(copied.discussionPromptCap, 10);
+      expect(copied.playerCount, 6);
+    });
+
+    test('copyWith updates discussionCategoryIds when applyDiscussionCategoryIds is true', () {
+      const config = SessionConfig(
+        playerCount: 4,
+        timerDuration: Duration(minutes: 3),
+      );
+      final filtered = config.copyWith(
+        applyDiscussionCategoryIds: true,
+        discussionCategoryIds: ['prob_fermi', 'soc_climate'],
+      );
+      expect(filtered.discussionCategoryIds, ['prob_fermi', 'soc_climate']);
+      final cleared = filtered.copyWith(
+        applyDiscussionCategoryIds: true,
+        discussionCategoryIds: null,
+      );
+      expect(cleared.discussionCategoryIds, isNull);
+    });
+
+    test('copyWith preserves discussionCategoryIds when applyDiscussionCategoryIds is false', () {
+      final config = SessionConfig.defaultConfig.copyWith(
+        applyDiscussionCategoryIds: true,
+        discussionCategoryIds: ['prob_logical'],
+      );
+      final copied = config.copyWith(playerCount: 6);
+      expect(copied.discussionCategoryIds, ['prob_logical']);
       expect(copied.playerCount, 6);
     });
 

@@ -48,6 +48,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
   /// 議論モードのみ: null = デッキ全枚、それ以外 = その枚数までランダム抽出（デッキより大きい場合は全枚）
   int? _discussionPromptCap;
+  /// 議論モード: 出題に含めるカテゴリー ID（全選択＝絞りなし）
+  Set<String> _discussionIncludedCategories = {};
   final List<TextEditingController> _playerNameControllers = [];
   final List<FocusNode> _playerNameFocusNodes = [];
   bool _vibrationEnabled = true;
@@ -63,6 +65,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     super.initState();
     _config = SessionConfig.defaultConfig;
     _discussionPromptCap = null;
+    if (widget.forDiscussion && widget.discussionDeckType != null) {
+      _discussionIncludedCategories = Set<String>.from(
+        CardDeck.discussionCategoryDisplayOrder(widget.discussionDeckType!),
+      );
+    }
     _initializePlayerNames();
     _loadFeedbackSettings();
   }
@@ -144,6 +151,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       playerNames: playerNames,
       applyDiscussionPromptCap: widget.forDiscussion,
       discussionPromptCap: widget.forDiscussion ? _discussionPromptCap : null,
+      applyDiscussionCategoryIds:
+          widget.forDiscussion && widget.discussionDeckType != null,
+      discussionCategoryIds: widget.forDiscussion &&
+              widget.discussionDeckType != null
+          ? _discussionCategoryIdsForSession()
+          : null,
     );
     final themes = widget.themes[PolyhedronType.cube];
     if (themes != null) {
@@ -372,6 +385,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         if (widget.forDiscussion) ...[
           SizedBox(height: sectionSpacing),
           _buildDiscussionDeckScope(l10n),
+          SizedBox(height: sectionSpacing),
+          _buildDiscussionThemeFilter(l10n),
         ],
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),
@@ -458,19 +473,115 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   String _discussionPromptPreviewSummary(AppLocalizations l10n) {
-    final deck = widget.themes[PolyhedronType.cube]?.length ?? 0;
+    final deckCount = _effectiveDiscussionPromptPoolSize();
     final cap = _discussionPromptCap;
-    if (deck <= 0) {
+    if (deckCount <= 0) {
       return l10n.discussionPreviewAllPrompts(0);
     }
     if (cap == null) {
-      return l10n.discussionPreviewAllPrompts(deck);
+      return l10n.discussionPreviewAllPrompts(deckCount);
     }
-    final use = cap < deck ? cap : deck;
-    if (use >= deck) {
-      return l10n.discussionPreviewAllPrompts(deck);
+    final use = cap < deckCount ? cap : deckCount;
+    if (use >= deckCount) {
+      return l10n.discussionPreviewAllPrompts(deckCount);
     }
-    return l10n.discussionPreviewSampledPrompts(use, deck);
+    return l10n.discussionPreviewSampledPrompts(use, deckCount);
+  }
+
+  int _effectiveDiscussionPromptPoolSize() {
+    final themes = widget.themes[PolyhedronType.cube];
+    final full = themes?.length ?? 0;
+    if (!widget.forDiscussion || widget.discussionDeckType == null) {
+      return full;
+    }
+    final dt = widget.discussionDeckType!;
+    final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
+    if (_discussionIncludedCategories.length >= allOrder.length) {
+      return full;
+    }
+    return CardDeck.discussionPromptCountForCategories(
+      deckType: dt,
+      categoryIds: _discussionIncludedCategories,
+    );
+  }
+
+  /// 全カテゴリ選択時は null（セッションは「絞りなし」）
+  List<String>? _discussionCategoryIdsForSession() {
+    final dt = widget.discussionDeckType;
+    if (dt == null) return null;
+    final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
+    if (_discussionIncludedCategories.length >= allOrder.length) {
+      return null;
+    }
+    return allOrder
+        .where((id) => _discussionIncludedCategories.contains(id))
+        .toList();
+  }
+
+  void _toggleDiscussionCategory(String categoryId) {
+    if (widget.discussionDeckType == null) return;
+    setState(() {
+      if (_discussionIncludedCategories.contains(categoryId)) {
+        if (_discussionIncludedCategories.length > 1) {
+          _discussionIncludedCategories.remove(categoryId);
+        }
+      } else {
+        _discussionIncludedCategories.add(categoryId);
+      }
+    });
+  }
+
+  Widget _buildDiscussionThemeFilter(AppLocalizations l10n) {
+    final dt = widget.discussionDeckType;
+    if (dt == null) return const SizedBox.shrink();
+    final order = CardDeck.discussionCategoryDisplayOrder(dt);
+    if (order.length <= 1) return const SizedBox.shrink();
+    const itemSpacing = 8.0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.discussionThemeFilterTitle,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: _black,
+          ),
+        ),
+        const SizedBox(height: itemSpacing),
+        Text(
+          l10n.discussionThemeFilterHint,
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.35,
+            color: _black.withOpacity(0.72),
+          ),
+        ),
+        const SizedBox(height: itemSpacing),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: order.map((id) {
+            final selected = _discussionIncludedCategories.contains(id);
+            return FilterChip(
+              label: Text(
+                CardDeck.discussionCategoryTitle(l10n, id),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: _black,
+                ),
+              ),
+              selected: selected,
+              showCheckmark: false,
+              selectedColor: _black.withOpacity(0.12),
+              side: const BorderSide(color: _black, width: 1.2),
+              onSelected: (_) => _toggleDiscussionCategory(id),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 
   Widget _buildDiscussionDeckScope(AppLocalizations l10n) {
