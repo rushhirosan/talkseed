@@ -1283,8 +1283,14 @@ abstract class AppLocalizations {
   /// No description provided for @discussionHint.
   ///
   /// In ja, this message translates to:
-  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。'**
+  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。'**
   String get discussionHint;
+
+  /// No description provided for @discussionProceedToDiscussionButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'議論に進む'**
+  String get discussionProceedToDiscussionButton;
 
   /// No description provided for @discussionNextTopic.
   ///
@@ -1493,13 +1499,13 @@ abstract class AppLocalizations {
   /// No description provided for @discussionDiscussionCardWithTimer.
   ///
   /// In ja, this message translates to:
-  /// **'タイマーは目安です。全員が一度ずつ共有したら、一緒に深掘りしてOKです。'**
+  /// **'タイマーは目安です。場のお題を軸に、みんなで自由に深掘りしてOKです。'**
   String get discussionDiscussionCardWithTimer;
 
   /// No description provided for @discussionDiscussionCardNoTimer.
   ///
   /// In ja, this message translates to:
-  /// **'全員が一度ずつ共有したら、そのまま一緒に深掘りしてOKです。'**
+  /// **'場のお題を軸に、みんなで自由に深掘りしてOKです。'**
   String get discussionDiscussionCardNoTimer;
 
   /// No description provided for @discussionEndDiscussionButton.

@@ -641,7 +641,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'Cards are grouped by category, face down. Tap a card to peek; tap it again to flip back. Confirm when you’re ready to speak to that prompt, or pick another card.';
+      'Cards are grouped by category, face down. Tap to peek; tap again to flip back. When you’re ready, use the button below to move on to the discussion.';
+
+  @override
+  String get discussionProceedToDiscussionButton => 'Continue to discussion';
 
   @override
   String get discussionNextTopic => 'Another prompt';
@@ -774,11 +777,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionDiscussionCardWithTimer =>
-      'Use the timer as a soft guide. After everyone has shared once, keep digging in together.';
+      'Use the timer as a soft guide. Use the prompts on the table as anchors and keep digging in together.';
 
   @override
   String get discussionDiscussionCardNoTimer =>
-      'After everyone has shared once using their prompts, keep the conversation going together.';
+      'Use the prompts on the table as anchors and keep the conversation going together.';
 
   @override
   String get discussionEndDiscussionButton => 'End discussion';

@@ -631,7 +631,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。このお題で話すなら確定してください。別のお題なら、ほかのカードをタップしてください。';
+      'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。';
+
+  @override
+  String get discussionProceedToDiscussionButton => '議論に進む';
 
   @override
   String get discussionNextTopic => '別のお題へ';
@@ -755,11 +758,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discussionDiscussionCardWithTimer =>
-      'タイマーは目安です。全員が一度ずつ共有したら、一緒に深掘りしてOKです。';
+      'タイマーは目安です。場のお題を軸に、みんなで自由に深掘りしてOKです。';
 
   @override
-  String get discussionDiscussionCardNoTimer =>
-      '全員が一度ずつ共有したら、そのまま一緒に深掘りしてOKです。';
+  String get discussionDiscussionCardNoTimer => '場のお題を軸に、みんなで自由に深掘りしてOKです。';
 
   @override
   String get discussionEndDiscussionButton => '議論を終了';

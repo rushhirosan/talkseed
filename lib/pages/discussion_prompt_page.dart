@@ -12,17 +12,16 @@ import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/timer_feedback.dart';
-import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import 'session_history_page.dart';
 import 'mode_selection_page.dart';
 
-/// 選定フェーズ（タイマーなし）→ 全員確定後に議論フェーズ（案内後にタイマー開始可）
+/// 選定フェーズ（カードをめくって確認）→ 議論フェーズ（案内後にタイマー開始可）。プレイヤー交代はない。
 enum _FlowPhase { pickingTopics, discussion }
 
-/// グループディスカッションデッキ用：テーマ絞り込みと枚数設定に応じた候補をカテゴリー別に並べ、めくってお題を選ぶ
+/// グループディスカッションデッキ用：テーマ絞り込みと枚数で場に並べた候補を、全員でめくって確認してから議論する
 class DiscussionPromptPage extends StatefulWidget {
   final List<String> themes;
   final SessionConfig sessionConfig;
@@ -66,10 +65,13 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   int get _totalCards =>
       _groups.fold<int>(0, (a, g) => a + g.prompts.length);
 
-  bool get _currentPlayerHasLockedTopic {
-    final s = _session;
-    if (s == null) return false;
-    return s.lastThemeByPlayerIndex.containsKey(s.currentPlayerIndex);
+  /// 場に並んだお題（履歴・一覧用）
+  List<String> _flatTopicsFromGroups() {
+    final out = <String>[];
+    for (final g in _groups) {
+      out.addAll(g.prompts);
+    }
+    return out;
   }
 
   String? get _revealedPrompt {
@@ -88,15 +90,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       }
     }
     return null;
-  }
-
-  bool get _allPlayersHaveLockedTopic {
-    final s = _session;
-    if (s == null) return false;
-    for (var i = 0; i < s.config.playerCount; i++) {
-      if (!s.lastThemeByPlayerIndex.containsKey(i)) return false;
-    }
-    return true;
   }
 
   @override
@@ -182,7 +175,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   void _onCardFaceDownTap(String cardId) {
     if (_flowPhase != _FlowPhase.pickingTopics) return;
     if (_session == null || !_session!.isActive) return;
-    if (_currentPlayerHasLockedTopic) return;
     setState(() {
       _revealedCardId = cardId;
     });
@@ -195,25 +187,21 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     _triggerVibration();
   }
 
-  void _confirmRevealedPrompt() {
+  void _proceedToDiscussionPhase() {
     if (_flowPhase != _FlowPhase.pickingTopics) return;
-    final text = _revealedPrompt;
-    if (text == null || _session == null) return;
-
+    if (_session == null || !_session!.isActive) return;
+    if (_totalCards <= 0) return;
     setState(() {
-      _session!.replaceRoundResultForCurrentTurn(text);
       _revealedCardId = null;
-      if (_allPlayersHaveLockedTopic) {
-        _flowPhase = _FlowPhase.discussion;
-        _discussionKickoffAcknowledged = false;
-        if (widget.sessionConfig.enableTimer) {
-          _timerService?.dispose();
-          _timerService = TimerService(
-            initialDuration: widget.sessionConfig.timerDuration,
-            onTick: () => setState(() {}),
-            onFinished: _onTimerFinished,
-          );
-        }
+      _flowPhase = _FlowPhase.discussion;
+      _discussionKickoffAcknowledged = false;
+      if (widget.sessionConfig.enableTimer) {
+        _timerService?.dispose();
+        _timerService = TimerService(
+          initialDuration: widget.sessionConfig.timerDuration,
+          onTick: () => setState(() {}),
+          onFinished: _onTimerFinished,
+        );
       }
     });
     _triggerVibration();
@@ -236,29 +224,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
-  String _discussionSpeakingOrderLine(AppLocalizations l10n, GameSession s) {
-    return List.generate(
-      s.config.playerCount,
-      (i) => s.playerLabelAt(i, l10n),
-    ).join(' → ');
-  }
-
-  String? _playerNameAt(GameSession s, int index) {
-    final names = s.config.playerNames;
-    if (names == null || index >= names.length) return null;
-    final n = names[index];
-    return n.isEmpty ? null : n;
-  }
-
-  void _advanceToNextPicker() {
-    if (_session == null || _flowPhase != _FlowPhase.pickingTopics) return;
-    setState(() {
-      _session!.nextPlayer();
-      _revealedCardId = null;
-    });
-    _triggerVibration();
-  }
-
   void _endDiscussionSession() {
     if (_session == null || !_session!.isActive) return;
     setState(() {
@@ -271,21 +236,12 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
 
   void _saveDiscussionRecord() {
     if (_didSaveHistory || _session == null) return;
-    final l10n = AppLocalizations.of(context)!;
     final s = _session!;
-    final selected = <String, List<String>>{};
-    for (var i = 0; i < s.config.playerCount; i++) {
-      final label = s.playerLabelAt(i, l10n);
-      selected[label] = s.rounds
-          .where((r) => r.playerIndex == i)
-          .map((r) => r.theme)
-          .toList();
-    }
-    final topicsChrono = s.rounds.map((r) => r.theme).toList();
+    final topics = _flatTopicsFromGroups();
     final record = SessionRecord.create(
       mode: 'discussion',
-      topics: topicsChrono,
-      selectedCardsByPlayer: selected,
+      topics: topics,
+      selectedCardsByPlayer: const {},
       playerCount: s.config.playerCount,
     );
     _didSaveHistory = true;
@@ -333,10 +289,48 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     );
   }
 
-  Widget _buildSessionPromptsRollup(AppLocalizations l10n) {
-    final s = _session!;
-    final lastBy = s.lastThemeByPlayerIndex;
-    final inDiscussion = _flowPhase == _FlowPhase.discussion;
+  Widget _buildGroupTopicsRollup(AppLocalizations l10n) {
+    if (_totalCards == 0) return const SizedBox.shrink();
+    var running = 0;
+    final rows = <Widget>[];
+    for (final g in _groups) {
+      for (final p in g.prompts) {
+        running++;
+        rows.add(
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: running == _totalCards ? 0 : 8,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 22,
+                  child: Text(
+                    '$running.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: _black.withOpacity(0.55),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    p,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      color: _black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -356,7 +350,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.discussionSessionPromptsTitle,
+            l10n.discussionGroupTopicsTitle,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -364,66 +358,13 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
             ),
           ),
           const SizedBox(height: 10),
-          ...List.generate(s.config.playerCount, (i) {
-            late final String lineTheme;
-            late final bool isPending;
-            if (inDiscussion) {
-              lineTheme = lastBy[i] ?? l10n.discussionTurnNotYet;
-              isPending = false;
-            } else {
-              if (i < s.currentPlayerIndex) {
-                lineTheme = lastBy[i] ?? l10n.discussionTurnNotYet;
-              } else if (i == s.currentPlayerIndex) {
-                lineTheme =
-                    lastBy[i] ?? l10n.discussionWaitingPick;
-              } else {
-                lineTheme = l10n.discussionTurnNotYet;
-              }
-              isPending = i > s.currentPlayerIndex;
-            }
-            final firstSpeakerTag = inDiscussion && i == 0
-                ? ' · ${l10n.discussionFirstSpeakerTag}'
-                : '';
-            return Padding(
-              padding: EdgeInsets.only(bottom: i == s.config.playerCount - 1 ? 0 : 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 138,
-                    child: Text(
-                      '${s.playerLabelAt(i, l10n)}$firstSpeakerTag',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: _black.withOpacity(0.88),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      lineTheme,
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.4,
-                        color: isPending ? _black.withOpacity(0.45) : _black,
-                        fontStyle: isPending ? FontStyle.italic : null,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
+          ...rows,
         ],
       ),
     );
   }
 
   Widget _buildDiscussionKickoffCard(AppLocalizations l10n, TalkShuffleTokens ts) {
-    final s = _session!;
-    final order = _discussionSpeakingOrderLine(l10n, s);
-    final first = s.playerLabelAt(0, l10n);
     final hasTimer = widget.sessionConfig.enableTimer;
     final durationLabel = hasTimer
         ? _formatDiscussionDuration(widget.sessionConfig.timerDuration)
@@ -449,7 +390,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            l10n.discussionKickoffTitle,
+            l10n.discussionGroupKickoffTitle,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 18,
@@ -459,7 +400,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           ),
           const SizedBox(height: 12),
           Text(
-            l10n.discussionKickoffSpeakingLead(order, first),
+            l10n.discussionGroupKickoffLead(_totalCards),
             style: TextStyle(
               fontSize: 15,
               height: 1.45,
@@ -502,38 +443,15 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     );
   }
 
-  Widget _buildDiscussionSpeakingHeader(AppLocalizations l10n) {
-    final s = _session!;
-    final order = _discussionSpeakingOrderLine(l10n, s);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          l10n.discussionActiveFirstSpeakerCaption,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: _black.withOpacity(0.62),
-          ),
-        ),
-        const SizedBox(height: 6),
-        PlayerIndicator(
-          currentPlayerIndex: 0,
-          totalPlayers: s.config.playerCount,
-          currentPlayerName: _playerNameAt(s, 0),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.discussionActiveOrderLine(order),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            height: 1.35,
-            color: _black.withOpacity(0.72),
-          ),
-        ),
-      ],
+  Widget _buildDiscussionActiveGroupHint(AppLocalizations l10n) {
+    return Text(
+      l10n.discussionGroupHint,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 13,
+        height: 1.35,
+        color: _black.withOpacity(0.72),
+      ),
     );
   }
 
@@ -641,7 +559,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     if (_flowPhase == _FlowPhase.discussion) {
       return _discussionKickoffAcknowledged;
     }
-    return _currentPlayerHasLockedTopic || _revealedPrompt != null;
+    return _revealedPrompt != null;
   }
 
   Widget _buildMainPromptCard(AppLocalizations l10n, TalkShuffleTokens ts) {
@@ -678,22 +596,8 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       );
     }
 
-    final sess = _session;
-    final locked = sess != null && _currentPlayerHasLockedTopic;
-    String? picked;
-    if (sess != null && _currentPlayerHasLockedTopic) {
-      picked = sess.lastThemeByPlayerIndex[sess.currentPlayerIndex];
-    }
-
-    late final String body;
-    late final String? subtitle;
-    if (locked && picked != null) {
-      body = picked;
-      subtitle = l10n.discussionLockedPick;
-    } else if (_revealedPrompt != null) {
-      body = _revealedPrompt!;
-      subtitle = null;
-    } else {
+    final revealed = _revealedPrompt;
+    if (revealed == null) {
       return const SizedBox.shrink();
     }
 
@@ -713,36 +617,15 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            body,
-            style: TextStyle(
-              fontSize: locked || _revealedPrompt != null ? 17 : 15,
-              height: 1.45,
-              fontWeight: locked || _revealedPrompt != null
-                  ? FontWeight.w600
-                  : FontWeight.w500,
-              color: locked || _revealedPrompt != null
-                  ? _black
-                  : _black.withOpacity(0.62),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          if (subtitle != null) ...[
-            const SizedBox(height: 10),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.35,
-                color: _black.withOpacity(0.55),
-              ),
-            ),
-          ],
-        ],
+      child: Text(
+        revealed,
+        style: const TextStyle(
+          fontSize: 17,
+          height: 1.45,
+          fontWeight: FontWeight.w600,
+          color: _black,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -752,10 +635,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final l10n = AppLocalizations.of(context)!;
     final ts = context.talkShuffle;
     final picking = _flowPhase == _FlowPhase.pickingTopics;
-    final pickingEnabled = picking &&
-        _session != null &&
-        _session!.isActive &&
-        !_currentPlayerHasLockedTopic;
+    final pickingEnabled = picking && _session != null && _session!.isActive;
 
     return Scaffold(
       backgroundColor: ts.scaffoldPlayWarm,
@@ -789,7 +669,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                   _buildDiscussionKickoffCard(l10n, ts),
                   const SizedBox(height: 16),
                 ] else ...[
-                  _buildDiscussionSpeakingHeader(l10n),
+                  _buildDiscussionActiveGroupHint(l10n),
                   const SizedBox(height: 12),
                   if (_session!.config.enableTimer && _timerService != null) ...[
                     TimerDisplay(
@@ -815,17 +695,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               if (picking) const SizedBox(height: 16),
               if (picking &&
                   _session != null &&
-                  _session!.isActive) ...[
-                PlayerIndicator(
-                  currentPlayerIndex: _session!.currentPlayerIndex,
-                  totalPlayers: _session!.config.playerCount,
-                  currentPlayerName: _session!.currentPlayerName,
-                ),
-                const SizedBox(height: 16),
-              ],
-              if (_totalCards > 0 &&
-                  picking &&
-                  _session != null &&
                   _session!.isActive)
                 Text(
                   '${l10n.discussionDeckScopeTitle}: $_totalCards',
@@ -836,26 +705,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                     color: _black.withOpacity(0.55),
                   ),
                 ),
-              if (picking && _session != null && _session!.isActive) ...[
-                const SizedBox(height: 12),
-                Text(
-                  l10n.promptBelongsToTurn(
-                    PlayerIndicator.turnDisplayText(
-                      l10n: l10n,
-                      currentPlayerIndex: _session!.currentPlayerIndex,
-                      totalPlayers: _session!.config.playerCount,
-                      currentPlayerName: _session!.currentPlayerName,
-                    ),
-                  ),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    height: 1.35,
-                    color: _black.withOpacity(0.82),
-                  ),
-                ),
-              ],
               if (picking) const SizedBox(height: 16),
               if (picking) ...[
                 Text(
@@ -879,13 +728,12 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               if (picking &&
                   _session != null &&
                   _session!.isActive &&
-                  _revealedCardId != null &&
-                  !_currentPlayerHasLockedTopic) ...[
-                const SizedBox(height: 8),
+                  _totalCards > 0) ...[
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _confirmRevealedPrompt,
+                    onPressed: _proceedToDiscussionPhase,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ts.brandYellow,
                       foregroundColor: _black,
@@ -896,7 +744,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                       elevation: 2,
                     ),
                     child: Text(
-                      l10n.discussionConfirmTopic,
+                      l10n.discussionProceedToDiscussionButton,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -911,49 +759,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               ],
               if (_session != null) ...[
                 const SizedBox(height: 14),
-                _buildSessionPromptsRollup(l10n),
-              ],
-              if (_session != null &&
-                  _session!.isActive &&
-                  picking) ...[
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: (_currentPlayerHasLockedTopic &&
-                          !_session!.isLastPlayer)
-                      ? _advanceToNextPicker
-                      : null,
-                  icon: const Icon(Icons.arrow_forward, color: _black),
-                  label: Text(
-                    l10n.nextPlayer,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _white,
-                    foregroundColor: _black,
-                    disabledBackgroundColor: _white.withOpacity(0.5),
-                    side: BorderSide(
-                      color: _black.withOpacity(
-                        !(_currentPlayerHasLockedTopic &&
-                                !_session!.isLastPlayer)
-                            ? 0.25
-                            : 1.0,
-                      ),
-                      width: 1.5,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 1,
-                  ),
-                ),
+                _buildGroupTopicsRollup(l10n),
               ],
               if (_session != null &&
                   _session!.isActive &&
