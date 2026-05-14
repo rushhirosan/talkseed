@@ -680,7 +680,7 @@
       }
     }
   },
-  "discussionPreviewSessionEnd": "全員で同じお題について話し合います",
+  "discussionPreviewSessionEnd": "終了: 全員が一度話したとき",
   "discussionGroupKickoffTitle": "グループディスカッションを始めよう",
   "discussionGroupKickoffLead": "全員で {count} 個のお題について話し合います。",
   "@discussionGroupKickoffLead": {

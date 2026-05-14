@@ -1361,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionPreviewSessionEnd.
   ///
   /// In ja, this message translates to:
-  /// **'全員で同じお題について話し合います'**
+  /// **'終了: 全員が一度話したとき'**
   String get discussionPreviewSessionEnd;
 
   /// No description provided for @discussionGroupKickoffTitle.

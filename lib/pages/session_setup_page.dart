@@ -46,7 +46,7 @@ class SessionSetupPage extends StatefulWidget {
 
 class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
-  /// 議論モードのみ: null = デッキ全枚、それ以外 = その枚数までランダム抽出（デッキより大きい場合は全枚）
+  /// 議論モードのみ: テーマ絞り込みのあと場に出す候補カードの枚数。null = 全枚（シャッフル）、それ以外はその枚数までランダム抽出
   int? _discussionPromptCap;
   /// 議論モード: 出題に含めるカテゴリー ID（全選択＝絞りなし）
   Set<String> _discussionIncludedCategories = {};
@@ -386,9 +386,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         ],
         if (widget.forDiscussion) ...[
           SizedBox(height: sectionSpacing),
-          _buildDiscussionDeckScope(l10n),
-          SizedBox(height: sectionSpacing),
           _buildDiscussionThemeFilter(l10n),
+          SizedBox(height: sectionSpacing),
+          _buildDiscussionDeckScope(l10n),
         ],
         if (compact) const Spacer(),
         SizedBox(height: sectionSpacing),

@@ -689,7 +689,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionPreviewSessionEnd =>
-      'Discuss the same prompts together as a group';
+      'Ends when everyone has spoken once';
 
   @override
   String get discussionGroupKickoffTitle => 'Let\'s start the group discussion';

@@ -432,7 +432,7 @@
       }
     }
   },
-  "discussionPreviewSessionEnd": "Discuss the same prompts together as a group",
+  "discussionPreviewSessionEnd": "Ends when everyone has spoken once",
   "discussionGroupKickoffTitle": "Let's start the group discussion",
   "discussionGroupKickoffLead": "Discuss {count} prompts together as a group.",
   "@discussionGroupKickoffLead": {

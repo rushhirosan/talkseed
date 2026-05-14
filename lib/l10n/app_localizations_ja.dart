@@ -676,7 +676,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionPreviewSessionEnd => '全員で同じお題について話し合います';
+  String get discussionPreviewSessionEnd => '終了: 全員が一度話したとき';
 
   @override
   String get discussionGroupKickoffTitle => 'グループディスカッションを始めよう';
