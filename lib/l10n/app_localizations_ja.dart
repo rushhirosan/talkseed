@@ -637,6 +637,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get discussionProceedToDiscussionButton => '議論に進む';
 
   @override
+  String discussionPerCategoryOption(int n) {
+    return '各$n枚';
+  }
+
+  @override
+  String discussionPreviewPerCategory(int perCat, int total) {
+    return '各カテゴリー最大$perCat枚 · 卓は合計$total枚まで';
+  }
+
+  @override
+  String get discussionPreviewNeedCategorySelection =>
+      'カテゴリーを1つ以上選ぶと、ここに枚数の目安が表示されます';
+
+  @override
+  String get discussionSelectAtLeastOneCategory => 'カテゴリーを1つ以上選んでください';
+
+  @override
+  String discussionTableSummary(int perCat, int total) {
+    return '各カテゴリー最大$perCat枚 · 卓$total枚';
+  }
+
+  @override
+  String discussionTotalCardsOnTable(int n) {
+    return 'お題 $n 枚';
+  }
+
+  @override
   String get discussionNextTopic => '別のお題へ';
 
   @override
@@ -648,13 +675,14 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => '話し合うテーマの数';
+  String get discussionDeckScopeTitle => '各カテゴリーの枚数';
 
   @override
   String get discussionThemeFilterTitle => 'テーマを絞る';
 
   @override
-  String get discussionThemeFilterHint => 'タップで含めるカテゴリーを選べます。最低1つはオンにしてください。';
+  String get discussionThemeFilterHint =>
+      '卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。';
 
   @override
   String get discussionDeckScopeFull => 'デッキ全枚（シャッフル）';

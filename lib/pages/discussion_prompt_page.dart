@@ -112,14 +112,22 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final cap = widget.sessionConfig.discussionPromptCap;
     final dt = widget.discussionDeckType;
     if (dt != null && cardDeckTypeUsesCategorizedDiscussion(dt)) {
-      final allowed = widget.sessionConfig.discussionCategoryIds;
-      _groups = CardDeck.buildShuffledDiscussionCategories(
+      final raw = widget.sessionConfig.discussionCategoryIds;
+      final per = widget.sessionConfig.discussionPromptsPerCategory ?? 1;
+      final Set<String>? allowed;
+      if (raw == null) {
+        allowed = null;
+      } else if (raw.isEmpty) {
+        allowed = {};
+      } else {
+        allowed = Set<String>.from(raw);
+      }
+      _groups = CardDeck.buildShuffledDiscussionCategoriesPerCategory(
         deckType: dt,
         l10n: l10n,
         random: _random,
-        cap: cap,
-        allowedCategoryIds:
-            allowed == null ? null : Set<String>.from(allowed),
+        promptsPerCategory: per,
+        allowedCategoryIds: allowed,
       );
     } else {
       _groups = CardDeck.buildFlatDiscussionCategories(
@@ -286,81 +294,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     }
     Navigator.of(context).pushReplacement(
       RouteTransitions.backRoute(page: const ModeSelectionPage()),
-    );
-  }
-
-  Widget _buildGroupTopicsRollup(AppLocalizations l10n) {
-    if (_totalCards == 0) return const SizedBox.shrink();
-    var running = 0;
-    final rows = <Widget>[];
-    for (final g in _groups) {
-      for (final p in g.prompts) {
-        running++;
-        rows.add(
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: running == _totalCards ? 0 : 8,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 22,
-                  child: Text(
-                    '$running.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: _black.withOpacity(0.55),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    p,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      height: 1.4,
-                      color: _black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    }
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: _white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _black, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: _black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.discussionGroupTopicsTitle,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: _black,
-            ),
-          ),
-          const SizedBox(height: 10),
-          ...rows,
-        ],
-      ),
     );
   }
 
@@ -695,9 +628,19 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               if (picking) const SizedBox(height: 16),
               if (picking &&
                   _session != null &&
-                  _session!.isActive)
+                  _session!.isActive &&
+                  _totalCards > 0)
                 Text(
-                  '${l10n.discussionDeckScopeTitle}: $_totalCards',
+                  widget.discussionDeckType != null &&
+                          cardDeckTypeUsesCategorizedDiscussion(
+                            widget.discussionDeckType!,
+                          )
+                      ? l10n.discussionTableSummary(
+                          widget.sessionConfig.discussionPromptsPerCategory ??
+                              1,
+                          _totalCards,
+                        )
+                      : l10n.discussionTotalCardsOnTable(_totalCards),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
@@ -756,10 +699,6 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               if (_showMainPromptCard) ...[
                 const SizedBox(height: 16),
                 _buildMainPromptCard(l10n, ts),
-              ],
-              if (_session != null) ...[
-                const SizedBox(height: 14),
-                _buildGroupTopicsRollup(l10n),
               ],
               if (_session != null &&
                   _session!.isActive &&

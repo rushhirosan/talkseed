@@ -1,4 +1,4 @@
-import 'dart:math' show Random;
+import 'dart:math' show Random, min;
 
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
@@ -731,6 +731,82 @@ class CardDeck {
       if (categoryIds.contains(discussionCategoryIdForThemeKey(k))) n++;
     }
     return n;
+  }
+
+  /// [categoryId] に属するお題の件数
+  static int discussionPromptCountInCategory({
+    required CardDeckType deckType,
+    required String categoryId,
+  }) {
+    final deck = allDecks.firstWhere((d) => d.type == deckType);
+    var n = 0;
+    for (final k in deck.themeKeys) {
+      if (discussionCategoryIdForThemeKey(k) == categoryId) n++;
+    }
+    return n;
+  }
+
+  /// 各カテゴリーから最大 [promptsPerCategory] 枚ずつ取るとしたときの、卓に載るお題の合計枚数（上限）
+  static int discussionMaxCardsWithPerCategoryLimit({
+    required CardDeckType deckType,
+    required Set<String> categoryIds,
+    required int promptsPerCategory,
+  }) {
+    if (categoryIds.isEmpty || promptsPerCategory <= 0) return 0;
+    var sum = 0;
+    for (final id in categoryIds) {
+      final c = discussionPromptCountInCategory(
+        deckType: deckType,
+        categoryId: id,
+      );
+      if (c <= 0) continue;
+      sum += min(promptsPerCategory, c);
+    }
+    return sum;
+  }
+
+  /// 選んだカテゴリーごとに [promptsPerCategory] 枚までランダム抽出し、カテゴリー行に分割する。
+  /// [allowedCategoryIds] が null のときは全カテゴリ。空集合のときは行なし。
+  static List<DiscussionCategoryGroup> buildShuffledDiscussionCategoriesPerCategory({
+    required CardDeckType deckType,
+    required AppLocalizations l10n,
+    required Random random,
+    required int promptsPerCategory,
+    Set<String>? allowedCategoryIds,
+  }) {
+    if (promptsPerCategory <= 0) return [];
+    final deck = allDecks.firstWhere((d) => d.type == deckType);
+    final order = discussionCategoryDisplayOrder(deckType);
+    final List<String> categories;
+    if (allowedCategoryIds == null) {
+      categories = order.toList();
+    } else if (allowedCategoryIds.isEmpty) {
+      return [];
+    } else {
+      categories = order.where(allowedCategoryIds.contains).toList();
+    }
+    final out = <DiscussionCategoryGroup>[];
+    for (final catId in categories) {
+      final keys = <String>[];
+      for (final k in deck.themeKeys) {
+        if (discussionCategoryIdForThemeKey(k) == catId) keys.add(k);
+      }
+      if (keys.isEmpty) continue;
+      keys.shuffle(random);
+      final take = min(promptsPerCategory, keys.length);
+      final prompts = keys
+          .sublist(0, take)
+          .map((k) => _getThemeString(k, l10n))
+          .toList();
+      out.add(
+        DiscussionCategoryGroup(
+          categoryId: catId,
+          title: discussionCategoryTitle(l10n, catId),
+          prompts: prompts,
+        ),
+      );
+    }
+    return out;
   }
 
   /// [discussionPromptCap] を適用したうえでシャッフルし、カテゴリー別の行に分割する

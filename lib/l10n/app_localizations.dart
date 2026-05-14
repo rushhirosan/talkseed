@@ -1292,6 +1292,42 @@ abstract class AppLocalizations {
   /// **'議論に進む'**
   String get discussionProceedToDiscussionButton;
 
+  /// No description provided for @discussionPerCategoryOption.
+  ///
+  /// In ja, this message translates to:
+  /// **'各{n}枚'**
+  String discussionPerCategoryOption(int n);
+
+  /// No description provided for @discussionPreviewPerCategory.
+  ///
+  /// In ja, this message translates to:
+  /// **'各カテゴリー最大{perCat}枚 · 卓は合計{total}枚まで'**
+  String discussionPreviewPerCategory(int perCat, int total);
+
+  /// No description provided for @discussionPreviewNeedCategorySelection.
+  ///
+  /// In ja, this message translates to:
+  /// **'カテゴリーを1つ以上選ぶと、ここに枚数の目安が表示されます'**
+  String get discussionPreviewNeedCategorySelection;
+
+  /// No description provided for @discussionSelectAtLeastOneCategory.
+  ///
+  /// In ja, this message translates to:
+  /// **'カテゴリーを1つ以上選んでください'**
+  String get discussionSelectAtLeastOneCategory;
+
+  /// No description provided for @discussionTableSummary.
+  ///
+  /// In ja, this message translates to:
+  /// **'各カテゴリー最大{perCat}枚 · 卓{total}枚'**
+  String discussionTableSummary(int perCat, int total);
+
+  /// No description provided for @discussionTotalCardsOnTable.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題 {n} 枚'**
+  String discussionTotalCardsOnTable(int n);
+
   /// No description provided for @discussionNextTopic.
   ///
   /// In ja, this message translates to:
@@ -1313,7 +1349,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionDeckScopeTitle.
   ///
   /// In ja, this message translates to:
-  /// **'話し合うテーマの数'**
+  /// **'各カテゴリーの枚数'**
   String get discussionDeckScopeTitle;
 
   /// No description provided for @discussionThemeFilterTitle.
@@ -1325,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionThemeFilterHint.
   ///
   /// In ja, this message translates to:
-  /// **'タップで含めるカテゴリーを選べます。最低1つはオンにしてください。'**
+  /// **'卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。'**
   String get discussionThemeFilterHint;
 
   /// No description provided for @discussionDeckScopeFull.

@@ -642,6 +642,46 @@
   "discussionScreenTitle": "議論モード",
   "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。",
   "discussionProceedToDiscussionButton": "議論に進む",
+  "discussionPerCategoryOption": "各{n}枚",
+  "@discussionPerCategoryOption": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewPerCategory": "各カテゴリー最大{perCat}枚 · 卓は合計{total}枚まで",
+  "@discussionPreviewPerCategory": {
+    "placeholders": {
+      "perCat": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewNeedCategorySelection": "カテゴリーを1つ以上選ぶと、ここに枚数の目安が表示されます",
+  "discussionSelectAtLeastOneCategory": "カテゴリーを1つ以上選んでください",
+  "discussionTableSummary": "各カテゴリー最大{perCat}枚 · 卓{total}枚",
+  "@discussionTableSummary": {
+    "placeholders": {
+      "perCat": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalCardsOnTable": "お題 {n} 枚",
+  "@discussionTotalCardsOnTable": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "discussionNextTopic": "別のお題へ",
   "discussionNextTopicHelp": "別の切り口がほしくなったら（任意）",
   "discussionPromptQueue": "お題の並び · {current}/{total} · いつでもスキップOK",
@@ -655,9 +695,9 @@
       }
     }
   },
-  "discussionDeckScopeTitle": "話し合うテーマの数",
+  "discussionDeckScopeTitle": "各カテゴリーの枚数",
   "discussionThemeFilterTitle": "テーマを絞る",
-  "discussionThemeFilterHint": "タップで含めるカテゴリーを選べます。最低1つはオンにしてください。",
+  "discussionThemeFilterHint": "卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。",
   "discussionDeckScopeFull": "デッキ全枚（シャッフル）",
   "discussionDeckScopeTen": "10枚だけランダム",
   "discussionDeckScopeSix": "6枚だけランダム",

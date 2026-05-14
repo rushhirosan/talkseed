@@ -394,6 +394,46 @@
   "discussionScreenTitle": "Discussion",
   "discussionHint": "Cards are grouped by category, face down. Tap to peek; tap again to flip back. When you’re ready, use the button below to move on to the discussion.",
   "discussionProceedToDiscussionButton": "Continue to discussion",
+  "discussionPerCategoryOption": "{n} each",
+  "@discussionPerCategoryOption": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewPerCategory": "Up to {perCat} per category · up to {total} cards on the table",
+  "@discussionPreviewPerCategory": {
+    "placeholders": {
+      "perCat": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPreviewNeedCategorySelection": "Select at least one category to see how many cards will appear.",
+  "discussionSelectAtLeastOneCategory": "Select at least one category to start.",
+  "discussionTableSummary": "Up to {perCat} per category · {total} cards on the table",
+  "@discussionTableSummary": {
+    "placeholders": {
+      "perCat": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalCardsOnTable": "{n} prompt(s) on the table",
+  "@discussionTotalCardsOnTable": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "discussionNextTopic": "Another prompt",
   "discussionNextTopicHelp": "Optional: switch when you want a new angle",
   "discussionPromptQueue": "Prompt queue · {current}/{total} · skip anytime",
@@ -407,9 +447,9 @@
       }
     }
   },
-  "discussionDeckScopeTitle": "Number of prompts to discuss",
+  "discussionDeckScopeTitle": "Cards per category",
   "discussionThemeFilterTitle": "Filter topics",
-  "discussionThemeFilterHint": "Tap categories to include. At least one must stay on.",
+  "discussionThemeFilterHint": "Turn on the categories you want on the table. You need at least one on to start.",
   "discussionDeckScopeFull": "Full deck (shuffled)",
   "discussionDeckScopeTen": "10 cards (random)",
   "discussionDeckScopeSix": "6 cards (random)",

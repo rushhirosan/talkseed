@@ -11,6 +11,7 @@ void main() {
       expect(config.enableTimer, true);
       expect(config.playerNames, isNull);
       expect(config.discussionPromptCap, isNull);
+      expect(config.discussionPromptsPerCategory, isNull);
       expect(config.discussionCategoryIds, isNull);
     });
 
@@ -73,6 +74,33 @@ void main() {
       expect(copied.playMode, config.playMode);
       expect(copied.timerDuration, config.timerDuration);
       expect(copied.enableTimer, config.enableTimer);
+    });
+
+    test('copyWith updates discussionPromptsPerCategory when apply flag is true', () {
+      const config = SessionConfig(
+        playerCount: 4,
+        timerDuration: Duration(minutes: 3),
+      );
+      final withPer = config.copyWith(
+        applyDiscussionPromptsPerCategory: true,
+        discussionPromptsPerCategory: 3,
+      );
+      expect(withPer.discussionPromptsPerCategory, 3);
+      final cleared = withPer.copyWith(
+        applyDiscussionPromptsPerCategory: true,
+        discussionPromptsPerCategory: null,
+      );
+      expect(cleared.discussionPromptsPerCategory, isNull);
+    });
+
+    test('copyWith preserves discussionPromptsPerCategory when apply flag is false', () {
+      final config = SessionConfig.defaultConfig.copyWith(
+        applyDiscussionPromptsPerCategory: true,
+        discussionPromptsPerCategory: 5,
+      );
+      final copied = config.copyWith(playerCount: 6);
+      expect(copied.discussionPromptsPerCategory, 5);
+      expect(copied.playerCount, 6);
     });
 
     test('copyWith updates discussionPromptCap when applyDiscussionPromptCap is true', () {

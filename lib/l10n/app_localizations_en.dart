@@ -647,6 +647,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discussionProceedToDiscussionButton => 'Continue to discussion';
 
   @override
+  String discussionPerCategoryOption(int n) {
+    return '$n each';
+  }
+
+  @override
+  String discussionPreviewPerCategory(int perCat, int total) {
+    return 'Up to $perCat per category · up to $total cards on the table';
+  }
+
+  @override
+  String get discussionPreviewNeedCategorySelection =>
+      'Select at least one category to see how many cards will appear.';
+
+  @override
+  String get discussionSelectAtLeastOneCategory =>
+      'Select at least one category to start.';
+
+  @override
+  String discussionTableSummary(int perCat, int total) {
+    return 'Up to $perCat per category · $total cards on the table';
+  }
+
+  @override
+  String discussionTotalCardsOnTable(int n) {
+    return '$n prompt(s) on the table';
+  }
+
+  @override
   String get discussionNextTopic => 'Another prompt';
 
   @override
@@ -659,14 +687,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => 'Number of prompts to discuss';
+  String get discussionDeckScopeTitle => 'Cards per category';
 
   @override
   String get discussionThemeFilterTitle => 'Filter topics';
 
   @override
   String get discussionThemeFilterHint =>
-      'Tap categories to include. At least one must stay on.';
+      'Turn on the categories you want on the table. You need at least one on to start.';
 
   @override
   String get discussionDeckScopeFull => 'Full deck (shuffled)';

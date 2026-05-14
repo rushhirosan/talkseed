@@ -46,9 +46,9 @@ class SessionSetupPage extends StatefulWidget {
 
 class _SessionSetupPageState extends State<SessionSetupPage> {
   late SessionConfig _config;
-  /// 議論モードのみ: テーマ絞り込みのあと場に出す候補カードの枚数。null = 全枚（シャッフル）、それ以外はその枚数までランダム抽出
-  int? _discussionPromptCap;
-  /// 議論モード: 出題に含めるカテゴリー ID（全選択＝絞りなし）
+  /// 議論モードのみ: 選んだ各カテゴリーから卓に出す枚数（カテゴリー内ランダム）
+  int _discussionPromptsPerCategory = 1;
+  /// 議論モード: 卓に出すカテゴリー（空＝未選択。スタート時は1つ以上必須）
   Set<String> _discussionIncludedCategories = {};
   final List<TextEditingController> _playerNameControllers = [];
   final List<FocusNode> _playerNameFocusNodes = [];
@@ -64,14 +64,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void initState() {
     super.initState();
     _config = SessionConfig.defaultConfig;
-    // グループディスカッションは「設定で絞った N 枚を全員で話す」運用なので、
-    // デフォルトは深掘りしやすい 3 枚にしておく（全枚は意図的に選んだときだけ使う）
-    _discussionPromptCap = widget.forDiscussion ? 3 : null;
-    if (widget.forDiscussion && widget.discussionDeckType != null) {
-      _discussionIncludedCategories = Set<String>.from(
-        CardDeck.discussionCategoryDisplayOrder(widget.discussionDeckType!),
-      );
-    }
+    _discussionPromptsPerCategory = 1;
+    _discussionIncludedCategories = {};
     _initializePlayerNames();
     _loadFeedbackSettings();
   }
@@ -144,6 +138,16 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   void _startSession() {
+    final l10n = AppLocalizations.of(context)!;
+    if (widget.forDiscussion && widget.discussionDeckType != null) {
+      if (_discussionIncludedCategories.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.discussionSelectAtLeastOneCategory)),
+        );
+        return;
+      }
+    }
+
     final playerNames = List.generate(
       _config.playerCount,
       (i) => _playerNameControllers[i].text.trim(),
@@ -152,7 +156,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     final finalConfig = _config.copyWith(
       playerNames: playerNames,
       applyDiscussionPromptCap: widget.forDiscussion,
-      discussionPromptCap: widget.forDiscussion ? _discussionPromptCap : null,
+      discussionPromptCap: null,
+      applyDiscussionPromptsPerCategory: widget.forDiscussion,
+      discussionPromptsPerCategory:
+          widget.forDiscussion ? _discussionPromptsPerCategory : null,
       applyDiscussionCategoryIds:
           widget.forDiscussion && widget.discussionDeckType != null,
       discussionCategoryIds: widget.forDiscussion &&
@@ -176,7 +183,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         ),
       );
     } else if (widget.forDiscussion && themes != null) {
-      final l10n = AppLocalizations.of(context)!;
       Navigator.of(context).push(
         RouteTransitions.forwardRoute(
           page: DiscussionPromptPage(
@@ -475,43 +481,36 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   String _discussionPromptPreviewSummary(AppLocalizations l10n) {
-    final deckCount = _effectiveDiscussionPromptPoolSize();
-    final cap = _discussionPromptCap;
-    if (deckCount <= 0) {
-      return l10n.discussionPreviewAllPrompts(0);
-    }
-    if (cap == null) {
-      return l10n.discussionPreviewAllPrompts(deckCount);
-    }
-    final use = cap < deckCount ? cap : deckCount;
-    if (use >= deckCount) {
-      return l10n.discussionPreviewAllPrompts(deckCount);
-    }
-    return l10n.discussionPreviewSampledPrompts(use, deckCount);
-  }
-
-  int _effectiveDiscussionPromptPoolSize() {
-    final themes = widget.themes[PolyhedronType.cube];
-    final full = themes?.length ?? 0;
     if (!widget.forDiscussion || widget.discussionDeckType == null) {
-      return full;
+      return '';
     }
     final dt = widget.discussionDeckType!;
-    final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
-    if (_discussionIncludedCategories.length >= allOrder.length) {
-      return full;
+    if (_discussionIncludedCategories.isEmpty) {
+      return l10n.discussionPreviewNeedCategorySelection;
     }
-    return CardDeck.discussionPromptCountForCategories(
+    final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
+    final ids = _discussionIncludedCategories.length >= allOrder.length
+        ? allOrder.toSet()
+        : Set<String>.from(_discussionIncludedCategories);
+    final total = CardDeck.discussionMaxCardsWithPerCategoryLimit(
       deckType: dt,
-      categoryIds: _discussionIncludedCategories,
+      categoryIds: ids,
+      promptsPerCategory: _discussionPromptsPerCategory,
+    );
+    return l10n.discussionPreviewPerCategory(
+      _discussionPromptsPerCategory,
+      total,
     );
   }
 
-  /// 全カテゴリ選択時は null（セッションは「絞りなし」）
+  /// 全カテゴリ選択時は null（セッションは「絞りなし」）。未選択の [] は明示的に空
   List<String>? _discussionCategoryIdsForSession() {
     final dt = widget.discussionDeckType;
     if (dt == null) return null;
     final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
+    if (_discussionIncludedCategories.isEmpty) {
+      return [];
+    }
     if (_discussionIncludedCategories.length >= allOrder.length) {
       return null;
     }
@@ -524,9 +523,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     if (widget.discussionDeckType == null) return;
     setState(() {
       if (_discussionIncludedCategories.contains(categoryId)) {
-        if (_discussionIncludedCategories.length > 1) {
-          _discussionIncludedCategories.remove(categoryId);
-        }
+        _discussionIncludedCategories.remove(categoryId);
       } else {
         _discussionIncludedCategories.add(categoryId);
       }
@@ -611,16 +608,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ),
         ),
         const SizedBox(height: itemSpacing),
-        _buildDropdown<int?>(
-          value: _discussionPromptCap,
-          items: const [null, 10, 6, 3],
-          labelBuilder: (v) {
-            if (v == null) return l10n.discussionDeckScopeFull;
-            if (v == 10) return l10n.discussionDeckScopeTen;
-            if (v == 6) return l10n.discussionDeckScopeSix;
-            return l10n.discussionDeckScopeThree;
-          },
-          onChanged: (v) => setState(() => _discussionPromptCap = v),
+        _buildDropdown<int>(
+          value: _discussionPromptsPerCategory,
+          items: const [1, 2, 3, 5, 10],
+          labelBuilder: (v) => l10n.discussionPerCategoryOption(v),
+          onChanged: (v) =>
+              v != null ? setState(() => _discussionPromptsPerCategory = v) : null,
         ),
       ],
     );
