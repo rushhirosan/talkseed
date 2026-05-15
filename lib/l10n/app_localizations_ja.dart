@@ -597,7 +597,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeRandomDecideLabel => 'ランダムで決める';
 
   @override
-  String get homeThemeShortGroupDiscussion => 'グループ議論';
+  String get homeThemeShortGroupDiscussion => 'グループディスカッション';
 
   @override
   String get homeThemeShortValues => '価値観';

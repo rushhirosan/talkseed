@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// 案B：統合デッキ（問題解決＋社会課題）のショートラベル
   ///
   /// In ja, this message translates to:
-  /// **'グループ議論'**
+  /// **'グループディスカッション'**
   String get homeThemeShortGroupDiscussion;
 
   /// No description provided for @homeThemeShortValues.

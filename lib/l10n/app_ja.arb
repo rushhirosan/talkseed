@@ -611,7 +611,7 @@
   "@homeRandomDecideLabel": {
     "description": "案B：ランダム開始ボタン（サイコロ相当）"
   },
-  "homeThemeShortGroupDiscussion": "グループ議論",
+  "homeThemeShortGroupDiscussion": "グループディスカッション",
   "@homeThemeShortGroupDiscussion": {
     "description": "案B：統合デッキ（問題解決＋社会課題）のショートラベル"
   },
