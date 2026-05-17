@@ -362,11 +362,29 @@ abstract class AppLocalizations {
   /// **'話すテーマを選ぼう'**
   String get yourThemes;
 
-  /// テーマ候補エリアの説明文
+  /// テーマ候補エリアの説明文（Web・広い画面）
   ///
   /// In ja, this message translates to:
   /// **'画面左にドラッグ'**
   String get useVariantsToChooseTheme;
+
+  /// テーマ候補エリアの説明文（モバイル）
+  ///
+  /// In ja, this message translates to:
+  /// **'入れ替えたいテーマをタップ → 下の候補をタップ'**
+  String get themeTapToReplaceHint;
+
+  /// モバイルでテーマ面を手入力するヒント
+  ///
+  /// In ja, this message translates to:
+  /// **'長押しで自分で入力'**
+  String get themeLongPressToEdit;
+
+  /// 候補タップ時に面が未選択のとき
+  ///
+  /// In ja, this message translates to:
+  /// **'先に入れ替えたいテーマをタップしてください'**
+  String get themeSelectFaceFirst;
 
   /// No description provided for @themeSurprised.
   ///

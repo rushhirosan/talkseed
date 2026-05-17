@@ -154,6 +154,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get useVariantsToChooseTheme => '画面左にドラッグ';
 
   @override
+  String get themeTapToReplaceHint => '入れ替えたいテーマをタップ → 下の候補をタップ';
+
+  @override
+  String get themeLongPressToEdit => '長押しで自分で入力';
+
+  @override
+  String get themeSelectFaceFirst => '先に入れ替えたいテーマをタップしてください';
+
+  @override
   String get themeSurprised => 'びっくりしたこと';
 
   @override

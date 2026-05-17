@@ -155,6 +155,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useVariantsToChooseTheme => 'Drag to the left';
 
   @override
+  String get themeTapToReplaceHint =>
+      'Tap a theme above, then tap a candidate below';
+
+  @override
+  String get themeLongPressToEdit => 'Long press a theme to type your own';
+
+  @override
+  String get themeSelectFaceFirst => 'Tap a theme above first';
+
+  @override
   String get themeSurprised => 'Something surprising';
 
   @override

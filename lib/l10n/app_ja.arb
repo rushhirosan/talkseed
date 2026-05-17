@@ -189,7 +189,19 @@
   },
   "useVariantsToChooseTheme": "画面左にドラッグ",
   "@useVariantsToChooseTheme": {
-    "description": "テーマ候補エリアの説明文"
+    "description": "テーマ候補エリアの説明文（Web・広い画面）"
+  },
+  "themeTapToReplaceHint": "入れ替えたいテーマをタップ → 下の候補をタップ",
+  "@themeTapToReplaceHint": {
+    "description": "テーマ候補エリアの説明文（モバイル）"
+  },
+  "themeLongPressToEdit": "長押しで自分で入力",
+  "@themeLongPressToEdit": {
+    "description": "モバイルでテーマ面を手入力するヒント"
+  },
+  "themeSelectFaceFirst": "先に入れ替えたいテーマをタップしてください",
+  "@themeSelectFaceFirst": {
+    "description": "候補タップ時に面が未選択のとき"
   },
   "themeSurprised": "びっくりしたこと",
   "themeFutureDream": "将来の夢",

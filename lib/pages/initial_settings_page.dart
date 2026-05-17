@@ -45,6 +45,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   int? _lastDroppedIndex;
   /// 編集中の面インデックス（null のときは右側と同じ Center+Text で表示）
   int? _focusedFaceIndex;
+  /// モバイル: 候補タップで入れ替える対象の面（初期は1面目を選択）
+  int? _selectedFaceIndex = 0;
   final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
   /// ensureVisible の重複呼び出し防止用
   bool _ensureVisibleScheduled = false;
@@ -265,9 +267,13 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
+  bool _isMobileTapMode(BuildContext context) =>
+      MediaQuery.sizeOf(context).width < 560;
+
   Widget _buildSettingsBody(AppLocalizations l10n, EdgeInsets panelPadding) {
     final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
     final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
+    final mobileTap = _isMobileTapMode(context);
 
     if (keyboardVisible) {
       final slotWidth = _panelContentWidth(context, twoColumn: false);
@@ -282,8 +288,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               _buildThemeTitleSection(),
               const SizedBox(height: 8),
               Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
+              if (mobileTap) ...[
+                const SizedBox(height: 4),
+                Text(l10n.themeLongPressToEdit, style: _hintStyle(fontSize: 12)),
+              ],
               const SizedBox(height: 32),
-              _buildFaceColumn(slotWidth),
+              _buildFaceColumn(slotWidth, mobileTapMode: mobileTap),
               const SizedBox(height: 12),
               _buildRandomResetRow(l10n),
               const SizedBox(height: 12),
@@ -292,6 +302,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               _buildThemeCandidatesSection(
                 slotWidth,
                 expandGrid: false,
+                mobileTapMode: mobileTap,
               ),
             ],
           ),
@@ -323,6 +334,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           l10n,
                           slotWidth: panelWidth,
                           scrollable: false,
+                          mobileTapMode: true,
                         ),
                         const SizedBox(height: 12),
                         ..._buildPlayButtons(l10n),
@@ -335,6 +347,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                     child: _buildThemeCandidatesSection(
                       panelWidth,
                       expandGrid: false,
+                      mobileTapMode: true,
                     ),
                   ),
                 ],
@@ -397,6 +410,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     AppLocalizations l10n, {
     required double slotWidth,
     bool scrollable = true,
+    bool mobileTapMode = false,
   }) {
     final column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -405,8 +419,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         _buildThemeTitleSection(),
         const SizedBox(height: 8),
         Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
+        if (mobileTapMode) ...[
+          const SizedBox(height: 4),
+          Text(l10n.themeLongPressToEdit, style: _hintStyle(fontSize: 12)),
+        ],
         const SizedBox(height: 8),
-        _buildFaceColumn(slotWidth),
+        _buildFaceColumn(slotWidth, mobileTapMode: mobileTapMode),
         const SizedBox(height: 12),
         _buildRandomResetRow(l10n),
       ],
@@ -628,7 +646,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }
 
   /// 面1〜面6を縦一列に表示（Columnで単一スクロールに統合、ensureVisibleが正しく効く）
-  Widget _buildFaceColumn(double slotWidth) {
+  Widget _buildFaceColumn(double slotWidth, {bool mobileTapMode = false}) {
     final currentThemes = _themes![_selectedType] ?? [];
     final controllers = _controllers[_selectedType] ?? [];
     const double slotHeight = 64;
@@ -647,6 +665,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                 currentThemes: currentThemes,
                 controllers: controllers,
                 slotWidth: slotWidth,
+                mobileTapMode: mobileTapMode,
               ),
             ),
           ),
@@ -660,6 +679,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required List<String> currentThemes,
     required List<TextEditingController> controllers,
     required double slotWidth,
+    bool mobileTapMode = false,
   }) {
     return Builder(
       builder: (slotContext) {
@@ -668,6 +688,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           controller: controllers[index],
           compact: true,
           availableWidth: slotWidth,
+          mobileTapMode: mobileTapMode,
           onFocused: () {
             if (_ensureVisibleScheduled) return;
             _ensureVisibleScheduled = true;
@@ -726,29 +747,64 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   /// ドラッグアンドドロップ対応のテキストフィールド
   /// [compact] trueの場合、一列表示用：面番号を明確に表示
   /// [onFocused] フォーカス取得時に呼ばれる（キーボード表示で入力欄をスクロールするため）
+  void _selectFaceForTap(int index) {
+    setState(() {
+      _selectedFaceIndex = index;
+      _focusedFaceIndex = null;
+    });
+    FocusScope.of(context).unfocus();
+  }
+
+  void _openFaceTextEdit(int index, void Function()? onFocused) {
+    setState(() {
+      _focusedFaceIndex = index;
+      _selectedFaceIndex = index;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _faceFocusNodes[index].requestFocus();
+      onFocused?.call();
+    });
+  }
+
+  void _assignThemeToFace(int faceIndex, String theme) {
+    final controllers = _controllers[_selectedType];
+    if (controllers == null || faceIndex < 0 || faceIndex >= controllers.length) {
+      return;
+    }
+
+    final themes = _themes![_selectedType]!;
+    final previous = controllers[faceIndex].text;
+    final otherIndex = themes.indexWhere((t) => t == theme);
+
+    setState(() {
+      if (otherIndex >= 0 && otherIndex != faceIndex) {
+        controllers[otherIndex].text = previous;
+        themes[otherIndex] = previous;
+      }
+      controllers[faceIndex].text = theme;
+      themes[faceIndex] = theme;
+      _lastDroppedIndex = faceIndex;
+      _selectedFaceIndex = faceIndex;
+      _focusedFaceIndex = null;
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) setState(() => _lastDroppedIndex = null);
+    });
+  }
+
   Widget _buildDraggableTextField({
     required int index,
     required TextEditingController controller,
     bool compact = false,
     double availableWidth = 280,
+    bool mobileTapMode = false,
     void Function()? onFocused,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    return DragTarget<String>(
-      onAccept: (data) {
-        setState(() {
-          controller.text = data;
-          _themes![_selectedType]![index] = data;
-          _lastDroppedIndex = index;
-          _focusedFaceIndex = null;
-        });
-        Future.delayed(const Duration(milliseconds: 400), () {
-          if (mounted) setState(() => _lastDroppedIndex = null);
-        });
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHighlighted = candidateData.isNotEmpty;
+
+    Widget buildField(BuildContext context, bool isHighlighted) {
         final isJustDropped = _lastDroppedIndex == index;
+        final isSelected = mobileTapMode && _selectedFaceIndex == index;
         return ValueListenableBuilder<TextEditingValue>(
           valueListenable: controller,
           builder: (context, value, child) {
@@ -767,14 +823,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   decoration: BoxDecoration(
                     color: isJustDropped
                         ? HomePalette.accent.withValues(alpha: 0.12)
-                        : HomePalette.surface2,
+                        : isSelected
+                            ? HomePalette.accent.withValues(alpha: 0.08)
+                            : HomePalette.surface2,
                     border: Border.all(
                       color: isJustDropped
                           ? HomePalette.accent
-                          : isHighlighted
-                              ? HomePalette.purple
-                              : Colors.white.withValues(alpha: 0.12),
-                      width: isHighlighted || isJustDropped ? 2 : 1,
+                          : isSelected
+                              ? HomePalette.accent
+                              : isHighlighted
+                                  ? HomePalette.purple
+                                  : Colors.white.withValues(alpha: 0.12),
+                      width: isHighlighted || isJustDropped || isSelected ? 2 : 1,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: isJustDropped
@@ -830,13 +890,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                         },
                                       )
                                   : GestureDetector(
-                                      onTap: () {
-                                        setState(() => _focusedFaceIndex = index);
-                                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                                          _faceFocusNodes[index].requestFocus();
-                                          onFocused?.call();
-                                        });
-                                      },
+                                      onTap: mobileTapMode
+                                          ? () => _selectFaceForTap(index)
+                                          : () => _openFaceTextEdit(index, onFocused),
+                                      onLongPress: mobileTapMode
+                                          ? () => _openFaceTextEdit(index, onFocused)
+                                          : null,
                                       behavior: HitTestBehavior.opaque,
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
@@ -905,6 +964,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             );
           },
         );
+    }
+
+    if (mobileTapMode) {
+      return buildField(context, false);
+    }
+
+    return DragTarget<String>(
+      onAcceptWithDetails: (details) {
+        _assignThemeToFace(index, details.data);
+      },
+      builder: (context, candidateData, rejectedData) {
+        return buildField(context, candidateData.isNotEmpty);
       },
     );
   }
@@ -916,10 +987,14 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   Widget _buildThemeCandidatesSection(
     double gridWidth, {
     bool expandGrid = true,
+    bool mobileTapMode = false,
   }) {
     final l10n = AppLocalizations.of(context)!;
     final isWide = gridWidth >= 280;
     final candidates = ThemeModel.getThemeCandidates(l10n);
+    final hintText = mobileTapMode
+        ? l10n.themeTapToReplaceHint
+        : l10n.useVariantsToChooseTheme;
 
     final grid = GridView.builder(
       controller: expandGrid ? _rightScrollController : null,
@@ -939,7 +1014,9 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       ),
       itemCount: candidates.length,
       itemBuilder: (context, index) {
-        return _buildDraggableCandidate(context, candidates[index], index);
+        return mobileTapMode
+            ? _buildTappableCandidate(context, candidates[index], index)
+            : _buildDraggableCandidate(context, candidates[index], index);
       },
     );
 
@@ -955,7 +1032,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  l10n.useVariantsToChooseTheme,
+                  hintText,
                   style: GoogleFonts.zenKakuGothicNew(
                     fontSize: 15,
                     height: 1.3,
@@ -963,7 +1040,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
-                  maxLines: 2,
+                  maxLines: 3,
                 ),
               ),
             ],
@@ -974,31 +1051,24 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// 候補タップ時: 編集中の面があればそこへ、なければ先頭の空き面へ適用
-  void _applyCandidateToFocusedFace(String theme) {
-    final controllers = _controllers[_selectedType];
-    if (controllers == null || controllers.isEmpty) return;
-
-    int? targetIndex = _focusedFaceIndex;
-    if (targetIndex == null) {
-      for (var i = 0; i < controllers.length; i++) {
-        if (controllers[i].text.trim().isEmpty) {
-          targetIndex = i;
-          break;
-        }
-      }
+  void _onCandidateTapped(String theme) {
+    final l10n = AppLocalizations.of(context)!;
+    final target = _selectedFaceIndex;
+    if (target == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.themeSelectFaceFirst,
+            style: GoogleFonts.zenKakuGothicNew(color: HomePalette.text),
+          ),
+          backgroundColor: HomePalette.surface2,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
     }
-    targetIndex ??= 0;
-
-    setState(() {
-      controllers[targetIndex!].text = theme;
-      _themes![_selectedType]![targetIndex] = theme;
-      _lastDroppedIndex = targetIndex;
-      _focusedFaceIndex = null;
-    });
-    Future.delayed(const Duration(milliseconds: 400), () {
-      if (mounted) setState(() => _lastDroppedIndex = null);
-    });
+    _assignThemeToFace(target, theme);
   }
 
   Color _candidateTint(int index) {
@@ -1011,7 +1081,57 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     return tints[index % tints.length];
   }
 
-  /// ドラッグ可能なテーマ候補アイテム
+  /// モバイル: タップで選択中の面と入れ替え
+  Widget _buildTappableCandidate(
+    BuildContext context,
+    String theme,
+    int index,
+  ) {
+    final tint = _candidateTint(index);
+    final themes = _themes![_selectedType] ?? [];
+    final isOnFace = themes.contains(theme);
+    final isReplacingSelected = _selectedFaceIndex != null &&
+        themes.length > _selectedFaceIndex! &&
+        themes[_selectedFaceIndex!] == theme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _onCandidateTapped(theme),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: tint,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isReplacingSelected
+                  ? HomePalette.accent
+                  : isOnFace
+                      ? HomePalette.purple.withValues(alpha: 0.5)
+                      : HomePalette.border,
+              width: isReplacingSelected ? 2 : 1,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Center(
+            child: Text(
+              theme,
+              style: GoogleFonts.zenKakuGothicNew(
+                color: HomePalette.text,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// ドラッグ可能なテーマ候補アイテム（Web・広い画面）
   Widget _buildDraggableCandidate(
     BuildContext context,
     String theme,
@@ -1069,31 +1189,24 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         ),
       ),
       child: SizedBox.expand(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => _applyCandidateToFocusedFace(theme),
+        child: Container(
+          decoration: BoxDecoration(
+            color: tint,
             borderRadius: BorderRadius.circular(12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: tint,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: HomePalette.border),
+            border: Border.all(color: HomePalette.border),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Center(
+            child: Text(
+              theme,
+              style: GoogleFonts.zenKakuGothicNew(
+                color: HomePalette.text,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Center(
-                child: Text(
-                  theme,
-                  style: GoogleFonts.zenKakuGothicNew(
-                    color: HomePalette.text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
