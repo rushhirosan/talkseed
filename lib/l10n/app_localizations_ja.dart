@@ -504,25 +504,25 @@ class AppLocalizationsJa extends AppLocalizations {
       '上から表示された順です。「別のお題へ」で差し替えたときは、そのたびに行が増えます。';
 
   @override
-  String get historyModeDice => 'サイコロ';
+  String get historyModeDice => 'ランダム';
 
   @override
-  String get historyModeValueCards => '価値観カード';
+  String get historyModeValueCards => '価値観';
 
   @override
   String get historyFilterAll => 'すべて';
 
   @override
-  String get historyFilterDice => 'サイコロ';
+  String get historyFilterDice => 'ランダム';
 
   @override
-  String get historyFilterValueCards => '価値観カード';
+  String get historyFilterValueCards => '価値観';
 
   @override
-  String get historyModeDiscussion => '議論・お題';
+  String get historyModeDiscussion => 'グループ';
 
   @override
-  String get historyFilterDiscussion => '議論・お題';
+  String get historyFilterDiscussion => 'グループ';
 
   @override
   String get historyDeleteAll => '履歴を全削除';

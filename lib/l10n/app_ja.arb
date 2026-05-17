@@ -517,28 +517,28 @@
   "@historyDiscussionPromptsFootnote": {
     "description": "履歴詳細・議論モードのプレイヤー別リストの注記"
   },
-  "historyModeDice": "サイコロ",
+  "historyModeDice": "ランダム",
   "@historyModeDice": {
-    "description": "履歴用のモード表示（サイコロ）"
+    "description": "履歴用のモード表示（ランダム／トップ画面に合わせる）"
   },
-  "historyModeValueCards": "価値観カード",
+  "historyModeValueCards": "価値観",
   "@historyModeValueCards": {
-    "description": "履歴用のモード表示（価値観カード）"
+    "description": "履歴用のモード表示（価値観／トップ画面に合わせる）"
   },
   "historyFilterAll": "すべて",
   "@historyFilterAll": {
     "description": "履歴フィルタ（全て）"
   },
-  "historyFilterDice": "サイコロ",
+  "historyFilterDice": "ランダム",
   "@historyFilterDice": {
-    "description": "履歴フィルタ（サイコロ）"
+    "description": "履歴フィルタ（ランダム／トップ画面に合わせる）"
   },
-  "historyFilterValueCards": "価値観カード",
+  "historyFilterValueCards": "価値観",
   "@historyFilterValueCards": {
-    "description": "履歴フィルタ（価値観カード）"
+    "description": "履歴フィルタ（価値観／トップ画面に合わせる）"
   },
-  "historyModeDiscussion": "議論・お題",
-  "historyFilterDiscussion": "議論・お題",
+  "historyModeDiscussion": "グループ",
+  "historyFilterDiscussion": "グループ",
   "historyDeleteAll": "履歴を全削除",
   "@historyDeleteAll": {
     "description": "履歴全削除ボタン"

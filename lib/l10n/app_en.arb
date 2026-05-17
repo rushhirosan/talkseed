@@ -308,28 +308,28 @@
   "@historyDiscussionPromptsFootnote": {
     "description": "History detail footnote for discussion prompt list"
   },
-  "historyModeDice": "Dice",
+  "historyModeDice": "Random",
   "@historyModeDice": {
-    "description": "History mode label for dice"
+    "description": "History mode label for random/dice (matches home)"
   },
-  "historyModeValueCards": "Value cards",
+  "historyModeValueCards": "Values",
   "@historyModeValueCards": {
-    "description": "History mode label for value cards"
+    "description": "History mode label for values (matches home)"
   },
   "historyFilterAll": "All",
   "@historyFilterAll": {
     "description": "History filter (all)"
   },
-  "historyFilterDice": "Dice",
+  "historyFilterDice": "Random",
   "@historyFilterDice": {
-    "description": "History filter (dice)"
+    "description": "History filter for random/dice (matches home)"
   },
-  "historyFilterValueCards": "Value cards",
+  "historyFilterValueCards": "Values",
   "@historyFilterValueCards": {
-    "description": "History filter (value cards)"
+    "description": "History filter for values (matches home)"
   },
-  "historyModeDiscussion": "Discussion prompts",
-  "historyFilterDiscussion": "Discussion",
+  "historyModeDiscussion": "Group",
+  "historyFilterDiscussion": "Group",
   "historyDeleteAll": "Delete all history",
   "@historyDeleteAll": {
     "description": "Delete all history button"

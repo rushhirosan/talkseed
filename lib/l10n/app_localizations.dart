@@ -1034,16 +1034,16 @@ abstract class AppLocalizations {
   /// **'上から表示された順です。「別のお題へ」で差し替えたときは、そのたびに行が増えます。'**
   String get historyDiscussionPromptsFootnote;
 
-  /// 履歴用のモード表示（サイコロ）
+  /// 履歴用のモード表示（ランダム／トップ画面に合わせる）
   ///
   /// In ja, this message translates to:
-  /// **'サイコロ'**
+  /// **'ランダム'**
   String get historyModeDice;
 
-  /// 履歴用のモード表示（価値観カード）
+  /// 履歴用のモード表示（価値観／トップ画面に合わせる）
   ///
   /// In ja, this message translates to:
-  /// **'価値観カード'**
+  /// **'価値観'**
   String get historyModeValueCards;
 
   /// 履歴フィルタ（全て）
@@ -1052,28 +1052,28 @@ abstract class AppLocalizations {
   /// **'すべて'**
   String get historyFilterAll;
 
-  /// 履歴フィルタ（サイコロ）
+  /// 履歴フィルタ（ランダム／トップ画面に合わせる）
   ///
   /// In ja, this message translates to:
-  /// **'サイコロ'**
+  /// **'ランダム'**
   String get historyFilterDice;
 
-  /// 履歴フィルタ（価値観カード）
+  /// 履歴フィルタ（価値観／トップ画面に合わせる）
   ///
   /// In ja, this message translates to:
-  /// **'価値観カード'**
+  /// **'価値観'**
   String get historyFilterValueCards;
 
   /// No description provided for @historyModeDiscussion.
   ///
   /// In ja, this message translates to:
-  /// **'議論・お題'**
+  /// **'グループ'**
   String get historyModeDiscussion;
 
   /// No description provided for @historyFilterDiscussion.
   ///
   /// In ja, this message translates to:
-  /// **'議論・お題'**
+  /// **'グループ'**
   String get historyFilterDiscussion;
 
   /// 履歴全削除ボタン

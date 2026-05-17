@@ -507,25 +507,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Order is the order each prompt was shown. Each time you used “Another prompt,” a new line is added.';
 
   @override
-  String get historyModeDice => 'Dice';
+  String get historyModeDice => 'Random';
 
   @override
-  String get historyModeValueCards => 'Value cards';
+  String get historyModeValueCards => 'Values';
 
   @override
   String get historyFilterAll => 'All';
 
   @override
-  String get historyFilterDice => 'Dice';
+  String get historyFilterDice => 'Random';
 
   @override
-  String get historyFilterValueCards => 'Value cards';
+  String get historyFilterValueCards => 'Values';
 
   @override
-  String get historyModeDiscussion => 'Discussion prompts';
+  String get historyModeDiscussion => 'Group';
 
   @override
-  String get historyFilterDiscussion => 'Discussion';
+  String get historyFilterDiscussion => 'Group';
 
   @override
   String get historyDeleteAll => 'Delete all history';
