@@ -45,7 +45,7 @@ class TimerDisplay extends StatelessWidget {
     } else if (totalSeconds <= 30) {
       return Colors.orange;
     }
-    return _black;
+    return useHomeStyle ? HomePalette.text : _black;
   }
   
   @override

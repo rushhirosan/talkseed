@@ -289,10 +289,9 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               const SizedBox(height: 12),
               ..._buildPlayButtons(l10n),
               const SizedBox(height: 16),
-              Text(
-                l10n.useVariantsToChooseTheme,
-                style: _hintStyle(),
-                textAlign: TextAlign.center,
+              _buildThemeCandidatesSection(
+                slotWidth,
+                expandGrid: false,
               ),
             ],
           ),
@@ -333,7 +332,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                   const SizedBox(height: 12),
                   _panel(
                     padding: panelPadding,
-                    child: _buildThemeCandidatesSection(panelWidth),
+                    child: _buildThemeCandidatesSection(
+                      panelWidth,
+                      expandGrid: false,
+                    ),
                   ),
                 ],
               ),
@@ -908,9 +910,39 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }
 
   /// テーマ候補セクション
-  Widget _buildThemeCandidatesSection(double gridWidth) {
+  ///
+  /// [expandGrid] が false のときは [SingleChildScrollView] 内向けに
+  /// shrinkWrap グリッドを使う（モバイル縦レイアウト）。
+  Widget _buildThemeCandidatesSection(
+    double gridWidth, {
+    bool expandGrid = true,
+  }) {
     final l10n = AppLocalizations.of(context)!;
     final isWide = gridWidth >= 280;
+    final candidates = ThemeModel.getThemeCandidates(l10n);
+
+    final grid = GridView.builder(
+      controller: expandGrid ? _rightScrollController : null,
+      primary: false,
+      shrinkWrap: !expandGrid,
+      physics: expandGrid
+          ? const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            )
+          : const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: isWide ? 180 : gridWidth,
+        mainAxisExtent: 64,
+        crossAxisSpacing: isWide ? 8 : 0,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: candidates.length,
+      itemBuilder: (context, index) {
+        return _buildDraggableCandidate(context, candidates[index], index);
+      },
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -937,30 +969,36 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             ],
           ),
         ),
-        Expanded(
-          child: GridView.builder(
-            controller: _rightScrollController,
-            primary: false,
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
-            ),
-            padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: isWide ? 180 : gridWidth,
-              mainAxisExtent: 64,
-              crossAxisSpacing: isWide ? 8 : 0,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: ThemeModel.getThemeCandidates(l10n).length,
-            itemBuilder: (context, index) {
-              final candidates = ThemeModel.getThemeCandidates(l10n);
-              final candidate = candidates[index];
-              return _buildDraggableCandidate(context, candidate, index);
-            },
-          ),
-        ),
+        if (expandGrid) Expanded(child: grid) else grid,
       ],
     );
+  }
+
+  /// 候補タップ時: 編集中の面があればそこへ、なければ先頭の空き面へ適用
+  void _applyCandidateToFocusedFace(String theme) {
+    final controllers = _controllers[_selectedType];
+    if (controllers == null || controllers.isEmpty) return;
+
+    int? targetIndex = _focusedFaceIndex;
+    if (targetIndex == null) {
+      for (var i = 0; i < controllers.length; i++) {
+        if (controllers[i].text.trim().isEmpty) {
+          targetIndex = i;
+          break;
+        }
+      }
+    }
+    targetIndex ??= 0;
+
+    setState(() {
+      controllers[targetIndex!].text = theme;
+      _themes![_selectedType]![targetIndex] = theme;
+      _lastDroppedIndex = targetIndex;
+      _focusedFaceIndex = null;
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) setState(() => _lastDroppedIndex = null);
+    });
   }
 
   Color _candidateTint(int index) {
@@ -983,6 +1021,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
 
     return Draggable<String>(
       data: theme,
+      onDragStarted: () => FocusScope.of(context).unfocus(),
       feedback: Material(
         elevation: 8,
         borderRadius: BorderRadius.circular(12),
@@ -1030,24 +1069,31 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         ),
       ),
       child: SizedBox.expand(
-        child: Container(
-          decoration: BoxDecoration(
-            color: tint,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _applyCandidateToFocusedFace(theme),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: HomePalette.border),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Center(
-            child: Text(
-              theme,
-              style: GoogleFonts.zenKakuGothicNew(
-                color: HomePalette.text,
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
+            child: Container(
+              decoration: BoxDecoration(
+                color: tint,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: HomePalette.border),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Center(
+                child: Text(
+                  theme,
+                  style: GoogleFonts.zenKakuGothicNew(
+                    color: HomePalette.text,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
           ),
         ),
