@@ -765,6 +765,48 @@ class CardDeck {
     return sum;
   }
 
+  /// カテゴリー別グループに分けられたお題から、ランダムに [totalCap] 枚だけを卓に残す。
+  /// カテゴリー行の並びは [groups] の順を保ち、0 枚になったカテゴリーは結果から除く。
+  static List<DiscussionCategoryGroup> capDiscussionGroupsRandomSample({
+    required List<DiscussionCategoryGroup> groups,
+    required int totalCap,
+    required Random random,
+  }) {
+    if (totalCap <= 0 || groups.isEmpty) return groups;
+    final flat = <({String categoryId, String title, String prompt})>[];
+    for (final g in groups) {
+      for (final p in g.prompts) {
+        flat.add(
+          (categoryId: g.categoryId, title: g.title, prompt: p),
+        );
+      }
+    }
+    if (flat.length <= totalCap) return groups;
+    flat.shuffle(random);
+    final picked = flat.sublist(0, totalCap);
+    final byCat = <String, List<String>>{};
+    for (final g in groups) {
+      byCat[g.categoryId] = [];
+    }
+    for (final item in picked) {
+      byCat[item.categoryId]!.add(item.prompt);
+    }
+    final out = <DiscussionCategoryGroup>[];
+    for (final g in groups) {
+      final prompts = byCat[g.categoryId];
+      if (prompts != null && prompts.isNotEmpty) {
+        out.add(
+          DiscussionCategoryGroup(
+            categoryId: g.categoryId,
+            title: g.title,
+            prompts: prompts,
+          ),
+        );
+      }
+    }
+    return out;
+  }
+
   /// 選んだカテゴリーごとに [promptsPerCategory] 枚までランダム抽出し、カテゴリー行に分割する。
   /// [allowedCategoryIds] が null のときは全カテゴリ。空集合のときは行なし。
   static List<DiscussionCategoryGroup> buildShuffledDiscussionCategoriesPerCategory({

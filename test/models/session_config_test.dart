@@ -12,6 +12,7 @@ void main() {
       expect(config.playerNames, isNull);
       expect(config.discussionPromptCap, isNull);
       expect(config.discussionPromptsPerCategory, isNull);
+      expect(config.discussionTotalPromptsOnTable, isNull);
       expect(config.discussionCategoryIds, isNull);
     });
 
@@ -145,6 +146,33 @@ void main() {
         discussionCategoryIds: null,
       );
       expect(cleared.discussionCategoryIds, isNull);
+    });
+
+    test('copyWith updates discussionTotalPromptsOnTable when apply flag is true', () {
+      const config = SessionConfig(
+        playerCount: 4,
+        timerDuration: Duration(minutes: 3),
+      );
+      final withCap = config.copyWith(
+        applyDiscussionTotalPromptsOnTable: true,
+        discussionTotalPromptsOnTable: 5,
+      );
+      expect(withCap.discussionTotalPromptsOnTable, 5);
+      final cleared = withCap.copyWith(
+        applyDiscussionTotalPromptsOnTable: true,
+        discussionTotalPromptsOnTable: null,
+      );
+      expect(cleared.discussionTotalPromptsOnTable, isNull);
+    });
+
+    test('copyWith preserves discussionTotalPromptsOnTable when apply flag is false', () {
+      final config = SessionConfig.defaultConfig.copyWith(
+        applyDiscussionTotalPromptsOnTable: true,
+        discussionTotalPromptsOnTable: 4,
+      );
+      final copied = config.copyWith(playerCount: 6);
+      expect(copied.discussionTotalPromptsOnTable, 4);
+      expect(copied.playerCount, 6);
     });
 
     test('copyWith preserves discussionCategoryIds when applyDiscussionCategoryIds is false', () {

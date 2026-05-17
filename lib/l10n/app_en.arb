@@ -42,18 +42,18 @@
   "faceThemesList": "Display per face",
   "themeCandidates": "Theme Candidates",
   "dragAndDropHint": "Drag & drop to the text boxes on the left",
-  "tutorialWelcome": "Welcome to Talk Shuffle!",
-  "tutorialWelcomeBody": "Pick a theme by rolling dice, or draw a card to talk about your values. Use it to get everyone excited or at work.",
-  "tutorialSetTheme": "Set your themes",
-  "tutorialSetThemeBody": "Set themes for each face by dragging from the candidates or typing them in.",
+  "tutorialWelcome": "Welcome to Talk Shuffle",
+  "tutorialWelcomeBody": "Spark conversation at work or with your team. Dice and cards give you random prompts so talk flows naturally.",
   "tutorialRollDice": "Roll the Dice",
   "tutorialRollDiceBody": "Tap \"Roll Dice\" to roll the dice and pick a random theme.",
-  "tutorialCards": "Play with Cards",
-  "tutorialCardsBody": "\"Get excited at work\" offers three card decks.\n\nValue cards (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).",
-  "tutorialChangeSettings": "Change Settings",
-  "tutorialChangeSettingsBody": "You can go back to the settings screen anytime with the back button to change the number of players and timer.",
-  "tutorialReady": "All set!",
-  "tutorialReadyBody": "Roll the dice for a theme, or draw a card to talk about your values. Use whichever fits the moment.",
+  "tutorialValues": "Discover Your Values",
+  "tutorialValuesBody": "With value cards, rank what matters to you and share with the group—great for building mutual understanding.",
+  "tutorialGroupDiscussion": "Group Discussion",
+  "tutorialGroupDiscussionBody": "Pick topics by category and discuss one theme together. Use the timer to keep the session on track.",
+  "tutorialPlayersHistory": "Players & Session History",
+  "tutorialPlayersHistoryBody": "Set player count, names, and timers before you start. After each session, results are saved so you can look back later.",
+  "tutorialReady": "You're All Set",
+  "tutorialReadyBody": "Choose a mode and jump in. Use dice, value cards, or group discussion—whatever fits the moment.",
   "skip": "Skip",
   "start": "Start",
   "showTutorial": "Show Tutorial",
@@ -156,9 +156,13 @@
   "@sessionCompleteMessage": {
     "description": "Session end dialog body"
   },
-  "sessionCompleteAcknowledgeMessage": "Everyone has had their turn. The topics selected in this session have been saved to history. To play again, go back and start from the setup screen.",
+  "sessionCompleteAcknowledgeMessage": "The session has ended. Your session has been saved to history.",
   "@sessionCompleteAcknowledgeMessage": {
-    "description": "Session end dialog when the only action is dismiss (card/discussion modes)"
+    "description": "Session end dialog body (all modes)"
+  },
+  "sessionCompleteEndButton": "End",
+  "@sessionCompleteEndButton": {
+    "description": "Session end dialog button to return to home"
   },
   "sessionCompleteAcknowledgeButton": "Close",
   "@sessionCompleteAcknowledgeButton": {
@@ -273,6 +277,10 @@
       }
     }
   },
+  "historyPlayersTitle": "Participants",
+  "@historyPlayersTitle": {
+    "description": "History detail participants section heading"
+  },
   "historyDetailTitle": "History Details",
   "@historyDetailTitle": {
     "description": "History detail page title"
@@ -382,7 +390,13 @@
   "homeThemePickTitle": "Choose a theme",
   "homeRandomDecideLabel": "Decide randomly",
   "homeThemeShortGroupDiscussion": "Group discussion",
-  "homeThemeShortValues": "Values",
+  "homeThemeShortValues": "Discover Your Values",
+  "homeCardLabel": "Theme selector",
+  "homeThemeTitleLine1": "Choose a",
+  "homeThemeTitleAccent": "theme",
+  "homeDividerOrChoose": "or pick one",
+  "homeThemeDescValues": "Life, priorities, and what you believe",
+  "homeThemeDescGroupDiscussion": "Topics to dig into as a team",
   "backToModeSelection": "Choose mode again",
   "cardSettingsTitle": "Choose Cards",
   "selectDeckPrompt": "Select a deck",
@@ -392,9 +406,57 @@
   "deckGroupDiscussion": "Group discussion",
   "deckGroupDiscussionDesc": "Team prompts from logic and creativity to Fermi estimates, dilemmas, and contemporary social issues",
   "discussionScreenTitle": "Discussion",
-  "discussionHint": "Cards are grouped by category, face down. Tap to peek; tap again to flip back. When you’re ready, use the button below to move on to the discussion.",
+  "discussionHint": "Tap a face-down card to select it for discussion (tap again to deselect). The green number shows pick order. Scroll sideways to browse candidates.",
+  "discussionPickTopicsInstruction": "Choose {n} prompt(s) you will discuss this session.",
+  "@discussionPickTopicsInstruction": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSelectionProgress": "{selected} / {target} selected",
+  "@discussionSelectionProgress": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSnackbarSelectionCap": "You already selected the maximum ({n}) for this session.",
+  "@discussionSnackbarSelectionCap": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSnackbarNeedMoreSelections": "Select {n} more prompt(s) before continuing.",
+  "@discussionSnackbarNeedMoreSelections": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionNextRoundButton": "Next prompt",
+  "discussionRoundProgress": "Prompt {current} of {total}",
+  "@discussionRoundProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPickTopicsAllOrSelectHint": "Tip: you can also continue without selecting — all prompts on the table will be used in order.",
   "discussionProceedToDiscussionButton": "Continue to discussion",
-  "discussionPerCategoryOption": "{n} each",
+  "discussionPerCategoryOption": "{n} per category",
   "@discussionPerCategoryOption": {
     "placeholders": {
       "n": {
@@ -402,7 +464,7 @@
       }
     }
   },
-  "discussionPreviewPerCategory": "Up to {perCat} per category · up to {total} cards on the table",
+  "discussionPreviewPerCategory": "Up to {perCat} per category · pool up to {total}",
   "@discussionPreviewPerCategory": {
     "placeholders": {
       "perCat": {
@@ -447,9 +509,39 @@
       }
     }
   },
-  "discussionDeckScopeTitle": "Cards per category",
+  "discussionDeckScopeTitle": "Max prompts per category",
+  "discussionDeckScopeHint": "From each enabled category, take up to this many prompts for the table pool (less if the category runs out).",
   "discussionThemeFilterTitle": "Filter topics",
-  "discussionThemeFilterHint": "Turn on the categories you want on the table. You need at least one on to start.",
+  "discussionThemeFilterHint": "Turn on the categories you want on the table (at least one).",
+  "discussionThemeFilterSelectAll": "All",
+  "discussionThemeFilterClearAll": "Clear",
+  "discussionTotalThemesOnTableTitle": "Topics on the table",
+  "discussionTotalThemesOnTableHint": "This session you will discuss exactly this many prompts. On the next screen, pick that many cards from the table (or leave none selected if you chose “All” and want every card in order).",
+  "discussionTotalThemesOnTableDropdownDisabled": "(Select categories above first)",
+  "discussionTotalThemesOnTableAllOption": "All ({max} max)",
+  "@discussionTotalThemesOnTableAllOption": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalThemesOnTableCountOption": "{n} prompts",
+  "@discussionTotalThemesOnTableCountOption": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalThemesOnTableEffective": "This session: {count} prompt(s) to discuss",
+  "@discussionTotalThemesOnTableEffective": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "discussionDeckScopeFull": "Full deck (shuffled)",
   "discussionDeckScopeTen": "10 cards (random)",
   "discussionDeckScopeSix": "6 cards (random)",

@@ -12,10 +12,10 @@ import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/timer_feedback.dart';
-import 'package:theme_dice/widgets/timer_display.dart';
+import 'package:theme_dice/widgets/play/play_session_ui.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
-import 'session_history_page.dart';
 import 'mode_selection_page.dart';
 
 /// 選定フェーズ（カードをめくって確認）→ 議論フェーズ（案内後にタイマー開始可）。プレイヤー交代はない。
@@ -47,37 +47,54 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   List<DiscussionCategoryGroup> _groups = [];
   bool _groupsReady = false;
 
-  /// めくって確認待ちのカード（`categoryId|index`）
-  String? _revealedCardId;
-
   GameSession? _session;
   TimerService? _timerService;
   bool _didSaveHistory = false;
 
   _FlowPhase _flowPhase = _FlowPhase.pickingTopics;
 
-  /// 議論開始の案内を済ませたら true。タイマーはこれが true になってから動かす。
-  bool _discussionKickoffAcknowledged = false;
+  /// 選定済みのカード ID（`categoryId|index`）。順序＝議論の順番。
+  final List<String> _selectedDiscussionIds = [];
 
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  /// 議論フェーズで順に表示するお題（確定順）。`_proceedToDiscussionPhase` で埋める。
+  List<String> _discussionPromptsRounds = [];
+
+  /// 現在の議論ラウンド（0 ~ `_discussionPromptsRounds.length - 1`）
+  int _currentDiscussionRound = 0;
 
   int get _totalCards =>
       _groups.fold<int>(0, (a, g) => a + g.prompts.length);
 
-  /// 場に並んだお題（履歴・一覧用）
-  List<String> _flatTopicsFromGroups() {
+  /// このセッションで話し合うお題の枚数（設定画面の「話すお題の数」。null はプール全枚）
+  int get _discussionTargetCount {
+    if (_totalCards <= 0) return 0;
+    final cap = widget.sessionConfig.discussionTotalPromptsOnTable;
+    if (cap == null) return _totalCards;
+    return min(cap, _totalCards);
+  }
+
+  bool get _selectionReadyForProceed {
+    final k = _discussionTargetCount;
+    if (k <= 0) return false;
+    if (_selectedDiscussionIds.length == k) return true;
+    if (k == _totalCards && _selectedDiscussionIds.isEmpty) return true;
+    return false;
+  }
+
+  /// 卓に並ぶカード ID を表示順に並べる
+  List<String> _allCardIdsInDisplayOrder() {
     final out = <String>[];
     for (final g in _groups) {
-      out.addAll(g.prompts);
+      for (var i = 0; i < g.prompts.length; i++) {
+        out.add('${g.categoryId}|$i');
+      }
     }
     return out;
   }
 
-  String? get _revealedPrompt {
-    final id = _revealedCardId;
-    if (id == null) return null;
-    final parts = id.split('|');
+  String? _promptForCardId(String? cardId) {
+    if (cardId == null) return null;
+    final parts = cardId.split('|');
     if (parts.length != 2) return null;
     final catId = parts[0];
     final idx = int.tryParse(parts[1]);
@@ -90,6 +107,15 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       }
     }
     return null;
+  }
+
+  /// 場に並んだお題（履歴・一覧用）
+  List<String> _flatTopicsFromGroups() {
+    final out = <String>[];
+    for (final g in _groups) {
+      out.addAll(g.prompts);
+    }
+    return out;
   }
 
   @override
@@ -129,6 +155,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
         promptsPerCategory: per,
         allowedCategoryIds: allowed,
       );
+      // 卓には候補プールをすべて並べる（discussionTotalPromptsOnTable は目安として SessionConfig に保持）。
     } else {
       _groups = CardDeck.buildFlatDiscussionCategories(
         themes: widget.themes,
@@ -180,29 +207,66 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     }
   }
 
-  void _onCardFaceDownTap(String cardId) {
+  void _onPickingCardTap(String cardId) {
     if (_flowPhase != _FlowPhase.pickingTopics) return;
     if (_session == null || !_session!.isActive) return;
-    setState(() {
-      _revealedCardId = cardId;
-    });
-    _triggerVibration();
-  }
+    final l10n = AppLocalizations.of(context)!;
+    final k = _discussionTargetCount;
 
-  void _flipBack() {
-    if (_flowPhase != _FlowPhase.pickingTopics) return;
-    setState(() => _revealedCardId = null);
-    _triggerVibration();
+    if (_selectedDiscussionIds.contains(cardId)) {
+      setState(() => _selectedDiscussionIds.remove(cardId));
+      _triggerVibration();
+      return;
+    }
+
+    if (_selectedDiscussionIds.length < k) {
+      setState(() => _selectedDiscussionIds.add(cardId));
+      _triggerVibration();
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.discussionSnackbarSelectionCap(k))),
+    );
   }
 
   void _proceedToDiscussionPhase() {
     if (_flowPhase != _FlowPhase.pickingTopics) return;
     if (_session == null || !_session!.isActive) return;
     if (_totalCards <= 0) return;
+    final l10n = AppLocalizations.of(context)!;
+    final k = _discussionTargetCount;
+
+    late final List<String> idsOrdered;
+    if (_selectedDiscussionIds.length == k) {
+      idsOrdered = List<String>.from(_selectedDiscussionIds);
+    } else if (k == _totalCards && _selectedDiscussionIds.isEmpty) {
+      idsOrdered = _allCardIdsInDisplayOrder();
+    } else {
+      final need = k - _selectedDiscussionIds.length;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            need > 0
+                ? l10n.discussionSnackbarNeedMoreSelections(need)
+                : l10n.discussionSnackbarSelectionCap(k),
+          ),
+        ),
+      );
+      return;
+    }
+
+    final prompts = <String>[];
+    for (final id in idsOrdered) {
+      final p = _promptForCardId(id);
+      if (p != null) prompts.add(p);
+    }
+    if (prompts.length != k) return;
+
     setState(() {
-      _revealedCardId = null;
+      _discussionPromptsRounds = prompts;
+      _currentDiscussionRound = 0;
       _flowPhase = _FlowPhase.discussion;
-      _discussionKickoffAcknowledged = false;
       if (widget.sessionConfig.enableTimer) {
         _timerService?.dispose();
         _timerService = TimerService(
@@ -210,17 +274,30 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           onTick: () => setState(() {}),
           onFinished: _onTimerFinished,
         );
+        _timerService!.start();
       }
     });
     _triggerVibration();
   }
 
-  void _onDiscussionKickoffStart() {
+  void _goToNextDiscussionRound() {
     if (_flowPhase != _FlowPhase.discussion) return;
+    if (_currentDiscussionRound >= _discussionPromptsRounds.length - 1) {
+      return;
+    }
+    final wasRunning = _timerService?.isRunning ?? false;
     setState(() {
-      _discussionKickoffAcknowledged = true;
-      if (widget.sessionConfig.enableTimer && _timerService != null) {
-        _timerService!.start();
+      _currentDiscussionRound++;
+      if (widget.sessionConfig.enableTimer) {
+        _timerService?.dispose();
+        _timerService = TimerService(
+          initialDuration: widget.sessionConfig.timerDuration,
+          onTick: () => setState(() {}),
+          onFinished: _onTimerFinished,
+        );
+        if (wasRunning) {
+          _timerService!.start();
+        }
       }
     });
     _triggerVibration();
@@ -239,51 +316,36 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       _timerService?.stop();
     });
     _saveDiscussionRecord();
-    _showSessionEndDialog();
+    SessionEndDialog.show(context);
   }
 
   void _saveDiscussionRecord() {
     if (_didSaveHistory || _session == null) return;
     final s = _session!;
-    final topics = _flatTopicsFromGroups();
+    final l10n = AppLocalizations.of(context)!;
+    final topics = _discussionPromptsRounds.isNotEmpty
+        ? List<String>.from(_discussionPromptsRounds)
+        : _flatTopicsFromGroups();
     final record = SessionRecord.create(
       mode: 'discussion',
       topics: topics,
       selectedCardsByPlayer: const {},
       playerCount: s.config.playerCount,
+      playerNames: SessionRecord.labelsForPlayers(
+        playerCount: s.config.playerCount,
+        configPlayerNames: s.config.playerNames,
+        defaultName: l10n.playerName,
+      ),
     );
     _didSaveHistory = true;
     SessionRecordService.addRecord(record);
   }
 
-  void _showSessionEndDialog() {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.sessionSummary),
-        content: Text(l10n.sessionCompleteAcknowledgeMessage),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(l10n.sessionCompleteAcknowledgeButton),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => const SessionHistoryPage(),
-                ),
-              );
-            },
-            child: Text(l10n.historyTitle),
-          ),
-        ],
-      ),
+  void _navigateToModeSelection() {
+    // モード選択は pushReplacement で消えているため isFirst では SessionSetup に戻る
+    Navigator.of(context).pushAndRemoveUntil(
+      RouteTransitions.backRoute(page: const ModeSelectionPage()),
+      (route) => false,
     );
   }
 
@@ -292,87 +354,33 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       Navigator.of(context).pop();
       return;
     }
-    Navigator.of(context).pushReplacement(
-      RouteTransitions.backRoute(page: const ModeSelectionPage()),
-    );
+    _navigateToModeSelection();
   }
 
-  Widget _buildDiscussionKickoffCard(AppLocalizations l10n, TalkShuffleTokens ts) {
+  Widget _buildPickingKickoffSummary(AppLocalizations l10n) {
     final hasTimer = widget.sessionConfig.enableTimer;
+    final btn = l10n.discussionKickoffStartButton;
     final durationLabel = hasTimer
         ? _formatDiscussionDuration(widget.sessionConfig.timerDuration)
         : '';
-    final btn = l10n.discussionKickoffStartButton;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-      decoration: BoxDecoration(
-        color: _white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _black, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: _black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.discussionGroupKickoffLead(_discussionTargetCount),
+          textAlign: TextAlign.center,
+          style: PlayTextStyles.bodyEmphasis(),
+        ),
+        if (hasTimer) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.discussionKickoffTimerNote(btn, durationLabel),
+            textAlign: TextAlign.center,
+            style: PlayTextStyles.timerNote(),
           ),
         ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.discussionGroupKickoffTitle,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: _black,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            l10n.discussionGroupKickoffLead(_totalCards),
-            style: TextStyle(
-              fontSize: 15,
-              height: 1.45,
-              fontWeight: FontWeight.w600,
-              color: _black.withOpacity(0.88),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          if (hasTimer) ...[
-            const SizedBox(height: 10),
-            Text(
-              l10n.discussionKickoffTimerNote(btn, durationLabel),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.35,
-                color: _black.withOpacity(0.72),
-              ),
-            ),
-          ],
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _onDiscussionKickoffStart,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ts.brandYellow,
-              foregroundColor: _black,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 2,
-            ),
-            child: Text(
-              btn,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -380,11 +388,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     return Text(
       l10n.discussionGroupHint,
       textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 13,
-        height: 1.35,
-        color: _black.withOpacity(0.72),
-      ),
+      style: PlayTextStyles.bodyEmphasis(),
     );
   }
 
@@ -451,11 +455,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
           padding: const EdgeInsets.only(bottom: 8, left: 2),
           child: Text(
             group.title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: _black.withOpacity(0.88),
-            ),
+            style: PlayTextStyles.sectionTitle(),
           ),
         ),
         SizedBox(
@@ -471,12 +471,17 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                     prompt: group.prompts[index],
                     backLabel: _backShortLabel(group.categoryId, index),
                     accent: _accentForCategory(group.categoryId, ts),
-                    faceUp: _revealedCardId == '${group.categoryId}|$index',
-                    interactive: pickingEnabled,
-                    onFaceDownTap: () => _onCardFaceDownTap(
+                    isSelected: _selectedDiscussionIds.contains(
                       '${group.categoryId}|$index',
                     ),
-                    onFaceUpTap: pickingEnabled ? _flipBack : null,
+                    selectionOrder: _selectedDiscussionIds.indexOf(
+                          '${group.categoryId}|$index',
+                        ) +
+                        1,
+                    interactive: pickingEnabled,
+                    onTap: () => _onPickingCardTap(
+                      '${group.categoryId}|$index',
+                    ),
                   ),
                 ],
               ],
@@ -489,78 +494,42 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   }
 
   bool get _showMainPromptCard {
-    if (_flowPhase == _FlowPhase.discussion) {
-      return _discussionKickoffAcknowledged;
-    }
-    return _revealedPrompt != null;
+    if (_flowPhase != _FlowPhase.discussion) return false;
+    return _discussionPromptsRounds.isNotEmpty;
   }
 
   Widget _buildMainPromptCard(AppLocalizations l10n, TalkShuffleTokens ts) {
     if (_flowPhase == _FlowPhase.discussion) {
-      final body = widget.sessionConfig.enableTimer
-          ? l10n.discussionDiscussionCardWithTimer
-          : l10n.discussionDiscussionCardNoTimer;
-      return Container(
-        width: double.infinity,
-        constraints: const BoxConstraints(minHeight: 88),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        decoration: BoxDecoration(
-          color: _white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _black, width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: _black.withOpacity(0.08),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
+      if (_discussionPromptsRounds.isEmpty) {
+        return const SizedBox.shrink();
+      }
+      final body = _discussionPromptsRounds[_currentDiscussionRound];
+      final roundTotal = _discussionPromptsRounds.length;
+      return PlaySurfaceCard(
+        minHeight: 88,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.discussionRoundProgress(
+                _currentDiscussionRound + 1,
+                roundTotal,
+              ),
+              textAlign: TextAlign.center,
+              style: PlayTextStyles.caption(),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              body,
+              style: PlayTextStyles.prompt(),
+              textAlign: TextAlign.center,
             ),
           ],
-        ),
-        child: Text(
-          body,
-          style: const TextStyle(
-            fontSize: 16,
-            height: 1.45,
-            fontWeight: FontWeight.w600,
-            color: _black,
-          ),
-          textAlign: TextAlign.center,
         ),
       );
     }
 
-    final revealed = _revealedPrompt;
-    if (revealed == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 96),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-      decoration: BoxDecoration(
-        color: _white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _black, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: _black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Text(
-        revealed,
-        style: const TextStyle(
-          fontSize: 17,
-          height: 1.45,
-          fontWeight: FontWeight.w600,
-          color: _black,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   @override
@@ -570,61 +539,67 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final picking = _flowPhase == _FlowPhase.pickingTopics;
     final pickingEnabled = picking && _session != null && _session!.isActive;
 
-    return Scaffold(
-      backgroundColor: ts.scaffoldPlayWarm,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: _black),
-          onPressed: _goBack,
-          tooltip: l10n.backToSettings,
+    return PlaySessionScaffold(
+      title: widget.deckTitle,
+      onBack: _goBack,
+      backTooltip: l10n.backToSettings,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          playScreenHorizontalPadding,
+          playScreenVerticalPadding,
+          playScreenHorizontalPadding,
+          24,
         ),
-        title: Text(
-          widget.deckTitle,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (_flowPhase == _FlowPhase.discussion &&
                   _session != null &&
                   _session!.isActive) ...[
-                if (!_discussionKickoffAcknowledged) ...[
-                  _buildDiscussionKickoffCard(l10n, ts),
+                _buildDiscussionActiveGroupHint(l10n),
+                const SizedBox(height: 12),
+                if (_session!.config.enableTimer && _timerService != null) ...[
+                  PlayTimerPanel(
+                    timerService: _timerService!,
+                    onPause: _toggleTimer,
+                    onResume: _toggleTimer,
+                    onExtendOneMinute: _extendTimerOneMinute,
+                  ),
                   const SizedBox(height: 16),
-                ] else ...[
-                  _buildDiscussionActiveGroupHint(l10n),
-                  const SizedBox(height: 12),
-                  if (_session!.config.enableTimer && _timerService != null) ...[
-                    TimerDisplay(
-                      timerService: _timerService!,
-                      onPause: _toggleTimer,
-                      onResume: _toggleTimer,
-                      onExtendOneMinute: _extendTimerOneMinute,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
                 ],
               ],
               if (picking)
                 Text(
                   l10n.discussionHint,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.4,
-                    color: _black.withOpacity(0.75),
-                  ),
+                  style: PlayTextStyles.hint(),
                   textAlign: TextAlign.center,
                 ),
+              if (picking && _discussionTargetCount > 0) ...[
+                const SizedBox(height: 10),
+                Text(
+                  l10n.discussionPickTopicsInstruction(_discussionTargetCount),
+                  style: PlayTextStyles.bodyEmphasis(),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.discussionSelectionProgress(
+                    _selectedDiscussionIds.length,
+                    _discussionTargetCount,
+                  ),
+                  textAlign: TextAlign.center,
+                  style: PlayTextStyles.caption(),
+                ),
+                if (_discussionTargetCount == _totalCards &&
+                    _selectedDiscussionIds.isEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.discussionPickTopicsAllOrSelectHint,
+                    textAlign: TextAlign.center,
+                    style: PlayTextStyles.timerNote(),
+                  ),
+                ],
+              ],
               if (picking) const SizedBox(height: 16),
               if (picking &&
                   _session != null &&
@@ -642,22 +617,14 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                         )
                       : l10n.discussionTotalCardsOnTable(_totalCards),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: _black.withOpacity(0.55),
-                  ),
+                  style: PlayTextStyles.caption(),
                 ),
               if (picking) const SizedBox(height: 16),
               if (picking) ...[
                 Text(
                   l10n.discussionPickFromCardsHeading,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: _black.withOpacity(0.88),
-                  ),
+                  style: PlayTextStyles.sectionTitle(),
                 ),
                 const SizedBox(height: 10),
                 ..._groups.map(
@@ -673,26 +640,15 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
                   _session!.isActive &&
                   _totalCards > 0) ...[
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _proceedToDiscussionPhase,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ts.brandYellow,
-                      foregroundColor: _black,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 2,
-                    ),
-                    child: Text(
-                      l10n.discussionProceedToDiscussionButton,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                _buildPickingKickoffSummary(l10n),
+                const SizedBox(height: 12),
+                Opacity(
+                  opacity: _selectionReadyForProceed ? 1 : 0.45,
+                  child: PlayPrimaryButton(
+                    label: l10n.discussionKickoffStartButton,
+                    onPressed: _selectionReadyForProceed
+                        ? _proceedToDiscussionPhase
+                        : null,
                   ),
                 ),
               ],
@@ -702,37 +658,29 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
               ],
               if (_session != null &&
                   _session!.isActive &&
+                  _flowPhase == _FlowPhase.discussion &&
+                  _discussionPromptsRounds.length > 1 &&
+                  _currentDiscussionRound <
+                      _discussionPromptsRounds.length - 1) ...[
+                const SizedBox(height: 14),
+                PlayOutlineButton(
+                  label: l10n.discussionNextRoundButton,
+                  onPressed: _goToNextDiscussionRound,
+                ),
+              ],
+              if (_session != null &&
+                  _session!.isActive &&
                   _flowPhase == _FlowPhase.discussion) ...[
                 const SizedBox(height: 24),
-                ElevatedButton.icon(
+                PlayPrimaryButton(
+                  label: l10n.discussionEndDiscussionButton,
+                  icon: Icons.check_circle,
                   onPressed: _endDiscussionSession,
-                  icon: const Icon(Icons.check_circle, color: _black),
-                  label: Text(
-                    l10n.discussionEndDiscussionButton,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ts.brandYellow,
-                    foregroundColor: _black,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 2,
-                  ),
                 ),
               ],
             ],
           ),
         ),
-      ),
     );
   }
 }
@@ -741,32 +689,33 @@ class _DiscussionPickCard extends StatelessWidget {
   final String prompt;
   final String backLabel;
   final Color accent;
-  final bool faceUp;
+  final bool isSelected;
+  /// 選ばれているとき 1 始まりの順番。未選択は 0。
+  final int selectionOrder;
   final bool interactive;
-  final VoidCallback onFaceDownTap;
-  final VoidCallback? onFaceUpTap;
+  final VoidCallback onTap;
 
   const _DiscussionPickCard({
     required this.prompt,
     required this.backLabel,
     required this.accent,
-    required this.faceUp,
+    this.isSelected = false,
+    this.selectionOrder = 0,
     required this.interactive,
-    required this.onFaceDownTap,
-    this.onFaceUpTap,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     const w = 112.0;
     const h = 132.0;
-    final border = Border.all(color: Colors.black87, width: 1.4);
+    final border = Border.all(color: Colors.black87, width: 1.5);
 
     final back = Material(
       color: accent,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: interactive ? onFaceDownTap : null,
+        onTap: interactive ? onTap : null,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           width: w,
@@ -775,13 +724,20 @@ class _DiscussionPickCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: border,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.help_outline,
-                size: 32,
+                Icons.touch_app_outlined,
+                size: 28,
                 color: Colors.black.withOpacity(0.35),
               ),
               const SizedBox(height: 8),
@@ -806,7 +762,7 @@ class _DiscussionPickCard extends StatelessWidget {
       elevation: 1,
       shadowColor: Colors.black.withOpacity(0.08),
       child: InkWell(
-        onTap: (interactive && onFaceUpTap != null) ? onFaceUpTap : null,
+        onTap: interactive ? onTap : null,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           width: w,
@@ -814,21 +770,49 @@ class _DiscussionPickCard extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: border,
-          ),
-          child: Center(
-            child: Text(
-              prompt,
-              maxLines: 7,
-              overflow: TextOverflow.fade,
-              style: const TextStyle(
-                fontSize: 11,
-                height: 1.25,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.center,
+            border: Border.all(
+              color: const Color(0xFF2E7D32),
+              width: 2.6,
             ),
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Text(
+                  prompt,
+                  maxLines: 7,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    height: 1.25,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF2E7D32),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '$selectionOrder',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -847,9 +831,9 @@ class _DiscussionPickCard extends StatelessWidget {
           ),
         );
       },
-      child: faceUp
+      child: isSelected
           ? KeyedSubtree(
-              key: const ValueKey('f'),
+              key: ValueKey('f-$selectionOrder'),
               child: front,
             )
           : KeyedSubtree(

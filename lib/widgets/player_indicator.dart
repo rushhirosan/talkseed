@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
 
 /// プレイヤー情報を表示するウィジェット
 class PlayerIndicator extends StatelessWidget {
   final int currentPlayerIndex;
   final int totalPlayers;
   final String? currentPlayerName;
+  final bool useHomeStyle;
 
-  /// [build] と同じ規則で、番のラベル文字列だけを返す（お題との対応説明用）
   static String turnDisplayText({
     required AppLocalizations l10n,
     required int currentPlayerIndex,
@@ -25,34 +28,59 @@ class PlayerIndicator extends StatelessWidget {
     required this.currentPlayerIndex,
     required this.totalPlayers,
     this.currentPlayerName,
+    this.useHomeStyle = false,
   });
-  
-  // カラーパレット（設定画面と統一）
-  static const Color _mustardYellow = Color(0xFFFFEB3B);
+
   static const Color _black = Colors.black87;
-  
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final ts = context.talkShuffle;
     final displayText = turnDisplayText(
       l10n: l10n,
       currentPlayerIndex: currentPlayerIndex,
       totalPlayers: totalPlayers,
       currentPlayerName: currentPlayerName,
     );
-    
+
+    if (useHomeStyle) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: HomePalette.accent.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: HomePalette.accent.withValues(alpha: 0.5)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.person, color: HomePalette.accent, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              displayText,
+              style: GoogleFonts.zenKakuGothicNew(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: HomePalette.text,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: _mustardYellow,
-        borderRadius: BorderRadius.circular(8),
+        color: ts.brandYellow,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _black, width: 1.5),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.person, color: _black, size: 20),
+          const Icon(Icons.person, color: _black, size: 20),
           const SizedBox(width: 8),
           Text(
             displayText,

@@ -95,17 +95,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dragAndDropHint => '左のテキストボックスにドラッグ＆ドロップ';
 
   @override
-  String get tutorialWelcome => 'Talk Shuffleへようこそ！';
+  String get tutorialWelcome => 'Talk Shuffleへようこそ';
 
   @override
   String get tutorialWelcomeBody =>
-      'サイコロでテーマを選ぶか、カードで自分の価値観を話します。盛り上がりにも仕事の場にも使えます。';
-
-  @override
-  String get tutorialSetTheme => 'テーマを設定しよう';
-
-  @override
-  String get tutorialSetThemeBody => '各面のテーマを、候補からドラッグまたは直接入力で設定します。';
+      '仕事やチームの場で、話題のきっかけをランダムに。サイコロやカードで、自然に会話が始まります。';
 
   @override
   String get tutorialRollDice => 'サイコロを振る';
@@ -114,24 +108,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialRollDiceBody => '「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。';
 
   @override
-  String get tutorialCards => 'カードで遊ぶ';
+  String get tutorialValues => '価値観を知る';
 
   @override
-  String get tutorialCardsBody =>
-      '「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。';
+  String get tutorialValuesBody =>
+      '価値観カードで、自分が大切にしていることを並べ替えて共有。チームの相互理解に役立ちます。';
 
   @override
-  String get tutorialChangeSettings => '設定を変更する';
+  String get tutorialGroupDiscussion => 'グループディスカッション';
 
   @override
-  String get tutorialChangeSettingsBody => 'いつでも戻るボタンで設定画面に戻り、人数やタイマーを変更できます。';
+  String get tutorialGroupDiscussionBody =>
+      'カテゴリーからお題を選び、全員で1つのテーマについて話し合います。タイマー付きで進行できます。';
 
   @override
-  String get tutorialReady => '準備完了！';
+  String get tutorialPlayersHistory => 'プレイヤー選択や履歴保存';
+
+  @override
+  String get tutorialPlayersHistoryBody =>
+      '参加人数や名前、タイマーを設定できます。セッション後は履歴に保存され、あとから振り返れます。';
+
+  @override
+  String get tutorialReady => '準備完了';
 
   @override
   String get tutorialReadyBody =>
-      'サイコロでテーマを選んでも、カードで価値観を話し合ってもOK。場に合わせて使いましょう。';
+      'モードを選んで、さっそく始めましょう。場に合わせてサイコロ・価値観カード・グループディスカッションを使い分けられます。';
 
   @override
   String get skip => 'スキップ';
@@ -384,8 +386,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sessionCompleteMessage => '全員の番が終わりました。';
 
   @override
-  String get sessionCompleteAcknowledgeMessage =>
-      '全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。';
+  String get sessionCompleteAcknowledgeMessage => 'セッションが終了しました。内容は履歴に保存しました。';
+
+  @override
+  String get sessionCompleteEndButton => '終了';
 
   @override
   String get sessionCompleteAcknowledgeButton => '閉じる';
@@ -467,6 +471,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String historyPlayerCount(int count) {
     return '$count人でプレイ';
   }
+
+  @override
+  String get historyPlayersTitle => '参加者';
 
   @override
   String get historyDetailTitle => '履歴詳細';
@@ -600,7 +607,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeThemeShortGroupDiscussion => 'グループディスカッション';
 
   @override
-  String get homeThemeShortValues => '価値観';
+  String get homeThemeShortValues => '価値観を知る';
+
+  @override
+  String get homeCardLabel => 'テーマセレクター';
+
+  @override
+  String get homeThemeTitleLine1 => 'テーマを';
+
+  @override
+  String get homeThemeTitleAccent => '選ぼう';
+
+  @override
+  String get homeDividerOrChoose => 'または選ぶ';
+
+  @override
+  String get homeThemeDescValues => '人生・優先事項・信念について';
+
+  @override
+  String get homeThemeDescGroupDiscussion => 'チームで深掘りするトピック';
 
   @override
   String get backToModeSelection => 'モードを選び直す';
@@ -631,19 +656,51 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。';
+      '裏向きのカードをタップすると選べます（もう一度タップで外せます）。緑の数字が選んだ順番です。横にスクロールして候補を見られます。';
+
+  @override
+  String discussionPickTopicsInstruction(int n) {
+    return 'このセッションで話すお題を $n 枚選んでください。';
+  }
+
+  @override
+  String discussionSelectionProgress(int selected, int target) {
+    return '選んだお題 $selected / $target 枚';
+  }
+
+  @override
+  String discussionSnackbarSelectionCap(int n) {
+    return '選べるのはこのセッションで最大 $n 枚までです。';
+  }
+
+  @override
+  String discussionSnackbarNeedMoreSelections(int n) {
+    return 'あと $n 枚選んでから進んでください。';
+  }
+
+  @override
+  String get discussionNextRoundButton => '次のお題';
+
+  @override
+  String discussionRoundProgress(int current, int total) {
+    return 'お題 $current / $total';
+  }
+
+  @override
+  String get discussionPickTopicsAllOrSelectHint =>
+      'ヒント: 何も選ばずに進むと、卓のお題をすべてこの順で話します。';
 
   @override
   String get discussionProceedToDiscussionButton => '議論に進む';
 
   @override
   String discussionPerCategoryOption(int n) {
-    return '各$n枚';
+    return '$n枚ずつ';
   }
 
   @override
   String discussionPreviewPerCategory(int perCat, int total) {
-    return '各カテゴリー最大$perCat枚 · 卓は合計$total枚まで';
+    return '各カテゴリー最大$perCat枚まで · プールは最大$total枚';
   }
 
   @override
@@ -675,14 +732,49 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => '各カテゴリーの枚数';
+  String get discussionDeckScopeTitle => 'カテゴリーごとのお題（上限）';
+
+  @override
+  String get discussionDeckScopeHint =>
+      '選んだカテゴリーそれぞれから、卓の候補として載せるお題の最大枚数です（お題が足りないカテゴリーはそれ以下になります）。';
 
   @override
   String get discussionThemeFilterTitle => 'テーマを絞る';
 
   @override
-  String get discussionThemeFilterHint =>
-      '卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。';
+  String get discussionThemeFilterHint => '卓に出すカテゴリーをオンにしてください（1つ以上）。';
+
+  @override
+  String get discussionThemeFilterSelectAll => 'すべて';
+
+  @override
+  String get discussionThemeFilterClearAll => '解除';
+
+  @override
+  String get discussionTotalThemesOnTableTitle => '話すお題の数（卓の枚数）';
+
+  @override
+  String get discussionTotalThemesOnTableHint =>
+      'このセッションでは、この枚数ぶんお題について話します。次の画面で卓からその枚数を選んでください（「すべて」のときは未選択のまま進むと卓のお題を順に全部話します）。';
+
+  @override
+  String get discussionTotalThemesOnTableDropdownDisabled =>
+      '（上でカテゴリーを選ぶと設定できます）';
+
+  @override
+  String discussionTotalThemesOnTableAllOption(int max) {
+    return 'すべて（最大$max枚）';
+  }
+
+  @override
+  String discussionTotalThemesOnTableCountOption(int n) {
+    return '$n枚';
+  }
+
+  @override
+  String discussionTotalThemesOnTableEffective(int count) {
+    return 'このセッション: $count枚のお題を話す';
+  }
 
   @override
   String get discussionDeckScopeFull => 'デッキ全枚（シャッフル）';

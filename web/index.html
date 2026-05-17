@@ -42,9 +42,25 @@
       min-height: 100vh;
       background: linear-gradient(180deg, #F5F6F8 0%, #E8EAED 50%, #E1E4E8 100%);
     }
+    #flt-loading {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 24px;
+      text-align: center;
+      color: #333;
+      font-size: 15px;
+    }
   </style>
 </head>
 <body>
+  <!-- Flutter の最初のフレームまで表示（CanvasKit取得失敗などで真っ白に見えるときの切り分け用） -->
+  <div id="flt-loading">Talk Shuffle を読み込んでいます…</div>
+  <noscript>このアプリを表示するには JavaScript を有効にしてください。</noscript>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('flt-loading');
+      if (el) el.remove();
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

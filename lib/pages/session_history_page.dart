@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/services/session_record_service.dart';
-import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_scaffold.dart';
 
 class SessionHistoryPage extends StatefulWidget {
   const SessionHistoryPage({super.key});
@@ -13,10 +15,18 @@ class SessionHistoryPage extends StatefulWidget {
 }
 
 class _SessionHistoryPageState extends State<SessionHistoryPage> {
-  String _filter = 'all'; // all | dice | value_cards | discussion
+  String _filter = 'all';
 
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  TextStyle _titleStyle({double fontSize = 15}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w700,
+        color: HomePalette.text,
+      );
+
+  TextStyle _subtitleStyle() => GoogleFonts.zenKakuGothicNew(
+        fontSize: 12,
+        color: HomePalette.textMuted,
+      );
 
   String _modeLabel(AppLocalizations l10n, SessionRecord record) {
     switch (record.mode) {
@@ -30,142 +40,146 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
     }
   }
 
+  String? _playersSubtitle(AppLocalizations l10n, SessionRecord record) {
+    final names = record.displayPlayerNames;
+    if (names.isNotEmpty) {
+      return names.join('、');
+    }
+    if (record.playerCount != null) {
+      return l10n.historyPlayerCount(record.playerCount!);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat.yMMMMd(l10n.localeName);
-    final ts = context.talkShuffle;
 
-    return Scaffold(
-      backgroundColor: ts.scaffoldPlayWarm,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        title: Text(
-          l10n.historyTitle,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+    return HomeScaffold(
+      title: l10n.historyTitle,
+      leading: HomeBackButton(onPressed: () => Navigator.of(context).pop()),
+      actions: [
+        HomeHeaderIconButton(
+          icon: Icons.delete_sweep,
+          tooltip: l10n.historyDeleteAll,
+          onPressed: () => _confirmDeleteAll(context, l10n),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep, color: _black),
-            tooltip: l10n.historyDeleteAll,
-            onPressed: () => _confirmDeleteAll(context, l10n),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: SessionRecordService.listenable(),
-          builder: (context, box, _) {
-            final records = SessionRecordService.getRecords();
-            final filtered = _filter == 'all'
-                ? records
-                : records.where((e) => e.mode == _filter).toList();
-            return Column(
-              children: [
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildFilterChips(l10n),
-                ),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    itemCount: filtered.isEmpty ? 1 : filtered.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      if (filtered.isEmpty) {
-                        final message = records.isEmpty
-                            ? l10n.historyEmptyMessage
-                            : l10n.historyEmptyFiltered;
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                            child: Text(
-                              message,
-                              style: TextStyle(
-                                color: _black.withOpacity(0.6),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                      final record = filtered[index];
-                      final dateLabel = dateFormat.format(record.playedAt);
-                      final modeLabel = _modeLabel(l10n, record);
-                      final title = l10n.historyListItemTitle(dateLabel, modeLabel);
-                      final playerCountText = record.playerCount != null
-                          ? l10n.historyPlayerCount(record.playerCount!)
-                          : null;
-
-                      return Material(
-                        color: _white,
-                        borderRadius: BorderRadius.circular(12),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (context) =>
-                                    SessionHistoryDetailPage(record: record),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color: _black.withOpacity(0.2), width: 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _black.withOpacity(0.06),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  title,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: _black,
-                                  ),
-                                ),
-                                if (playerCountText != null) ...[
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    playerCountText,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: _black.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
+      ],
+      body: ValueListenableBuilder(
+        valueListenable: SessionRecordService.listenable(),
+        builder: (context, box, _) {
+          final records = SessionRecordService.getRecords();
+          final filtered = _filter == 'all'
+              ? records
+              : records.where((e) => e.mode == _filter).toList();
+          return Column(
+            children: [
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _buildFilterChips(l10n),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView.separated(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  itemCount: filtered.isEmpty ? 1 : filtered.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    if (filtered.isEmpty) {
+                      final message = records.isEmpty
+                          ? l10n.historyEmptyMessage
+                          : l10n.historyEmptyFiltered;
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 32),
+                          child: Text(
+                            message,
+                            style: _subtitleStyle(),
                           ),
                         ),
                       );
-                    },
-                  ),
+                    }
+                    final record = filtered[index];
+                    final dateLabel = dateFormat.format(record.playedAt);
+                    final modeLabel = _modeLabel(l10n, record);
+                    final title =
+                        l10n.historyListItemTitle(dateLabel, modeLabel);
+                    final playersSubtitle = _playersSubtitle(l10n, record);
+
+                    return Material(
+                      color: HomePalette.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) =>
+                                  SessionHistoryDetailPage(record: record),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: HomePalette.border),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(title, style: _titleStyle()),
+                              if (playersSubtitle != null) ...[
+                                const SizedBox(height: 6),
+                                Text(playersSubtitle, style: _subtitleStyle()),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return FilterChip(
+      label: Text(
+        label,
+        style: GoogleFonts.zenKakuGothicNew(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: selected ? HomePalette.bg : HomePalette.text,
         ),
       ),
+      selected: selected,
+      showCheckmark: true,
+      checkmarkColor: HomePalette.bg,
+      selectedColor: HomePalette.accent,
+      backgroundColor: HomePalette.surface,
+      side: BorderSide(
+        color: selected
+            ? HomePalette.accent
+            : Colors.white.withValues(alpha: 0.12),
+      ),
+      onSelected: (_) => onTap(),
     );
   }
 
@@ -174,25 +188,25 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
       spacing: 8,
       runSpacing: 8,
       children: [
-        ChoiceChip(
-          label: Text(l10n.historyFilterAll),
+        _buildFilterChip(
+          label: l10n.historyFilterAll,
           selected: _filter == 'all',
-          onSelected: (_) => setState(() => _filter = 'all'),
+          onTap: () => setState(() => _filter = 'all'),
         ),
-        ChoiceChip(
-          label: Text(l10n.historyFilterDice),
+        _buildFilterChip(
+          label: l10n.historyFilterDice,
           selected: _filter == 'dice',
-          onSelected: (_) => setState(() => _filter = 'dice'),
+          onTap: () => setState(() => _filter = 'dice'),
         ),
-        ChoiceChip(
-          label: Text(l10n.historyFilterValueCards),
+        _buildFilterChip(
+          label: l10n.historyFilterValueCards,
           selected: _filter == 'value_cards',
-          onSelected: (_) => setState(() => _filter = 'value_cards'),
+          onTap: () => setState(() => _filter = 'value_cards'),
         ),
-        ChoiceChip(
-          label: Text(l10n.historyFilterDiscussion),
+        _buildFilterChip(
+          label: l10n.historyFilterDiscussion,
           selected: _filter == 'discussion',
-          onSelected: (_) => setState(() => _filter = 'discussion'),
+          onTap: () => setState(() => _filter = 'discussion'),
         ),
       ],
     );
@@ -205,8 +219,15 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
     final shouldDelete = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(l10n.historyDeleteAllTitle),
-            content: Text(l10n.historyDeleteAllMessage),
+            backgroundColor: HomePalette.surface,
+            title: Text(
+              l10n.historyDeleteAllTitle,
+              style: _titleStyle(fontSize: 18),
+            ),
+            content: Text(
+              l10n.historyDeleteAllMessage,
+              style: _subtitleStyle(),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -234,8 +255,21 @@ class SessionHistoryDetailPage extends StatelessWidget {
     required this.record,
   });
 
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  TextStyle _titleStyle({double fontSize = 16}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w700,
+        color: HomePalette.text,
+      );
+
+  TextStyle _bodyStyle() => GoogleFonts.zenKakuGothicNew(
+        fontSize: 14,
+        color: HomePalette.text,
+      );
+
+  TextStyle _mutedStyle({double fontSize = 13}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        color: HomePalette.textMuted,
+      );
 
   String _modeLabel(AppLocalizations l10n) {
     switch (record.mode) {
@@ -249,177 +283,148 @@ class SessionHistoryDetailPage extends StatelessWidget {
     }
   }
 
+  Widget? _buildPlayersSummary(AppLocalizations l10n) {
+    final names = record.displayPlayerNames;
+    if (names.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.historyPlayersTitle, style: _mutedStyle()),
+          const SizedBox(height: 6),
+          ...names.map(
+            (name) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text('・$name', style: _bodyStyle()),
+            ),
+          ),
+        ],
+      );
+    }
+    if (record.playerCount != null) {
+      return Text(
+        l10n.historyPlayerCount(record.playerCount!),
+        style: _mutedStyle(),
+      );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat.yMMMMd(l10n.localeName);
     final dateLabel = dateFormat.format(record.playedAt);
     final modeLabel = _modeLabel(l10n);
-    final ts = context.talkShuffle;
     final hideFlatTopics = record.mode == 'discussion' &&
         record.selectedCardsByPlayer.isNotEmpty;
+    final playersSummary = _buildPlayersSummary(l10n);
 
-    return Scaffold(
-      backgroundColor: ts.scaffoldPlayWarm,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        title: Text(
-          l10n.historyDetailTitle,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+    return HomeScaffold(
+      title: l10n.historyDetailTitle,
+      leading: HomeBackButton(onPressed: () => Navigator.of(context).pop()),
+      actions: [
+        HomeHeaderIconButton(
+          icon: Icons.delete_outline,
+          tooltip: l10n.historyDeleteOne,
+          onPressed: () => _confirmDeleteOne(context, l10n),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline, color: _black),
-            tooltip: l10n.historyDeleteOne,
-            onPressed: () => _confirmDeleteOne(context, l10n),
+      ],
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        children: [
+          _buildSectionCard(
+            title: l10n.historySummaryTitle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.historyListItemTitle(dateLabel, modeLabel),
+                  style: _titleStyle(),
+                ),
+                if (playersSummary != null) ...[
+                  const SizedBox(height: 10),
+                  playersSummary,
+                ],
+              ],
+            ),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          children: [
+          if (record.topics.isNotEmpty && !hideFlatTopics) ...[
+            const SizedBox(height: 16),
             _buildSectionCard(
-              title: l10n.historySummaryTitle,
+              title: l10n.historyTopicsTitle,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: record.topics
+                    .map((topic) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text('・$topic', style: _bodyStyle()),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+          if (record.selectedCardsByPlayer.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            _buildSectionCard(
+              title: record.mode == 'discussion'
+                  ? l10n.historyDiscussionPromptsTitle
+                  : l10n.historySelectedCardsTitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.historyListItemTitle(dateLabel, modeLabel),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                  if (record.playerCount != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.historyPlayerCount(record.playerCount!),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: _black.withOpacity(0.65),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            if (record.topics.isNotEmpty && !hideFlatTopics) ...[
-              const SizedBox(height: 16),
-              _buildSectionCard(
-                title: l10n.historyTopicsTitle,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: record.topics
-                      .map((topic) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              '・$topic',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: _black,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ],
-            if (record.selectedCardsByPlayer.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              _buildSectionCard(
-                title: record.mode == 'discussion'
-                    ? l10n.historyDiscussionPromptsTitle
-                    : l10n.historySelectedCardsTitle,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...record.selectedCardsByPlayer.entries.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.key,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: _black.withOpacity(0.7),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            ...entry.value.map((card) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
-                                  child: Text(
-                                    '・$card',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: _black,
-                                    ),
-                                  ),
-                                )),
-                          ],
-                        ),
-                      );
-                    }),
-                    if (record.mode == 'discussion')
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          l10n.historyDiscussionPromptsFootnote,
-                          style: TextStyle(
-                            fontSize: 12,
-                            height: 1.35,
-                            color: _black.withOpacity(0.55),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-            if (record.voteResults.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              _buildSectionCard(
-                title: l10n.voteResultsTitle,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: record.voteResults.entries.map((entry) {
+                  ...record.selectedCardsByPlayer.entries.map((entry) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            entry.key,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: _black,
-                            ),
-                          ),
-                          Text(
-                            l10n.voteCount(entry.value),
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: _black.withOpacity(0.7),
-                            ),
-                          ),
+                          Text(entry.key, style: _mutedStyle()),
+                          const SizedBox(height: 6),
+                          ...entry.value.map((card) => Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Text('・$card', style: _bodyStyle()),
+                              )),
                         ],
                       ),
                     );
-                  }).toList(),
-                ),
+                  }),
+                  if (record.mode == 'discussion')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        l10n.historyDiscussionPromptsFootnote,
+                        style: _mutedStyle(fontSize: 12),
+                      ),
+                    ),
+                ],
               ),
-            ],
+            ),
           ],
-        ),
+          if (record.voteResults.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            _buildSectionCard(
+              title: l10n.voteResultsTitle,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: record.voteResults.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(entry.key, style: _bodyStyle()),
+                        Text(
+                          l10n.voteCount(entry.value),
+                          style: _mutedStyle(),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -431,8 +436,22 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final shouldDelete = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(l10n.historyDeleteOneTitle),
-            content: Text(l10n.historyDeleteOneMessage),
+            backgroundColor: HomePalette.surface,
+            title: Text(
+              l10n.historyDeleteOneTitle,
+              style: GoogleFonts.zenKakuGothicNew(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: HomePalette.text,
+              ),
+            ),
+            content: Text(
+              l10n.historyDeleteOneMessage,
+              style: GoogleFonts.zenKakuGothicNew(
+                fontSize: 14,
+                color: HomePalette.textMuted,
+              ),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -461,26 +480,19 @@ class SessionHistoryDetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: _white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _black.withOpacity(0.2), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: _black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: HomePalette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: HomePalette.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: GoogleFonts.zenKakuGothicNew(
               fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: _black.withOpacity(0.75),
+              fontWeight: FontWeight.w700,
+              color: HomePalette.textMuted,
             ),
           ),
           const SizedBox(height: 10),

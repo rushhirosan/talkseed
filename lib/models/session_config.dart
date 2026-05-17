@@ -33,6 +33,10 @@ class SessionConfig {
   /// null のときはセッション設定画面で未指定（議論画面では 1 などにフォールバック）。
   final int? discussionPromptsPerCategory;
 
+  /// 議論モード（カテゴリー別デッキ）: このセッションで話し合うお題の枚数（設定の「話すお題の数」）。
+  /// null のときはプール卓の全枚。議論画面ではこの枚数ぶんカードを選んでから進む（プール全枚＝未選択で全カード順に話すことも可）。
+  final int? discussionTotalPromptsOnTable;
+
   /// 議論モードのみ: 出題するカテゴリー ID（CardDeck の theme キーから導出される ID と同じ体系）。
   /// null なら全カテゴリ。空リスト [] は「1つも選んでいない」。非空ならそのカテゴリのみ。
   final List<String>? discussionCategoryIds;
@@ -45,12 +49,18 @@ class SessionConfig {
     this.playerNames,
     this.discussionPromptCap,
     this.discussionPromptsPerCategory,
+    this.discussionTotalPromptsOnTable,
     this.discussionCategoryIds,
   })  : assert(playerCount >= 2 && playerCount <= 10, '参加人数は2-10人の範囲で設定してください'),
         assert(
           discussionPromptsPerCategory == null ||
               discussionPromptsPerCategory > 0,
           'discussionPromptsPerCategory must be positive when set',
+        ),
+        assert(
+          discussionTotalPromptsOnTable == null ||
+              discussionTotalPromptsOnTable > 0,
+          'discussionTotalPromptsOnTable must be positive when set',
         );
   
   /// デフォルト設定
@@ -61,6 +71,7 @@ class SessionConfig {
     enableTimer: true,
     discussionPromptCap: null,
     discussionPromptsPerCategory: null,
+    discussionTotalPromptsOnTable: null,
     discussionCategoryIds: null,
   );
   
@@ -84,6 +95,8 @@ class SessionConfig {
     bool applyDiscussionPromptCap = false,
     int? discussionPromptsPerCategory,
     bool applyDiscussionPromptsPerCategory = false,
+    int? discussionTotalPromptsOnTable,
+    bool applyDiscussionTotalPromptsOnTable = false,
     List<String>? discussionCategoryIds,
     bool applyDiscussionCategoryIds = false,
   }) {
@@ -99,6 +112,9 @@ class SessionConfig {
       discussionPromptsPerCategory: applyDiscussionPromptsPerCategory
           ? discussionPromptsPerCategory
           : this.discussionPromptsPerCategory,
+      discussionTotalPromptsOnTable: applyDiscussionTotalPromptsOnTable
+          ? discussionTotalPromptsOnTable
+          : this.discussionTotalPromptsOnTable,
       discussionCategoryIds: applyDiscussionCategoryIds
           ? discussionCategoryIds
           : this.discussionCategoryIds,

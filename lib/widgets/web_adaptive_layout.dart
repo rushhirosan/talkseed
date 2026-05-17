@@ -30,55 +30,57 @@ class WebAdaptiveLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!_isWideScreenPlatform) return child;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        final height = constraints.maxHeight;
-        // 制約が不正な場合（初回レイアウト等）は子をそのまま返す
-        if (!width.isFinite || width <= 0 || !height.isFinite || height <= 0) {
-          return child;
-        }
-        if (width <= breakpoint) return child;
+    // LayoutBuilder は子画面側と入れ子にすると戻る遷移時に mutation エラーになりやすいため MediaQuery を使う
+    final size = MediaQuery.sizeOf(context);
+    final width = size.width;
+    final height = size.height;
+    if (!width.isFinite || width <= 0 || !height.isFinite || height <= 0) {
+      return child;
+    }
+    if (width <= breakpoint) return child;
 
-        // 広い画面では余白を残しつつ maxContentWidth まで拡大
-        final effectiveWidth =
-            (width - 80).clamp(0.0, maxContentWidth).toDouble();
+    final effectiveWidth =
+        (width - 80).clamp(120.0, maxContentWidth).toDouble();
 
-        return Container(
-          width: double.infinity,
-          height: constraints.maxHeight,
-          decoration: const BoxDecoration(
-            // Web向け: 黄色と重ならない落ち着いた中性色。アプリ内の黄色アクセントが際立つ
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFF5F6F8), // 明るいグレー
-                Color(0xFFE8EAED), // ソフトグレー
-                Color(0xFFE1E4E8), // やや濃いめのグレー
-              ],
-              stops: [0.0, 0.5, 1.0],
+    final double innerHeight;
+    if (maxContentHeight == null) {
+      innerHeight = height.isFinite ? height : 900.0;
+    } else if (!height.isFinite) {
+      innerHeight = maxContentHeight!;
+    } else {
+      innerHeight = height.clamp(120.0, maxContentHeight!);
+    }
+
+    return Container(
+      width: double.infinity,
+      height: height,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFF5F6F8),
+            Color(0xFFE8EAED),
+            Color(0xFFE1E4E8),
+          ],
+          stops: [0.0, 0.5, 1.0],
+        ),
+      ),
+      child: Center(
+        child: Material(
+          elevation: 16,
+          shadowColor: Colors.black26,
+          borderRadius: BorderRadius.circular(24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: SizedBox(
+              width: effectiveWidth,
+              height: innerHeight,
+              child: child,
             ),
           ),
-          child: Center(
-            child: Material(
-              elevation: 16,
-              shadowColor: Colors.black26,
-              borderRadius: BorderRadius.circular(24),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: SizedBox(
-                  width: effectiveWidth,
-                  height: maxContentHeight != null
-                      ? constraints.maxHeight.clamp(0, maxContentHeight!)
-                      : constraints.maxHeight,
-                  child: child,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

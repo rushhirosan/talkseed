@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:math';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_primary_button.dart';
+import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
 import '../utils/preferences_helper.dart';
@@ -11,7 +14,6 @@ import 'session_setup_page.dart';
 import 'topics_page.dart';
 import 'mode_selection_page.dart';
 import '../models/preselected_mode.dart';
-import '../theme/talk_shuffle_theme.dart';
 
 /// テーマ設定画面（モード選択後、テーマ編集して遊ぶ画面へ遷移）
 class InitialSettingsPage extends StatefulWidget {
@@ -64,6 +66,14 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       _controllers[type] = themes.map((theme) => TextEditingController(text: theme)).toList();
     }
     _initialized = true;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initializeThemes(AppLocalizations.of(context)!);
+    }
   }
 
   @override
@@ -138,8 +148,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       );
     } else {
       Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => SessionSetupPage(themes: themes),
+        RouteTransitions.forwardRoute(
+          page: SessionSetupPage(themes: themes),
         ),
       );
     }
@@ -228,149 +238,211 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     ];
   }
 
-  // 色は [TalkShuffleTokens] に統一
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  TextStyle _labelStyle({double fontSize = 20}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w700,
+        color: HomePalette.text,
+      );
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: _white,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: _black),
-          onPressed: _goBackToModeSelection,
-          tooltip: l10n.backToModeSelection,
-        ),
-        title: Text(
-          l10n.settings,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+  TextStyle _hintStyle({double fontSize = 13}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        height: 1.35,
+        color: HomePalette.textMuted,
+      );
+
+  Widget _panel({
+    required Widget child,
+    EdgeInsets padding = const EdgeInsets.fromLTRB(16, 12, 16, 16),
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: HomePalette.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: HomePalette.border),
+      ),
+      padding: padding,
+      child: child,
+    );
+  }
+
+  Widget _buildSettingsBody(AppLocalizations l10n, EdgeInsets panelPadding) {
+    final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
+
+    if (keyboardVisible) {
+      final slotWidth = _panelContentWidth(context, twoColumn: false);
+      return SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPadding + 80),
+        child: _panel(
+          padding: panelPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildThemeTitleSection(),
+              const SizedBox(height: 8),
+              Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
+              const SizedBox(height: 32),
+              _buildFaceColumn(slotWidth),
+              const SizedBox(height: 12),
+              _buildRandomResetRow(l10n),
+              const SizedBox(height: 12),
+              ..._buildPlayButtons(l10n),
+              const SizedBox(height: 16),
+              Text(
+                l10n.useVariantsToChooseTheme,
+                style: _hintStyle(),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
-        actions: const [],
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // キーボード表示時は入力エリアのみ全幅表示（横並びだと圧縮されて文字が重なる）
-            final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
-            final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
-            if (keyboardVisible) {
-              return SingleChildScrollView(
-                padding: EdgeInsets.only(top: 16, bottom: bottomPadding + 80),
-                child: Container(
-                  color: context.talkShuffle.scaffoldHome,
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildThemeTitleSection(),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.faceThemesList,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: _black.withOpacity(0.85),
-                        ),
-                      ),
-                      // キーボード表示時はラベルとスロットの間を広げて重なりを防ぐ
-                      const SizedBox(height: 32),
-                      _buildFaceColumn(),
-                      const SizedBox(height: 12),
-                      _buildRandomResetRow(l10n),
-                      const SizedBox(height: 12),
-                      ..._buildPlayButtons(l10n),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.useVariantsToChooseTheme,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: _black.withOpacity(0.6),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 360),
-                    child: Container(
-                      color: context.talkShuffle.scaffoldHome,
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                      child: Column(
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final stacked = constraints.maxWidth < 560;
+        final panelWidth = _panelContentWidth(
+          context,
+          twoColumn: !stacked,
+        );
+
+        if (stacked) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _panel(
+                    padding: panelPadding,
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildThemeTitleSection(),
-                                const SizedBox(height: 8),
-                                Text(
-                                  l10n.faceThemesList,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: _black.withOpacity(0.85),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                _buildFaceColumn(),
-                                const SizedBox(height: 12),
-                                _buildRandomResetRow(l10n),
-                              ],
-                            ),
-                          ),
+                        _buildLeftPanelContent(
+                          l10n,
+                          slotWidth: panelWidth,
+                          scrollable: false,
                         ),
                         const SizedBox(height: 12),
                         ..._buildPlayButtons(l10n),
                       ],
                     ),
                   ),
-                ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 380),
-                      child: Container(
-                        color: _white,
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                        child: _buildThemeCandidatesSection(),
+                  const SizedBox(height: 12),
+                  _panel(
+                    padding: panelPadding,
+                    child: _buildThemeCandidatesSection(panelWidth),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _panel(
+                  padding: panelPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: _buildLeftPanelContent(
+                          l10n,
+                          slotWidth: panelWidth,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      ..._buildPlayButtons(l10n),
+                    ],
                   ),
                 ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _panel(
+                  padding: panelPadding,
+                  child: _buildThemeCandidatesSection(panelWidth),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  /// アクションボタン
+  /// 左右2カラム時の1パネル内コンテンツ幅（LayoutBuilder を避けるため MediaQuery で算出）
+  double _panelContentWidth(BuildContext context, {required bool twoColumn}) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    const bodyPadding = 16.0 * 2;
+    const panelPadding = 16.0 * 2;
+    const columnGap = 12.0;
+    if (!twoColumn) {
+      return (screenWidth - bodyPadding - panelPadding).clamp(200.0, 600.0);
+    }
+    return ((screenWidth - bodyPadding - columnGap) / 2 - panelPadding)
+        .clamp(160.0, 360.0);
+  }
+
+  Widget _buildLeftPanelContent(
+    AppLocalizations l10n, {
+    required double slotWidth,
+    bool scrollable = true,
+  }) {
+    final column = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildThemeTitleSection(),
+        const SizedBox(height: 8),
+        Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
+        const SizedBox(height: 8),
+        _buildFaceColumn(slotWidth),
+        const SizedBox(height: 12),
+        _buildRandomResetRow(l10n),
+      ],
+    );
+    if (!scrollable) return column;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: column,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    if (!_initialized || _themes == null) {
+      return HomeScaffold(
+        title: l10n.settings,
+        leading: HomeBackButton(
+          onPressed: _goBackToModeSelection,
+          tooltip: l10n.backToModeSelection,
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: HomePalette.accent),
+        ),
+      );
+    }
+    const panelPadding = EdgeInsets.fromLTRB(16, 12, 16, 16);
+
+    return HomeScaffold(
+      title: l10n.settings,
+      leading: HomeBackButton(
+        onPressed: _goBackToModeSelection,
+        tooltip: l10n.backToModeSelection,
+      ),
+      body: _buildSettingsBody(l10n, panelPadding),
+    );
+  }
+
   Widget _buildActionButton({
     required IconData icon,
     required String label,
@@ -378,69 +450,53 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required bool isPrimary,
   }) {
     if (isPrimary) {
-      return ElevatedButton.icon(
+      return HomePrimaryButton(
+        label: label,
+        icon: icon,
         onPressed: onPressed,
-        icon: Icon(icon, color: _white),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: _white,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.visible,
-          textAlign: TextAlign.center,
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _black,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-    } else {
-      return OutlinedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, color: _black),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: _black,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.visible,
-          textAlign: TextAlign.center,
-        ),
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          side: const BorderSide(color: _black, width: 1.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          backgroundColor: _white.withOpacity(0.6),
-          foregroundColor: _black,
-        ).copyWith(
-          side: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.focused) ||
-                states.contains(WidgetState.hovered)) {
-              return const BorderSide(color: _black, width: 2.5);
-            }
-            return const BorderSide(color: _black, width: 1.5);
-          }),
-          overlayColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.hovered) ||
-                states.contains(WidgetState.pressed)) {
-              return _black.withOpacity(0.08);
-            }
-            return null;
-          }),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       );
     }
+    return Material(
+      color: HomePalette.surface2,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: HomePalette.border),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 22, color: HomePalette.text),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      style: GoogleFonts.zenKakuGothicNew(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: HomePalette.text,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   // 注意: 多面体タイプ選択セクションは削除されました
@@ -487,29 +543,14 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   /// テーマセクション（タイトルのみ）
   Widget _buildThemeTitleSection() {
     final l10n = AppLocalizations.of(context)!;
-    _initializeThemes(l10n);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.themeCube,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: _black,
-          ),
-        ),
+        Text(l10n.themeCube, style: _labelStyle()),
         const SizedBox(height: 4),
-        Text(
-          l10n.yourThemes,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.normal,
-            color: _black.withOpacity(0.7),
-          ),
-        ),
+        Text(l10n.yourThemes, style: _hintStyle()),
       ],
     );
   }
@@ -555,42 +596,37 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }) {
     return Tooltip(
       message: tooltip,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.all(12),
-          minimumSize: const Size(48, 48),
-          side: const BorderSide(color: _black, width: 1.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+      child: Material(
+        color: isActive ? HomePalette.accent : HomePalette.surface2,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 48,
+            height: 48,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isActive
+                    ? HomePalette.accent
+                    : Colors.white.withValues(alpha: 0.12),
+              ),
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: isActive ? HomePalette.bg : HomePalette.textMuted,
+            ),
           ),
-          backgroundColor: isActive ? _black : _white.withOpacity(0.6),
-          foregroundColor: isActive ? _white : _black,
-        ).copyWith(
-          side: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.focused) ||
-                states.contains(WidgetState.hovered)) {
-              return const BorderSide(color: _black, width: 2.5);
-            }
-            return const BorderSide(color: _black, width: 1.5);
-          }),
-          overlayColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.hovered) ||
-                states.contains(WidgetState.pressed)) {
-              return isActive ? _white.withOpacity(0.12) : _black.withOpacity(0.08);
-            }
-            return null;
-          }),
         ),
-        child: Icon(icon, size: 22),
       ),
     );
   }
 
   /// 面1〜面6を縦一列に表示（Columnで単一スクロールに統合、ensureVisibleが正しく効く）
-  Widget _buildFaceColumn() {
-    final l10n = AppLocalizations.of(context)!;
-    _initializeThemes(l10n);
+  Widget _buildFaceColumn(double slotWidth) {
     final currentThemes = _themes![_selectedType] ?? [];
     final controllers = _controllers[_selectedType] ?? [];
     const double slotHeight = 64;
@@ -603,10 +639,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
             padding: const EdgeInsets.only(bottom: 4),
             child: SizedBox(
               height: slotHeight,
+              width: double.infinity,
               child: _buildFaceSlot(
                 index: i,
                 currentThemes: currentThemes,
                 controllers: controllers,
+                slotWidth: slotWidth,
               ),
             ),
           ),
@@ -619,19 +657,15 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required int index,
     required List<String> currentThemes,
     required List<TextEditingController> controllers,
+    required double slotWidth,
   }) {
-    if (index >= controllers.length) {
-      controllers.add(TextEditingController(text: currentThemes[index]));
-    }
-    if (controllers[index].text != currentThemes[index]) {
-      controllers[index].text = currentThemes[index];
-    }
     return Builder(
       builder: (slotContext) {
         return _buildDraggableTextField(
           index: index,
           controller: controllers[index],
           compact: true,
+          availableWidth: slotWidth,
           onFocused: () {
             if (_ensureVisibleScheduled) return;
             _ensureVisibleScheduled = true;
@@ -694,10 +728,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     required int index,
     required TextEditingController controller,
     bool compact = false,
+    double availableWidth = 280,
     void Function()? onFocused,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    _initializeThemes(l10n);
     return DragTarget<String>(
       onAccept: (data) {
         setState(() {
@@ -713,34 +747,38 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
         final isJustDropped = _lastDroppedIndex == index;
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return ValueListenableBuilder<TextEditingValue>(
-              valueListenable: controller,
-              builder: (context, value, child) {
-                final currentText = value.text;
-                final currentFontSize = _calculateFontSize(
-                  currentText,
-                  constraints.maxWidth,
-                  compact: compact,
-                );
-                
-                return AnimatedContainer(
+        return ValueListenableBuilder<TextEditingValue>(
+          valueListenable: controller,
+          builder: (context, value, child) {
+            final currentText = value.text;
+            final currentFontSize = _calculateFontSize(
+              currentText,
+              availableWidth,
+              compact: compact,
+            );
+
+            return AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeOut,
                   width: compact ? double.infinity : null,
-                  height: compact ? constraints.maxHeight : null,
+                  height: compact ? 64 : null,
                   decoration: BoxDecoration(
-                    color: isJustDropped ? const Color(0xFFE8F5E9) : _white,
+                    color: isJustDropped
+                        ? HomePalette.accent.withValues(alpha: 0.12)
+                        : HomePalette.surface2,
                     border: Border.all(
-                      color: isJustDropped ? const Color(0xFF4CAF50) : _black,
-                      width: isHighlighted ? 2.5 : (isJustDropped ? 2.5 : 1.5),
+                      color: isJustDropped
+                          ? HomePalette.accent
+                          : isHighlighted
+                              ? HomePalette.purple
+                              : Colors.white.withValues(alpha: 0.12),
+                      width: isHighlighted || isJustDropped ? 2 : 1,
                     ),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: isJustDropped
                         ? [
                             BoxShadow(
-                              color: const Color(0xFF4CAF50).withOpacity(0.3),
+                              color: HomePalette.accent.withValues(alpha: 0.25),
                               blurRadius: 8,
                               spreadRadius: 1,
                             ),
@@ -756,11 +794,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                   ? TextField(
                                       focusNode: _faceFocusNodes[index],
                                         controller: controller,
-                                        style: TextStyle(
+                                        style: GoogleFonts.zenKakuGothicNew(
                                           fontSize: currentFontSize,
-                                          color: _black,
-                                          fontWeight: FontWeight.normal,
+                                          color: HomePalette.text,
+                                          fontWeight: FontWeight.w400,
                                         ),
+                                        cursorColor: HomePalette.accent,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
                                         textAlignVertical: TextAlignVertical.center,
@@ -771,10 +810,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                             vertical: 14,
                                           ),
                                           hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
-                                          hintStyle: TextStyle(
-                                            color: _black.withOpacity(0.4),
+                                          hintStyle: GoogleFonts.zenKakuGothicNew(
+                                            color: HomePalette.textMuted,
                                             fontSize: 12,
-                                            fontWeight: FontWeight.normal,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                           isDense: true,
                                           filled: true,
@@ -809,12 +848,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                               currentText.isEmpty
                                                   ? (isHighlighted ? l10n.dropHere : l10n.themeInputHint)
                                                   : currentText,
-                                              style: TextStyle(
+                                              style: GoogleFonts.zenKakuGothicNew(
                                                 fontSize: currentText.isEmpty ? 12 : currentFontSize,
                                                 color: currentText.isEmpty
-                                                    ? _black.withOpacity(0.4)
-                                                    : _black,
-                                                fontWeight: FontWeight.normal,
+                                                    ? HomePalette.textMuted
+                                                    : HomePalette.text,
+                                                fontWeight: FontWeight.w400,
                                               ),
                                               textAlign: TextAlign.center,
                                               maxLines: 1,
@@ -829,19 +868,20 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                         )
                       : TextField(
                           controller: controller,
-                          style: TextStyle(
+                          style: GoogleFonts.zenKakuGothicNew(
                             fontSize: currentFontSize,
-                            color: _black,
-                            fontWeight: FontWeight.normal,
+                            color: HomePalette.text,
+                            fontWeight: FontWeight.w400,
                           ),
+                          cursorColor: HomePalette.accent,
                           maxLines: 1,
                           textAlign: TextAlign.center,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             labelText: l10n.faceLabel(index + 1),
-                            labelStyle: TextStyle(
-                              color: _black.withOpacity(0.6),
-                              fontWeight: FontWeight.normal,
+                            labelStyle: GoogleFonts.zenKakuGothicNew(
+                              color: HomePalette.textMuted,
+                              fontWeight: FontWeight.w400,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
@@ -849,8 +889,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                               vertical: 12,
                             ),
                             hintText: isHighlighted ? l10n.dropHere : l10n.themeInputHint,
-                            hintStyle: TextStyle(
-                              color: _black.withOpacity(0.4),
+                            hintStyle: GoogleFonts.zenKakuGothicNew(
+                              color: HomePalette.textMuted,
                               fontSize: currentFontSize,
                             ),
                             isDense: true,
@@ -860,8 +900,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                             _themes![_selectedType]![index] = value;
                           },
                         ),
-                );
-              },
             );
           },
         );
@@ -870,12 +908,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }
 
   /// テーマ候補セクション
-  Widget _buildThemeCandidatesSection() {
+  Widget _buildThemeCandidatesSection(double gridWidth) {
     final l10n = AppLocalizations.of(context)!;
+    final isWide = gridWidth >= 280;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 中央の指示テキスト
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Row(
@@ -886,10 +924,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               Flexible(
                 child: Text(
                   l10n.useVariantsToChooseTheme,
-                  style: TextStyle(
+                  style: GoogleFonts.zenKakuGothicNew(
                     fontSize: 15,
                     height: 1.3,
-                    color: Colors.black87.withOpacity(0.85),
+                    color: HomePalette.textMuted,
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
@@ -900,38 +938,24 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           ),
         ),
         Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final w = constraints.maxWidth;
-              // モバイル（幅 280 未満）: 従来どおり 1 列・高さ多め
-              // 広い画面: 複数列・固定高さでコンパクトに
-              final isWide = w >= 280;
-              return Scrollbar(
-                controller: _rightScrollController,
-                thumbVisibility: true,
-                thickness: 6,
-                radius: const Radius.circular(3),
-                child: GridView.builder(
-                  controller: _rightScrollController,
-                  primary: false,
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: isWide ? 180 : w,
-                    mainAxisExtent: 64,
-                    crossAxisSpacing: isWide ? 8 : 0,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: ThemeModel.getThemeCandidates(l10n).length,
-                  itemBuilder: (context, index) {
-                    final candidates = ThemeModel.getThemeCandidates(l10n);
-                    final candidate = candidates[index];
-                    return _buildDraggableCandidate(context, candidate, index);
-                  },
-                ),
-              );
+          child: GridView.builder(
+            controller: _rightScrollController,
+            primary: false,
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            padding: const EdgeInsets.only(left: 8, right: 32, bottom: 24),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: isWide ? 180 : gridWidth,
+              mainAxisExtent: 64,
+              crossAxisSpacing: isWide ? 8 : 0,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: ThemeModel.getThemeCandidates(l10n).length,
+            itemBuilder: (context, index) {
+              final candidates = ThemeModel.getThemeCandidates(l10n);
+              final candidate = candidates[index];
+              return _buildDraggableCandidate(context, candidate, index);
             },
           ),
         ),
@@ -939,9 +963,14 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     );
   }
 
-  /// パステルカラーを取得（インデックスに基づいて循環）
-  Color _getPastelColor(BuildContext context, int index) {
-    return context.talkShuffle.playerPastel(index);
+  Color _candidateTint(int index) {
+    final tints = [
+      HomePalette.purple.withValues(alpha: 0.22),
+      HomePalette.accent.withValues(alpha: 0.16),
+      HomePalette.purple.withValues(alpha: 0.14),
+      HomePalette.accentOrange.withValues(alpha: 0.16),
+    ];
+    return tints[index % tints.length];
   }
 
   /// ドラッグ可能なテーマ候補アイテム
@@ -950,26 +979,26 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     String theme,
     int index,
   ) {
-    final pastelColor = _getPastelColor(context, index);
+    final tint = _candidateTint(index);
 
     return Draggable<String>(
       data: theme,
       feedback: Material(
         elevation: 8,
         borderRadius: BorderRadius.circular(12),
-        color: pastelColor,
+        color: HomePalette.surface2,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: pastelColor,
+            color: tint,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black87, width: 1.5),
+            border: Border.all(color: HomePalette.accent, width: 1.5),
           ),
           child: Text(
             theme,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
+            style: GoogleFonts.zenKakuGothicNew(
+              color: HomePalette.text,
+              fontWeight: FontWeight.w700,
               fontSize: 16,
             ),
           ),
@@ -979,16 +1008,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         opacity: 0.3,
         child: Container(
           decoration: BoxDecoration(
-            color: pastelColor,
+            color: tint,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black87.withOpacity(0.3), width: 1.5),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.08),
+            ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Center(
             child: Text(
               theme,
-              style: TextStyle(
-                color: Colors.black87.withOpacity(0.5),
+              style: GoogleFonts.zenKakuGothicNew(
+                color: HomePalette.textMuted,
                 fontSize: 13,
               ),
               textAlign: TextAlign.center,
@@ -1001,18 +1032,18 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       child: SizedBox.expand(
         child: Container(
           decoration: BoxDecoration(
-            color: pastelColor,
+            color: tint,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black87, width: 1.5),
+            border: Border.all(color: HomePalette.border),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Center(
             child: Text(
               theme,
-              style: const TextStyle(
-                color: Colors.black87,
+              style: GoogleFonts.zenKakuGothicNew(
+                color: HomePalette.text,
                 fontSize: 13,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w400,
               ),
               textAlign: TextAlign.center,
               maxLines: 3,

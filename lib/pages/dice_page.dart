@@ -13,6 +13,8 @@ import 'package:theme_dice/models/game_session.dart';
 import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/dice_3d_utils.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/utils/safe_navigation.dart';
+import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/widgets/dice_widget.dart';
 import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
@@ -20,9 +22,12 @@ import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
-import 'package:theme_dice/pages/session_setup_page.dart';
+import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/services/session_record_service.dart';
-import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_primary_button.dart';
+import 'package:theme_dice/widgets/home/home_scaffold.dart';
 
 /// サイコロゲームのメインページ。
 /// 3Dサイコロのアニメーション、テーマ表示、セッション（複数プレイヤー・タイマー）を担当。
@@ -59,10 +64,10 @@ class _DicePageState extends State<DicePage>
   // セッション管理（新規追加）
   GameSession? _session;
   TimerService? _timerService;
-  /// 全員振り終えた後に表示する振り返り画面を表示中か
-  bool _showingSessionSummary = false;
   /// 投票画面を表示中か
   bool _showingVoteScreen = false;
+  /// 終了ダイアログを表示済みか
+  bool _didShowEndDialog = false;
   /// 投票中のプレイヤー（0始まり）
   int _currentVoterIndex = 0;
   /// 投票結果（プレイヤーindex -> 票数）
@@ -111,7 +116,6 @@ class _DicePageState extends State<DicePage>
         isActive: true,
       );
       _session!.startSession();
-      _showingSessionSummary = false;
       _showingVoteScreen = false;
       _currentVoterIndex = 0;
       _voteCounts.clear();
@@ -376,40 +380,35 @@ class _DicePageState extends State<DicePage>
     }
   }
 
-  /// 振り返り画面で「セッションを終了」を押したときの処理
-  void _onSessionSummaryEnd() {
+  void _presentSessionEndDialog() {
+    if (_didShowEndDialog || !mounted) return;
+    _didShowEndDialog = true;
     final l10n = AppLocalizations.of(context)!;
     if (_session != null) {
       _saveDiceRecord(
         topics: _session!.rounds.map((e) => e.theme).toList(),
         playerCount: _session!.config.playerCount,
+        playerNames: SessionRecord.labelsForPlayers(
+          playerCount: _session!.config.playerCount,
+          configPlayerNames: _session!.config.playerNames,
+          defaultName: l10n.playerName,
+        ),
         voteResults: _voteResultsForRecord(l10n),
       );
     }
     setState(() {
-      _showingSessionSummary = false;
       _showingVoteScreen = false;
       _currentVoterIndex = 0;
       _voteCounts.clear();
       _hasVoting = false;
     });
-    if (widget.sessionConfig != null) {
-      final themes = _themes ?? widget.initialThemes ?? {
-        PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
-      };
-      Navigator.of(context).pushReplacement(
-        RouteTransitions.backRoute(
-          page: SessionSetupPage(themes: themes, fromDicePage: true),
-        ),
-      );
-    } else {
-      setState(() => _session = null);
-    }
+    SessionEndDialog.show(context);
   }
 
   void _saveDiceRecord({
     required List<String> topics,
     required int? playerCount,
+    required List<String> playerNames,
     Map<String, int>? voteResults,
   }) {
     final record = SessionRecord.create(
@@ -417,6 +416,7 @@ class _DicePageState extends State<DicePage>
       topics: topics,
       selectedCardsByPlayer: {},
       playerCount: playerCount,
+      playerNames: playerNames,
       voteResults: voteResults ?? {},
     );
     SessionRecordService.addRecord(record);
@@ -445,12 +445,11 @@ class _DicePageState extends State<DicePage>
     if (_session == null) return;
     final playerCount = _session!.config.playerCount;
     if (playerCount < 2) {
-      setState(() => _showingSessionSummary = true);
+      _presentSessionEndDialog();
       return;
     }
     setState(() {
       _showingVoteScreen = true;
-      _showingSessionSummary = false;
       _currentVoterIndex = 0;
       _voteCounts
         ..clear()
@@ -462,25 +461,37 @@ class _DicePageState extends State<DicePage>
   /// 投票を確定
   void _castVote(int targetIndex) {
     if (_session == null) return;
+    var votingComplete = false;
     setState(() {
       _voteCounts[targetIndex] = (_voteCounts[targetIndex] ?? 0) + 1;
       _currentVoterIndex++;
       if (_currentVoterIndex >= _session!.config.playerCount) {
         _showingVoteScreen = false;
-        _showingSessionSummary = true;
+        votingComplete = true;
       }
     });
+    if (votingComplete) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _presentSessionEndDialog();
+      });
+    }
   }
 
   void _skipVote() {
     if (_session == null) return;
+    var votingComplete = false;
     setState(() {
       _currentVoterIndex++;
       if (_currentVoterIndex >= _session!.config.playerCount) {
         _showingVoteScreen = false;
-        _showingSessionSummary = true;
+        votingComplete = true;
       }
     });
+    if (votingComplete) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _presentSessionEndDialog();
+      });
+    }
   }
 
   /// プレイヤー表示名を取得
@@ -502,197 +513,6 @@ class _DicePageState extends State<DicePage>
       results[_playerLabel(l10n, entry.key)] = entry.value;
     }
     return results;
-  }
-
-  /// セッション振り返り画面の本文を構築
-  Widget _buildSessionSummaryBody(AppLocalizations l10n) {
-    final ts = context.talkShuffle;
-    final rounds = _session!.rounds;
-    final voteEntries = _voteCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              l10n.sessionSummaryScreenTitle,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: _black.withOpacity(0.9),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 28),
-            ...rounds.map((result) {
-              final playerLabel = result.playerName?.isNotEmpty == true
-                  ? result.playerName!
-                  : l10n.playerName(result.playerIndex + 1);
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: _white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _black.withOpacity(0.3), width: 1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _black.withOpacity(0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.sessionSummaryPlayerTheme(playerLabel),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: _black.withOpacity(0.7),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        result.theme,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: _black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-            if (_voteCounts.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: _white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _black.withOpacity(0.3), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _black.withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.voteResultsTitle,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: _black.withOpacity(0.7),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...voteEntries.map((entry) {
-                      final label = _playerLabel(l10n, entry.key);
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              label,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: _black,
-                              ),
-                            ),
-                            Text(
-                              l10n.voteCount(entry.value),
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: _black.withOpacity(0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-            ],
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _onSessionSummaryEnd,
-                icon: const Icon(Icons.check_circle, color: _black),
-                label: Text(
-                  l10n.sessionEndButton,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: _black,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ts.brandYellow,
-                  foregroundColor: _black,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 2,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// セッション終了ダイアログを表示
-  void _showSessionEndDialog() {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.sessionSummary),
-        content: Text(l10n.sessionCompleteMessage),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // ダイアログを閉じる
-              if (widget.sessionConfig != null) {
-                // セッション設定画面から来た場合はセッション設定画面に戻る
-                final themes = _themes ?? widget.initialThemes ?? {
-                  PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n),
-                };
-                Navigator.of(context).pushReplacement(
-                  RouteTransitions.backRoute(
-                    page: SessionSetupPage(themes: themes, fromDicePage: true),
-                  ),
-                );
-              } else {
-                setState(() => _session = null);
-              }
-            },
-            child: Text(l10n.newSession),
-          ),
-        ],
-      ),
-    );
   }
 
   /// タイマーを一時停止/再開
@@ -722,60 +542,51 @@ class _DicePageState extends State<DicePage>
 
   /// 設定画面に戻る（セッション開始からの場合はセッション設定画面へ）
   void _goBackToSettings() {
-    final themes = _themes ?? widget.initialThemes ?? {
-      PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, AppLocalizations.of(context)!),
-    };
     if (widget.sessionConfig != null) {
-      // セッション設定画面から来た場合はセッション設定画面に戻る（戻るトランジション）
-      Navigator.of(context).pushReplacement(
-        RouteTransitions.backRoute(
-          page: SessionSetupPage(themes: themes, fromDicePage: true),
-        ),
-      );
-    } else {
-      // テーマ設定画面から来た場合はテーマ設定画面に戻る（戻るトランジション）
-      Navigator.of(context).pushReplacement(
-        RouteTransitions.backRoute(
-          page: const InitialSettingsPage(),
-        ),
-      );
+      safePop(context);
+      return;
     }
+    runAfterFrame(() {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.backRoute(
+          page: const InitialSettingsPage(
+            preselectedMode: PreselectedMode.dice,
+          ),
+        ),
+      );
+    });
   }
 
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  TextStyle _titleStyle({double fontSize = 20}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w700,
+        color: HomePalette.text,
+      );
+
+  TextStyle _bodyStyle({double fontSize = 14}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        color: HomePalette.text,
+      );
+
+  TextStyle _mutedStyle({double fontSize = 13}) => GoogleFonts.zenKakuGothicNew(
+        fontSize: fontSize,
+        color: HomePalette.textMuted,
+      );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final ts = context.talkShuffle;
-    // テーマが初期化されていない場合はデフォルト値を設定
     _themes ??= {PolyhedronType.cube: ThemeModel.getDefaultThemes(PolyhedronType.cube, l10n)};
-    return Scaffold(
-      backgroundColor: ts.scaffoldPlayWarm,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        title: Text(
-          l10n.appTitle,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: _black),
-          onPressed: _goBackToSettings,
-          tooltip: l10n.backToSettings,
-        ),
-        actions: const [],
+    return HomeScaffold(
+      title: l10n.appTitle,
+      leading: HomeBackButton(
+        onPressed: _goBackToSettings,
+        tooltip: l10n.backToSettings,
       ),
       body: _showingVoteScreen && _session != null
           ? _buildVoteBody(l10n)
-          : _showingSessionSummary && _session != null
-              ? _buildSessionSummaryBody(l10n)
-              : SingleChildScrollView(
+          : SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: MediaQuery.of(context).size.width,
@@ -795,6 +606,7 @@ class _DicePageState extends State<DicePage>
                   currentPlayerIndex: _session!.currentPlayerIndex,
                   totalPlayers: _session!.config.playerCount,
                   currentPlayerName: _session!.currentPlayerName,
+                  useHomeStyle: true,
                 ),
                 const SizedBox(height: 10),
               ],
@@ -806,6 +618,7 @@ class _DicePageState extends State<DicePage>
                   onPause: _toggleTimer,
                   onResume: _toggleTimer,
                   onExtendOneMinute: _extendTimerOneMinute,
+                  useHomeStyle: true,
                 ),
                 const SizedBox(height: 10),
               ],
@@ -855,67 +668,40 @@ class _DicePageState extends State<DicePage>
 
               const SizedBox(height: 36),
 
-              // 「サイコロを振る」ボタン（設定画面のスタイルに統一）
-              ElevatedButton.icon(
-                onPressed: _rollDice,
-                icon: const Icon(Icons.casino, color: _black),
-                label: Text(
-                  l10n.rollDice,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: _black,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ts.brandYellow,
-                  foregroundColor: _black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 2,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: HomePrimaryButton(
+                  label: l10n.rollDice,
+                  icon: Icons.casino,
+                  onPressed: _rollDice,
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // 選択されたテーマを表示
-              ThemeDisplay(selectedTheme: _selectedTheme),
+              ThemeDisplay(
+                selectedTheme: _selectedTheme,
+                useHomeStyle: true,
+              ),
 
               const SizedBox(height: 16),
 
               // セッション中の場合、次のプレイヤー／セッション終了ボタンを表示
               if (_session != null && _selectedTheme != null) ...[
-                ElevatedButton.icon(
-                  onPressed: _nextPlayer,
-                  icon: Icon(
-                    _session!.isLastPlayer ? Icons.check_circle : Icons.arrow_forward,
-                    color: _black,
-                  ),
-                  label: Text(
-                    _session!.isLastPlayer ? l10n.endSession : l10n.nextPlayer,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _white,
-                    foregroundColor: _black,
-                    side: const BorderSide(color: _black, width: 1.5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: HomePrimaryButton(
+                    label: _session!.isLastPlayer
+                        ? l10n.endSession
+                        : l10n.nextPlayer,
+                    icon: _session!.isLastPlayer
+                        ? Icons.check_circle
+                        : Icons.arrow_forward,
+                    onPressed: _nextPlayer,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 1,
                   ),
                 ),
               ],
@@ -942,32 +728,17 @@ class _DicePageState extends State<DicePage>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 12),
-            Text(
-              l10n.voteTitle,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: _black.withOpacity(0.9),
-              ),
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.voteTitle, style: _titleStyle(), textAlign: TextAlign.center),
             const SizedBox(height: 6),
             Text(
               l10n.voteSubtitle,
-              style: TextStyle(
-                fontSize: 13,
-                color: _black.withOpacity(0.7),
-              ),
+              style: _mutedStyle(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             Text(
               l10n.voteVoterLabel(voterLabel),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: _black.withOpacity(0.8),
-              ),
+              style: _bodyStyle(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -978,24 +749,26 @@ class _DicePageState extends State<DicePage>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Opacity(
                   opacity: isSelf ? 0.45 : 1.0,
-                  child: ElevatedButton(
-                    onPressed: isSelf ? null : () => _castVote(index),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _white,
-                      foregroundColor: _black,
-                      side: BorderSide(color: _black.withOpacity(0.25), width: 1),
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                    ),
-                    child: Text(
-                      label,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: _black,
+                  child: Material(
+                    color: HomePalette.surface2,
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      onTap: isSelf ? null : () => _castVote(index),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: HomePalette.border),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 16,
+                          ),
+                          child: Center(
+                            child: Text(label, style: _bodyStyle(fontSize: 16)),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1006,10 +779,10 @@ class _DicePageState extends State<DicePage>
               onPressed: _skipVote,
               child: Text(
                 l10n.voteSkip,
-                style: TextStyle(
+                style: GoogleFonts.zenKakuGothicNew(
                   fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: _black.withOpacity(0.7),
+                  fontWeight: FontWeight.w700,
+                  color: HomePalette.textMuted,
                 ),
               ),
             ),

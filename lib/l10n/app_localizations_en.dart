@@ -95,18 +95,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dragAndDropHint => 'Drag & drop to the text boxes on the left';
 
   @override
-  String get tutorialWelcome => 'Welcome to Talk Shuffle!';
+  String get tutorialWelcome => 'Welcome to Talk Shuffle';
 
   @override
   String get tutorialWelcomeBody =>
-      'Pick a theme by rolling dice, or draw a card to talk about your values. Use it to get everyone excited or at work.';
-
-  @override
-  String get tutorialSetTheme => 'Set your themes';
-
-  @override
-  String get tutorialSetThemeBody =>
-      'Set themes for each face by dragging from the candidates or typing them in.';
+      'Spark conversation at work or with your team. Dice and cards give you random prompts so talk flows naturally.';
 
   @override
   String get tutorialRollDice => 'Roll the Dice';
@@ -116,25 +109,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap \"Roll Dice\" to roll the dice and pick a random theme.';
 
   @override
-  String get tutorialCards => 'Play with Cards';
+  String get tutorialValues => 'Discover Your Values';
 
   @override
-  String get tutorialCardsBody =>
-      '\"Get excited at work\" offers three card decks.\n\nValue cards (share values), Check-in & Check-out (meeting start/end), and Self-reflection & 1-on-1 (questions with lightness and depth).';
+  String get tutorialValuesBody =>
+      'With value cards, rank what matters to you and share with the group—great for building mutual understanding.';
 
   @override
-  String get tutorialChangeSettings => 'Change Settings';
+  String get tutorialGroupDiscussion => 'Group Discussion';
 
   @override
-  String get tutorialChangeSettingsBody =>
-      'You can go back to the settings screen anytime with the back button to change the number of players and timer.';
+  String get tutorialGroupDiscussionBody =>
+      'Pick topics by category and discuss one theme together. Use the timer to keep the session on track.';
 
   @override
-  String get tutorialReady => 'All set!';
+  String get tutorialPlayersHistory => 'Players & Session History';
+
+  @override
+  String get tutorialPlayersHistoryBody =>
+      'Set player count, names, and timers before you start. After each session, results are saved so you can look back later.';
+
+  @override
+  String get tutorialReady => 'You\'re All Set';
 
   @override
   String get tutorialReadyBody =>
-      'Roll the dice for a theme, or draw a card to talk about your values. Use whichever fits the moment.';
+      'Choose a mode and jump in. Use dice, value cards, or group discussion—whatever fits the moment.';
 
   @override
   String get skip => 'Skip';
@@ -388,7 +388,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionCompleteAcknowledgeMessage =>
-      'Everyone has had their turn. The topics selected in this session have been saved to history. To play again, go back and start from the setup screen.';
+      'The session has ended. Your session has been saved to history.';
+
+  @override
+  String get sessionCompleteEndButton => 'End';
 
   @override
   String get sessionCompleteAcknowledgeButton => 'Close';
@@ -470,6 +473,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String historyPlayerCount(int count) {
     return '$count players';
   }
+
+  @override
+  String get historyPlayersTitle => 'Participants';
 
   @override
   String get historyDetailTitle => 'History Details';
@@ -608,7 +614,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeThemeShortGroupDiscussion => 'Group discussion';
 
   @override
-  String get homeThemeShortValues => 'Values';
+  String get homeThemeShortValues => 'Discover Your Values';
+
+  @override
+  String get homeCardLabel => 'Theme selector';
+
+  @override
+  String get homeThemeTitleLine1 => 'Choose a';
+
+  @override
+  String get homeThemeTitleAccent => 'theme';
+
+  @override
+  String get homeDividerOrChoose => 'or pick one';
+
+  @override
+  String get homeThemeDescValues => 'Life, priorities, and what you believe';
+
+  @override
+  String get homeThemeDescGroupDiscussion => 'Topics to dig into as a team';
 
   @override
   String get backToModeSelection => 'Choose mode again';
@@ -641,19 +665,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discussionHint =>
-      'Cards are grouped by category, face down. Tap to peek; tap again to flip back. When you’re ready, use the button below to move on to the discussion.';
+      'Tap a face-down card to select it for discussion (tap again to deselect). The green number shows pick order. Scroll sideways to browse candidates.';
+
+  @override
+  String discussionPickTopicsInstruction(int n) {
+    return 'Choose $n prompt(s) you will discuss this session.';
+  }
+
+  @override
+  String discussionSelectionProgress(int selected, int target) {
+    return '$selected / $target selected';
+  }
+
+  @override
+  String discussionSnackbarSelectionCap(int n) {
+    return 'You already selected the maximum ($n) for this session.';
+  }
+
+  @override
+  String discussionSnackbarNeedMoreSelections(int n) {
+    return 'Select $n more prompt(s) before continuing.';
+  }
+
+  @override
+  String get discussionNextRoundButton => 'Next prompt';
+
+  @override
+  String discussionRoundProgress(int current, int total) {
+    return 'Prompt $current of $total';
+  }
+
+  @override
+  String get discussionPickTopicsAllOrSelectHint =>
+      'Tip: you can also continue without selecting — all prompts on the table will be used in order.';
 
   @override
   String get discussionProceedToDiscussionButton => 'Continue to discussion';
 
   @override
   String discussionPerCategoryOption(int n) {
-    return '$n each';
+    return '$n per category';
   }
 
   @override
   String discussionPreviewPerCategory(int perCat, int total) {
-    return 'Up to $perCat per category · up to $total cards on the table';
+    return 'Up to $perCat per category · pool up to $total';
   }
 
   @override
@@ -687,14 +743,50 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get discussionDeckScopeTitle => 'Cards per category';
+  String get discussionDeckScopeTitle => 'Max prompts per category';
+
+  @override
+  String get discussionDeckScopeHint =>
+      'From each enabled category, take up to this many prompts for the table pool (less if the category runs out).';
 
   @override
   String get discussionThemeFilterTitle => 'Filter topics';
 
   @override
   String get discussionThemeFilterHint =>
-      'Turn on the categories you want on the table. You need at least one on to start.';
+      'Turn on the categories you want on the table (at least one).';
+
+  @override
+  String get discussionThemeFilterSelectAll => 'All';
+
+  @override
+  String get discussionThemeFilterClearAll => 'Clear';
+
+  @override
+  String get discussionTotalThemesOnTableTitle => 'Topics on the table';
+
+  @override
+  String get discussionTotalThemesOnTableHint =>
+      'This session you will discuss exactly this many prompts. On the next screen, pick that many cards from the table (or leave none selected if you chose “All” and want every card in order).';
+
+  @override
+  String get discussionTotalThemesOnTableDropdownDisabled =>
+      '(Select categories above first)';
+
+  @override
+  String discussionTotalThemesOnTableAllOption(int max) {
+    return 'All ($max max)';
+  }
+
+  @override
+  String discussionTotalThemesOnTableCountOption(int n) {
+    return '$n prompts';
+  }
+
+  @override
+  String discussionTotalThemesOnTableEffective(int count) {
+    return 'This session: $count prompt(s) to discuss';
+  }
 
   @override
   String get discussionDeckScopeFull => 'Full deck (shuffled)';

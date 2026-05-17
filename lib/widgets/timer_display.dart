@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
 
 /// タイマー表示ウィジェット
 class TimerDisplay extends StatelessWidget {
@@ -10,6 +12,7 @@ class TimerDisplay extends StatelessWidget {
   final VoidCallback? onResume;
   /// 終了後に [TimerService.addTime] と [TimerService.start] を呼ぶ延長（null なら非表示）
   final VoidCallback? onExtendOneMinute;
+  final bool useHomeStyle;
 
   const TimerDisplay({
     super.key,
@@ -18,6 +21,7 @@ class TimerDisplay extends StatelessWidget {
     this.onPause,
     this.onResume,
     this.onExtendOneMinute,
+    this.useHomeStyle = false,
   });
   
   // カラーパレット（設定画面と統一）
@@ -49,21 +53,27 @@ class TimerDisplay extends StatelessWidget {
     if (timerService == null) {
       return const SizedBox.shrink();
     }
-    
+
+    final ts = context.talkShuffle;
     final l10n = AppLocalizations.of(context)!;
     final remainingTime = timerService!.remainingTime;
     final isRunning = timerService!.isRunning;
     final isPaused = timerService!.isPaused;
     final timeUp = timerService!.hasFinished;
 
-    final borderColor = timeUp ? _timeUpBorder : _black;
-    final bgColor = timeUp ? _timeUpBg : _white;
+    final borderColor = timeUp
+        ? _timeUpBorder
+        : (useHomeStyle ? HomePalette.border : _black);
+    final bgColor = timeUp
+        ? _timeUpBg
+        : (useHomeStyle ? HomePalette.surface2 : ts.surfaceCard);
+    final iconColor = useHomeStyle ? HomePalette.textMuted : _black;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: borderColor, width: timeUp ? 2 : 1.5),
         boxShadow: [
           BoxShadow(
@@ -99,7 +109,7 @@ class TimerDisplay extends StatelessWidget {
                   children: [
                     if (isRunning && !isPaused)
                       IconButton(
-                        icon: const Icon(Icons.pause, color: _black, size: 22),
+                        icon: Icon(Icons.pause, color: iconColor, size: 22),
                         iconSize: 22,
                         padding: const EdgeInsets.all(6),
                         constraints:
@@ -110,7 +120,7 @@ class TimerDisplay extends StatelessWidget {
                     else if (isPaused)
                       IconButton(
                         icon:
-                            const Icon(Icons.play_arrow, color: _black, size: 22),
+                            Icon(Icons.play_arrow, color: iconColor, size: 22),
                         iconSize: 22,
                         padding: const EdgeInsets.all(6),
                         constraints:

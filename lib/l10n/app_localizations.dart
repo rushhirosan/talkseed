@@ -263,73 +263,73 @@ abstract class AppLocalizations {
   /// チュートリアル1ページ目のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'Talk Shuffleへようこそ！'**
+  /// **'Talk Shuffleへようこそ'**
   String get tutorialWelcome;
 
   /// チュートリアル1ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'サイコロでテーマを選ぶか、カードで自分の価値観を話します。盛り上がりにも仕事の場にも使えます。'**
+  /// **'仕事やチームの場で、話題のきっかけをランダムに。サイコロやカードで、自然に会話が始まります。'**
   String get tutorialWelcomeBody;
 
   /// チュートリアル2ページ目のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'テーマを設定しよう'**
-  String get tutorialSetTheme;
-
-  /// チュートリアル2ページ目の本文
-  ///
-  /// In ja, this message translates to:
-  /// **'各面のテーマを、候補からドラッグまたは直接入力で設定します。'**
-  String get tutorialSetThemeBody;
-
-  /// チュートリアル3ページ目のタイトル
-  ///
-  /// In ja, this message translates to:
   /// **'サイコロを振る'**
   String get tutorialRollDice;
 
-  /// チュートリアル3ページ目の本文
+  /// チュートリアル2ページ目の本文
   ///
   /// In ja, this message translates to:
   /// **'「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。'**
   String get tutorialRollDiceBody;
 
-  /// チュートリアル・カードページのタイトル
+  /// チュートリアル3ページ目のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'カードで遊ぶ'**
-  String get tutorialCards;
+  /// **'価値観を知る'**
+  String get tutorialValues;
 
-  /// チュートリアル・カードページの本文
+  /// チュートリアル3ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。'**
-  String get tutorialCardsBody;
+  /// **'価値観カードで、自分が大切にしていることを並べ替えて共有。チームの相互理解に役立ちます。'**
+  String get tutorialValuesBody;
 
-  /// チュートリアル設定ページのタイトル
+  /// チュートリアル4ページ目のタイトル
   ///
   /// In ja, this message translates to:
-  /// **'設定を変更する'**
-  String get tutorialChangeSettings;
+  /// **'グループディスカッション'**
+  String get tutorialGroupDiscussion;
 
-  /// チュートリアル設定ページの本文
+  /// チュートリアル4ページ目の本文
   ///
   /// In ja, this message translates to:
-  /// **'いつでも戻るボタンで設定画面に戻り、人数やタイマーを変更できます。'**
-  String get tutorialChangeSettingsBody;
+  /// **'カテゴリーからお題を選び、全員で1つのテーマについて話し合います。タイマー付きで進行できます。'**
+  String get tutorialGroupDiscussionBody;
+
+  /// チュートリアル5ページ目のタイトル
+  ///
+  /// In ja, this message translates to:
+  /// **'プレイヤー選択や履歴保存'**
+  String get tutorialPlayersHistory;
+
+  /// チュートリアル5ページ目の本文
+  ///
+  /// In ja, this message translates to:
+  /// **'参加人数や名前、タイマーを設定できます。セッション後は履歴に保存され、あとから振り返れます。'**
+  String get tutorialPlayersHistoryBody;
 
   /// チュートリアル最終ページのタイトル
   ///
   /// In ja, this message translates to:
-  /// **'準備完了！'**
+  /// **'準備完了'**
   String get tutorialReady;
 
   /// チュートリアル最終ページの本文
   ///
   /// In ja, this message translates to:
-  /// **'サイコロでテーマを選んでも、カードで価値観を話し合ってもOK。場に合わせて使いましょう。'**
+  /// **'モードを選んで、さっそく始めましょう。場に合わせてサイコロ・価値観カード・グループディスカッションを使い分けられます。'**
   String get tutorialReadyBody;
 
   /// タイマースキップボタン
@@ -824,13 +824,19 @@ abstract class AppLocalizations {
   /// **'全員の番が終わりました。'**
   String get sessionCompleteMessage;
 
-  /// カード／議論モードで終了後、画面に留まる場合のダイアログ本文
+  /// セッション終了ダイアログの本文（全モード共通）
   ///
   /// In ja, this message translates to:
-  /// **'全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。'**
+  /// **'セッションが終了しました。内容は履歴に保存しました。'**
   String get sessionCompleteAcknowledgeMessage;
 
-  /// 終了ダイアログを閉じるだけのボタン
+  /// セッション終了ダイアログでトップへ戻るボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'終了'**
+  String get sessionCompleteEndButton;
+
+  /// 終了ダイアログを閉じるだけのボタン（非推奨・互換用）
   ///
   /// In ja, this message translates to:
   /// **'閉じる'**
@@ -967,6 +973,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{count}人でプレイ'**
   String historyPlayerCount(int count);
+
+  /// 履歴詳細の参加者セクション見出し
+  ///
+  /// In ja, this message translates to:
+  /// **'参加者'**
+  String get historyPlayersTitle;
 
   /// 履歴詳細画面のタイトル
   ///
@@ -1223,8 +1235,44 @@ abstract class AppLocalizations {
   /// No description provided for @homeThemeShortValues.
   ///
   /// In ja, this message translates to:
-  /// **'価値観'**
+  /// **'価値観を知る'**
   String get homeThemeShortValues;
+
+  /// トップ画面の小見出し（英字風ラベル）
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマセレクター'**
+  String get homeCardLabel;
+
+  /// トップ画面メイン見出し1行目
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマを'**
+  String get homeThemeTitleLine1;
+
+  /// トップ画面メイン見出し（グラデーション部分）
+  ///
+  /// In ja, this message translates to:
+  /// **'選ぼう'**
+  String get homeThemeTitleAccent;
+
+  /// ランダムボタンとテーマ一覧の区切り
+  ///
+  /// In ja, this message translates to:
+  /// **'または選ぶ'**
+  String get homeDividerOrChoose;
+
+  /// 価値観テーマカードの説明
+  ///
+  /// In ja, this message translates to:
+  /// **'人生・優先事項・信念について'**
+  String get homeThemeDescValues;
+
+  /// グループディスカッションテーマカードの説明
+  ///
+  /// In ja, this message translates to:
+  /// **'チームで深掘りするトピック'**
+  String get homeThemeDescGroupDiscussion;
 
   /// モード選択画面に戻るボタン
   ///
@@ -1283,8 +1331,50 @@ abstract class AppLocalizations {
   /// No description provided for @discussionHint.
   ///
   /// In ja, this message translates to:
-  /// **'カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。'**
+  /// **'裏向きのカードをタップすると選べます（もう一度タップで外せます）。緑の数字が選んだ順番です。横にスクロールして候補を見られます。'**
   String get discussionHint;
+
+  /// No description provided for @discussionPickTopicsInstruction.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッションで話すお題を {n} 枚選んでください。'**
+  String discussionPickTopicsInstruction(int n);
+
+  /// No description provided for @discussionSelectionProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'選んだお題 {selected} / {target} 枚'**
+  String discussionSelectionProgress(int selected, int target);
+
+  /// No description provided for @discussionSnackbarSelectionCap.
+  ///
+  /// In ja, this message translates to:
+  /// **'選べるのはこのセッションで最大 {n} 枚までです。'**
+  String discussionSnackbarSelectionCap(int n);
+
+  /// No description provided for @discussionSnackbarNeedMoreSelections.
+  ///
+  /// In ja, this message translates to:
+  /// **'あと {n} 枚選んでから進んでください。'**
+  String discussionSnackbarNeedMoreSelections(int n);
+
+  /// No description provided for @discussionNextRoundButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'次のお題'**
+  String get discussionNextRoundButton;
+
+  /// No description provided for @discussionRoundProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題 {current} / {total}'**
+  String discussionRoundProgress(int current, int total);
+
+  /// No description provided for @discussionPickTopicsAllOrSelectHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'ヒント: 何も選ばずに進むと、卓のお題をすべてこの順で話します。'**
+  String get discussionPickTopicsAllOrSelectHint;
 
   /// No description provided for @discussionProceedToDiscussionButton.
   ///
@@ -1295,13 +1385,13 @@ abstract class AppLocalizations {
   /// No description provided for @discussionPerCategoryOption.
   ///
   /// In ja, this message translates to:
-  /// **'各{n}枚'**
+  /// **'{n}枚ずつ'**
   String discussionPerCategoryOption(int n);
 
   /// No description provided for @discussionPreviewPerCategory.
   ///
   /// In ja, this message translates to:
-  /// **'各カテゴリー最大{perCat}枚 · 卓は合計{total}枚まで'**
+  /// **'各カテゴリー最大{perCat}枚まで · プールは最大{total}枚'**
   String discussionPreviewPerCategory(int perCat, int total);
 
   /// No description provided for @discussionPreviewNeedCategorySelection.
@@ -1349,8 +1439,14 @@ abstract class AppLocalizations {
   /// No description provided for @discussionDeckScopeTitle.
   ///
   /// In ja, this message translates to:
-  /// **'各カテゴリーの枚数'**
+  /// **'カテゴリーごとのお題（上限）'**
   String get discussionDeckScopeTitle;
+
+  /// No description provided for @discussionDeckScopeHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'選んだカテゴリーそれぞれから、卓の候補として載せるお題の最大枚数です（お題が足りないカテゴリーはそれ以下になります）。'**
+  String get discussionDeckScopeHint;
 
   /// No description provided for @discussionThemeFilterTitle.
   ///
@@ -1361,8 +1457,56 @@ abstract class AppLocalizations {
   /// No description provided for @discussionThemeFilterHint.
   ///
   /// In ja, this message translates to:
-  /// **'卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。'**
+  /// **'卓に出すカテゴリーをオンにしてください（1つ以上）。'**
   String get discussionThemeFilterHint;
+
+  /// No description provided for @discussionThemeFilterSelectAll.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて'**
+  String get discussionThemeFilterSelectAll;
+
+  /// No description provided for @discussionThemeFilterClearAll.
+  ///
+  /// In ja, this message translates to:
+  /// **'解除'**
+  String get discussionThemeFilterClearAll;
+
+  /// No description provided for @discussionTotalThemesOnTableTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'話すお題の数（卓の枚数）'**
+  String get discussionTotalThemesOnTableTitle;
+
+  /// No description provided for @discussionTotalThemesOnTableHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッションでは、この枚数ぶんお題について話します。次の画面で卓からその枚数を選んでください（「すべて」のときは未選択のまま進むと卓のお題を順に全部話します）。'**
+  String get discussionTotalThemesOnTableHint;
+
+  /// No description provided for @discussionTotalThemesOnTableDropdownDisabled.
+  ///
+  /// In ja, this message translates to:
+  /// **'（上でカテゴリーを選ぶと設定できます）'**
+  String get discussionTotalThemesOnTableDropdownDisabled;
+
+  /// No description provided for @discussionTotalThemesOnTableAllOption.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて（最大{max}枚）'**
+  String discussionTotalThemesOnTableAllOption(int max);
+
+  /// No description provided for @discussionTotalThemesOnTableCountOption.
+  ///
+  /// In ja, this message translates to:
+  /// **'{n}枚'**
+  String discussionTotalThemesOnTableCountOption(int n);
+
+  /// No description provided for @discussionTotalThemesOnTableEffective.
+  ///
+  /// In ja, this message translates to:
+  /// **'このセッション: {count}枚のお題を話す'**
+  String discussionTotalThemesOnTableEffective(int count);
 
   /// No description provided for @discussionDeckScopeFull.
   ///

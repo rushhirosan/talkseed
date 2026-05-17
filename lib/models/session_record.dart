@@ -12,6 +12,8 @@ class SessionRecord {
   final Map<String, List<String>> selectedCardsByPlayer;
   /// 参加人数（不明なら null）
   final int? playerCount;
+  /// 参加者の表示名（保存時点のラベル。カスタム名または「プレイヤーN」）
+  final List<String> playerNames;
   /// 投票結果（サイコロ用：プレイヤー名 -> 票数）
   final Map<String, int> voteResults;
 
@@ -22,14 +24,40 @@ class SessionRecord {
     required this.topics,
     required this.selectedCardsByPlayer,
     this.playerCount,
+    this.playerNames = const [],
     required this.voteResults,
   });
+
+  /// 履歴表示用の参加者名（新形式の [playerNames]、または価値観カードの map キー）
+  List<String> get displayPlayerNames {
+    if (playerNames.isNotEmpty) return playerNames;
+    if (selectedCardsByPlayer.isNotEmpty) {
+      return selectedCardsByPlayer.keys.toList();
+    }
+    return const [];
+  }
+
+  /// セッション設定から保存用の参加者ラベルを生成
+  static List<String> labelsForPlayers({
+    required int playerCount,
+    List<String>? configPlayerNames,
+    required String Function(int number) defaultName,
+  }) {
+    return List.generate(playerCount, (i) {
+      if (configPlayerNames != null && i < configPlayerNames.length) {
+        final name = configPlayerNames[i].trim();
+        if (name.isNotEmpty) return name;
+      }
+      return defaultName(i + 1);
+    });
+  }
 
   factory SessionRecord.create({
     required String mode,
     required List<String> topics,
     required Map<String, List<String>> selectedCardsByPlayer,
     int? playerCount,
+    List<String>? playerNames,
     Map<String, int>? voteResults,
   }) {
     final now = DateTime.now();
@@ -41,6 +69,7 @@ class SessionRecord {
       topics: topics,
       selectedCardsByPlayer: selectedCardsByPlayer,
       playerCount: playerCount,
+      playerNames: playerNames ?? const [],
       voteResults: voteResults ?? {},
     );
   }
@@ -53,6 +82,7 @@ class SessionRecord {
       'topics': topics,
       'selectedCardsByPlayer': selectedCardsByPlayer,
       'playerCount': playerCount,
+      'playerNames': playerNames,
       'voteResults': voteResults,
     };
   }
@@ -68,6 +98,7 @@ class SessionRecord {
         selectedConverted[key] = list;
       }
     }
+    final playerNamesRaw = map['playerNames'] as List<dynamic>? ?? [];
     final voteRaw = map['voteResults'] as Map<dynamic, dynamic>? ?? {};
     final voteConverted = <String, int>{};
     for (final entry in voteRaw.entries) {
@@ -92,6 +123,8 @@ class SessionRecord {
       topics: topicsRaw.map((e) => e.toString()).toList(),
       selectedCardsByPlayer: selectedConverted,
       playerCount: map['playerCount'] is int ? map['playerCount'] as int : null,
+      playerNames:
+          playerNamesRaw.map((e) => e.toString()).where((e) => e.isNotEmpty).toList(),
       voteResults: voteConverted,
     );
   }

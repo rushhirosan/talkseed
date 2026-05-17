@@ -11,6 +11,7 @@ import '../models/game_session.dart';
 import '../models/polyhedron_type.dart';
 import '../services/timer_service.dart';
 import '../utils/route_transitions.dart';
+import '../utils/session_end_dialog.dart';
 import '../widgets/player_indicator.dart';
 import '../widgets/timer_display.dart';
 import '../widgets/card_draw_widget.dart';
@@ -254,29 +255,10 @@ class _TopicsPageState extends State<TopicsPage> {
       }
     });
     if (wasLastPlayer && _session != null && !_session!.isActive) {
-      _showSessionEndDialog();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) SessionEndDialog.show(context);
+      });
     }
-  }
-
-  void _showSessionEndDialog() {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.sessionSummary),
-        content: Text(l10n.sessionCompleteAcknowledgeMessage),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              setState(() => _session = null);
-            },
-            child: Text(l10n.sessionCompleteAcknowledgeButton),
-          ),
-        ],
-      ),
-    );
   }
 
   void _toggleTimer() {

@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 import 'package:theme_dice/utils/about_links_helper.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
@@ -11,14 +14,17 @@ import 'package:theme_dice/models/theme.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/services/checkin_checkout_service.dart';
 import 'package:theme_dice/services/self_reflection_service.dart';
+import 'package:theme_dice/widgets/home/home_ambient_background.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_random_button.dart';
+import 'package:theme_dice/widgets/home/home_theme_card.dart';
 import 'initial_settings_page.dart';
 import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'topics_page.dart';
 import 'session_history_page.dart';
-import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 
-/// 初回画面：みんなで盛り上がる（サイコロ） / 仕事で盛り上がる（価値観・グループディスカッションなどカードデッキ）
+/// 初回画面：ランダム（サイコロ） / 価値観・グループディスカッション
 class ModeSelectionPage extends StatefulWidget {
   const ModeSelectionPage({super.key});
 
@@ -27,12 +33,17 @@ class ModeSelectionPage extends StatefulWidget {
 }
 
 class _ModeSelectionPageState extends State<ModeSelectionPage> {
+  /// トップの「次回起動もランダムで決める」チェックを一時非表示
+  static const bool _showStartupFollowRandomOption = false;
+
   bool _alwaysOpenWithDice = false;
 
   @override
   void initState() {
     super.initState();
-    _loadDefaultPlayMode();
+    if (_showStartupFollowRandomOption) {
+      _loadDefaultPlayMode();
+    }
   }
 
   Future<void> _loadDefaultPlayMode() async {
@@ -58,7 +69,6 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  /// 仕事で盛り上がる：デッキを直接起動（CardSettings をスキップしてワンタップ減）
   void _goToWorkDeck(CardDeckType type) async {
     final l10n = AppLocalizations.of(context)!;
     final deck = CardDeck.allDecks.firstWhere((d) => d.type == type);
@@ -121,7 +131,6 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
           ),
         );
       } else if (deck.type == CardDeckType.oneOnOne) {
-        // 自己内省・1on1
         final data = await SelfReflectionService.loadThemesWithSections();
         await PreferencesHelper.saveLastCardThemes(data.themes);
         if (!mounted) return;
@@ -168,166 +177,70 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  /// 案B：ランダム＝紫の主ボタン（リスト先頭）
-  Widget _buildRandomPrimaryButton(
-    BuildContext context,
-    AppLocalizations l10n,
-    VoidCallback onPressed,
-  ) {
-    final purple = context.talkShuffle.brandPurple;
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: purple,
-          foregroundColor: _white,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('🎲', style: TextStyle(fontSize: 22)),
-            const SizedBox(width: 10),
-            Text(
-              l10n.homeRandomDecideLabel,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+  TextStyle _bodyFont({
+    double fontSize = 14,
+    FontWeight fontWeight = FontWeight.w400,
+    Color? color,
+    double? height,
+    double? letterSpacing,
+  }) {
+    return GoogleFonts.zenKakuGothicNew(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color ?? HomePalette.text,
+      height: height,
+      letterSpacing: letterSpacing,
     );
   }
 
-  /// テーマ行（白／薄紫ボーダー、絵文字＋短いラベル）
-  Widget _buildThemeRow({
-    required BuildContext context,
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    required VoidCallback onPressed,
-    Color? backgroundColor,
-  }) {
-    final borderColor = context.talkShuffle.borderLavender;
-    final bg = backgroundColor ?? _white;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(20),
+  Widget _buildHeader(AppLocalizations l10n) {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: borderColor, width: 1.5),
+          padding: const EdgeInsets.fromLTRB(20, 14, 16, 14),
+          decoration: const BoxDecoration(
+            color: HomePalette.headerBg,
+            border: Border(bottom: BorderSide(color: HomePalette.border)),
           ),
           child: Row(
             children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.14),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 20, color: iconColor),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
+              ShaderMask(
+                shaderCallback: (bounds) =>
+                    HomePalette.logoGradient.createShader(bounds),
                 child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: _black,
+                  l10n.appTitle,
+                  style: GoogleFonts.syne(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 上の「ランダムで決める」と同じ経路で次回起動する（文言は homeRandomDecideLabel を埋め込む）
-  Widget _buildStartupFollowRandomOption(
-    BuildContext context,
-    AppLocalizations l10n,
-  ) {
-    final accent = context.talkShuffle.brandPurple;
-
-    Future<void> toggle(bool v) async {
-      setState(() => _alwaysOpenWithDice = v);
-      await PreferencesHelper.saveDefaultPlayMode(
-        _alwaysOpenWithDice ? 'dice' : null,
-      );
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(12, 12, 14, 14),
-      decoration: BoxDecoration(
-        color: context.talkShuffle.shellLavender,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accent.withValues(alpha: 0.35)),
-      ),
-      child: InkWell(
-        onTap: () async => toggle(!_alwaysOpenWithDice),
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 2),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: _alwaysOpenWithDice,
-                  onChanged: (v) async => toggle(v ?? false),
-                  activeColor: accent,
-                  side: BorderSide(color: accent.withValues(alpha: 0.7)),
-                  fillColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) return accent;
-                    return Colors.white;
-                  }),
-                ),
+              const Spacer(),
+              _headerIconButton(
+                icon: Icons.history,
+                tooltip: l10n.historyTitle,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    RouteTransitions.forwardRoute(
+                      page: const SessionHistoryPage(),
+                    ),
+                  );
+                },
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.alwaysOpenWithDice(l10n.homeRandomDecideLabel),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: _black,
-                        height: 1.35,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.alwaysOpenWithDiceHint,
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.4,
-                        color: _black.withValues(alpha: 0.62),
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(width: 8),
+              _headerIconButton(
+                icon: Icons.help_outline,
+                tooltip: l10n.showTutorial,
+                onPressed: _showTutorial,
+              ),
+              const SizedBox(width: 8),
+              _headerIconButton(
+                icon: Icons.info_outline,
+                tooltip: l10n.aboutApp,
+                onPressed: _showAboutSheet,
               ),
             ],
           ),
@@ -336,117 +249,189 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  static const Color _white = Colors.white;
-  static const Color _black = Colors.black87;
+  Widget _headerIconButton({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: HomePalette.surface,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: HomePalette.border),
+            ),
+            child: Icon(icon, size: 20, color: HomePalette.textMuted),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardLabel(String text) {
+    return Row(
+      children: [
+        Container(
+          width: 20,
+          height: 2,
+          decoration: BoxDecoration(
+            color: HomePalette.accent,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text.toUpperCase(),
+          style: _bodyFont(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: HomePalette.accent,
+            letterSpacing: 3,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitle(AppLocalizations l10n) {
+    const titleStyle = TextStyle(
+      fontSize: 42,
+      fontWeight: FontWeight.w900,
+      height: 1.1,
+      letterSpacing: -1.5,
+    );
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '${l10n.homeThemeTitleLine1}\n',
+            style: GoogleFonts.zenKakuGothicNew(
+              color: HomePalette.text,
+            ).merge(titleStyle),
+          ),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: ShaderMask(
+              shaderCallback: (bounds) =>
+                  HomePalette.accentGradient.createShader(bounds),
+              child: Text(
+                l10n.homeThemeTitleAccent,
+                style: GoogleFonts.zenKakuGothicNew(
+                  color: Colors.white,
+                ).merge(titleStyle),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider(String label) {
+    return Row(
+      children: [
+        const Expanded(child: Divider(color: HomePalette.border, height: 1)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            label.toUpperCase(),
+            style: _bodyFont(
+              fontSize: 12,
+              color: HomePalette.textMuted,
+              letterSpacing: 2,
+            ),
+          ),
+        ),
+        const Expanded(child: Divider(color: HomePalette.border, height: 1)),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final ts = context.talkShuffle;
+
     return Scaffold(
-      backgroundColor: ts.scaffoldHome,
-      appBar: AppBar(
-        backgroundColor: _white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          l10n.appTitle,
-          style: const TextStyle(
-            color: _black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history, color: _black),
-            onPressed: () {
-              Navigator.of(context).push(
-                RouteTransitions.forwardRoute(
-                  page: const SessionHistoryPage(),
-                ),
-              );
-            },
-            tooltip: l10n.historyTitle,
-          ),
-          IconButton(
-            icon: const Icon(Icons.help_outline, color: _black),
-            onPressed: _showTutorial,
-            tooltip: l10n.showTutorial,
-          ),
-          IconButton(
-            icon: const Icon(Icons.info_outline, color: _black),
-            onPressed: _showAboutSheet,
-            tooltip: l10n.aboutApp,
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-                    decoration: BoxDecoration(
-                      color: ts.surfaceCard,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: _black.withValues(alpha: 0.08),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
+      backgroundColor: HomePalette.bg,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: HomeAmbientBackground()),
+          Column(
+            children: [
+              SafeArea(bottom: false, child: _buildHeader(l10n)),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(24, 40, 24, 48),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 520),
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0, end: 1),
+                        duration: const Duration(milliseconds: 600),
+                        curve: const Cubic(0.22, 1, 0.36, 1),
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value,
+                            child: Transform.translate(
+                              offset: Offset(0, 32 * (1 - value)),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildCardLabel(l10n.homeCardLabel),
+                            const SizedBox(height: 12),
+                            _buildTitle(l10n),
+                            const SizedBox(height: 40),
+                            HomeRandomButton(
+                              label: l10n.homeRandomDecideLabel,
+                              onPressed: _goToDice,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildDivider(l10n.homeDividerOrChoose),
+                            const SizedBox(height: 20),
+                            HomeThemeCard(
+                              emoji: '🌱',
+                              name: l10n.homeThemeShortValues,
+                              description: l10n.homeThemeDescValues,
+                              accentColor: HomePalette.purple,
+                              animationIndex: 0,
+                              onTap: () =>
+                                  _goToWorkDeck(CardDeckType.teamBuilding),
+                            ),
+                            const SizedBox(height: 12),
+                            HomeThemeCard(
+                              emoji: '💬',
+                              name: l10n.homeThemeShortGroupDiscussion,
+                              description: l10n.homeThemeDescGroupDiscussion,
+                              accentColor: HomePalette.accentCoral,
+                              animationIndex: 1,
+                              onTap: () => _goToWorkDeck(
+                                CardDeckType.groupDiscussion,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          l10n.homeThemePickTitle,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: _black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 22),
-                        _buildRandomPrimaryButton(context, l10n, _goToDice),
-                        const SizedBox(height: 12),
-                        _buildStartupFollowRandomOption(context, l10n),
-                        const SizedBox(height: 18),
-                        _buildThemeRow(
-                          context: context,
-                          icon: Icons.groups_rounded,
-                          iconColor: ts.deckIconValues,
-                          label: l10n.homeThemeShortValues,
-                          onPressed: () =>
-                              _goToWorkDeck(CardDeckType.teamBuilding),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildThemeRow(
-                          context: context,
-                          icon: Icons.forum_outlined,
-                          iconColor: ts.deckIconProblem,
-                          label: l10n.homeThemeShortGroupDiscussion,
-                          backgroundColor: ts.rowHighlightLavender,
-                          onPressed: () =>
-                              _goToWorkDeck(CardDeckType.groupDiscussion),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ),
+        ],
       ),
     );
   }

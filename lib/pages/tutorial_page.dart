@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:theme_dice/widgets/home/home_ambient_background.dart';
+import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import '../utils/preferences_helper.dart';
 import 'dart:math' as math;
 
-/// チュートリアル画面
+/// チュートリアル画面（全6ページ）
 class TutorialPage extends StatefulWidget {
   final VoidCallback onComplete;
-  /// true のときサイコロ関連のみ表示（カードの説明を除外）
-  final bool diceOnly;
 
   const TutorialPage({
     super.key,
     required this.onComplete,
-    this.diceOnly = false,
   });
 
   @override
@@ -34,52 +34,38 @@ class _TutorialPageState extends State<TutorialPage> {
     super.didChangeDependencies();
     if (_pages == null) {
       final l10n = AppLocalizations.of(context)!;
-      // 「テーマを設定しよう」「設定を変更する」は不要のため除外
-      final dicePages = [
+      _pages = [
         TutorialPageData(
           title: l10n.tutorialWelcome,
           body: l10n.tutorialWelcomeBody,
-          icon: Icons.casino,
-          icon2: Icons.style,
+          icon: Icons.waving_hand,
         ),
         TutorialPageData(
           title: l10n.tutorialRollDice,
           body: l10n.tutorialRollDiceBody,
-          icon: Icons.play_arrow,
+          icon: Icons.casino,
         ),
-        // 参加人数を選ぶ（準備完了の一つ前）
         TutorialPageData(
-          title: l10n.valueTutorialPage1Title,
-          body: l10n.valueTutorialPage1Body,
-          icon: Icons.groups,
+          title: l10n.tutorialValues,
+          body: l10n.tutorialValuesBody,
+          icon: Icons.favorite_border,
+        ),
+        TutorialPageData(
+          title: l10n.tutorialGroupDiscussion,
+          body: l10n.tutorialGroupDiscussionBody,
+          icon: Icons.forum_outlined,
+        ),
+        TutorialPageData(
+          title: l10n.tutorialPlayersHistory,
+          body: l10n.tutorialPlayersHistoryBody,
+          icon: Icons.groups_outlined,
         ),
         TutorialPageData(
           title: l10n.tutorialReady,
           body: l10n.tutorialReadyBody,
-          icon: Icons.check_circle,
+          icon: Icons.check_circle_outline,
         ),
       ];
-      final cardPagesWithoutPlayerCount = [
-        TutorialPageData(
-          title: l10n.valueTutorialPage2Title,
-          body: l10n.valueTutorialPage2Body,
-          icon: Icons.reorder,
-        ),
-        TutorialPageData(
-          title: l10n.valueTutorialPage3Title,
-          body: l10n.valueTutorialPage3Body,
-          icon: Icons.share,
-        ),
-      ];
-      _pages = widget.diceOnly
-          ? dicePages
-          : [
-              dicePages[0], // Welcome
-              dicePages[1], // RollDice
-              ...cardPagesWithoutPlayerCount,
-              dicePages[2], // 参加人数を選ぶ
-              dicePages[3], // Ready
-            ];
     }
   }
 
@@ -125,21 +111,22 @@ class _TutorialPageState extends State<TutorialPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final pages = _pages ?? [];
-    final scheme = Theme.of(context).colorScheme;
-    final ts = context.talkShuffle;
 
     if (pages.isEmpty) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        backgroundColor: HomePalette.bg,
+        body: Center(child: CircularProgressIndicator(color: HomePalette.accent)),
       );
     }
-    
+
     return Scaffold(
-        backgroundColor: ts.scaffoldTutorial,
-        body: SafeArea(
-        child: Column(
-          children: [
-            // スキップボタン
+      backgroundColor: HomePalette.bg,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: HomeAmbientBackground()),
+          SafeArea(
+            child: Column(
+              children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -149,8 +136,8 @@ class _TutorialPageState extends State<TutorialPage> {
                     onPressed: _completeTutorial,
                     child: Text(
                       l10n.skip,
-                      style: TextStyle(
-                        color: scheme.onPrimary,
+                      style: GoogleFonts.zenKakuGothicNew(
+                        color: HomePalette.textMuted,
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
@@ -200,33 +187,21 @@ class _TutorialPageState extends State<TutorialPage> {
                       _currentPage > 0
                           ? IconButton(
                               onPressed: _previousPage,
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.arrow_back,
-                                color: scheme.onPrimary,
+                                color: HomePalette.textMuted,
                               ),
                             )
                           : const SizedBox(width: 48),
-                      // 次へ/完了ボタン
-                      FilledButton(
-                        onPressed: _nextPage,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: ts.brandYellow,
-                          foregroundColor: scheme.onSecondary,
+                      Expanded(
+                        child: HomePrimaryButton(
+                          label: _currentPage < pages.length - 1
+                              ? l10n.valueNext
+                              : l10n.start,
+                          onPressed: _nextPage,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: Text(
-                          _currentPage < pages.length - 1
-                              ? 'Next'
-                              : l10n.start,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -235,9 +210,11 @@ class _TutorialPageState extends State<TutorialPage> {
                 ],
               ),
             ),
-          ],
-        ),
-        ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -248,8 +225,6 @@ class _TutorialPageState extends State<TutorialPage> {
   }) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final scheme = Theme.of(context).colorScheme;
-        final ts = context.talkShuffle;
         // 画面サイズに応じてレイアウトを調整
         final isSmallScreen = constraints.maxHeight < 700;
         final isNarrowScreen = constraints.maxWidth < 400;
@@ -277,22 +252,21 @@ class _TutorialPageState extends State<TutorialPage> {
                     vertical: isNarrowScreen ? 8 : 12,
                   ),
                   decoration: BoxDecoration(
-                    color: ts.brandYellow,
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(8),
+                    gradient: HomePalette.logoGradient,
+                    borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        offset: const Offset(2, 2),
-                        blurRadius: 4,
+                        color: HomePalette.accent.withValues(alpha: 0.35),
+                        offset: const Offset(0, 4),
+                        blurRadius: 16,
                       ),
                     ],
                   ),
                   child: Text(
                     'Talk Shuffle',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                    style: GoogleFonts.syne(
+                      color: HomePalette.bg,
+                      fontWeight: FontWeight.w800,
                       fontSize: isNarrowScreen ? 18 : 24,
                       letterSpacing: 0.5,
                     ),
@@ -306,10 +280,10 @@ class _TutorialPageState extends State<TutorialPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   pageData.title,
-                  style: TextStyle(
-                    color: scheme.onPrimary,
+                  style: GoogleFonts.zenKakuGothicNew(
+                    color: HomePalette.text,
                     fontSize: math.max(titleFontSize, 20),
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     height: 1.2,
                     letterSpacing: -0.5,
                   ),
@@ -321,8 +295,8 @@ class _TutorialPageState extends State<TutorialPage> {
               // 本文（スクロール可能）
               Text(
                 pageData.body,
-                style: TextStyle(
-                  color: scheme.onPrimary.withValues(alpha: 0.95),
+                style: GoogleFonts.zenKakuGothicNew(
+                  color: HomePalette.textMuted,
                   fontSize: bodyFontSize,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
@@ -332,8 +306,8 @@ class _TutorialPageState extends State<TutorialPage> {
               if (showVersion)
                 Text(
                   'v1.0 | ${DateTime.now().year}',
-                  style: TextStyle(
-                    color: scheme.onPrimary.withValues(alpha: 0.75),
+                  style: GoogleFonts.zenKakuGothicNew(
+                    color: HomePalette.textMuted,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -446,42 +420,34 @@ class _TutorialPageState extends State<TutorialPage> {
     required double size,
     required double iconSize,
   }) {
-    final onPrimary = Theme.of(context).colorScheme.onPrimary;
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: onPrimary.withValues(alpha: 0.08),
+        color: HomePalette.surface,
         shape: BoxShape.circle,
         border: Border.all(
-          color: onPrimary.withValues(alpha: 0.25),
-          width: 3,
+          color: HomePalette.border,
+          width: 2,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            spreadRadius: 5,
-          ),
-        ],
       ),
       child: Icon(
         icon,
         size: iconSize,
-        color: onPrimary.withValues(alpha: 0.9),
+        color: HomePalette.text,
       ),
     );
   }
 
   Widget _buildPageIndicator(BuildContext context, bool isActive) {
-    final scheme = Theme.of(context).colorScheme;
-    final ts = context.talkShuffle;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? ts.brandYellow : scheme.onPrimary.withValues(alpha: 0.3),
+        color: isActive
+            ? HomePalette.accent
+            : Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
       ),
     );

@@ -119,51 +119,51 @@
   "@dragAndDropHint": {
     "description": "ドラッグ＆ドロップの説明"
   },
-  "tutorialWelcome": "Talk Shuffleへようこそ！",
+  "tutorialWelcome": "Talk Shuffleへようこそ",
   "@tutorialWelcome": {
     "description": "チュートリアル1ページ目のタイトル"
   },
-  "tutorialWelcomeBody": "サイコロでテーマを選ぶか、カードで自分の価値観を話します。盛り上がりにも仕事の場にも使えます。",
+  "tutorialWelcomeBody": "仕事やチームの場で、話題のきっかけをランダムに。サイコロやカードで、自然に会話が始まります。",
   "@tutorialWelcomeBody": {
     "description": "チュートリアル1ページ目の本文"
   },
-  "tutorialSetTheme": "テーマを設定しよう",
-  "@tutorialSetTheme": {
-    "description": "チュートリアル2ページ目のタイトル"
-  },
-  "tutorialSetThemeBody": "各面のテーマを、候補からドラッグまたは直接入力で設定します。",
-  "@tutorialSetThemeBody": {
-    "description": "チュートリアル2ページ目の本文"
-  },
   "tutorialRollDice": "サイコロを振る",
   "@tutorialRollDice": {
-    "description": "チュートリアル3ページ目のタイトル"
+    "description": "チュートリアル2ページ目のタイトル"
   },
   "tutorialRollDiceBody": "「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。",
   "@tutorialRollDiceBody": {
+    "description": "チュートリアル2ページ目の本文"
+  },
+  "tutorialValues": "価値観を知る",
+  "@tutorialValues": {
+    "description": "チュートリアル3ページ目のタイトル"
+  },
+  "tutorialValuesBody": "価値観カードで、自分が大切にしていることを並べ替えて共有。チームの相互理解に役立ちます。",
+  "@tutorialValuesBody": {
     "description": "チュートリアル3ページ目の本文"
   },
-  "tutorialCards": "カードで遊ぶ",
-  "@tutorialCards": {
-    "description": "チュートリアル・カードページのタイトル"
+  "tutorialGroupDiscussion": "グループディスカッション",
+  "@tutorialGroupDiscussion": {
+    "description": "チュートリアル4ページ目のタイトル"
   },
-  "tutorialCardsBody": "「仕事で盛り上がる」では3種類のカードデッキが選べます。\n\n価値観カード（価値観共有）、会議前・振り返り（会議の開始・終了）、自己内省・1on1（軽さ×深さの問い）です。",
-  "@tutorialCardsBody": {
-    "description": "チュートリアル・カードページの本文"
+  "tutorialGroupDiscussionBody": "カテゴリーからお題を選び、全員で1つのテーマについて話し合います。タイマー付きで進行できます。",
+  "@tutorialGroupDiscussionBody": {
+    "description": "チュートリアル4ページ目の本文"
   },
-  "tutorialChangeSettings": "設定を変更する",
-  "@tutorialChangeSettings": {
-    "description": "チュートリアル設定ページのタイトル"
+  "tutorialPlayersHistory": "プレイヤー選択や履歴保存",
+  "@tutorialPlayersHistory": {
+    "description": "チュートリアル5ページ目のタイトル"
   },
-  "tutorialChangeSettingsBody": "いつでも戻るボタンで設定画面に戻り、人数やタイマーを変更できます。",
-  "@tutorialChangeSettingsBody": {
-    "description": "チュートリアル設定ページの本文"
+  "tutorialPlayersHistoryBody": "参加人数や名前、タイマーを設定できます。セッション後は履歴に保存され、あとから振り返れます。",
+  "@tutorialPlayersHistoryBody": {
+    "description": "チュートリアル5ページ目の本文"
   },
-  "tutorialReady": "準備完了！",
+  "tutorialReady": "準備完了",
   "@tutorialReady": {
     "description": "チュートリアル最終ページのタイトル"
   },
-  "tutorialReadyBody": "サイコロでテーマを選んでも、カードで価値観を話し合ってもOK。場に合わせて使いましょう。",
+  "tutorialReadyBody": "モードを選んで、さっそく始めましょう。場に合わせてサイコロ・価値観カード・グループディスカッションを使い分けられます。",
   "@tutorialReadyBody": {
     "description": "チュートリアル最終ページの本文"
   },
@@ -340,13 +340,17 @@
   "@sessionCompleteMessage": {
     "description": "セッション終了ダイアログの本文"
   },
-  "sessionCompleteAcknowledgeMessage": "全員の番が終わりました。今回選んだお題は履歴に保存しました。もう一度練習するときは、左上の戻るから設定画面へ戻ってください。",
+  "sessionCompleteAcknowledgeMessage": "セッションが終了しました。内容は履歴に保存しました。",
   "@sessionCompleteAcknowledgeMessage": {
-    "description": "カード／議論モードで終了後、画面に留まる場合のダイアログ本文"
+    "description": "セッション終了ダイアログの本文（全モード共通）"
+  },
+  "sessionCompleteEndButton": "終了",
+  "@sessionCompleteEndButton": {
+    "description": "セッション終了ダイアログでトップへ戻るボタン"
   },
   "sessionCompleteAcknowledgeButton": "閉じる",
   "@sessionCompleteAcknowledgeButton": {
-    "description": "終了ダイアログを閉じるだけのボタン"
+    "description": "終了ダイアログを閉じるだけのボタン（非推奨・互換用）"
   },
   "round": "ラウンド {number}",
   "@round": {
@@ -472,6 +476,10 @@
         "type": "int"
       }
     }
+  },
+  "historyPlayersTitle": "参加者",
+  "@historyPlayersTitle": {
+    "description": "履歴詳細の参加者セクション見出し"
   },
   "historyDetailTitle": "履歴詳細",
   "@historyDetailTitle": {
@@ -615,7 +623,31 @@
   "@homeThemeShortGroupDiscussion": {
     "description": "案B：統合デッキ（問題解決＋社会課題）のショートラベル"
   },
-  "homeThemeShortValues": "価値観",
+  "homeThemeShortValues": "価値観を知る",
+  "homeCardLabel": "テーマセレクター",
+  "@homeCardLabel": {
+    "description": "トップ画面の小見出し（英字風ラベル）"
+  },
+  "homeThemeTitleLine1": "テーマを",
+  "@homeThemeTitleLine1": {
+    "description": "トップ画面メイン見出し1行目"
+  },
+  "homeThemeTitleAccent": "選ぼう",
+  "@homeThemeTitleAccent": {
+    "description": "トップ画面メイン見出し（グラデーション部分）"
+  },
+  "homeDividerOrChoose": "または選ぶ",
+  "@homeDividerOrChoose": {
+    "description": "ランダムボタンとテーマ一覧の区切り"
+  },
+  "homeThemeDescValues": "人生・優先事項・信念について",
+  "@homeThemeDescValues": {
+    "description": "価値観テーマカードの説明"
+  },
+  "homeThemeDescGroupDiscussion": "チームで深掘りするトピック",
+  "@homeThemeDescGroupDiscussion": {
+    "description": "グループディスカッションテーマカードの説明"
+  },
   "backToModeSelection": "モードを選び直す",
   "@backToModeSelection": {
     "description": "モード選択画面に戻るボタン"
@@ -640,9 +672,57 @@
   },
   "deckGroupDiscussionDesc": "論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題",
   "discussionScreenTitle": "議論モード",
-  "discussionHint": "カテゴリーごとに裏向きのカードがあります。タップで表面を見られ、もう一度タップすると裏に戻ります。場に並んだお題を確認したら、下のボタンから議論に進みます。",
+  "discussionHint": "裏向きのカードをタップすると選べます（もう一度タップで外せます）。緑の数字が選んだ順番です。横にスクロールして候補を見られます。",
+  "discussionPickTopicsInstruction": "このセッションで話すお題を {n} 枚選んでください。",
+  "@discussionPickTopicsInstruction": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSelectionProgress": "選んだお題 {selected} / {target} 枚",
+  "@discussionSelectionProgress": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSnackbarSelectionCap": "選べるのはこのセッションで最大 {n} 枚までです。",
+  "@discussionSnackbarSelectionCap": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionSnackbarNeedMoreSelections": "あと {n} 枚選んでから進んでください。",
+  "@discussionSnackbarNeedMoreSelections": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionNextRoundButton": "次のお題",
+  "discussionRoundProgress": "お題 {current} / {total}",
+  "@discussionRoundProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionPickTopicsAllOrSelectHint": "ヒント: 何も選ばずに進むと、卓のお題をすべてこの順で話します。",
   "discussionProceedToDiscussionButton": "議論に進む",
-  "discussionPerCategoryOption": "各{n}枚",
+  "discussionPerCategoryOption": "{n}枚ずつ",
   "@discussionPerCategoryOption": {
     "placeholders": {
       "n": {
@@ -650,7 +730,7 @@
       }
     }
   },
-  "discussionPreviewPerCategory": "各カテゴリー最大{perCat}枚 · 卓は合計{total}枚まで",
+  "discussionPreviewPerCategory": "各カテゴリー最大{perCat}枚まで · プールは最大{total}枚",
   "@discussionPreviewPerCategory": {
     "placeholders": {
       "perCat": {
@@ -695,9 +775,39 @@
       }
     }
   },
-  "discussionDeckScopeTitle": "各カテゴリーの枚数",
+  "discussionDeckScopeTitle": "カテゴリーごとのお題（上限）",
+  "discussionDeckScopeHint": "選んだカテゴリーそれぞれから、卓の候補として載せるお題の最大枚数です（お題が足りないカテゴリーはそれ以下になります）。",
   "discussionThemeFilterTitle": "テーマを絞る",
-  "discussionThemeFilterHint": "卓に出すカテゴリーをタップでオンにしてください。1つ以上オンにしたうえでスタートできます。",
+  "discussionThemeFilterHint": "卓に出すカテゴリーをオンにしてください（1つ以上）。",
+  "discussionThemeFilterSelectAll": "すべて",
+  "discussionThemeFilterClearAll": "解除",
+  "discussionTotalThemesOnTableTitle": "話すお題の数（卓の枚数）",
+  "discussionTotalThemesOnTableHint": "このセッションでは、この枚数ぶんお題について話します。次の画面で卓からその枚数を選んでください（「すべて」のときは未選択のまま進むと卓のお題を順に全部話します）。",
+  "discussionTotalThemesOnTableDropdownDisabled": "（上でカテゴリーを選ぶと設定できます）",
+  "discussionTotalThemesOnTableAllOption": "すべて（最大{max}枚）",
+  "@discussionTotalThemesOnTableAllOption": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalThemesOnTableCountOption": "{n}枚",
+  "@discussionTotalThemesOnTableCountOption": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "discussionTotalThemesOnTableEffective": "このセッション: {count}枚のお題を話す",
+  "@discussionTotalThemesOnTableEffective": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "discussionDeckScopeFull": "デッキ全枚（シャッフル）",
   "discussionDeckScopeTen": "10枚だけランダム",
   "discussionDeckScopeSix": "6枚だけランダム",
