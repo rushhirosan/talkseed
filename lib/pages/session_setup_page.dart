@@ -275,25 +275,15 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   Widget _buildSessionBody(AppLocalizations l10n, bool isValueCardLayout) {
-    final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
     final panelPadding = isValueCardLayout
         ? const EdgeInsets.fromLTRB(20, 20, 20, 20)
         : const EdgeInsets.all(24);
 
-    if (keyboardVisible) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: _panel(
-          padding: panelPadding,
-          child: _buildRightSection(l10n, scrollEmbedded: true),
-        ),
-      );
-    }
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final stacked = constraints.maxWidth < _stackedLayoutBreakpoint;
-        final outerPadding = const EdgeInsets.fromLTRB(16, 8, 16, 16);
+        final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+        final outerPadding = EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomInset);
 
         if (isValueCardLayout) {
           if (stacked) {
@@ -495,16 +485,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               fontWeight: FontWeight.w600,
               color: HomePalette.text,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            widget.deckLabel ??
-                (widget.forValueCard
-                    ? l10n.deckTeamBuilding
-                    : widget.forDiscussion
-                        ? l10n.discussionScreenTitle
-                        : l10n.playModeDice),
-            style: _bodyStyle(fontSize: 14),
           ),
           const SizedBox(height: 4),
           Text(
@@ -973,15 +953,14 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
             focusNode: focusNode,
             cursorColor: HomePalette.accent,
             onTap: () {
-              Future.delayed(const Duration(milliseconds: 350), () {
-                if (fieldContext.mounted) {
-                  Scrollable.ensureVisible(
-                    fieldContext,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    alignment: 0.3,
-                  );
-                }
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!fieldContext.mounted) return;
+                Scrollable.ensureVisible(
+                  fieldContext,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  alignment: 0.35,
+                );
               });
             },
             style: GoogleFonts.zenKakuGothicNew(

@@ -628,9 +628,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeThemeTitleAccent => '選ぼう';
 
   @override
-  String get homeDividerOrChoose => 'または選ぶ';
-
-  @override
   String get homeThemeDescValues => '人生・優先事項・信念について';
 
   @override

@@ -337,26 +337,6 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     );
   }
 
-  Widget _buildDivider(String label) {
-    return Row(
-      children: [
-        const Expanded(child: Divider(color: HomePalette.border, height: 1)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            label.toUpperCase(),
-            style: _bodyFont(
-              fontSize: 12,
-              color: HomePalette.textMuted,
-              letterSpacing: 2,
-            ),
-          ),
-        ),
-        const Expanded(child: Divider(color: HomePalette.border, height: 1)),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -399,8 +379,6 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                               label: l10n.homeRandomDecideLabel,
                               onPressed: _goToDice,
                             ),
-                            const SizedBox(height: 20),
-                            _buildDivider(l10n.homeDividerOrChoose),
                             const SizedBox(height: 20),
                             HomeThemeCard(
                               emoji: '🌱',

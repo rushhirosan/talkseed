@@ -648,10 +648,6 @@
   "@homeThemeTitleAccent": {
     "description": "トップ画面メイン見出し（グラデーション部分）"
   },
-  "homeDividerOrChoose": "または選ぶ",
-  "@homeDividerOrChoose": {
-    "description": "ランダムボタンとテーマ一覧の区切り"
-  },
   "homeThemeDescValues": "人生・優先事項・信念について",
   "@homeThemeDescValues": {
     "description": "価値観テーマカードの説明"

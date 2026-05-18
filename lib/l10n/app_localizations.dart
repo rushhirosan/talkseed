@@ -1274,12 +1274,6 @@ abstract class AppLocalizations {
   /// **'選ぼう'**
   String get homeThemeTitleAccent;
 
-  /// ランダムボタンとテーマ一覧の区切り
-  ///
-  /// In ja, this message translates to:
-  /// **'または選ぶ'**
-  String get homeDividerOrChoose;
-
   /// 価値観テーマカードの説明
   ///
   /// In ja, this message translates to:

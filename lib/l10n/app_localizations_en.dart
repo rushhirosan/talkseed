@@ -636,9 +636,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeThemeTitleAccent => 'theme';
 
   @override
-  String get homeDividerOrChoose => 'or pick one';
-
-  @override
   String get homeThemeDescValues => 'Life, priorities, and what you believe';
 
   @override

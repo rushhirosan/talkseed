@@ -50,6 +50,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   final List<FocusNode> _faceFocusNodes = List.generate(6, (_) => FocusNode());
   /// ensureVisible の重複呼び出し防止用
   bool _ensureVisibleScheduled = false;
+  /// 長押し直後に onTap が走り編集を閉じないため
+  DateTime? _suppressFaceTapUntil;
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
@@ -271,48 +273,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       MediaQuery.sizeOf(context).width < 560;
 
   Widget _buildSettingsBody(AppLocalizations l10n, EdgeInsets panelPadding) {
-    final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
-    final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
-    final mobileTap = _isMobileTapMode(context);
-
-    if (keyboardVisible) {
-      final slotWidth = _panelContentWidth(context, twoColumn: false);
-      return SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPadding + 80),
-        child: _panel(
-          padding: panelPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildThemeTitleSection(),
-              const SizedBox(height: 8),
-              Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
-              if (mobileTap) ...[
-                const SizedBox(height: 4),
-                Text(l10n.themeLongPressToEdit, style: _hintStyle(fontSize: 12)),
-              ],
-              const SizedBox(height: 32),
-              _buildFaceColumn(slotWidth, mobileTapMode: mobileTap),
-              const SizedBox(height: 12),
-              _buildRandomResetRow(l10n),
-              const SizedBox(height: 12),
-              ..._buildPlayButtons(l10n),
-              const SizedBox(height: 16),
-              _buildThemeCandidatesSection(
-                slotWidth,
-                expandGrid: false,
-                mobileTapMode: mobileTap,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final stacked = constraints.maxWidth < 560;
+        final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
         final panelWidth = _panelContentWidth(
           context,
           twoColumn: !stacked,
@@ -320,7 +284,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
 
         if (stacked) {
           return Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomInset),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -357,7 +321,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         }
 
         return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomInset),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -430,8 +394,9 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       ],
     );
     if (!scrollable) return column;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16 + bottomInset),
       child: column,
     );
   }
@@ -756,14 +721,33 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   }
 
   void _openFaceTextEdit(int index, void Function()? onFocused) {
+    _suppressFaceTapUntil =
+        DateTime.now().add(const Duration(milliseconds: 400));
     setState(() {
       _focusedFaceIndex = index;
       _selectedFaceIndex = index;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    void requestEditFocus() {
+      if (!mounted || _focusedFaceIndex != index) return;
       _faceFocusNodes[index].requestFocus();
       onFocused?.call();
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      requestEditFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_faceFocusNodes[index].hasFocus) {
+          requestEditFocus();
+        }
+      });
     });
+  }
+
+  void _onFaceSlotTap(int index) {
+    if (_suppressFaceTapUntil != null &&
+        DateTime.now().isBefore(_suppressFaceTapUntil!)) {
+      return;
+    }
+    _selectFaceForTap(index);
   }
 
   void _assignThemeToFace(int faceIndex, String theme) {
@@ -855,8 +839,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                               child: _focusedFaceIndex == index
                                   ? TextField(
                                       focusNode: _faceFocusNodes[index],
-                                        controller: controller,
-                                        style: GoogleFonts.zenKakuGothicNew(
+                                      keyboardType: TextInputType.text,
+                                      textInputAction: TextInputAction.done,
+                                      controller: controller,
+                                      style: GoogleFonts.zenKakuGothicNew(
                                           fontSize: currentFontSize,
                                           color: HomePalette.text,
                                           fontWeight: FontWeight.w400,
@@ -891,7 +877,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                                       )
                                   : GestureDetector(
                                       onTap: mobileTapMode
-                                          ? () => _selectFaceForTap(index)
+                                          ? () => _onFaceSlotTap(index)
                                           : () => _openFaceTextEdit(index, onFocused),
                                       onLongPress: mobileTapMode
                                           ? () => _openFaceTextEdit(index, onFocused)
