@@ -98,7 +98,11 @@ class _HomeRandomButtonState extends State<HomeRandomButton>
                             child: child,
                           );
                         },
-                        child: const Text('🎲', style: TextStyle(fontSize: 22)),
+                        child: const Icon(
+                          Icons.casino,
+                          size: 24,
+                          color: HomePalette.bg,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Text(

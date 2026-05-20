@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 
 class HomeThemeCard extends StatefulWidget {
-  final String emoji;
+  final IconData icon;
   final String name;
   final String description;
   final Color accentColor;
@@ -12,7 +12,7 @@ class HomeThemeCard extends StatefulWidget {
 
   const HomeThemeCard({
     super.key,
-    required this.emoji,
+    required this.icon,
     required this.name,
     required this.description,
     required this.accentColor,
@@ -106,9 +106,10 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
                             border: Border.all(color: HomePalette.border),
                           ),
                           child: Center(
-                            child: Text(
-                              widget.emoji,
-                              style: const TextStyle(fontSize: 20),
+                            child: Icon(
+                              widget.icon,
+                              size: 22,
+                              color: widget.accentColor,
                             ),
                           ),
                         ),

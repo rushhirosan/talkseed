@@ -381,7 +381,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                             ),
                             const SizedBox(height: 20),
                             HomeThemeCard(
-                              emoji: '🌱',
+                              icon: Icons.eco_outlined,
                               name: l10n.homeThemeShortValues,
                               description: l10n.homeThemeDescValues,
                               accentColor: HomePalette.purple,
@@ -391,7 +391,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                             ),
                             const SizedBox(height: 12),
                             HomeThemeCard(
-                              emoji: '💬',
+                              icon: Icons.forum_outlined,
                               name: l10n.homeThemeShortGroupDiscussion,
                               description: l10n.homeThemeDescGroupDiscussion,
                               accentColor: HomePalette.accentCoral,
