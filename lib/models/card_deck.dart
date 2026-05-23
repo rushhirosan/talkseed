@@ -642,8 +642,28 @@ class CardDeck {
           d.type != CardDeckType.checkIn && d.type != CardDeckType.oneOnOne)
       .toList();
 
+  /// 旧カテゴリーID（端末に保存済みのセッション設定）を現行IDへ寄せる。
+  static String normalizeDiscussionCategoryId(String categoryId) {
+    switch (categoryId) {
+      case 'soc_japan_decline':
+        return 'soc_demographics';
+      case 'soc_japan_immigration':
+        return 'soc_migration';
+      case 'soc_japan_work':
+        return 'soc_work';
+      case 'soc_japan_local':
+        return 'soc_regional';
+      default:
+        return categoryId;
+    }
+  }
+
+  static Set<String> normalizeDiscussionCategoryIds(Iterable<String> ids) {
+    return ids.map(normalizeDiscussionCategoryId).toSet();
+  }
+
   /// [themeKey]（ARB のキー名）から議論デッキのカテゴリーIDを返す。
-  /// `themeSocJapan*` / `soc_japan_*` はキー・ID の歴史的経緯のみ（文言は l10n で地域中立）。
+  /// ARB キー `themeSocJapan*` は歴史的名称（文言は l10n で地域中立）。
   static String discussionCategoryIdForThemeKey(String themeKey) {
     if (themeKey.startsWith('themeProbLogical')) return 'prob_logical';
     if (themeKey.startsWith('themeProbCreative')) return 'prob_creative';
@@ -653,12 +673,12 @@ class CardDeck {
     if (themeKey.startsWith('themeSocAiGap')) return 'soc_ai_gap';
     if (themeKey.startsWith('themeSocClimate')) return 'soc_climate';
     if (themeKey.startsWith('themeSocDemocracy')) return 'soc_democracy';
-    if (themeKey.startsWith('themeSocJapanDecline')) return 'soc_japan_decline';
+    if (themeKey.startsWith('themeSocJapanDecline')) return 'soc_demographics';
     if (themeKey.startsWith('themeSocJapanImmigration')) {
-      return 'soc_japan_immigration';
+      return 'soc_migration';
     }
-    if (themeKey.startsWith('themeSocJapanWork')) return 'soc_japan_work';
-    if (themeKey.startsWith('themeSocJapanLocal')) return 'soc_japan_local';
+    if (themeKey.startsWith('themeSocJapanWork')) return 'soc_work';
+    if (themeKey.startsWith('themeSocJapanLocal')) return 'soc_regional';
     return 'uncategorized';
   }
 
@@ -674,10 +694,10 @@ class CardDeck {
           'soc_ai_gap',
           'soc_climate',
           'soc_democracy',
-          'soc_japan_decline',
-          'soc_japan_immigration',
-          'soc_japan_work',
-          'soc_japan_local',
+          'soc_demographics',
+          'soc_migration',
+          'soc_work',
+          'soc_regional',
         ];
       default:
         return const ['uncategorized'];
@@ -706,12 +726,16 @@ class CardDeck {
         return l10n.discussionCatSocClimate;
       case 'soc_democracy':
         return l10n.discussionCatSocDemocracy;
+      case 'soc_demographics':
       case 'soc_japan_decline':
         return l10n.discussionCatSocJapanDecline;
+      case 'soc_migration':
       case 'soc_japan_immigration':
         return l10n.discussionCatSocJapanImmigration;
+      case 'soc_work':
       case 'soc_japan_work':
         return l10n.discussionCatSocJapanWork;
+      case 'soc_regional':
       case 'soc_japan_local':
         return l10n.discussionCatSocJapanLocal;
       default:

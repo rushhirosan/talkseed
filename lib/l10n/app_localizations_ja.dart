@@ -655,7 +655,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deckGroupDiscussion => 'グループディスカッション';
 
   @override
-  String get deckGroupDiscussionDesc => '論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題';
+  String get deckGroupDiscussionDesc =>
+      '論理・創造・推定・倫理、地政学・AI・気候・民主主義、人口・移民・働き方・地域など、みんなで話すお題';
 
   @override
   String get discussionScreenTitle => '議論モード';
@@ -1148,34 +1149,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeProbCreative10 => 'もし価格を10倍にするとしたら、何を変える必要があるか？';
 
   @override
-  String get themeProbFermi1 => '渋谷駅を1日に通過する人は何人？';
+  String get themeProbFermi1 => 'あなたの国で、主要都市の大きな駅を1日に利用する人は何人？';
 
   @override
-  String get themeProbFermi2 => '日本全国のオフィスの椅子の数は？';
+  String get themeProbFermi2 => 'あなたの国にあるオフィス用の椅子の総数は？';
 
   @override
   String get themeProbFermi3 => '自社の社員が1年間に書くメールの総文字数は？';
 
   @override
-  String get themeProbFermi4 => '東京都内に信号機はいくつある？';
+  String get themeProbFermi4 => 'あなたの国の首都圏に、信号機はいくつある？';
 
   @override
-  String get themeProbFermi5 => '日本で1日に消費されるコーヒーのカップ数は？';
+  String get themeProbFermi5 => 'あなたの国で1日に消費されるコーヒーのカップ数は？';
 
   @override
-  String get themeProbFermi6 => '日本全国のコンビニで1日に捨てられる弁当の数は？';
+  String get themeProbFermi6 => 'あなたの国の小売で1日に廃棄される即食・弁当類は何個？';
 
   @override
   String get themeProbFermi7 => '自社のオフィスで1年間に使われる電力量はどのくらい？';
 
   @override
-  String get themeProbFermi8 => '東京都内を走るタクシーの総走行距離（1日）は？';
+  String get themeProbFermi8 => 'あなたがよく知る大都市で、タクシーの1日の総走行距離は？';
 
   @override
-  String get themeProbFermi9 => '日本全国のスマートフォンのバッテリーを合計すると何Wh？';
+  String get themeProbFermi9 => 'あなたの国のスマートフォンのバッテリー容量を合計すると何Wh？';
 
   @override
-  String get themeProbFermi10 => '今この瞬間、日本で会議をしている人は何人いる？';
+  String get themeProbFermi10 => '今この瞬間、あなたと同じタイムゾーンで会議をしている人は何人？';
 
   @override
   String get themeProbDilemma1 => '優秀だが協調性のないメンバー。残す？外す？判断基準を言語化せよ';
@@ -1208,7 +1209,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeProbDilemma10 => 'リソースが足りない。既存顧客の満足度を守る vs 新規顧客を獲得する。どちらを優先？';
 
   @override
-  String get themeSocGeo1 => '米中対立が激化したとき、企業はどちらの経済圏を選ぶべきか？';
+  String get themeSocGeo1 => '大国間の対立が激化したとき、企業は特定の経済圏に寄るべきか、多極でいくべきか？';
 
   @override
   String get themeSocGeo2 => '関税・貿易戦争は「国を守る手段」か、「世界を貧しくする愚策」か？';
@@ -1217,7 +1218,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocGeo3 => '経済安全保障のために、企業はどこまでサプライチェーンを自国回帰すべきか？';
 
   @override
-  String get themeSocGeo4 => 'ロシア・ウクライナ戦争が長期化すると、グローバルビジネスにどんな影響が続くか？';
+  String get themeSocGeo4 => '大規模な地域紛争が長期化すると、グローバルビジネスにどんな影響が続くか？';
 
   @override
   String get themeSocGeo5 => '「友好国とだけ貿易するフレンドショアリング」は現実的な戦略か？';
@@ -1271,7 +1272,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocClimate1 => '気候変動対策に消極的な国の製品に「炭素関税」をかけることは公平か？';
 
   @override
-  String get themeSocClimate2 => '再生可能エネルギーのリーダーが中国になりつつある。世界はそれでいいか？';
+  String get themeSocClimate2 => '再生可能エネルギーの供給が少数国に集中しつつある。世界はそれでいいか？';
 
   @override
   String get themeSocClimate3 => '企業のESGレポートはほとんど「グリーンウォッシュ」だと思うか？';
@@ -1353,7 +1354,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocJapanDecline8 => '介護ロボットが普及しても、家族が担うべきケアは残るか？';
 
   @override
-  String get themeSocJapanDecline9 => '暦や吉凶の迷信が結婚・出生のタイミングに影響する慣習をどう捉えるか？';
+  String get themeSocJapanDecline9 => '結婚や出産のタイミングに、伝統的な暦や迷信が影響する—無害な文化か、問題か？';
 
   @override
   String get themeSocJapanDecline10 => 'あなたが80歳のとき、次の世代のためにどんな社会にしていたいか？';
@@ -1393,7 +1394,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocJapanWork1 => '週4日労働が標準になったとき、企業と個人はそれぞれ何を変える必要があるか？';
 
   @override
-  String get themeSocJapanWork2 => '大学卒の大量一括採用と長期雇用を前提にしたモデルは、今も通用するか？';
+  String get themeSocJapanWork2 => '大規模な同期採用と長期雇用を前提にしたモデルは、今も通用するか？';
 
   @override
   String get themeSocJapanWork3 => '成果が同じなら、労働時間が短い人と長い人の評価は同じにすべきか？';
@@ -1414,10 +1415,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocJapanWork8 => 'リモートと出社、協働の質ではどちらが優れているか。誰が決めるべきか？';
 
   @override
-  String get themeSocJapanWork9 => '同僚との飲食の集まりは、労務か文化か。境界線は？';
+  String get themeSocJapanWork9 => '同僚との業務外の食事・集まりは、労務か文化か。境界線は？';
 
   @override
-  String get themeSocJapanWork10 => '10年後も「正社員中心」の雇用が主流だと思うか？';
+  String get themeSocJapanWork10 => '10年後も、従来型のフルタイム雇用が主流だと思うか？';
 
   @override
   String get themeSocJapanLocal1 => '公共交通が細った地域でも、生活に必要な移動権は保障すべきか？';
@@ -1441,7 +1442,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeSocJapanLocal7 => '本社機能を中小都市や地方へ移す企業が成功するために必要な条件は？';
 
   @override
-  String get themeSocJapanLocal8 => '人口減少地域に「消滅リスク」などのラベルを付けることは、プラスかマイナスか？';
+  String get themeSocJapanLocal8 => '人口減の地域に「衰退・存続リスク」などのラベルを付けることは、プラスかマイナスか？';
 
   @override
   String get themeSocJapanLocal9 => '大都市から地方・中小都市へ移住するなら、最低限ほしい条件は？';

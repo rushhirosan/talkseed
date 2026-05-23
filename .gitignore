@@ -47,6 +47,10 @@ app.*.map.json
 # Firebase deploy cache
 .firebase/
 
+# App Store screenshot editor (Next.js)
+store_assets/app-store-screenshots-editor/node_modules/
+store_assets/app-store-screenshots-editor/.next/
+
 # Android release signing (secret)
 /android/key.properties
 /android/*.jks

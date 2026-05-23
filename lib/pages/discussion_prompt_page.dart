@@ -146,7 +146,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       } else if (raw.isEmpty) {
         allowed = {};
       } else {
-        allowed = Set<String>.from(raw);
+        allowed = CardDeck.normalizeDiscussionCategoryIds(raw);
       }
       _groups = CardDeck.buildShuffledDiscussionCategoriesPerCategory(
         deckType: dt,
@@ -410,12 +410,16 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
         return const Color(0xFFB2DFDB);
       case 'soc_democracy':
         return ts.shellLavender;
+      case 'soc_demographics':
       case 'soc_japan_decline':
         return ts.playerPastel3;
+      case 'soc_migration':
       case 'soc_japan_immigration':
         return const Color(0xFFFFE0B2);
+      case 'soc_work':
       case 'soc_japan_work':
         return const Color(0xFFC5E1A5);
+      case 'soc_regional':
       case 'soc_japan_local':
         return const Color(0xFFB39DDB);
       default:
@@ -433,10 +437,14 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       'soc_ai_gap': 'AI',
       'soc_climate': 'CL',
       'soc_democracy': 'DM',
-      'soc_japan_decline': 'J1',
-      'soc_japan_immigration': 'J2',
-      'soc_japan_work': 'J3',
-      'soc_japan_local': 'J4',
+      'soc_demographics': 'P1',
+      'soc_migration': 'P2',
+      'soc_work': 'P3',
+      'soc_regional': 'P4',
+      'soc_japan_decline': 'P1',
+      'soc_japan_immigration': 'P2',
+      'soc_japan_work': 'P3',
+      'soc_japan_local': 'P4',
       'uncategorized': '●',
     };
     final prefix = map[categoryId] ?? '?';

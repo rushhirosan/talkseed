@@ -1,0 +1,295 @@
+{
+  "appName": "Talk Shuffle",
+  "themeId": "talk-shuffle",
+  "locales": [
+    "en",
+    "ja"
+  ],
+  "locale": "ja",
+  "device": "iphone",
+  "orientation": "portrait",
+  "appIcon": "/app-icon.png",
+  "slidesByDevice": {
+    "iphone": [
+      {
+        "id": "s_mphnig7x_0",
+        "layout": "hero",
+        "label": {
+          "en": "TALK SHUFFLE",
+          "ja": "トークシャッフル"
+        },
+        "headline": {
+          "en": "Pick a topic\nin seconds.",
+          "ja": "話題が\nすぐ決まる"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/01.png"
+      },
+      {
+        "id": "s_mphnig7x_1",
+        "layout": "device-bottom",
+        "label": {
+          "en": "3D DICE",
+          "ja": "3Dサイコロ"
+        },
+        "headline": {
+          "en": "Roll for your\nnext prompt.",
+          "ja": "サイコロで\nテーマ決定"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/02.png"
+      },
+      {
+        "id": "s_mphnig7x_2",
+        "layout": "device-bottom",
+        "label": {
+          "en": "SESSION",
+          "ja": "セッション"
+        },
+        "headline": {
+          "en": "Set players\nand timer.",
+          "ja": "人数とタイマー\nを設定"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/03.png"
+      },
+      {
+        "id": "s_mphnig7x_3",
+        "layout": "device-top",
+        "label": {
+          "en": "VALUE CARDS",
+          "ja": "価値観カード"
+        },
+        "headline": {
+          "en": "Share values\nthrough play.",
+          "ja": "価値観を\n共有する"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/04.png",
+        "inverted": true
+      },
+      {
+        "id": "s_mphnig7x_4",
+        "layout": "device-bottom",
+        "label": {
+          "en": "GROUP TALK",
+          "ja": "グループ"
+        },
+        "headline": {
+          "en": "Prompt cards\nfor teams.",
+          "ja": "チーム向け\nプロンプト"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/05.png"
+      },
+      {
+        "id": "s_mphnig7x_5",
+        "layout": "device-bottom",
+        "label": {
+          "en": "HISTORY",
+          "ja": "履歴"
+        },
+        "headline": {
+          "en": "Sessions stay\non your device.",
+          "ja": "履歴は端末内\nに保存"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/06.png"
+      }
+    ],
+    "android": [
+      {
+        "id": "s_mphnig7x_6",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Sell one\nidea per slide."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mphnig7x_7",
+        "layout": "device-bottom",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Your headline\nlives here."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mphnig7x_8",
+        "layout": "two-devices",
+        "label": {
+          "en": "FEATURE 02"
+        },
+        "headline": {
+          "en": "Show two\nscreens at once."
+        },
+        "screenshot": "",
+        "screenshotSecondary": ""
+      },
+      {
+        "id": "s_mphnig7x_9",
+        "layout": "device-top",
+        "label": {
+          "en": "FEATURE 03"
+        },
+        "headline": {
+          "en": "Flip the contrast\nfor visual rhythm."
+        },
+        "screenshot": "",
+        "inverted": true
+      },
+      {
+        "id": "s_mphnig7x_a",
+        "layout": "no-device",
+        "label": {
+          "en": "MORE"
+        },
+        "headline": {
+          "en": "And so\nmuch more."
+        },
+        "screenshot": ""
+      }
+    ],
+    "ipad": [
+      {
+        "id": "s_mphnig7x_b",
+        "layout": "hero",
+        "label": {
+          "en": "TALK SHUFFLE",
+          "ja": "トークシャッフル"
+        },
+        "headline": {
+          "en": "Pick a topic\nin seconds.",
+          "ja": "話題が\nすぐ決まる"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/01.png"
+      },
+      {
+        "id": "s_mphnig7x_c",
+        "layout": "device-bottom",
+        "label": {
+          "en": "3D DICE",
+          "ja": "3Dサイコロ"
+        },
+        "headline": {
+          "en": "Roll for your\nnext prompt.",
+          "ja": "サイコロで\nテーマ決定"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/02.png"
+      },
+      {
+        "id": "s_mphnig7x_d",
+        "layout": "device-bottom",
+        "label": {
+          "en": "VALUE CARDS",
+          "ja": "価値観カード"
+        },
+        "headline": {
+          "en": "Rank and share\nwhat matters.",
+          "ja": "大切な価値観を\n並べる"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/03.png"
+      },
+      {
+        "id": "s_mphnig7x_e",
+        "layout": "device-top",
+        "label": {
+          "en": "SESSION",
+          "ja": "セッション"
+        },
+        "headline": {
+          "en": "Set players\nand timer.",
+          "ja": "人数とタイマー\nを設定"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/04.png",
+        "inverted": true
+      },
+      {
+        "id": "s_mphnig7x_f",
+        "layout": "device-bottom",
+        "label": {
+          "en": "GROUP TALK",
+          "ja": "グループ"
+        },
+        "headline": {
+          "en": "Prompt cards\nfor teams.",
+          "ja": "チーム向け\nプロンプト"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/05.png"
+      },
+      {
+        "id": "s_mphnig7x_g",
+        "layout": "device-bottom",
+        "label": {
+          "en": "HISTORY",
+          "ja": "履歴"
+        },
+        "headline": {
+          "en": "Sessions stay\non your device.",
+          "ja": "履歴は端末内\nに保存"
+        },
+        "screenshot": "/screenshots/apple/ipad/{locale}/06.png"
+      }
+    ],
+    "android-7": [
+      {
+        "id": "s_mphnig7x_h",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Pocket-sized\npower."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mphnig7x_i",
+        "layout": "split-landscape",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
+        "screenshot": ""
+      }
+    ],
+    "android-10": [
+      {
+        "id": "s_mphnig7x_j",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Made for\nthe big screen."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mphnig7x_k",
+        "layout": "split-landscape",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
+        "screenshot": ""
+      }
+    ],
+    "feature-graphic": [
+      {
+        "id": "s_mphnig7x_l",
+        "layout": "feature-graphic",
+        "label": {},
+        "headline": {
+          "en": "Pick a topic fast.",
+          "ja": "話題がすぐ決まる"
+        },
+        "screenshot": ""
+      }
+    ]
+  }
+}

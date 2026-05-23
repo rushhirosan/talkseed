@@ -43,3 +43,15 @@ iPad ネイティブ対応（`TARGETED_DEVICE_FAMILY = 1,2`）の場合、App St
 6. `06_play_history.png` - 履歴
 
 ※ チェックイン/チェックアウトは初回リリースでは非表示のため撮影対象外
+
+## マーケ用スクショ（キャッチコピー・フレーム付き）
+
+[app-store-screenshots](https://github.com/ParthJadhav/app-store-screenshots) エディタを `../app-store-screenshots-editor/` に用意しています。
+
+```bash
+cd store_assets/app-store-screenshots-editor
+npm install
+npm run dev   # → http://localhost:3000
+```
+
+生キャプチャを更新したら `./scripts/sync-source-screenshots.sh` を実行してからエディタで **Export bundle** してください。

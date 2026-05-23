@@ -665,7 +665,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deckGroupDiscussionDesc =>
-      'Team prompts from logic and creativity to Fermi estimates, dilemmas, and contemporary social issues';
+      'Team prompts on logic, creativity, estimation, ethics, geopolitics, AI, climate, democracy, demographics, migration, work, and communities';
 
   @override
   String get discussionScreenTitle => 'Discussion';
@@ -1195,26 +1195,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeProbFermi1 =>
-      'How many people pass through Shibuya Station in one day?';
+      'How many people use a major downtown transit hub in your country in one day?';
 
   @override
-  String get themeProbFermi2 =>
-      'How many office chairs are there across Japan?';
+  String get themeProbFermi2 => 'How many office chairs exist in your country?';
 
   @override
   String get themeProbFermi3 =>
       'How many total characters are written in employee emails in one year at your company?';
 
   @override
-  String get themeProbFermi4 => 'How many traffic lights are there in Tokyo?';
+  String get themeProbFermi4 =>
+      'How many traffic lights are in your country\'s capital region?';
 
   @override
   String get themeProbFermi5 =>
-      'How many cups of coffee are consumed per day in Japan?';
+      'How many cups of coffee are consumed per day in your country?';
 
   @override
   String get themeProbFermi6 =>
-      'How many boxed lunches are discarded daily at convenience stores across Japan?';
+      'How many ready-to-eat meals are discarded daily by retailers in your country?';
 
   @override
   String get themeProbFermi7 =>
@@ -1222,15 +1222,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeProbFermi8 =>
-      'What is the total taxi driving distance per day in Tokyo?';
+      'What is the total taxi driving distance per day in a major city you know well?';
 
   @override
   String get themeProbFermi9 =>
-      'What is the combined battery capacity (Wh) of all smartphones in Japan?';
+      'What is the combined battery capacity (Wh) of all smartphones in your country?';
 
   @override
   String get themeProbFermi10 =>
-      'At this exact moment, how many people are in meetings in Japan?';
+      'Right now, how many people are in meetings in your time zone?';
 
   @override
   String get themeProbDilemma1 =>
@@ -1273,124 +1273,163 @@ class AppLocalizationsEn extends AppLocalizations {
       'Resources are limited. Prioritize existing customer satisfaction or new customer acquisition?';
 
   @override
-  String get themeSocGeo1 => '米中対立が激化したとき、企業はどちらの経済圏を選ぶべきか？';
+  String get themeSocGeo1 =>
+      'When major-power rivalry intensifies, should companies align with one economic bloc or stay multi-aligned?';
 
   @override
-  String get themeSocGeo2 => '関税・貿易戦争は「国を守る手段」か、「世界を貧しくする愚策」か？';
+  String get themeSocGeo2 =>
+      'Are tariffs and trade wars a way to protect nations—or a mistake that makes everyone poorer?';
 
   @override
-  String get themeSocGeo3 => '経済安全保障のために、企業はどこまでサプライチェーンを自国回帰すべきか？';
+  String get themeSocGeo3 =>
+      'For economic security, how far should firms reshore or diversify supply chains?';
 
   @override
-  String get themeSocGeo4 => 'ロシア・ウクライナ戦争が長期化すると、グローバルビジネスにどんな影響が続くか？';
+  String get themeSocGeo4 =>
+      'If a major regional war drags on, what lasting effects hit global business?';
 
   @override
-  String get themeSocGeo5 => '「友好国とだけ貿易するフレンドショアリング」は現実的な戦略か？';
+  String get themeSocGeo5 =>
+      'Is friend-shoring (trading mainly with allies) a realistic strategy?';
 
   @override
-  String get themeSocGeo6 => '中東情勢が不安定なまま続く場合、エネルギーコストに企業はどう備えるか？';
+  String get themeSocGeo6 =>
+      'If energy-producing regions stay unstable, how should firms plan for cost shocks?';
 
   @override
-  String get themeSocGeo7 => '国連・WTOへの信頼が崩れたとき、世界秩序はどう維持されるか？';
+  String get themeSocGeo7 =>
+      'If trust in global institutions weakens, what upholds international order?';
 
   @override
-  String get themeSocGeo8 => '地政学リスクを「経営課題」として扱えていない企業は生き残れるか？';
+  String get themeSocGeo8 =>
+      'Can companies survive without treating geopolitics as a leadership issue?';
 
   @override
-  String get themeSocGeo9 => 'グローバルサウス（新興国・途上国）の台頭は、世界にとってチャンスか脅威か？';
+  String get themeSocGeo9 =>
+      'Is the rise of emerging economies a chance or a threat for the world?';
 
   @override
-  String get themeSocGeo10 => '「どの国とも仲良くする」外交戦略は、これからも通用するか？';
+  String get themeSocGeo10 =>
+      'Does \"stay friendly with everyone\" diplomacy still work in practice?';
 
   @override
-  String get themeSocAiGap1 => 'AIの恩恵を受けるのは結局、お金と技術を持つ国や企業だけではないか？';
+  String get themeSocAiGap1 =>
+      'Will AI benefits flow mainly to countries and firms that already have capital and tech?';
 
   @override
-  String get themeSocAiGap2 => 'AIが意思決定した結果に問題が起きたとき、責任は誰が取るのか？';
+  String get themeSocAiGap2 =>
+      'When an AI-driven decision causes harm, who should be accountable?';
 
   @override
-  String get themeSocAiGap3 => '採用・融資・医療診断をAIが決める社会は、公平か？危険か？';
+  String get themeSocAiGap3 =>
+      'If hiring, lending, and diagnosis are decided by AI, is that fair—or dangerous?';
 
   @override
-  String get themeSocAiGap4 => '特定の企業がAIを独占することは、民主主義への脅威になるか？';
+  String get themeSocAiGap4 =>
+      'Could a few firms controlling AI become a threat to democracy?';
 
   @override
-  String get themeSocAiGap5 => '国境を越えて動くAIを誰が規制すべきか？各国政府？国際機関？企業自身？';
+  String get themeSocAiGap5 =>
+      'Who should regulate AI that crosses borders—governments, global bodies, or firms themselves?';
 
   @override
-  String get themeSocAiGap6 => 'AIによる雇用喪失に対し、ベーシックインカムは解決策になるか？';
+  String get themeSocAiGap6 =>
+      'For job losses driven by AI, is universal basic income a real solution?';
 
   @override
-  String get themeSocAiGap7 => 'AI格差により先進国と途上国の生産性の差が広がることを、誰が止めるべきか？';
+  String get themeSocAiGap7 =>
+      'As AI widens productivity gaps between rich and poor countries, who should act?';
 
   @override
-  String get themeSocAiGap8 => '生成AIで大量の偽情報が拡散する社会で、「本物」をどう見分けるか？';
+  String get themeSocAiGap8 =>
+      'In a world of AI-generated misinformation, how do we tell what\'s real?';
 
   @override
-  String get themeSocAiGap9 => 'AIを「兵器」として使う国が増えた場合、国際的なルールは作れるか？';
+  String get themeSocAiGap9 =>
+      'If more countries weaponize AI, can international rules still be built?';
 
   @override
-  String get themeSocAiGap10 => '10年後、AIが「持てる国」と「持たざる国」の差をどう変えると思うか？';
+  String get themeSocAiGap10 =>
+      'In 10 years, how will the gap between AI-rich and AI-poor places change?';
 
   @override
-  String get themeSocClimate1 => '気候変動対策に消極的な国の製品に「炭素関税」をかけることは公平か？';
+  String get themeSocClimate1 =>
+      'Is a carbon border tax on products from climate-laggard countries fair?';
 
   @override
-  String get themeSocClimate2 => '再生可能エネルギーのリーダーが中国になりつつある。世界はそれでいいか？';
+  String get themeSocClimate2 =>
+      'If one country leads renewable supply chains, is the world comfortable with that concentration?';
 
   @override
-  String get themeSocClimate3 => '企業のESGレポートはほとんど「グリーンウォッシュ」だと思うか？';
+  String get themeSocClimate3 =>
+      'Are most corporate ESG reports mostly greenwashing?';
 
   @override
-  String get themeSocClimate4 => '気候変動で住めなくなった地域からの「気候難民」を、豊かな国はどう受け入れるべきか？';
+  String get themeSocClimate4 =>
+      'How should wealthier countries receive people displaced by climate impacts?';
 
   @override
-  String get themeSocClimate5 => '経済成長と脱炭素は本当に両立できるか？';
+  String get themeSocClimate5 =>
+      'Can economic growth and decarbonization truly happen together?';
 
   @override
-  String get themeSocClimate6 => '肉食・航空機利用など個人の行動変容で、気候は本当に変わるか？';
+  String get themeSocClimate6 =>
+      'Can individual choices (diet, flying, etc.) materially change the climate?';
 
   @override
-  String get themeSocClimate7 => '先進国と途上国で、気候変動対策の「責任」は同じであるべきか？';
+  String get themeSocClimate7 =>
+      'Should rich and poor countries bear the same climate responsibility?';
 
   @override
-  String get themeSocClimate8 => '原子力を「グリーンエネルギー」と呼ぶことに、賛成か反対か？';
+  String get themeSocClimate8 => 'Should nuclear power count as green energy?';
 
   @override
-  String get themeSocClimate9 => '2050年ゼロカーボンが達成できない場合、次の世代にどう説明するか？';
+  String get themeSocClimate9 =>
+      'If net-zero by 2050 fails, how do we explain that to the next generation?';
 
   @override
-  String get themeSocClimate10 => '気候変動対策として、今すぐ一つだけ実行するとしたら何を選ぶか？';
+  String get themeSocClimate10 =>
+      'If you could execute one climate action today, what would it be?';
 
   @override
-  String get themeSocDemocracy1 => '富裕層への課税を強化して格差を縮めることに、賛成か反対か？';
+  String get themeSocDemocracy1 =>
+      'Support or oppose heavier taxes on the wealthy to reduce inequality?';
 
   @override
-  String get themeSocDemocracy2 => 'SNSのアルゴリズムは民主主義を壊しているか？それとも強化しているか？';
+  String get themeSocDemocracy2 =>
+      'Do social algorithms weaken democracy—or strengthen it?';
 
   @override
-  String get themeSocDemocracy3 => '選挙にAIや偽情報が介入した場合、選挙結果は有効か？';
+  String get themeSocDemocracy3 =>
+      'If AI or disinformation skews an election, is the result still legitimate?';
 
   @override
-  String get themeSocDemocracy4 => '「強いリーダーシップ」と「独裁」の境界線はどこか？';
+  String get themeSocDemocracy4 =>
+      'Where is the line between strong leadership and authoritarian rule?';
 
   @override
-  String get themeSocDemocracy5 => 'フェイクニュースを拡散した人は、法的に罰せられるべきか？';
+  String get themeSocDemocracy5 =>
+      'Should people who spread deliberate falsehoods face legal penalties?';
 
   @override
-  String get themeSocDemocracy6 => 'SNSプラットフォームは「言論の場」か、「メディア企業」として規制されるべきか？';
+  String get themeSocDemocracy6 =>
+      'Are social platforms public speech spaces—or media companies that need regulation?';
 
   @override
-  String get themeSocDemocracy7 => '「エコーチェンバー」から抜け出すために、個人は何ができるか？';
+  String get themeSocDemocracy7 =>
+      'What can individuals do to escape echo chambers?';
 
   @override
-  String get themeSocDemocracy8 => '世界各地で「エリートへの怒り」が高まっている。その根本原因は何か？';
+  String get themeSocDemocracy8 =>
+      'Why is anger at elites rising in many countries—and what\'s the root cause?';
 
   @override
-  String get themeSocDemocracy9 => '先進国が「民主主義を広める」と言うとき、それは本当に善意か？';
+  String get themeSocDemocracy9 =>
+      'When powerful countries \"promote democracy\" abroad, is that usually goodwill?';
 
   @override
-  String get themeSocDemocracy10 => '「社会の分断」を一番深めているのは何か？メディア？政治家？アルゴリズム？';
+  String get themeSocDemocracy10 =>
+      'What deepens social division most—media, politicians, or algorithms?';
 
   @override
   String get themeSocJapanDecline1 =>
@@ -1478,7 +1517,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeSocJapanWork2 =>
-      'Are bulk campus hiring and long-job-tenure models still fit for purpose?';
+      'Are large-scale cohort hiring and long-tenure employment models still fit for purpose?';
 
   @override
   String get themeSocJapanWork3 =>
@@ -1510,7 +1549,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeSocJapanWork10 =>
-      'In a decade, will traditional full-time employment still be the default career shape?';
+      'In a decade, will standard full-time employment still be the default career path?';
 
   @override
   String get themeSocJapanLocal1 =>
@@ -1542,7 +1581,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeSocJapanLocal8 =>
-      'Labeling shrinking towns \"at risk of disappearing\": help or stigma?';
+      'Labeling shrinking communities as \"at risk of decline\": help or harmful stigma?';
 
   @override
   String get themeSocJapanLocal9 =>

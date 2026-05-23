@@ -1331,7 +1331,7 @@ abstract class AppLocalizations {
   /// No description provided for @deckGroupDiscussionDesc.
   ///
   /// In ja, this message translates to:
-  /// **'論理・創造・フェルミ推定・ジレンマから現代の社会課題まで、みんなで話すお題'**
+  /// **'論理・創造・推定・倫理、地政学・AI・気候・民主主義、人口・移民・働き方・地域など、みんなで話すお題'**
   String get deckGroupDiscussionDesc;
 
   /// No description provided for @discussionScreenTitle.
@@ -2219,13 +2219,13 @@ abstract class AppLocalizations {
   /// No description provided for @themeProbFermi1.
   ///
   /// In ja, this message translates to:
-  /// **'渋谷駅を1日に通過する人は何人？'**
+  /// **'あなたの国で、主要都市の大きな駅を1日に利用する人は何人？'**
   String get themeProbFermi1;
 
   /// No description provided for @themeProbFermi2.
   ///
   /// In ja, this message translates to:
-  /// **'日本全国のオフィスの椅子の数は？'**
+  /// **'あなたの国にあるオフィス用の椅子の総数は？'**
   String get themeProbFermi2;
 
   /// No description provided for @themeProbFermi3.
@@ -2237,19 +2237,19 @@ abstract class AppLocalizations {
   /// No description provided for @themeProbFermi4.
   ///
   /// In ja, this message translates to:
-  /// **'東京都内に信号機はいくつある？'**
+  /// **'あなたの国の首都圏に、信号機はいくつある？'**
   String get themeProbFermi4;
 
   /// No description provided for @themeProbFermi5.
   ///
   /// In ja, this message translates to:
-  /// **'日本で1日に消費されるコーヒーのカップ数は？'**
+  /// **'あなたの国で1日に消費されるコーヒーのカップ数は？'**
   String get themeProbFermi5;
 
   /// No description provided for @themeProbFermi6.
   ///
   /// In ja, this message translates to:
-  /// **'日本全国のコンビニで1日に捨てられる弁当の数は？'**
+  /// **'あなたの国の小売で1日に廃棄される即食・弁当類は何個？'**
   String get themeProbFermi6;
 
   /// No description provided for @themeProbFermi7.
@@ -2261,19 +2261,19 @@ abstract class AppLocalizations {
   /// No description provided for @themeProbFermi8.
   ///
   /// In ja, this message translates to:
-  /// **'東京都内を走るタクシーの総走行距離（1日）は？'**
+  /// **'あなたがよく知る大都市で、タクシーの1日の総走行距離は？'**
   String get themeProbFermi8;
 
   /// No description provided for @themeProbFermi9.
   ///
   /// In ja, this message translates to:
-  /// **'日本全国のスマートフォンのバッテリーを合計すると何Wh？'**
+  /// **'あなたの国のスマートフォンのバッテリー容量を合計すると何Wh？'**
   String get themeProbFermi9;
 
   /// No description provided for @themeProbFermi10.
   ///
   /// In ja, this message translates to:
-  /// **'今この瞬間、日本で会議をしている人は何人いる？'**
+  /// **'今この瞬間、あなたと同じタイムゾーンで会議をしている人は何人？'**
   String get themeProbFermi10;
 
   /// No description provided for @themeProbDilemma1.
@@ -2339,7 +2339,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocGeo1.
   ///
   /// In ja, this message translates to:
-  /// **'米中対立が激化したとき、企業はどちらの経済圏を選ぶべきか？'**
+  /// **'大国間の対立が激化したとき、企業は特定の経済圏に寄るべきか、多極でいくべきか？'**
   String get themeSocGeo1;
 
   /// No description provided for @themeSocGeo2.
@@ -2357,7 +2357,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocGeo4.
   ///
   /// In ja, this message translates to:
-  /// **'ロシア・ウクライナ戦争が長期化すると、グローバルビジネスにどんな影響が続くか？'**
+  /// **'大規模な地域紛争が長期化すると、グローバルビジネスにどんな影響が続くか？'**
   String get themeSocGeo4;
 
   /// No description provided for @themeSocGeo5.
@@ -2465,7 +2465,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocClimate2.
   ///
   /// In ja, this message translates to:
-  /// **'再生可能エネルギーのリーダーが中国になりつつある。世界はそれでいいか？'**
+  /// **'再生可能エネルギーの供給が少数国に集中しつつある。世界はそれでいいか？'**
   String get themeSocClimate2;
 
   /// No description provided for @themeSocClimate3.
@@ -2627,7 +2627,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocJapanDecline9.
   ///
   /// In ja, this message translates to:
-  /// **'暦や吉凶の迷信が結婚・出生のタイミングに影響する慣習をどう捉えるか？'**
+  /// **'結婚や出産のタイミングに、伝統的な暦や迷信が影響する—無害な文化か、問題か？'**
   String get themeSocJapanDecline9;
 
   /// No description provided for @themeSocJapanDecline10.
@@ -2705,7 +2705,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocJapanWork2.
   ///
   /// In ja, this message translates to:
-  /// **'大学卒の大量一括採用と長期雇用を前提にしたモデルは、今も通用するか？'**
+  /// **'大規模な同期採用と長期雇用を前提にしたモデルは、今も通用するか？'**
   String get themeSocJapanWork2;
 
   /// No description provided for @themeSocJapanWork3.
@@ -2747,13 +2747,13 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocJapanWork9.
   ///
   /// In ja, this message translates to:
-  /// **'同僚との飲食の集まりは、労務か文化か。境界線は？'**
+  /// **'同僚との業務外の食事・集まりは、労務か文化か。境界線は？'**
   String get themeSocJapanWork9;
 
   /// No description provided for @themeSocJapanWork10.
   ///
   /// In ja, this message translates to:
-  /// **'10年後も「正社員中心」の雇用が主流だと思うか？'**
+  /// **'10年後も、従来型のフルタイム雇用が主流だと思うか？'**
   String get themeSocJapanWork10;
 
   /// No description provided for @themeSocJapanLocal1.
@@ -2801,7 +2801,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSocJapanLocal8.
   ///
   /// In ja, this message translates to:
-  /// **'人口減少地域に「消滅リスク」などのラベルを付けることは、プラスかマイナスか？'**
+  /// **'人口減の地域に「衰退・存続リスク」などのラベルを付けることは、プラスかマイナスか？'**
   String get themeSocJapanLocal8;
 
   /// No description provided for @themeSocJapanLocal9.
