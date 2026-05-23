@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import JSZip from "jszip";
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import { Toaster, toast } from "sonner";
 import {
   getExportSizes,
@@ -320,9 +320,10 @@ export function ScreenshotEditor() {
             continue;
           }
           try {
-            const dataUrl = await captureSlide(el, size.w, size.h, scale);
+            const bg = slide.inverted ? theme.bgAlt : theme.bg;
+            const dataUrl = await captureSlide(el, size.w, size.h, scale, bg);
             const base64 = dataUrl.split(",")[1] || "";
-            const filename = `${String(i + 1).padStart(2, "0")}-${slide.layout}.png`;
+            const filename = `${String(i + 1).padStart(2, "0")}-${slide.layout}.jpg`;
             const path = `${platform}/${state.device}/${size.w}x${size.h}/${locale}/${filename}`;
             zip.file(path, base64, { base64: true });
             okCount += 1;
@@ -357,7 +358,7 @@ export function ScreenshotEditor() {
 
     const summary = `${locales.length} locale${locales.length === 1 ? "" : "s"} × ${sizes.length} size${sizes.length === 1 ? "" : "s"}`;
     if (failed === 0) {
-      toast.success(`Exported ${okCount} PNGs (${summary})`);
+      toast.success(`Exported ${okCount} JPEGs (${summary})`);
     } else if (okCount === 0) {
       toast.error(`All ${failed} renders failed`, {
         description: errors.slice(0, 3).join("\n"),
@@ -369,7 +370,13 @@ export function ScreenshotEditor() {
     }
   }
 
-  async function captureSlide(el: HTMLElement, w: number, h: number, scale: number) {
+  async function captureSlide(
+    el: HTMLElement,
+    w: number,
+    h: number,
+    scale: number,
+    backgroundColor: string,
+  ) {
     // html-to-image needs the node at (0,0) and uniformly scaled so the
     // captured pixel buffer matches the requested export size. Snapshot the
     // styles we touch so we can restore them after capture.
@@ -388,11 +395,14 @@ export function ScreenshotEditor() {
     el.style.transformOrigin = "top left";
     el.style.zIndex = "-1";
     try {
-      const dataUrl = await toPng(el, {
+      // App Store rejects PNGs with an alpha channel; JPEG has no transparency.
+      const dataUrl = await toJpeg(el, {
         width: w,
         height: h,
         pixelRatio: 1,
         cacheBust: false,
+        quality: 0.95,
+        backgroundColor,
       });
       return dataUrl;
     } finally {
