@@ -1,0 +1,59 @@
+# ProductHunt Launch — Talk Shuffle v2.0
+
+## Post Title
+Talk Shuffle v2.0 — Pick a conversation topic fast with 3D dice & card decks
+
+## Tagline (60 chars max)
+Pick a topic fast with 3D dice and card decks for teams and 1:1s
+
+## Description (first comment / maker comment)
+Talk Shuffle helps teams and friends choose a conversation topic quickly and naturally.
+
+🎲 Roll a 3D dice for a random prompt
+🃏 Use curated card decks for work and reflection
+⏱ Optional timer for structured sharing
+📱 Session history stored on device — no account needed
+🌐 Japanese & English support
+
+Great for:
+- Team building & icebreakers
+- Meeting check-ins and wrap-ups
+- 1:1s and personal reflection
+- Casual chats and creative brainstorming
+
+v2.0 brings card decks (values, check-in/out, self-reflection, 1:1), session history, and a polished bilingual experience.
+
+Privacy: No account registration. No personal data sent to external servers.
+
+## Links
+- Website: https://talk-seed.web.app/
+- App Store: https://apps.apple.com/us/app/talk-shuffle/id6760679042
+- Support: https://talk-seed.web.app/support.html
+
+## Topics / Categories
+- Productivity
+- iOS
+- Tech
+
+## Gallery Assets Needed
+- App icon (512x512): https://talk-seed.web.app/icons/Icon-512.png
+- Screenshot 1: Mode selection
+- Screenshot 2: 3D dice roll
+- Screenshot 3: Card deck / value cards
+- Screenshot 4: Session setup (players + timer)
+- Screenshot 5: Session history
+
+## Launch Checklist
+- [ ] Create ProductHunt maker account if needed
+- [ ] Schedule launch for Tuesday–Thursday 00:01 PST (best engagement window)
+- [ ] Prepare 5–8 gallery images (1270x760 recommended)
+- [ ] Write maker comment with v2.0 story
+- [ ] Share launch link on X/LinkedIn for upvotes
+- [ ] Respond to comments on launch day
+
+## Maker Comment Draft
+We built Talk Shuffle because picking a conversation topic shouldn't kill the mood of a meeting or hangout.
+
+v2.0 adds card decks for structured check-ins and 1:1 reflection — not just random dice rolls. Session history stays on device. No signup.
+
+Would love feedback from teams using it for icebreakers and retros!

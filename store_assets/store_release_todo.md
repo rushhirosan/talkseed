@@ -85,6 +85,20 @@
   - ビルドをアップロード
   - 審査提出
 
+- [ ] **5.3 App Store 表示名を全ロケールで「Talk Shuffle」に統一**
+  - **現状**: 日本ストアは「Talk Shuffle」、米国ストア等は「Talk Seed」のまま（検索結果にも Talk Seed と出る）
+  - **原因**: App Store Connect のロケール別「名前」が英語側だけ旧名称のまま（アプリ本体・Info.plist は既に Talk Shuffle）
+  - **手順**（App Store Connect → アプリ → 一般 → App Store → 言語ごと）:
+    1. **English (U.S.)** を開き、名前を `Talk Shuffle` に変更（`Talk Seed` を削除）
+    2. 説明文・What's New 内の `Talk Seed` 表記も `Talk Shuffle` に置換
+    3. 他ロケール（Primary Language 含む）も同様に確認
+    4. キーワードに `shuffle` / `トークシャッフル` を追加（`app_store_metadata_*.txt` 参照）
+    5. 保存 → 審査不要のメタデータ更新なら即反映、反映まで数時間〜1日
+  - **確認 URL**:
+    - JP: https://apps.apple.com/jp/app/talk-shuffle/id6760679042 （Talk Shuffle ✓）
+    - US: https://apps.apple.com/us/app/talk-seed/id6760679042 （Talk Seed → 要修正）
+  - **注意**: Bundle ID `com.talkseed.app` や Firebase ドメイン `talk-seed.web.app` は検索表示名に影響しない。変更不要。
+
 ---
 
 ## Phase 6: 最終確認（任意）

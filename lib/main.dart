@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/utils/web_locale_query.dart';
 import 'package:theme_dice/widgets/web_adaptive_layout.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/services/session_record_service.dart';
@@ -100,9 +101,8 @@ class MyApp extends StatelessWidget {
         Locale('ja', ''),
         Locale('en', ''),
       ],
-      // デバッグ用：特定の言語を強制する場合は以下のコメントを外してください
-      // locale: const Locale('en', ''), // 英語を強制
-      // locale: const Locale('ja', ''), // 日本語を強制
+      // Web: ?lang=en | ?lang=ja overrides browser locale. Mobile: unchanged.
+      locale: localeFromWebQuery(),
       home: const MainPage(),
     );
   }

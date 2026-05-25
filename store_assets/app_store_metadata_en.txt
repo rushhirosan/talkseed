@@ -31,7 +31,7 @@ Talk Shuffle works without account registration and does not send personal data 
 (Session history is stored locally on your device.)
 
 Keywords (100 chars max, comma-separated):
-icebreaker,team building,conversation prompts,dice,meeting,reflection,1on1,brainstorm
+shuffle,icebreaker,team building,conversation,dice,meeting,reflection,1on1,brainstorm
 
 Support URL:
 https://talk-seed.web.app/support.html

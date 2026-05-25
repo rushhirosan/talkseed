@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talk Shuffle — 会話のテーマを3Dサイコロで決めるアプリ</title>
+  <meta name="description" content="Talk Shuffleは、会議のチェックイン・1on1・アイスブレイク・雑談のきっかけに使える会話テーマアプリ。3Dサイコロとカードデッキで話題をランダムに決められます。無料・登録不要。">
+  <meta name="keywords" content="Talk Shuffle,会話,テーマ,話題,サイコロ,アイスブレイク,チームビルディング,1on1,チェックイン,雑談,会議">
+  <link rel="canonical" href="https://talk-seed.web.app/">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://talk-seed.web.app/">
+  <meta property="og:title" content="Talk Shuffle — 会話のテーマを3Dサイコロで決める">
+  <meta property="og:description" content="会議のチェックイン、1on1、チームビルディングのきっかけに。3Dサイコロとカードデッキで話題をサッと決められます。">
+  <meta property="og:image" content="https://talk-seed.web.app/icons/Icon-512.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="Talk Shuffle">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Talk Shuffle — 会話のテーマを3Dサイコロで決める">
+  <meta name="twitter:description" content="会議のチェックイン、1on1、チームビルディングのきっかけに使える会話テーマアプリ。">
+  <meta name="twitter:image" content="https://talk-seed.web.app/icons/Icon-512.png">
+
+  <meta name="apple-itunes-app" content="app-id=6760679042">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://talk-seed.web.app/#website",
+        "url": "https://talk-seed.web.app/",
+        "name": "Talk Shuffle",
+        "description": "会話のテーマを3Dサイコロとカードデッキで決めるiOSアプリ",
+        "inLanguage": "ja"
+      },
+      {
+        "@type": "MobileApplication",
+        "@id": "https://talk-seed.web.app/#app",
+        "name": "Talk Shuffle",
+        "operatingSystem": "iOS",
+        "applicationCategory": "LifestyleApplication",
+        "description": "3Dサイコロとカードデッキで会話のお題をランダムに引けるトーク支援アプリ。会議のチェックイン、1on1、チームビルディング、アイスブレイクに対応。",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "JPY"
+        },
+        "downloadUrl": "https://apps.apple.com/jp/app/talk-shuffle/id6760679042",
+        "installUrl": "https://apps.apple.com/jp/app/talk-shuffle/id6760679042",
+        "author": {
+          "@type": "Person",
+          "name": "Hiroyuki Igusa"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-dark: #4338A8;
+      --surface: #F5F6F8;
+      --text: #1C1B1F;
+      --text-muted: #49454F;
+      --card: #FFFFFF;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #F5F6F8 0%, #E8EAED 50%, #E1E4E8 100%);
+      line-height: 1.7;
+    }
+    html[lang="en"] body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+    header { text-align: center; margin-bottom: 2rem; }
+    .logo {
+      width: 96px; height: 96px; border-radius: 22px;
+      box-shadow: 0 8px 24px rgba(91, 79, 207, 0.25);
+      margin-bottom: 1rem;
+    }
+    h1 { font-size: 1.75rem; margin: 0 0 0.5rem; line-height: 1.35; }
+    .tagline { color: var(--text-muted); font-size: 1.05rem; margin: 0 0 1.5rem; }
+    .cta {
+      display: inline-block;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 600;
+      padding: 0.875rem 1.75rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(91, 79, 207, 0.35);
+    }
+    .cta:hover { background: var(--purple-dark); text-decoration: none; }
+    .cta-secondary {
+      display: inline-block;
+      margin-top: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    section {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    h2 { font-size: 1.15rem; margin: 0 0 0.75rem; color: var(--purple); }
+    ul { margin: 0; padding-left: 1.25rem; color: var(--text-muted); }
+    li { margin-bottom: 0.35rem; }
+    .scenes { display: grid; gap: 0.5rem; }
+    .scene {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    footer nav { margin-bottom: 0.75rem; }
+    footer nav a { margin: 0 0.5rem; }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --surface: #1E1E24;
+        --text: #E6E1E5;
+        --text-muted: #CAC4D0;
+        --card: #2A2A32;
+      }
+      body { background: linear-gradient(180deg, #141218 0%, #1E1E24 100%); }
+      .scene { background: #141218; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="logo" src="icons/Icon-192.png" width="96" height="96" alt="Talk Shuffle アプリアイコン" data-i18n="logoAlt" data-i18n-attr="alt">
+      <h1>Talk Shuffle</h1>
+      <p class="tagline" data-i18n="tagline">会話のテーマを、3Dサイコロとカードでサッと決める</p>
+      <a class="cta app-store-link" href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042" rel="noopener" data-i18n="ctaAppStore">App Store で無料ダウンロード</a>
+      <br>
+      <a class="cta-secondary" href="index.html" data-i18n="ctaWeb">ブラウザ版を試す</a>
+    </header>
+
+    <main>
+      <section>
+        <h2 data-i18n="aboutTitle">Talk Shuffle とは</h2>
+        <p data-i18n="aboutBody">Talk Shuffle は、会話のテーマを決めたいときに使える<strong>トーク支援アプリ</strong>です。3Dサイコロでランダムにお題を引くほか、目的別のカードデッキも搭載しています。アカウント登録不要で、個人データを外部サーバーへ送信しません。</p>
+      </section>
+
+      <section>
+        <h2 data-i18n="featuresTitle">主な機能</h2>
+        <ul>
+          <li data-i18n="feature1">3Dサイコロでテーマをランダムに決定</li>
+          <li data-i18n="feature2">テーマ候補のカスタマイズ（ドラッグ&amp;ドロップ）</li>
+          <li data-i18n="feature3">価値観・チェックイン・1on1・グループディスカッションなど目的別デッキ</li>
+          <li data-i18n="feature4">参加人数・プレイヤー名・タイマー設定</li>
+          <li data-i18n="feature5">セッション履歴（端末内保存）</li>
+          <li data-i18n="feature6">日本語 / 英語対応</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 data-i18n="scenesTitle">こんな場面で</h2>
+        <div class="scenes">
+          <div class="scene" data-i18n="scene1">会議前のチェックイン・会議後の振り返り</div>
+          <div class="scene" data-i18n="scene2">1on1 や自己内省のきっかけ作り</div>
+          <div class="scene" data-i18n="scene3">チームビルディングやアイスブレイク</div>
+          <div class="scene" data-i18n="scene4">友人との雑談や創作活動のテーマ決め</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 data-i18n="privacyTitle">プライバシー</h2>
+        <p data-i18n="privacyBody">Talk Shuffle はアカウント登録なしで利用できます。セッション履歴は端末内にのみ保存され、外部サーバーへ個人データを送信しません。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
+      </section>
+    </main>
+
+    <footer>
+      <nav>
+        <a class="app-store-link" href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042" data-i18n="navAppStore">App Store</a>
+        <a href="support.html" data-i18n="navSupport">サポート</a>
+        <a href="privacy.html" data-i18n="navPrivacy">プライバシーポリシー</a>
+      </nav>
+      <p>&copy; 2026 Hiroyuki Igusa</p>
+    </footer>
+  </div>
+  <script src="lang.js"></script>
+  <script src="static-i18n.js"></script>
+  <script>
+    TalkShuffleLang.applyPage('landing', TalkShuffleI18n);
+    (function () {
+      var store = TalkShuffleLang.getLang() === 'en'
+        ? 'https://apps.apple.com/app/talk-shuffle/id6760679042'
+        : 'https://apps.apple.com/jp/app/talk-shuffle/id6760679042';
+      document.querySelectorAll('.app-store-link').forEach(function (a) {
+        a.href = store;
+      });
+    })();
+  </script>
+</body>
+</html>

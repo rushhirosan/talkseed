@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -19,7 +19,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Talk Shuffle — conversation prompts with 3D dice and card decks.">
+  <meta name="description" content="Talk Shuffle — 会話のテーマを3Dサイコロとカードデッキで決める。ブラウザ版。">
+  <link rel="canonical" href="https://talk-seed.web.app/index.html">
+  <meta name="robots" content="noindex, follow">
+  <meta name="apple-itunes-app" content="app-id=6760679042">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -30,7 +33,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Talk Shuffle</title>
+  <title>Talk Shuffle（ブラウザ版）</title>
   <link rel="manifest" href="manifest.json">
   <style>
     /* Flutterロード前に適切なサイズを確保。アプリ背景と統一した中性グレー */
@@ -53,8 +56,45 @@
 </head>
 <body>
   <!-- Flutter の最初のフレームまで表示（CanvasKit取得失敗などで真っ白に見えるときの切り分け用） -->
-  <div id="flt-loading">Talk Shuffle を読み込んでいます…</div>
-  <noscript>このアプリを表示するには JavaScript を有効にしてください。</noscript>
+  <div id="flt-loading">
+    <span id="flt-loading-text">Talk Shuffle を読み込んでいます…</span>
+    <p id="flt-loading-links" style="margin-top:1rem;font-size:0.875rem;">
+      <a id="flt-home-link" href="/">トップページ</a> ·
+      <a id="flt-store-link" href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042">App Store でダウンロード</a>
+    </p>
+  </div>
+  <noscript>
+    <p id="flt-noscript-msg">このアプリを表示するには JavaScript を有効にしてください。</p>
+    <p><a id="flt-noscript-home" href="/">Talk Shuffle トップページ</a> · <a id="flt-noscript-store" href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042">App Store</a></p>
+  </noscript>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var en = (params.get('lang') || '').toLowerCase() === 'en';
+      document.documentElement.lang = en ? 'en' : 'ja';
+      if (en) {
+        document.title = 'Talk Shuffle (browser)';
+        var loading = document.getElementById('flt-loading-text');
+        if (loading) loading.textContent = 'Loading Talk Shuffle…';
+        var home = document.getElementById('flt-home-link');
+        if (home) { home.textContent = 'Home'; home.href = '/?lang=en'; }
+        var store = document.getElementById('flt-store-link');
+        if (store) {
+          store.textContent = 'Download on the App Store';
+          store.href = 'https://apps.apple.com/app/talk-shuffle/id6760679042';
+        }
+        var ns = document.getElementById('flt-noscript-msg');
+        if (ns) ns.textContent = 'Please enable JavaScript to run this app.';
+        var nsh = document.getElementById('flt-noscript-home');
+        if (nsh) { nsh.textContent = 'Talk Shuffle home'; nsh.href = '/?lang=en'; }
+        var nss = document.getElementById('flt-noscript-store');
+        if (nss) {
+          nss.textContent = 'App Store';
+          nss.href = 'https://apps.apple.com/app/talk-shuffle/id6760679042';
+        }
+      }
+    })();
+  </script>
   <script>
     window.addEventListener('flutter-first-frame', function () {
       var el = document.getElementById('flt-loading');

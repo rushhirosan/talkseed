@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Talk Shuffle アプリのサポート・お問い合わせ">
+  <meta name="description" content="Talk Shuffle アプリのサポート・お問い合わせ。会話テーマ支援アプリのFAQと連絡先。">
+  <link rel="canonical" href="https://talk-seed.web.app/support.html">
+  <meta name="robots" content="index, follow">
+  <meta name="apple-itunes-app" content="app-id=6760679042">
   <title>サポート - Talk Shuffle</title>
   <style>
     :root {
@@ -26,6 +29,9 @@
       max-width: 720px;
       margin-left: auto;
       margin-right: auto;
+    }
+    html[lang="en"] body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     }
     h1 {
       font-size: 1.5rem;
@@ -67,23 +73,41 @@
   </style>
 </head>
 <body>
-  <h1>サポート</h1>
+  <p>
+    <a href="/" data-i18n="navTop">Talk Shuffle トップ</a> ·
+    <a class="app-store-link" href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042" data-i18n="navAppStore">App Store</a>
+  </p>
+  <h1 data-i18n="h1">サポート</h1>
   <p class="app-name">Talk Shuffle</p>
 
-  <h2>お問い合わせ</h2>
-  <p>不具合の報告、機能のご要望、その他のお問い合わせは、以下までご連絡ください。</p>
+  <h2 data-i18n="contactTitle">お問い合わせ</h2>
+  <p data-i18n="contactIntro">不具合の報告、機能のご要望、その他のお問い合わせは、以下までご連絡ください。</p>
   <div class="contact-box">
-    <p><strong>メール:</strong> <a href="mailto:rushhirosan@gmail.com">rushhirosan@gmail.com</a></p>
+    <p><strong data-i18n="contactEmailLabel">メール:</strong> <a href="mailto:rushhirosan@gmail.com">rushhirosan@gmail.com</a></p>
   </div>
 
-  <h2>よくある質問</h2>
-  <p><strong>Q: アカウント登録は必要ですか？</strong></p>
-  <p>A: いいえ、不要です。アプリを起動するだけでご利用いただけます。</p>
+  <h2 data-i18n="faqTitle">よくある質問</h2>
+  <p><strong data-i18n="faq1Q">Q: アカウント登録は必要ですか？</strong></p>
+  <p data-i18n="faq1A">A: いいえ、不要です。アプリを起動するだけでご利用いただけます。</p>
 
-  <p><strong>Q: データはどこに保存されますか？</strong></p>
-  <p>A: セッション履歴は端末内にのみ保存されます。外部サーバーへは送信されません。</p>
+  <p><strong data-i18n="faq2Q">Q: データはどこに保存されますか？</strong></p>
+  <p data-i18n="faq2A">A: セッション履歴は端末内にのみ保存されます。外部サーバーへは送信されません。</p>
 
-  <h2>関連リンク</h2>
-  <p><a href="privacy.html">プライバシーポリシー</a></p>
+  <h2 data-i18n="linksTitle">関連リンク</h2>
+  <p data-i18n="linksBody"><a href="privacy.html">プライバシーポリシー</a> · <a href="/">トップ</a> · <a href="https://apps.apple.com/jp/app/talk-shuffle/id6760679042">App Store でダウンロード</a></p>
+
+  <script src="lang.js"></script>
+  <script src="static-i18n.js"></script>
+  <script>
+    TalkShuffleLang.applyPage('support', TalkShuffleI18n);
+    (function () {
+      var store = TalkShuffleLang.getLang() === 'en'
+        ? 'https://apps.apple.com/app/talk-shuffle/id6760679042'
+        : 'https://apps.apple.com/jp/app/talk-shuffle/id6760679042';
+      document.querySelectorAll('.app-store-link').forEach(function (a) {
+        a.href = store;
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -48,9 +48,56 @@ firebase deploy
 
 デプロイが完了すると、以下のような URL が表示されます：
 
-- **メインアプリ**: `https://<PROJECT_ID>.web.app/`
+- **ランディングページ（SEO）**: `https://<PROJECT_ID>.web.app/`
+- **ブラウザ版アプリ**: `https://<PROJECT_ID>.web.app/index.html`
 - **プライバシーポリシー**: `https://<PROJECT_ID>.web.app/privacy.html`
 - **サポート**: `https://<PROJECT_ID>.web.app/support.html`
+- **サイトマップ**: `https://<PROJECT_ID>.web.app/sitemap.xml`
+
+### 英語表示（ポートフォリオ連携）
+
+クエリ `?lang=en` でランディング・静的ページ・ブラウザ版 SPA を英語表示できます（`?lang=ja` で明示的に日本語）。未指定時は日本語（静的ページ）／ブラウザ言語（SPA）。
+
+- 例: `https://talk-seed.web.app/?lang=en`
+- ブラウザ版: `https://talk-seed.web.app/index.html?lang=en`
+- ポートフォリオ英語ページの Web リンクに `?lang=en` を付与する
+
+iOS アプリの言語は変更されません（Web のみ）。
+
+## Google インデックス登録（Search Console）
+
+ランディングページを Google に登録し、App Store への参照元 Web 流入を増やす手順です。
+
+### 1. デプロイ
+
+```bash
+flutter build web
+firebase deploy
+```
+
+`/` は静的ランディングページ（`landing.html`）を表示します。Flutter アプリは `/index.html` です。
+
+### 2. Google Search Console にプロパティ追加
+
+1. [Google Search Console](https://search.google.com/search-console) を開く
+2. **プロパティを追加** → URL プレフィックス `https://talk-seed.web.app`
+3. 所有権確認（HTML タグを `web/landing.html` の `<head>` に追加して再デプロイ、または DNS 確認）
+
+### 3. サイトマップを送信
+
+Search Console → **サイトマップ** → `https://talk-seed.web.app/sitemap.xml` を送信
+
+### 4. インデックス登録をリクエスト
+
+Search Console → **URL 検査** → `https://talk-seed.web.app/` → **インデックス登録をリクエスト**
+
+### 5. App Store Connect との連携
+
+- App Store Connect の **マーケティング URL**（任意）に `https://talk-seed.web.app/` を設定
+- note や SNS からも同 URL を共有 → Analytics の「参照元 Web」に計測される
+- iPhone Safari では Smart App Banner（`app-id=6760679042`）が表示される
+
+インデックス反映まで **数日〜2週間** かかることがあります。
 
 ## ストア提出用メタデータへの反映
 
