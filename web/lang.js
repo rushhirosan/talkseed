@@ -79,10 +79,12 @@
         return;
       }
       if (
+        href === 'app.html' ||
         href === 'index.html' ||
         href === 'privacy.html' ||
         href === 'support.html' ||
         href === '/' ||
+        href.indexOf('app.html') >= 0 ||
         href.indexOf('index.html') >= 0 ||
         href.indexOf('privacy.html') >= 0 ||
         href.indexOf('support.html') >= 0

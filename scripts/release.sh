@@ -144,6 +144,12 @@ fi
 echo "==> 4/5 flutter build web（ビルドエラー検証）"
 flutter build web
 
+echo "==> 4b/5 Hosting 用: / は landing、Flutter は app.html"
+# Firebase はルートの index.html を / に優先するため、Flutter エントリを退避する
+if [[ -f build/web/index.html ]]; then
+  mv build/web/index.html build/web/app.html
+fi
+
 # --- git / push / deploy（チェック完了後のみ）---
 
 if [[ -n "$COMMIT_MSG" ]] || [[ "$DO_SHIP" == true ]]; then

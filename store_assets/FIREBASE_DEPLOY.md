@@ -49,7 +49,7 @@ firebase deploy
 デプロイが完了すると、以下のような URL が表示されます：
 
 - **ランディングページ（SEO）**: `https://<PROJECT_ID>.web.app/`
-- **ブラウザ版アプリ**: `https://<PROJECT_ID>.web.app/index.html`
+- **ブラウザ版アプリ**: `https://<PROJECT_ID>.web.app/app.html`（旧 `/index.html` は `/app.html` へリダイレクト）
 - **プライバシーポリシー**: `https://<PROJECT_ID>.web.app/privacy.html`
 - **サポート**: `https://<PROJECT_ID>.web.app/support.html`
 - **サイトマップ**: `https://<PROJECT_ID>.web.app/sitemap.xml`
@@ -59,7 +59,7 @@ firebase deploy
 クエリ `?lang=en` でランディング・静的ページ・ブラウザ版 SPA を英語表示できます（`?lang=ja` で明示的に日本語）。未指定時は日本語（静的ページ）／ブラウザ言語（SPA）。
 
 - 例: `https://talk-seed.web.app/?lang=en`
-- ブラウザ版: `https://talk-seed.web.app/index.html?lang=en`
+- ブラウザ版: `https://talk-seed.web.app/app.html?lang=en`
 - ポートフォリオ英語ページの Web リンクに `?lang=en` を付与する
 
 iOS アプリの言語は変更されません（Web のみ）。
@@ -75,7 +75,7 @@ flutter build web
 firebase deploy
 ```
 
-`/` は静的ランディングページ（`landing.html`）を表示します。Flutter アプリは `/index.html` です。
+`/` は静的ランディングページ（`landing.html`）を表示します。`flutter build web` 後に `index.html` を `app.html` にリネームしてからデプロイします（`scripts/release.sh` が自動実行）。Flutter アプリは `/app.html` です。
 
 ### 2. Google Search Console にプロパティ追加
 
