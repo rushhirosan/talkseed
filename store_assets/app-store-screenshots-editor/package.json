@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "sync": "./scripts/sync-source-screenshots.sh",
+    "export:solomaker": "node scripts/export-solomaker-bundle.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -37,6 +39,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
+    "playwright": "^1.60.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3"

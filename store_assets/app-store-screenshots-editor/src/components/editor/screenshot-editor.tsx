@@ -72,10 +72,24 @@ export function ScreenshotEditor() {
 
   React.useEffect(() => {
     if (!hydrated) return;
-    preloadImages(assetPaths).finally(() => setReady(true));
+    let cancelled = false;
+    setReady(false);
+    const fallback = setTimeout(() => {
+      if (!cancelled) setReady(true);
+    }, 20_000);
+    preloadImages(assetPaths).finally(() => {
+      if (!cancelled) {
+        clearTimeout(fallback);
+        setReady(true);
+      }
+    });
     // assetPaths is derived from assetSig; depending on the string keeps the
     // effect from re-firing when slidesByDevice churns without path changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      cancelled = true;
+      clearTimeout(fallback);
+    };
   }, [hydrated, assetSig]);
 
   // Surface storage failures (quota exceeded etc.) so the user knows their work isn't safe.

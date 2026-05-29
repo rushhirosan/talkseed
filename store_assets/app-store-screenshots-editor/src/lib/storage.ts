@@ -128,6 +128,10 @@ export function useProject() {
     const cached = loadFromLocalStorage();
     if (cached) _setState(cached);
 
+    const hydrateTimeout = setTimeout(() => {
+      if (!cancelled) setHydrated(true);
+    }, 4000);
+
     void (async () => {
       const fromFile = await loadFromFile();
       if (cancelled) return;
@@ -137,11 +141,13 @@ export function useProject() {
       pastRef.current = [];
       futureRef.current = [];
       lastPushAt.current = 0;
+      clearTimeout(hydrateTimeout);
       setHydrated(true);
     })();
 
     return () => {
       cancelled = true;
+      clearTimeout(hydrateTimeout);
     };
   }, []);
 

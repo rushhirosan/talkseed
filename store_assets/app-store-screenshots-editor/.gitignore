@@ -1,4 +1,6 @@
 node_modules
+.playwright-browsers
+.export-tmp
 .next
 out
 .DS_Store

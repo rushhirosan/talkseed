@@ -118,6 +118,7 @@ export function Inspector({ slide, locale, selectedElementId, onChange }: Props)
             </Label>
             <ScreenshotPicker
               label="Primary"
+              locale={locale}
               value={slide.screenshot}
               onChange={(v) => onChange({ screenshot: v })}
             />
@@ -129,6 +130,7 @@ export function Inspector({ slide, locale, selectedElementId, onChange }: Props)
             <Label className="text-xs">Back device screenshot</Label>
             <ScreenshotPicker
               label="Secondary (back layer)"
+              locale={locale}
               value={slide.screenshotSecondary || ""}
               onChange={(v) => onChange({ screenshotSecondary: v })}
             />

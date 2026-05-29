@@ -3,10 +3,12 @@ import * as React from "react";
 import { Image as ImageIcon, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { didFail, img, setImage } from "@/lib/image-cache";
+import { resolveScreenshot } from "@/lib/locale";
 
 type Props = {
   label: string;
   value: string;
+  locale: string;
   onChange: (v: string) => void;
 };
 
@@ -36,7 +38,7 @@ async function uploadDataUrl(dataUrl: string): Promise<string | null> {
   }
 }
 
-export function ScreenshotPicker({ label, value, onChange }: Props) {
+export function ScreenshotPicker({ label, value, locale, onChange }: Props) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -76,9 +78,10 @@ export function ScreenshotPicker({ label, value, onChange }: Props) {
 
   const hasValue = !!value;
   const isData = hasValue && value.startsWith("data:");
-  const previewSrc = isData ? value : hasValue ? img(value) : "";
+  const resolvedPath = hasValue && !isData ? resolveScreenshot(value, locale) : value;
+  const previewSrc = isData ? value : hasValue ? img(resolvedPath) : "";
   // Only flag "image not found" when the path is a real URL that we tried and failed.
-  const knownMissing = hasValue && !isData && didFail(value);
+  const knownMissing = hasValue && !isData && didFail(resolvedPath);
   const valueLabel = uploading
     ? "saving…"
     : !hasValue
