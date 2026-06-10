@@ -539,6 +539,17 @@
   },
   "historyModeDiscussion": "グループ",
   "historyFilterDiscussion": "グループ",
+  "historyModeOneOnOne": "1on1",
+  "historyFilterOneOnOne": "1on1",
+  "historyOneOnOnePromptsTitle": "話した問い",
+  "historyOneOnOneSubtitle": "{count}フェーズ",
+  "@historyOneOnOneSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "historyDeleteAll": "履歴を全削除",
   "@historyDeleteAll": {
     "description": "履歴全削除ボタン"
@@ -931,7 +942,38 @@
   "deckCheckIn": "会議前・振り返り",
   "deckCheckInDesc": "会議の開始・終了に。問いを元に全員が一言ずつ",
   "deckSelfReflection": "自己内省・1on1",
-  "deckSelfReflectionDesc": "軽さ×深さの問い。1人で内省も、1on1でも",
+  "deckSelfReflectionDesc": "チェックイン・業務・成長・関係性の4段。1人の内省も、定例1on1も",
+  "oneOnOnePhaseCheckin": "チェックイン",
+  "oneOnOnePhaseWorkStatus": "仕事の現状",
+  "oneOnOnePhaseSelfReflection": "振り返り",
+  "oneOnOnePhaseGrowth": "関係・締め",
+  "oneOnOnePhaseProgress": "フェーズ {current} / {total}",
+  "@oneOnOnePhaseProgress": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "oneOnOnePhaseHintCheckin": "調子と今日話したいことを確認",
+  "oneOnOnePhaseHintWorkStatus": "今週の仕事・詰まり・サポート",
+  "oneOnOnePhaseHintSelfReflection": "学び・強み・意味を探る",
+  "oneOnOnePhaseHintGrowth": "フィードバックと次回まで",
+  "oneOnOnePickPrompt": "このフェーズで話す問いを1つ選んでください",
+  "oneOnOneMoreCandidates": "ほかの候補を見る",
+  "oneOnOneChangeQuestion": "選び直す",
+  "oneOnOneTalkingAbout": "この問いで話す",
+  "oneOnOneAnotherQuestion": "別の問い（このフェーズ）",
+  "oneOnOneNextPhase": "次のフェーズへ",
+  "oneOnOnePreviousPhase": "前のフェーズへ",
+  "oneOnOneCompleteSession": "1on1を終える",
+  "oneOnOneSessionCompleteTitle": "1on1お疲れさまでした",
+  "oneOnOneSessionCompleteMessage": "4つのフェーズを一通り話せました。次回もチェックインから始めましょう。",
+  "homeThemeShortOneOnOne": "1on1",
+  "homeThemeDescOneOnOne": "チェックインから順に。定例1on1の型で進める",
+  "reflectionDeepDiveLabel": "深堀り",
+  "@reflectionDeepDiveLabel": {
+    "description": "自己内省・1on1デッキで深堀り向けの問いに表示するラベル"
+  },
   "deckOneOnOne": "成長対話",
   "deckOneOnOneDesc": "1on1で。評価を抜きに、未来・詰まり・伸ばしたいことを話す",
   "deckRetrospective": "振り返り",

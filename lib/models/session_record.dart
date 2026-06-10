@@ -4,7 +4,12 @@ import 'dart:math';
 class SessionRecord {
   final String id;
   final DateTime playedAt;
-  /// 'dice' | 'value_cards' | 'discussion'
+  /// 'dice' | 'value_cards' | 'discussion' | 'one_on_one'
+  static const String modeDice = 'dice';
+  static const String modeValueCards = 'value_cards';
+  static const String modeDiscussion = 'discussion';
+  static const String modeOneOnOne = 'one_on_one';
+
   final String mode;
   /// 出たテーマ一覧（サイコロ用）
   final List<String> topics;

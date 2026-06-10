@@ -2,18 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 import 'package:theme_dice/utils/about_links_helper.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
-import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/theme.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
-import 'package:theme_dice/services/checkin_checkout_service.dart';
-import 'package:theme_dice/services/self_reflection_service.dart';
 import 'package:theme_dice/widgets/home/home_ambient_background.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_random_button.dart';
@@ -21,7 +17,7 @@ import 'package:theme_dice/widgets/home/home_theme_card.dart';
 import 'initial_settings_page.dart';
 import 'session_setup_page.dart';
 import 'tutorial_page.dart';
-import 'topics_page.dart';
+import 'package:theme_dice/pages/one_on_one_session_page.dart';
 import 'session_history_page.dart';
 
 /// 初回画面：ランダム（サイコロ） / 価値観・グループディスカッション
@@ -108,56 +104,14 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       return;
     }
 
-    try {
-      if (deck.type == CardDeckType.checkIn) {
-        final checkInItems =
-            await CheckInCheckOutService.loadCheckInItems();
-        final checkOutItems =
-            await CheckInCheckOutService.loadCheckOutItems();
-        final combined = [
-          ...checkInItems.map((e) => e.text),
-          ...checkOutItems.map((e) => e.text),
-        ];
-        await PreferencesHelper.saveLastCardThemes(combined);
-        if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-          RouteTransitions.forwardRoute(
-            page: TopicsPage(
-              initialThemes: {PolyhedronType.cube: combined},
-              sessionConfig: null,
-              checkInItems: checkInItems,
-              checkOutItems: checkOutItems,
-            ),
-          ),
-        );
-      } else if (deck.type == CardDeckType.oneOnOne) {
-        final data = await SelfReflectionService.loadThemesWithSections();
-        await PreferencesHelper.saveLastCardThemes(data.themes);
-        if (!mounted) return;
-        final themeCategoryMap =
-            CardDeck.buildReflectionCategoryMap(data.sectionIdByTheme);
-        Navigator.of(context).pushReplacement(
-          RouteTransitions.forwardRoute(
-            page: TopicsPage(
-              initialThemes: {PolyhedronType.cube: data.themes},
-              sessionConfig: null,
-              themeCategoryMap: themeCategoryMap,
-            ),
-          ),
-        );
-      }
-    } on ThemeDiceException {
+    if (deck.type == CardDeckType.oneOnOne) {
       if (!mounted) return;
-      await ErrorDialogHelper.showDataLoadError(
-        context,
-        onRetry: () => _goToWorkDeck(type),
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.forwardRoute(
+          page: const OneOnOneSessionPage(),
+        ),
       );
-    } catch (_) {
-      if (!mounted) return;
-      await ErrorDialogHelper.showDataLoadError(
-        context,
-        onRetry: () => _goToWorkDeck(type),
-      );
+      return;
     }
   }
 
@@ -399,6 +353,16 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                               onTap: () => _goToWorkDeck(
                                 CardDeckType.groupDiscussion,
                               ),
+                            ),
+                            const SizedBox(height: 12),
+                            HomeThemeCard(
+                              icon: Icons.psychology_outlined,
+                              name: l10n.homeThemeShortOneOnOne,
+                              description: l10n.homeThemeDescOneOnOne,
+                              accentColor: const Color(0xFF64B5F6),
+                              animationIndex: 2,
+                              onTap: () =>
+                                  _goToWorkDeck(CardDeckType.oneOnOne),
                             ),
                           ],
                         ),

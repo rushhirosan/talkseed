@@ -21,7 +21,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
     required this.deckTileTeamBuilding,
     required this.deckTileProblemSolving,
     required this.deckTileSocialIssues,
-    required this.deckTileCheckIn,
     required this.deckTileOneOnOne,
     required this.playerPastel0,
     required this.playerPastel1,
@@ -64,7 +63,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
   final Color deckTileTeamBuilding;
   final Color deckTileProblemSolving;
   final Color deckTileSocialIssues;
-  final Color deckTileCheckIn;
   final Color deckTileOneOnOne;
 
   /// ドラッグ候補・プレイヤー行などの軽い差し色（同一色相感）
@@ -92,7 +90,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
     deckTileTeamBuilding: Color(0xFFF5F2FC),
     deckTileProblemSolving: Color(0xFFEEF4FF),
     deckTileSocialIssues: Color(0xFFF3EBFA),
-    deckTileCheckIn: Color(0xFFFFF6E6),
     deckTileOneOnOne: Color(0xFFECEAF8),
     playerPastel0: Color(0xFFE8E2F5),
     playerPastel1: Color(0xFFFFF3D4),
@@ -123,7 +120,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
     Color? deckTileTeamBuilding,
     Color? deckTileProblemSolving,
     Color? deckTileSocialIssues,
-    Color? deckTileCheckIn,
     Color? deckTileOneOnOne,
     Color? playerPastel0,
     Color? playerPastel1,
@@ -148,7 +144,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
       deckTileProblemSolving:
           deckTileProblemSolving ?? this.deckTileProblemSolving,
       deckTileSocialIssues: deckTileSocialIssues ?? this.deckTileSocialIssues,
-      deckTileCheckIn: deckTileCheckIn ?? this.deckTileCheckIn,
       deckTileOneOnOne: deckTileOneOnOne ?? this.deckTileOneOnOne,
       playerPastel0: playerPastel0 ?? this.playerPastel0,
       playerPastel1: playerPastel1 ?? this.playerPastel1,
@@ -184,7 +179,6 @@ class TalkShuffleTokens extends ThemeExtension<TalkShuffleTokens> {
       deckTileProblemSolving:
           c(deckTileProblemSolving, other.deckTileProblemSolving),
       deckTileSocialIssues: c(deckTileSocialIssues, other.deckTileSocialIssues),
-      deckTileCheckIn: c(deckTileCheckIn, other.deckTileCheckIn),
       deckTileOneOnOne: c(deckTileOneOnOne, other.deckTileOneOnOne),
       playerPastel0: c(playerPastel0, other.playerPastel0),
       playerPastel1: c(playerPastel1, other.playerPastel1),

@@ -17,11 +17,10 @@ Talk Shuffle helps teams and friends choose a conversation topic quickly and nat
 
 Great for:
 - Team building & icebreakers
-- Meeting check-ins and wrap-ups
 - 1:1s and personal reflection
 - Casual chats and creative brainstorming
 
-v2.0 brings card decks (values, check-in/out, self-reflection, 1:1), session history, and a polished bilingual experience.
+v2.0 brings card decks (values, group discussion, self-reflection, 1:1), session history, and a polished bilingual experience.
 
 Privacy: No account registration. No personal data sent to external servers.
 
@@ -54,6 +53,6 @@ Privacy: No account registration. No personal data sent to external servers.
 ## Maker Comment Draft
 We built Talk Shuffle because picking a conversation topic shouldn't kill the mood of a meeting or hangout.
 
-v2.0 adds card decks for structured check-ins and 1:1 reflection — not just random dice rolls. Session history stays on device. No signup.
+v2.0 adds card decks for values ranking, group discussion, and 1:1 reflection — not just random dice rolls. Session history stays on device. No signup.
 
 Would love feedback from teams using it for icebreakers and retros!

@@ -121,7 +121,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - data/checkin_checkout_work.json
     - data/self_reflection_1on1.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

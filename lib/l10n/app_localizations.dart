@@ -1076,6 +1076,30 @@ abstract class AppLocalizations {
   /// **'グループ'**
   String get historyFilterDiscussion;
 
+  /// No description provided for @historyModeOneOnOne.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1'**
+  String get historyModeOneOnOne;
+
+  /// No description provided for @historyFilterOneOnOne.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1'**
+  String get historyFilterOneOnOne;
+
+  /// No description provided for @historyOneOnOnePromptsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'話した問い'**
+  String get historyOneOnOnePromptsTitle;
+
+  /// No description provided for @historyOneOnOneSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}フェーズ'**
+  String historyOneOnOneSubtitle(int count);
+
   /// 履歴全削除ボタン
   ///
   /// In ja, this message translates to:
@@ -1817,8 +1841,140 @@ abstract class AppLocalizations {
   /// No description provided for @deckSelfReflectionDesc.
   ///
   /// In ja, this message translates to:
-  /// **'軽さ×深さの問い。1人で内省も、1on1でも'**
+  /// **'チェックイン・業務・成長・関係性の4段。1人の内省も、定例1on1も'**
   String get deckSelfReflectionDesc;
+
+  /// No description provided for @oneOnOnePhaseCheckin.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックイン'**
+  String get oneOnOnePhaseCheckin;
+
+  /// No description provided for @oneOnOnePhaseWorkStatus.
+  ///
+  /// In ja, this message translates to:
+  /// **'仕事の現状'**
+  String get oneOnOnePhaseWorkStatus;
+
+  /// No description provided for @oneOnOnePhaseSelfReflection.
+  ///
+  /// In ja, this message translates to:
+  /// **'振り返り'**
+  String get oneOnOnePhaseSelfReflection;
+
+  /// No description provided for @oneOnOnePhaseGrowth.
+  ///
+  /// In ja, this message translates to:
+  /// **'関係・締め'**
+  String get oneOnOnePhaseGrowth;
+
+  /// No description provided for @oneOnOnePhaseProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'フェーズ {current} / {total}'**
+  String oneOnOnePhaseProgress(int current, int total);
+
+  /// No description provided for @oneOnOnePhaseHintCheckin.
+  ///
+  /// In ja, this message translates to:
+  /// **'調子と今日話したいことを確認'**
+  String get oneOnOnePhaseHintCheckin;
+
+  /// No description provided for @oneOnOnePhaseHintWorkStatus.
+  ///
+  /// In ja, this message translates to:
+  /// **'今週の仕事・詰まり・サポート'**
+  String get oneOnOnePhaseHintWorkStatus;
+
+  /// No description provided for @oneOnOnePhaseHintSelfReflection.
+  ///
+  /// In ja, this message translates to:
+  /// **'学び・強み・意味を探る'**
+  String get oneOnOnePhaseHintSelfReflection;
+
+  /// No description provided for @oneOnOnePhaseHintGrowth.
+  ///
+  /// In ja, this message translates to:
+  /// **'フィードバックと次回まで'**
+  String get oneOnOnePhaseHintGrowth;
+
+  /// No description provided for @oneOnOnePickPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'このフェーズで話す問いを1つ選んでください'**
+  String get oneOnOnePickPrompt;
+
+  /// No description provided for @oneOnOneMoreCandidates.
+  ///
+  /// In ja, this message translates to:
+  /// **'ほかの候補を見る'**
+  String get oneOnOneMoreCandidates;
+
+  /// No description provided for @oneOnOneChangeQuestion.
+  ///
+  /// In ja, this message translates to:
+  /// **'選び直す'**
+  String get oneOnOneChangeQuestion;
+
+  /// No description provided for @oneOnOneTalkingAbout.
+  ///
+  /// In ja, this message translates to:
+  /// **'この問いで話す'**
+  String get oneOnOneTalkingAbout;
+
+  /// No description provided for @oneOnOneAnotherQuestion.
+  ///
+  /// In ja, this message translates to:
+  /// **'別の問い（このフェーズ）'**
+  String get oneOnOneAnotherQuestion;
+
+  /// No description provided for @oneOnOneNextPhase.
+  ///
+  /// In ja, this message translates to:
+  /// **'次のフェーズへ'**
+  String get oneOnOneNextPhase;
+
+  /// No description provided for @oneOnOnePreviousPhase.
+  ///
+  /// In ja, this message translates to:
+  /// **'前のフェーズへ'**
+  String get oneOnOnePreviousPhase;
+
+  /// No description provided for @oneOnOneCompleteSession.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1を終える'**
+  String get oneOnOneCompleteSession;
+
+  /// No description provided for @oneOnOneSessionCompleteTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1お疲れさまでした'**
+  String get oneOnOneSessionCompleteTitle;
+
+  /// No description provided for @oneOnOneSessionCompleteMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'4つのフェーズを一通り話せました。次回もチェックインから始めましょう。'**
+  String get oneOnOneSessionCompleteMessage;
+
+  /// No description provided for @homeThemeShortOneOnOne.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1'**
+  String get homeThemeShortOneOnOne;
+
+  /// No description provided for @homeThemeDescOneOnOne.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックインから順に。定例1on1の型で進める'**
+  String get homeThemeDescOneOnOne;
+
+  /// 自己内省・1on1デッキで深堀り向けの問いに表示するラベル
+  ///
+  /// In ja, this message translates to:
+  /// **'深堀り'**
+  String get reflectionDeepDiveLabel;
 
   /// No description provided for @deckOneOnOne.
   ///

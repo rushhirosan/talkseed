@@ -5,14 +5,64 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/discussion_category_group.dart';
 
 /// 自己内省・1on1デッキのセクション（色・アイコン用）
-/// 軽さ×深さのレイヤー: チェックイン → 自己内省 → 成長・関係性
+/// 軽さ×深さのレイヤー: チェックイン → 仕事の現状 → 自己内省 → 成長・関係性
 enum ReflectionDeckCategory {
   /// チェックイン（TableTopics寄り・空気づくり）
   checkin,
+  /// 仕事の現状（今週の業務・詰まり・成果）
+  workStatus,
   /// 自己内省（中核・The School of Life を軽く）
   selfReflection,
   /// 成長・関係性（深め・1on1後半）
-  growthRelationship,
+  growthRelationship;
+
+  /// ガイド付き1on1のフェーズ順（check-in → 仕事 → 振り返り → 締め）
+  static const List<ReflectionDeckCategory> orderedPhases = [
+    checkin,
+    workStatus,
+    selfReflection,
+    growthRelationship,
+  ];
+
+  /// [self_reflection_1on1.json] のセクションキー
+  String get sectionId {
+    switch (this) {
+      case ReflectionDeckCategory.checkin:
+        return 'checkin';
+      case ReflectionDeckCategory.workStatus:
+        return 'workStatus';
+      case ReflectionDeckCategory.selfReflection:
+        return 'selfReflection';
+      case ReflectionDeckCategory.growthRelationship:
+        return 'growthRelationship';
+    }
+  }
+
+  /// 深堀りラベルを付けてよいフェーズか（振り返り以降）
+  bool get allowsDeepDiveLabel =>
+      index >= ReflectionDeckCategory.selfReflection.index;
+
+  String title(AppLocalizations l10n) {
+    switch (this) {
+      case ReflectionDeckCategory.checkin:
+        return l10n.oneOnOnePhaseCheckin;
+      case ReflectionDeckCategory.workStatus:
+        return l10n.oneOnOnePhaseWorkStatus;
+      case ReflectionDeckCategory.selfReflection:
+        return l10n.oneOnOnePhaseSelfReflection;
+      case ReflectionDeckCategory.growthRelationship:
+        return l10n.oneOnOnePhaseGrowth;
+    }
+  }
+
+  static String titleForSectionId(AppLocalizations l10n, String sectionId) {
+    for (final phase in orderedPhases) {
+      if (phase.sectionId == sectionId) {
+        return phase.title(l10n);
+      }
+    }
+    return sectionId;
+  }
 }
 
 /// 自己内省デッキのセクション見た目
@@ -25,6 +75,10 @@ class ReflectionDeckCategoryStyle {
   static const checkin = ReflectionDeckCategoryStyle(
     color: Color(0xFFE8F5E9), // 緑
     icon: Icons.wb_sunny_outlined,
+  );
+  static const workStatus = ReflectionDeckCategoryStyle(
+    color: Color(0xFFE3F2FD), // 青
+    icon: Icons.work_outline,
   );
   static const selfReflection = ReflectionDeckCategoryStyle(
     color: Color(0xFFFFF9C4), // 黄
@@ -39,6 +93,8 @@ class ReflectionDeckCategoryStyle {
     switch (c) {
       case ReflectionDeckCategory.checkin:
         return checkin;
+      case ReflectionDeckCategory.workStatus:
+        return workStatus;
       case ReflectionDeckCategory.selfReflection:
         return selfReflection;
       case ReflectionDeckCategory.growthRelationship:
@@ -52,6 +108,8 @@ ReflectionDeckCategory? reflectionCategoryFromSectionId(String sectionId) {
   switch (sectionId) {
     case 'checkin':
       return ReflectionDeckCategory.checkin;
+    case 'workStatus':
+      return ReflectionDeckCategory.workStatus;
     case 'selfReflection':
       return ReflectionDeckCategory.selfReflection;
     case 'growthRelationship':
@@ -69,10 +127,7 @@ enum CardDeckType {
   /// グループディスカッション（論理・創造・フェルミ・ジレンマ・社会課題など）
   groupDiscussion,
 
-  /// チェックイン・チェックアウト（checkin_checkout_work.json の両方）
-  checkIn,
-
-  /// 自己内省・1on1（self_reflection_1on1.json・軽さ×深さの3セクション）
+  /// 自己内省・1on1（self_reflection_1on1.json・4セクション）
   oneOnOne,
 }
 
@@ -620,14 +675,7 @@ class CardDeck {
         'themeSocJapanLocal10',
       ],
     ),
-    /// チェックイン・チェックアウト（checkin_checkout_work.json から両方読み込み）
-    CardDeck(
-      type: CardDeckType.checkIn,
-      nameBuilder: (l10n) => l10n.deckCheckIn,
-      descriptionBuilder: (l10n) => l10n.deckCheckInDesc,
-      themeKeys: const [],
-    ),
-    /// 自己内省・1on1（self_reflection_1on1.json の3セクション）
+    /// 自己内省・1on1（self_reflection_1on1.json の4セクション）
     CardDeck(
       type: CardDeckType.oneOnOne,
       nameBuilder: (l10n) => l10n.deckSelfReflection,
@@ -636,10 +684,9 @@ class CardDeck {
     ),
   ];
 
-  /// 初回リリースで表示するデッキ（チェックイン・1on1は非表示）
+  /// 表示するデッキ（1on1 はホームからガイド付きセッションへ）
   static List<CardDeck> get visibleDecks => allDecks
-      .where((d) =>
-          d.type != CardDeckType.checkIn && d.type != CardDeckType.oneOnOne)
+      .where((d) => d.type != CardDeckType.oneOnOne)
       .toList();
 
   /// 旧カテゴリーID（端末に保存済みのセッション設定）を現行IDへ寄せる。

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
@@ -30,17 +31,32 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
 
   String _modeLabel(AppLocalizations l10n, SessionRecord record) {
     switch (record.mode) {
-      case 'value_cards':
+      case SessionRecord.modeValueCards:
         return l10n.historyModeValueCards;
-      case 'discussion':
+      case SessionRecord.modeDiscussion:
         return l10n.historyModeDiscussion;
-      case 'dice':
+      case SessionRecord.modeOneOnOne:
+        return l10n.historyModeOneOnOne;
+      case SessionRecord.modeDice:
       default:
         return l10n.historyModeDice;
     }
   }
 
   String? _playersSubtitle(AppLocalizations l10n, SessionRecord record) {
+    if (record.mode == SessionRecord.modeOneOnOne) {
+      final count = ReflectionDeckCategory.orderedPhases
+          .where(
+            (phase) =>
+                (record.selectedCardsByPlayer[phase.sectionId] ?? [])
+                    .isNotEmpty,
+          )
+          .length;
+      if (count > 0) {
+        return l10n.historyOneOnOneSubtitle(count);
+      }
+      return null;
+    }
     final names = record.displayPlayerNames;
     if (names.isNotEmpty) {
       return names.join('、');
@@ -195,18 +211,23 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
         ),
         _buildFilterChip(
           label: l10n.historyFilterDice,
-          selected: _filter == 'dice',
-          onTap: () => setState(() => _filter = 'dice'),
+          selected: _filter == SessionRecord.modeDice,
+          onTap: () => setState(() => _filter = SessionRecord.modeDice),
         ),
         _buildFilterChip(
           label: l10n.historyFilterValueCards,
-          selected: _filter == 'value_cards',
-          onTap: () => setState(() => _filter = 'value_cards'),
+          selected: _filter == SessionRecord.modeValueCards,
+          onTap: () => setState(() => _filter = SessionRecord.modeValueCards),
         ),
         _buildFilterChip(
           label: l10n.historyFilterDiscussion,
-          selected: _filter == 'discussion',
-          onTap: () => setState(() => _filter = 'discussion'),
+          selected: _filter == SessionRecord.modeDiscussion,
+          onTap: () => setState(() => _filter = SessionRecord.modeDiscussion),
+        ),
+        _buildFilterChip(
+          label: l10n.historyFilterOneOnOne,
+          selected: _filter == SessionRecord.modeOneOnOne,
+          onTap: () => setState(() => _filter = SessionRecord.modeOneOnOne),
         ),
       ],
     );
@@ -273,11 +294,13 @@ class SessionHistoryDetailPage extends StatelessWidget {
 
   String _modeLabel(AppLocalizations l10n) {
     switch (record.mode) {
-      case 'value_cards':
+      case SessionRecord.modeValueCards:
         return l10n.historyModeValueCards;
-      case 'discussion':
+      case SessionRecord.modeDiscussion:
         return l10n.historyModeDiscussion;
-      case 'dice':
+      case SessionRecord.modeOneOnOne:
+        return l10n.historyModeOneOnOne;
+      case SessionRecord.modeDice:
       default:
         return l10n.historyModeDice;
     }
@@ -315,7 +338,8 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final dateFormat = DateFormat.yMMMMd(l10n.localeName);
     final dateLabel = dateFormat.format(record.playedAt);
     final modeLabel = _modeLabel(l10n);
-    final hideFlatTopics = record.mode == 'discussion' &&
+    final hideFlatTopics = (record.mode == SessionRecord.modeDiscussion ||
+            record.mode == SessionRecord.modeOneOnOne) &&
         record.selectedCardsByPlayer.isNotEmpty;
     final playersSummary = _buildPlayersSummary(l10n);
 
@@ -363,10 +387,46 @@ class SessionHistoryDetailPage extends StatelessWidget {
               ),
             ),
           ],
-          if (record.selectedCardsByPlayer.isNotEmpty) ...[
+          if (record.mode == SessionRecord.modeOneOnOne &&
+              record.selectedCardsByPlayer.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildSectionCard(
-              title: record.mode == 'discussion'
+              title: l10n.historyOneOnOnePromptsTitle,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final phase in ReflectionDeckCategory.orderedPhases) ...[
+                    if ((record.selectedCardsByPlayer[phase.sectionId] ?? [])
+                        .isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(phase.title(l10n), style: _mutedStyle()),
+                            const SizedBox(height: 6),
+                            ...record
+                                .selectedCardsByPlayer[phase.sectionId]!
+                                .map(
+                                  (prompt) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: Text('・$prompt', style: _bodyStyle()),
+                                  ),
+                                ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ],
+              ),
+            ),
+          ],
+          if (record.selectedCardsByPlayer.isNotEmpty &&
+              record.mode != SessionRecord.modeOneOnOne) ...[
+            const SizedBox(height: 16),
+            _buildSectionCard(
+              title: record.mode == SessionRecord.modeDiscussion
                   ? l10n.historyDiscussionPromptsTitle
                   : l10n.historySelectedCardsTitle,
               child: Column(
@@ -388,7 +448,7 @@ class SessionHistoryDetailPage extends StatelessWidget {
                       ),
                     );
                   }),
-                  if (record.mode == 'discussion')
+                  if (record.mode == SessionRecord.modeDiscussion)
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
+import 'package:theme_dice/models/card_deck.dart';
 
 /// self_reflection_1on1.json から問いを読み込むサービス
-/// セクションID: checkin | selfReflection | growthRelationship
+/// セクションID: checkin | workStatus | selfReflection | growthRelationship
 class SelfReflectionService {
   static const String _assetPath = 'data/self_reflection_1on1.json';
 
@@ -34,6 +35,11 @@ class SelfReflectionService {
     }
   }
 
+  static Set<String> _deepDiveQuestions(Map<String, dynamic> data) {
+    final raw = data['deepDiveQuestions'] as List<dynamic>? ?? [];
+    return raw.cast<String>().toSet();
+  }
+
   /// 全問いとセクションIDのペアを返す（表示順）
   static Future<List<({String question, String sectionId})>> loadQuestions() async {
     final data = await _loadJson();
@@ -49,11 +55,42 @@ class SelfReflectionService {
     return result;
   }
 
-  /// 問い文字列のリストと、問い→セクションIDのマップを返す
-  static Future<({List<String> themes, Map<String, String> sectionIdByTheme})> loadThemesWithSections() async {
+  /// 問い文字列のリストと、問い→セクションID / 深堀りフラグのマップを返す
+  static Future<
+      ({
+        List<String> themes,
+        Map<String, String> sectionIdByTheme,
+        Set<String> deepDiveThemes,
+      })> loadThemesWithSections() async {
+    final data = await _loadJson();
     final items = await loadQuestions();
+    final deepDiveThemes = _deepDiveQuestions(data);
     final themes = items.map((e) => e.question).toList();
     final sectionIdByTheme = {for (final e in items) e.question: e.sectionId};
-    return (themes: themes, sectionIdByTheme: sectionIdByTheme);
+    return (
+      themes: themes,
+      sectionIdByTheme: sectionIdByTheme,
+      deepDiveThemes: deepDiveThemes,
+    );
+  }
+
+  /// ガイド付き1on1用：フェーズごとの問いリストと深堀りセット
+  static Future<
+      ({
+        Map<ReflectionDeckCategory, List<String>> questionsByPhase,
+        Set<String> deepDiveThemes,
+      })> loadSessionPhases() async {
+    final data = await _loadJson();
+    final sections = data['sections'] as Map<String, dynamic>? ?? {};
+    final deepDiveThemes = _deepDiveQuestions(data);
+    final questionsByPhase = <ReflectionDeckCategory, List<String>>{};
+
+    for (final phase in ReflectionDeckCategory.orderedPhases) {
+      final list =
+          (sections[phase.sectionId] as List<dynamic>?)?.cast<String>() ?? [];
+      questionsByPhase[phase] = List<String>.from(list);
+    }
+
+    return (questionsByPhase: questionsByPhase, deepDiveThemes: deepDiveThemes);
   }
 }

@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
-import 'package:theme_dice/services/checkin_checkout_service.dart';
-import 'package:theme_dice/services/self_reflection_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
-import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import 'package:theme_dice/pages/session_setup_page.dart';
-import 'package:theme_dice/pages/topics_page.dart';
+import 'package:theme_dice/pages/one_on_one_session_page.dart';
 
 /// カード設定画面（デッキ選択方式）
-/// サイコロ設定とは別の、価値観カード・チェックインカード風のUI
 class CardSettingsPage extends StatefulWidget {
   const CardSettingsPage({super.key});
 
@@ -69,56 +64,12 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
       return;
     }
 
-    try {
-      if (deck.type == CardDeckType.checkIn) {
-        final checkInItems =
-            await CheckInCheckOutService.loadCheckInItems();
-        final checkOutItems =
-            await CheckInCheckOutService.loadCheckOutItems();
-        final combined = [
-          ...checkInItems.map((e) => e.text),
-          ...checkOutItems.map((e) => e.text),
-        ];
-        await PreferencesHelper.saveLastCardThemes(combined);
-        if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-          RouteTransitions.forwardRoute(
-            page: TopicsPage(
-              initialThemes: {PolyhedronType.cube: combined},
-              sessionConfig: null,
-              checkInItems: checkInItems,
-              checkOutItems: checkOutItems,
-            ),
-          ),
-        );
-      } else if (deck.type == CardDeckType.oneOnOne) {
-        // 自己内省・1on1
-        final data = await SelfReflectionService.loadThemesWithSections();
-        await PreferencesHelper.saveLastCardThemes(data.themes);
-        if (!mounted) return;
-        final themeCategoryMap =
-            CardDeck.buildReflectionCategoryMap(data.sectionIdByTheme);
-        Navigator.of(context).pushReplacement(
-          RouteTransitions.forwardRoute(
-            page: TopicsPage(
-              initialThemes: {PolyhedronType.cube: data.themes},
-              sessionConfig: null,
-              themeCategoryMap: themeCategoryMap,
-            ),
-          ),
-        );
-      }
-    } on ThemeDiceException {
+    if (deck.type == CardDeckType.oneOnOne) {
       if (!mounted) return;
-      await ErrorDialogHelper.showDataLoadError(
-        context,
-        onRetry: () => _playWithDeck(deck),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      await ErrorDialogHelper.showDataLoadError(
-        context,
-        onRetry: () => _playWithDeck(deck),
+      Navigator.of(context).pushReplacement(
+        RouteTransitions.forwardRoute(
+          page: const OneOnOneSessionPage(),
+        ),
       );
     }
   }
@@ -133,8 +84,6 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
         return t.deckTileTeamBuilding;
       case CardDeckType.groupDiscussion:
         return t.deckTileProblemSolving;
-      case CardDeckType.checkIn:
-        return t.deckTileCheckIn;
       case CardDeckType.oneOnOne:
         return t.deckTileOneOnOne;
     }
@@ -146,8 +95,6 @@ class _CardSettingsPageState extends State<CardSettingsPage> {
         return Icons.groups;
       case CardDeckType.groupDiscussion:
         return Icons.forum_outlined;
-      case CardDeckType.checkIn:
-        return Icons.wb_sunny;
       case CardDeckType.oneOnOne:
         return Icons.psychology_outlined;
     }

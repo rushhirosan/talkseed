@@ -525,6 +525,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyFilterDiscussion => 'グループ';
 
   @override
+  String get historyModeOneOnOne => '1on1';
+
+  @override
+  String get historyFilterOneOnOne => '1on1';
+
+  @override
+  String get historyOneOnOnePromptsTitle => '話した問い';
+
+  @override
+  String historyOneOnOneSubtitle(int count) {
+    return '$countフェーズ';
+  }
+
+  @override
   String get historyDeleteAll => '履歴を全削除';
 
   @override
@@ -948,7 +962,76 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deckSelfReflection => '自己内省・1on1';
 
   @override
-  String get deckSelfReflectionDesc => '軽さ×深さの問い。1人で内省も、1on1でも';
+  String get deckSelfReflectionDesc => 'チェックイン・業務・成長・関係性の4段。1人の内省も、定例1on1も';
+
+  @override
+  String get oneOnOnePhaseCheckin => 'チェックイン';
+
+  @override
+  String get oneOnOnePhaseWorkStatus => '仕事の現状';
+
+  @override
+  String get oneOnOnePhaseSelfReflection => '振り返り';
+
+  @override
+  String get oneOnOnePhaseGrowth => '関係・締め';
+
+  @override
+  String oneOnOnePhaseProgress(int current, int total) {
+    return 'フェーズ $current / $total';
+  }
+
+  @override
+  String get oneOnOnePhaseHintCheckin => '調子と今日話したいことを確認';
+
+  @override
+  String get oneOnOnePhaseHintWorkStatus => '今週の仕事・詰まり・サポート';
+
+  @override
+  String get oneOnOnePhaseHintSelfReflection => '学び・強み・意味を探る';
+
+  @override
+  String get oneOnOnePhaseHintGrowth => 'フィードバックと次回まで';
+
+  @override
+  String get oneOnOnePickPrompt => 'このフェーズで話す問いを1つ選んでください';
+
+  @override
+  String get oneOnOneMoreCandidates => 'ほかの候補を見る';
+
+  @override
+  String get oneOnOneChangeQuestion => '選び直す';
+
+  @override
+  String get oneOnOneTalkingAbout => 'この問いで話す';
+
+  @override
+  String get oneOnOneAnotherQuestion => '別の問い（このフェーズ）';
+
+  @override
+  String get oneOnOneNextPhase => '次のフェーズへ';
+
+  @override
+  String get oneOnOnePreviousPhase => '前のフェーズへ';
+
+  @override
+  String get oneOnOneCompleteSession => '1on1を終える';
+
+  @override
+  String get oneOnOneSessionCompleteTitle => '1on1お疲れさまでした';
+
+  @override
+  String get oneOnOneSessionCompleteMessage =>
+      '4つのフェーズを一通り話せました。次回もチェックインから始めましょう。';
+
+  @override
+  String get homeThemeShortOneOnOne => '1on1';
+
+  @override
+  String get homeThemeDescOneOnOne => 'チェックインから順に。定例1on1の型で進める';
+
+  @override
+  String get reflectionDeepDiveLabel => '深堀り';
 
   @override
   String get deckOneOnOne => '成長対話';

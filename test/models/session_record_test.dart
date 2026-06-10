@@ -25,6 +25,21 @@ void main() {
       expect(restored.displayPlayerNames, ['Alice', 'Bob']);
     });
 
+    test('toMap and fromMap preserve one_on_one prompts by phase', () {
+      final record = SessionRecord.create(
+        mode: SessionRecord.modeOneOnOne,
+        topics: const [],
+        selectedCardsByPlayer: {
+          'checkin': ['今日の調子を一言で表すと？'],
+          'workStatus': ['今週の仕事は？'],
+        },
+      );
+      final restored = SessionRecord.fromMap(record.toMap());
+      expect(restored.mode, SessionRecord.modeOneOnOne);
+      expect(restored.selectedCardsByPlayer['checkin'], ['今日の調子を一言で表すと？']);
+      expect(restored.selectedCardsByPlayer['workStatus'], ['今週の仕事は？']);
+    });
+
     test('displayPlayerNames falls back to selectedCardsByPlayer keys', () {
       final record = SessionRecord.create(
         mode: 'value_cards',

@@ -11,7 +11,7 @@ Roll a 3D dice for a random prompt, or use curated card decks for work and refle
 Highlights
 - 3D dice to select a topic at random
 - Drag & drop to set your topic candidates
-- Card decks for work and reflection (values, check-in/out, self-reflection, 1:1)
+- Card decks for work and reflection (values, group discussion, self-reflection, 1:1)
 - Player count and name setup
 - Optional timer
 - Session history stored on device
@@ -19,7 +19,6 @@ Highlights
 
 Great for
 - Team building and icebreakers
-- Meeting check-ins and wrap-ups
 - 1:1s and personal reflection
 - Casual chats and creative brainstorming
 
