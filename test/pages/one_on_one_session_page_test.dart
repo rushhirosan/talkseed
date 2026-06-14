@@ -64,7 +64,7 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, '次のフェーズへ'));
     await tester.pumpAndSettle();
 
-    expect(find.text('フェーズ 2 / 4'), findsOneWidget);
-    expect(find.text('今週の仕事・詰まり・サポート'), findsOneWidget);
+    expect(find.text('フェーズ 2 / 7'), findsOneWidget);
+    expect(find.text('今週の仕事・進捗・ボトルネック'), findsOneWidget);
   });
 }

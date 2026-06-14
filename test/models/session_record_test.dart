@@ -38,6 +38,7 @@ void main() {
       expect(restored.mode, SessionRecord.modeOneOnOne);
       expect(restored.selectedCardsByPlayer['checkin'], ['今日の調子を一言で表すと？']);
       expect(restored.selectedCardsByPlayer['workStatus'], ['今週の仕事は？']);
+      expect(restored.displayPlayerNames, isEmpty);
     });
 
     test('displayPlayerNames falls back to selectedCardsByPlayer keys', () {

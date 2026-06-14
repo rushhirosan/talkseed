@@ -985,19 +985,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deckSelfReflectionDesc =>
-      'Four layers: check-in, work, growth, and relationships. For reflection or regular 1-on-1s';
+      'Seven layers from check-in through closing. For reflection or regular 1-on-1s';
 
   @override
   String get oneOnOnePhaseCheckin => 'Check-in';
 
   @override
-  String get oneOnOnePhaseWorkStatus => 'Work & priorities';
+  String get oneOnOnePhaseWorkStatus => 'Work & progress';
 
   @override
-  String get oneOnOnePhaseSelfReflection => 'Reflection';
+  String get oneOnOnePhaseSelfReflection => 'Growth';
 
   @override
-  String get oneOnOnePhaseGrowth => 'Wrap-up';
+  String get oneOnOnePhaseGrowth => 'Relationship';
+
+  @override
+  String get oneOnOnePhaseCareer => 'Career';
+
+  @override
+  String get oneOnOnePhaseMotivation => 'Work style';
+
+  @override
+  String get oneOnOnePhaseClosing => 'Closing';
 
   @override
   String oneOnOnePhaseProgress(int current, int total) {
@@ -1010,15 +1019,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oneOnOnePhaseHintWorkStatus =>
-      'This week\'s work, blockers, and support';
+      'This week\'s work, progress, and blockers';
 
   @override
   String get oneOnOnePhaseHintSelfReflection =>
       'Learning, strengths, and meaning';
 
   @override
-  String get oneOnOnePhaseHintGrowth =>
-      'Feedback and commitments before next time';
+  String get oneOnOnePhaseHintGrowth => 'Feedback and team relationships';
+
+  @override
+  String get oneOnOnePhaseHintCareer => 'Future direction and career questions';
+
+  @override
+  String get oneOnOnePhaseHintMotivation =>
+      'Motivation and how you want to work';
+
+  @override
+  String get oneOnOnePhaseHintClosing =>
+      'Commitments and carry-over to next time';
 
   @override
   String get oneOnOnePickPrompt => 'Choose one prompt for this phase';
@@ -1049,7 +1068,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oneOnOneSessionCompleteMessage =>
-      'You covered all four phases. Next time, start with check-in again.';
+      'You covered all seven phases. Next time, start with check-in again.';
 
   @override
   String get homeThemeShortOneOnOne => '1-on-1';
@@ -1057,9 +1076,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homeThemeDescOneOnOne =>
       'Guided flow from check-in through wrap-up';
-
-  @override
-  String get reflectionDeepDiveLabel => 'Go deeper';
 
   @override
   String get deckOneOnOne => 'Growth Dialogue';

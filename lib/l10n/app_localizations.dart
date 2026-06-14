@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @deckSelfReflectionDesc.
   ///
   /// In ja, this message translates to:
-  /// **'チェックイン・業務・成長・関係性の4段。1人の内省も、定例1on1も'**
+  /// **'チェックインから締めまで7段。1人の内省も、定例1on1も'**
   String get deckSelfReflectionDesc;
 
   /// No description provided for @oneOnOnePhaseCheckin.
@@ -1853,20 +1853,38 @@ abstract class AppLocalizations {
   /// No description provided for @oneOnOnePhaseWorkStatus.
   ///
   /// In ja, this message translates to:
-  /// **'仕事の現状'**
+  /// **'業務・進捗'**
   String get oneOnOnePhaseWorkStatus;
 
   /// No description provided for @oneOnOnePhaseSelfReflection.
   ///
   /// In ja, this message translates to:
-  /// **'振り返り'**
+  /// **'成長・内省'**
   String get oneOnOnePhaseSelfReflection;
 
   /// No description provided for @oneOnOnePhaseGrowth.
   ///
   /// In ja, this message translates to:
-  /// **'関係・締め'**
+  /// **'関係性・FB'**
   String get oneOnOnePhaseGrowth;
+
+  /// No description provided for @oneOnOnePhaseCareer.
+  ///
+  /// In ja, this message translates to:
+  /// **'キャリア'**
+  String get oneOnOnePhaseCareer;
+
+  /// No description provided for @oneOnOnePhaseMotivation.
+  ///
+  /// In ja, this message translates to:
+  /// **'働き方'**
+  String get oneOnOnePhaseMotivation;
+
+  /// No description provided for @oneOnOnePhaseClosing.
+  ///
+  /// In ja, this message translates to:
+  /// **'締め'**
+  String get oneOnOnePhaseClosing;
 
   /// No description provided for @oneOnOnePhaseProgress.
   ///
@@ -1883,7 +1901,7 @@ abstract class AppLocalizations {
   /// No description provided for @oneOnOnePhaseHintWorkStatus.
   ///
   /// In ja, this message translates to:
-  /// **'今週の仕事・詰まり・サポート'**
+  /// **'今週の仕事・進捗・ボトルネック'**
   String get oneOnOnePhaseHintWorkStatus;
 
   /// No description provided for @oneOnOnePhaseHintSelfReflection.
@@ -1895,8 +1913,26 @@ abstract class AppLocalizations {
   /// No description provided for @oneOnOnePhaseHintGrowth.
   ///
   /// In ja, this message translates to:
-  /// **'フィードバックと次回まで'**
+  /// **'フィードバックとチームの関係性'**
   String get oneOnOnePhaseHintGrowth;
+
+  /// No description provided for @oneOnOnePhaseHintCareer.
+  ///
+  /// In ja, this message translates to:
+  /// **'将来の方向性とキャリアの迷い'**
+  String get oneOnOnePhaseHintCareer;
+
+  /// No description provided for @oneOnOnePhaseHintMotivation.
+  ///
+  /// In ja, this message translates to:
+  /// **'モチベーションと働き方の改善'**
+  String get oneOnOnePhaseHintMotivation;
+
+  /// No description provided for @oneOnOnePhaseHintClosing.
+  ///
+  /// In ja, this message translates to:
+  /// **'コミットと次回への引き継ぎ'**
+  String get oneOnOnePhaseHintClosing;
 
   /// No description provided for @oneOnOnePickPrompt.
   ///
@@ -1955,7 +1991,7 @@ abstract class AppLocalizations {
   /// No description provided for @oneOnOneSessionCompleteMessage.
   ///
   /// In ja, this message translates to:
-  /// **'4つのフェーズを一通り話せました。次回もチェックインから始めましょう。'**
+  /// **'7つのフェーズを一通り話せました。次回もチェックインから始めましょう。'**
   String get oneOnOneSessionCompleteMessage;
 
   /// No description provided for @homeThemeShortOneOnOne.
@@ -1969,12 +2005,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'チェックインから順に。定例1on1の型で進める'**
   String get homeThemeDescOneOnOne;
-
-  /// 自己内省・1on1デッキで深堀り向けの問いに表示するラベル
-  ///
-  /// In ja, this message translates to:
-  /// **'深堀り'**
-  String get reflectionDeepDiveLabel;
 
   /// No description provided for @deckOneOnOne.
   ///

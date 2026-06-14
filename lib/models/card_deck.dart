@@ -5,23 +5,32 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/discussion_category_group.dart';
 
 /// 自己内省・1on1デッキのセクション（色・アイコン用）
-/// 軽さ×深さのレイヤー: チェックイン → 仕事の現状 → 自己内省 → 成長・関係性
+/// 軽さ×深さのレイヤー: チェックイン → 業務 → 内省 → 関係性 → キャリア → 働き方 → 締め
 enum ReflectionDeckCategory {
   /// チェックイン（TableTopics寄り・空気づくり）
   checkin,
-  /// 仕事の現状（今週の業務・詰まり・成果）
+  /// 業務・進捗（今週の業務・詰まり・成果）
   workStatus,
-  /// 自己内省（中核・The School of Life を軽く）
+  /// 成長・内省（学び・強み・意味）
   selfReflection,
-  /// 成長・関係性（深め・1on1後半）
-  growthRelationship;
+  /// 関係性・フィードバック
+  growthRelationship,
+  /// キャリア・将来
+  careerFuture,
+  /// モチベーション・働き方
+  motivationWorkstyle,
+  /// クロージング・コミットメント
+  closing;
 
-  /// ガイド付き1on1のフェーズ順（check-in → 仕事 → 振り返り → 締め）
+  /// ガイド付き1on1のフェーズ順
   static const List<ReflectionDeckCategory> orderedPhases = [
     checkin,
     workStatus,
     selfReflection,
     growthRelationship,
+    careerFuture,
+    motivationWorkstyle,
+    closing,
   ];
 
   /// [self_reflection_1on1.json] のセクションキー
@@ -35,12 +44,14 @@ enum ReflectionDeckCategory {
         return 'selfReflection';
       case ReflectionDeckCategory.growthRelationship:
         return 'growthRelationship';
+      case ReflectionDeckCategory.careerFuture:
+        return 'careerFuture';
+      case ReflectionDeckCategory.motivationWorkstyle:
+        return 'motivationWorkstyle';
+      case ReflectionDeckCategory.closing:
+        return 'closing';
     }
   }
-
-  /// 深堀りラベルを付けてよいフェーズか（振り返り以降）
-  bool get allowsDeepDiveLabel =>
-      index >= ReflectionDeckCategory.selfReflection.index;
 
   String title(AppLocalizations l10n) {
     switch (this) {
@@ -52,6 +63,31 @@ enum ReflectionDeckCategory {
         return l10n.oneOnOnePhaseSelfReflection;
       case ReflectionDeckCategory.growthRelationship:
         return l10n.oneOnOnePhaseGrowth;
+      case ReflectionDeckCategory.careerFuture:
+        return l10n.oneOnOnePhaseCareer;
+      case ReflectionDeckCategory.motivationWorkstyle:
+        return l10n.oneOnOnePhaseMotivation;
+      case ReflectionDeckCategory.closing:
+        return l10n.oneOnOnePhaseClosing;
+    }
+  }
+
+  String hint(AppLocalizations l10n) {
+    switch (this) {
+      case ReflectionDeckCategory.checkin:
+        return l10n.oneOnOnePhaseHintCheckin;
+      case ReflectionDeckCategory.workStatus:
+        return l10n.oneOnOnePhaseHintWorkStatus;
+      case ReflectionDeckCategory.selfReflection:
+        return l10n.oneOnOnePhaseHintSelfReflection;
+      case ReflectionDeckCategory.growthRelationship:
+        return l10n.oneOnOnePhaseHintGrowth;
+      case ReflectionDeckCategory.careerFuture:
+        return l10n.oneOnOnePhaseHintCareer;
+      case ReflectionDeckCategory.motivationWorkstyle:
+        return l10n.oneOnOnePhaseHintMotivation;
+      case ReflectionDeckCategory.closing:
+        return l10n.oneOnOnePhaseHintClosing;
     }
   }
 
@@ -88,6 +124,18 @@ class ReflectionDeckCategoryStyle {
     color: Color(0xFFFFEBEE), // 赤系
     icon: Icons.people_outline,
   );
+  static const careerFuture = ReflectionDeckCategoryStyle(
+    color: Color(0xFFEDE7F6), // 紫
+    icon: Icons.route_outlined,
+  );
+  static const motivationWorkstyle = ReflectionDeckCategoryStyle(
+    color: Color(0xFFE0F7FA), // シアン
+    icon: Icons.bolt_outlined,
+  );
+  static const closing = ReflectionDeckCategoryStyle(
+    color: Color(0xFFFBE9E7), // オレンジ系
+    icon: Icons.flag_outlined,
+  );
 
   static ReflectionDeckCategoryStyle forCategory(ReflectionDeckCategory c) {
     switch (c) {
@@ -99,6 +147,12 @@ class ReflectionDeckCategoryStyle {
         return selfReflection;
       case ReflectionDeckCategory.growthRelationship:
         return growthRelationship;
+      case ReflectionDeckCategory.careerFuture:
+        return careerFuture;
+      case ReflectionDeckCategory.motivationWorkstyle:
+        return motivationWorkstyle;
+      case ReflectionDeckCategory.closing:
+        return closing;
     }
   }
 }
@@ -114,6 +168,12 @@ ReflectionDeckCategory? reflectionCategoryFromSectionId(String sectionId) {
       return ReflectionDeckCategory.selfReflection;
     case 'growthRelationship':
       return ReflectionDeckCategory.growthRelationship;
+    case 'careerFuture':
+      return ReflectionDeckCategory.careerFuture;
+    case 'motivationWorkstyle':
+      return ReflectionDeckCategory.motivationWorkstyle;
+    case 'closing':
+      return ReflectionDeckCategory.closing;
     default:
       return null;
   }
@@ -127,7 +187,7 @@ enum CardDeckType {
   /// グループディスカッション（論理・創造・フェルミ・ジレンマ・社会課題など）
   groupDiscussion,
 
-  /// 自己内省・1on1（self_reflection_1on1.json・4セクション）
+  /// 自己内省・1on1（self_reflection_1on1.json・7セクション）
   oneOnOne,
 }
 
@@ -675,7 +735,7 @@ class CardDeck {
         'themeSocJapanLocal10',
       ],
     ),
-    /// 自己内省・1on1（self_reflection_1on1.json の4セクション）
+    /// 自己内省・1on1（self_reflection_1on1.json の7セクション）
     CardDeck(
       type: CardDeckType.oneOnOne,
       nameBuilder: (l10n) => l10n.deckSelfReflection,

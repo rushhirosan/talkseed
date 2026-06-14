@@ -29,8 +29,6 @@ class TopicsPage extends StatefulWidget {
   final List<CheckInCheckOutItem>? checkOutItems;
   /// 自己内省・1on1用：テーマ文字列 → カテゴリ（色・アイコン表示用）
   final Map<String, ReflectionDeckCategory>? themeCategoryMap;
-  /// 自己内省・1on1用：深堀り向けの問い（カードにラベル表示）
-  final Set<String>? deepDiveThemes;
 
   const TopicsPage({
     super.key,
@@ -39,7 +37,6 @@ class TopicsPage extends StatefulWidget {
     this.checkInItems,
     this.checkOutItems,
     this.themeCategoryMap,
-    this.deepDiveThemes,
   });
 
   @override
@@ -113,13 +110,6 @@ class _TopicsPageState extends State<TopicsPage> {
                 : null)
         : _currentTopic;
     return topic != null ? map[topic] : null;
-  }
-
-  String? _deepDiveLabel(AppLocalizations l10n, String? topic) {
-    if (topic == null || topic.isEmpty) return null;
-    final deepDive = widget.deepDiveThemes;
-    if (deepDive == null || !deepDive.contains(topic)) return null;
-    return l10n.reflectionDeepDiveLabel;
   }
 
   /// 会議後用：候補として表示する3問（シャッフルから先頭を取る）
@@ -667,7 +657,6 @@ class _TopicsPageState extends State<TopicsPage> {
                     onDrawRequest: _drawTopic,
                     canDraw: _themes.isNotEmpty,
                     category: _getCategoryForCurrentTopic(),
-                    levelLabel: _deepDiveLabel(l10n, _currentTopic),
                   ),
                 ),
                 const SizedBox(height: 32),

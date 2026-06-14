@@ -962,19 +962,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deckSelfReflection => '自己内省・1on1';
 
   @override
-  String get deckSelfReflectionDesc => 'チェックイン・業務・成長・関係性の4段。1人の内省も、定例1on1も';
+  String get deckSelfReflectionDesc => 'チェックインから締めまで7段。1人の内省も、定例1on1も';
 
   @override
   String get oneOnOnePhaseCheckin => 'チェックイン';
 
   @override
-  String get oneOnOnePhaseWorkStatus => '仕事の現状';
+  String get oneOnOnePhaseWorkStatus => '業務・進捗';
 
   @override
-  String get oneOnOnePhaseSelfReflection => '振り返り';
+  String get oneOnOnePhaseSelfReflection => '成長・内省';
 
   @override
-  String get oneOnOnePhaseGrowth => '関係・締め';
+  String get oneOnOnePhaseGrowth => '関係性・FB';
+
+  @override
+  String get oneOnOnePhaseCareer => 'キャリア';
+
+  @override
+  String get oneOnOnePhaseMotivation => '働き方';
+
+  @override
+  String get oneOnOnePhaseClosing => '締め';
 
   @override
   String oneOnOnePhaseProgress(int current, int total) {
@@ -985,13 +994,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oneOnOnePhaseHintCheckin => '調子と今日話したいことを確認';
 
   @override
-  String get oneOnOnePhaseHintWorkStatus => '今週の仕事・詰まり・サポート';
+  String get oneOnOnePhaseHintWorkStatus => '今週の仕事・進捗・ボトルネック';
 
   @override
   String get oneOnOnePhaseHintSelfReflection => '学び・強み・意味を探る';
 
   @override
-  String get oneOnOnePhaseHintGrowth => 'フィードバックと次回まで';
+  String get oneOnOnePhaseHintGrowth => 'フィードバックとチームの関係性';
+
+  @override
+  String get oneOnOnePhaseHintCareer => '将来の方向性とキャリアの迷い';
+
+  @override
+  String get oneOnOnePhaseHintMotivation => 'モチベーションと働き方の改善';
+
+  @override
+  String get oneOnOnePhaseHintClosing => 'コミットと次回への引き継ぎ';
 
   @override
   String get oneOnOnePickPrompt => 'このフェーズで話す問いを1つ選んでください';
@@ -1022,16 +1040,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get oneOnOneSessionCompleteMessage =>
-      '4つのフェーズを一通り話せました。次回もチェックインから始めましょう。';
+      '7つのフェーズを一通り話せました。次回もチェックインから始めましょう。';
 
   @override
   String get homeThemeShortOneOnOne => '1on1';
 
   @override
   String get homeThemeDescOneOnOne => 'チェックインから順に。定例1on1の型で進める';
-
-  @override
-  String get reflectionDeepDiveLabel => '深堀り';
 
   @override
   String get deckOneOnOne => '成長対話';

@@ -34,8 +34,10 @@ class SessionRecord {
   });
 
   /// 履歴表示用の参加者名（新形式の [playerNames]、または価値観カードの map キー）
+  /// 1on1 では [selectedCardsByPlayer] のキーはフェーズIDのため含めない
   List<String> get displayPlayerNames {
     if (playerNames.isNotEmpty) return playerNames;
+    if (mode == modeOneOnOne) return const [];
     if (selectedCardsByPlayer.isNotEmpty) {
       return selectedCardsByPlayer.keys.toList();
     }

@@ -30,7 +30,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   final Random _random = Random();
 
   Map<ReflectionDeckCategory, List<String>>? _questionsByPhase;
-  Set<String> _deepDiveThemes = {};
   int _phaseIndex = 0;
   List<String> _candidateQuestions = [];
   String? _selectedQuestion;
@@ -63,8 +62,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       final data = await SelfReflectionService.loadSessionPhases();
       if (!mounted) return;
       setState(() {
-        _questionsByPhase = data.questionsByPhase;
-        _deepDiveThemes = data.deepDiveThemes;
+        _questionsByPhase = data;
         _loading = false;
       });
       _refreshCandidates(resetRecent: true);
@@ -201,77 +199,45 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
     );
   }
 
-  String _phaseTitle(AppLocalizations l10n, ReflectionDeckCategory phase) {
-    switch (phase) {
-      case ReflectionDeckCategory.checkin:
-        return l10n.oneOnOnePhaseCheckin;
-      case ReflectionDeckCategory.workStatus:
-        return l10n.oneOnOnePhaseWorkStatus;
-      case ReflectionDeckCategory.selfReflection:
-        return l10n.oneOnOnePhaseSelfReflection;
-      case ReflectionDeckCategory.growthRelationship:
-        return l10n.oneOnOnePhaseGrowth;
-    }
-  }
+  String _phaseTitle(AppLocalizations l10n, ReflectionDeckCategory phase) =>
+      phase.title(l10n);
 
-  String _phaseHint(AppLocalizations l10n, ReflectionDeckCategory phase) {
-    switch (phase) {
-      case ReflectionDeckCategory.checkin:
-        return l10n.oneOnOnePhaseHintCheckin;
-      case ReflectionDeckCategory.workStatus:
-        return l10n.oneOnOnePhaseHintWorkStatus;
-      case ReflectionDeckCategory.selfReflection:
-        return l10n.oneOnOnePhaseHintSelfReflection;
-      case ReflectionDeckCategory.growthRelationship:
-        return l10n.oneOnOnePhaseHintGrowth;
-    }
-  }
-
-  String? _deepDiveLabel(AppLocalizations l10n, String? question) {
-    if (question == null || question.isEmpty) return null;
-    if (!_currentPhase.allowsDeepDiveLabel) return null;
-    if (!_deepDiveThemes.contains(question)) return null;
-    return l10n.reflectionDeepDiveLabel;
-  }
+  String _phaseHint(AppLocalizations l10n, ReflectionDeckCategory phase) =>
+      phase.hint(l10n);
 
   Widget _buildPhaseStrip(AppLocalizations l10n) {
     const phases = ReflectionDeckCategory.orderedPhases;
-    return Row(
-      children: [
-        for (var i = 0; i < phases.length; i++) ...[
-          if (i > 0)
-            Expanded(
-              child: Container(
-                height: 2,
-                color: i <= _phaseIndex
-                    ? _black.withValues(alpha: 0.35)
-                    : _black.withValues(alpha: 0.12),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var i = 0; i < phases.length; i++) ...[
+            if (i > 0)
+              SizedBox(
+                width: 12,
+                child: Container(
+                  height: 2,
+                  margin: const EdgeInsets.only(bottom: 28),
+                  color: i <= _phaseIndex
+                      ? _black.withValues(alpha: 0.35)
+                      : _black.withValues(alpha: 0.12),
+                ),
               ),
+            _PhaseDot(
+              label: _phaseTitle(l10n, phases[i]),
+              isActive: i == _phaseIndex,
+              isCompleted: i < _phaseIndex,
+              category: phases[i],
             ),
-          _PhaseDot(
-            label: _phaseTitle(l10n, phases[i]),
-            isActive: i == _phaseIndex,
-            isCompleted: i < _phaseIndex,
-            category: phases[i],
-          ),
-          if (i < phases.length - 1)
-            Expanded(
-              child: Container(
-                height: 2,
-                color: i < _phaseIndex
-                    ? _black.withValues(alpha: 0.35)
-                    : _black.withValues(alpha: 0.12),
-              ),
-            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 
   Widget _buildSelectedPrompt(AppLocalizations l10n) {
     final question = _selectedQuestion!;
     final style = ReflectionDeckCategoryStyle.forCategory(_currentPhase);
-    final deepDive = _deepDiveLabel(l10n, question);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -302,25 +268,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
           ),
           child: Column(
             children: [
-              if (deepDive != null) ...[
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _black.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    deepDive,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: _black.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
               Icon(style.icon, size: 28, color: _black.withValues(alpha: 0.7)),
               const SizedBox(height: 12),
               Text(
@@ -368,7 +315,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
         const SizedBox(height: 16),
         ..._candidateQuestions.map((question) {
           final isSelected = _selectedQuestion == question;
-          final deepDive = _deepDiveLabel(l10n, question);
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Material(
@@ -402,32 +348,16 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (deepDive != null) ...[
-                              Text(
-                                deepDive,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: _black.withValues(alpha: 0.55),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                            ],
-                            Text(
-                              question,
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.w500,
-                                color: _black,
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          question,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                            color: _black,
+                            height: 1.35,
+                          ),
                         ),
                       ),
                     ],
