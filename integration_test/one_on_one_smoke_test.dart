@@ -22,15 +22,23 @@ void main() {
         home: const OneOnOneSessionPage(),
       ),
     );
-    await tester.pumpAndSettle(const Duration(seconds: 3));
-    await binding.takeScreenshot('one_on_one_01_candidates');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 3));
+    await binding.takeScreenshot('one_on_one_01_format');
+
+    await tester.tap(find.text('この型で始める'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await binding.takeScreenshot('one_on_one_02_candidates');
 
     await tester.tap(find.byIcon(Icons.radio_button_off).first);
-    await tester.pumpAndSettle();
-    await binding.takeScreenshot('one_on_one_02_selected');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await binding.takeScreenshot('one_on_one_03_selected');
 
-    await tester.tap(find.widgetWithText(ElevatedButton, '次のフェーズへ'));
-    await tester.pumpAndSettle();
-    await binding.takeScreenshot('one_on_one_03_phase2');
+    await tester.tap(find.text('次のフェーズへ'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await binding.takeScreenshot('one_on_one_04_phase2');
   });
 }

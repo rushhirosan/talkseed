@@ -37,3 +37,8 @@ https://talk-seed.web.app/support.html
 
 Privacy Policy URL:
 https://talk-seed.web.app/privacy.html
+
+What's New (4000 chars max):
+- 1on1ガイド付きセッションを刷新（ライト／成長／関係性／フルの型選択、今日のテーマ一覧）
+- 英語の問いバンクとUIを追加し、日本語と同じ操作感に統一
+- フェーズ表示まわりの余白と見出しを整理

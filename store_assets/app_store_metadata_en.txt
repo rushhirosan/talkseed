@@ -37,3 +37,8 @@ https://talk-seed.web.app/support.html
 
 Privacy Policy URL:
 https://talk-seed.web.app/privacy.html
+
+What's New (4000 chars max):
+- Redesigned guided 1-on-1 sessions with format presets and a theme agenda
+- Added English prompts and aligned the UX with the Japanese experience
+- Improved spacing and phase headings in the 1-on-1 flow

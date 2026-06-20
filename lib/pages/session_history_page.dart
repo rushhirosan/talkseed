@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import 'package:theme_dice/models/card_deck.dart';
+import 'package:theme_dice/models/one_on_one_phase.dart';
 import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
@@ -45,12 +45,8 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
 
   String? _playersSubtitle(AppLocalizations l10n, SessionRecord record) {
     if (record.mode == SessionRecord.modeOneOnOne) {
-      final count = ReflectionDeckCategory.orderedPhases
-          .where(
-            (phase) =>
-                (record.selectedCardsByPlayer[phase.sectionId] ?? [])
-                    .isNotEmpty,
-          )
+      final count = record.selectedCardsByPlayer.entries
+          .where((entry) => entry.value.isNotEmpty)
           .length;
       if (count > 0) {
         return l10n.historyOneOnOneSubtitle(count);
@@ -395,24 +391,24 @@ class SessionHistoryDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final phase in ReflectionDeckCategory.orderedPhases) ...[
-                    if ((record.selectedCardsByPlayer[phase.sectionId] ?? [])
-                        .isNotEmpty) ...[
+                  for (final entry in record.selectedCardsByPlayer.entries) ...[
+                    if (entry.value.isNotEmpty) ...[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(phase.title(l10n), style: _mutedStyle()),
+                            Text(
+                              OneOnOnePhase.titleForSessionId(l10n, entry.key),
+                              style: _mutedStyle(),
+                            ),
                             const SizedBox(height: 6),
-                            ...record
-                                .selectedCardsByPlayer[phase.sectionId]!
-                                .map(
-                                  (prompt) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 6),
-                                    child: Text('・$prompt', style: _bodyStyle()),
-                                  ),
-                                ),
+                            ...entry.value.map(
+                              (prompt) => Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Text('・$prompt', style: _bodyStyle()),
+                              ),
+                            ),
                           ],
                         ),
                       ),

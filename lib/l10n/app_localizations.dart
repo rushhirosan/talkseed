@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @deckSelfReflectionDesc.
   ///
   /// In ja, this message translates to:
-  /// **'チェックインから締めまで7段。1人の内省も、定例1on1も'**
+  /// **'チェックインから締めまで5段。1人の内省も、1on1も'**
   String get deckSelfReflectionDesc;
 
   /// No description provided for @oneOnOnePhaseCheckin.
@@ -1856,11 +1856,23 @@ abstract class AppLocalizations {
   /// **'業務・進捗'**
   String get oneOnOnePhaseWorkStatus;
 
+  /// No description provided for @oneOnOnePhaseWorkAndWorkstyle.
+  ///
+  /// In ja, this message translates to:
+  /// **'業務・働き方'**
+  String get oneOnOnePhaseWorkAndWorkstyle;
+
   /// No description provided for @oneOnOnePhaseSelfReflection.
   ///
   /// In ja, this message translates to:
   /// **'成長・内省'**
   String get oneOnOnePhaseSelfReflection;
+
+  /// No description provided for @oneOnOnePhaseGrowthAndCareer.
+  ///
+  /// In ja, this message translates to:
+  /// **'成長・キャリア'**
+  String get oneOnOnePhaseGrowthAndCareer;
 
   /// No description provided for @oneOnOnePhaseGrowth.
   ///
@@ -1904,11 +1916,23 @@ abstract class AppLocalizations {
   /// **'今週の仕事・進捗・ボトルネック'**
   String get oneOnOnePhaseHintWorkStatus;
 
+  /// No description provided for @oneOnOnePhaseHintWorkAndWorkstyle.
+  ///
+  /// In ja, this message translates to:
+  /// **'進捗・ボトルネック・モチベーションと負荷'**
+  String get oneOnOnePhaseHintWorkAndWorkstyle;
+
   /// No description provided for @oneOnOnePhaseHintSelfReflection.
   ///
   /// In ja, this message translates to:
   /// **'学び・強み・意味を探る'**
   String get oneOnOnePhaseHintSelfReflection;
+
+  /// No description provided for @oneOnOnePhaseHintGrowthAndCareer.
+  ///
+  /// In ja, this message translates to:
+  /// **'学び・強み・将来の方向性'**
+  String get oneOnOnePhaseHintGrowthAndCareer;
 
   /// No description provided for @oneOnOnePhaseHintGrowth.
   ///
@@ -1933,6 +1957,72 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'コミットと次回への引き継ぎ'**
   String get oneOnOnePhaseHintClosing;
+
+  /// No description provided for @oneOnOneFormatTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日の1on1の型'**
+  String get oneOnOneFormatTitle;
+
+  /// No description provided for @oneOnOneFormatSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックインと締めは毎回入ります'**
+  String get oneOnOneFormatSubtitle;
+
+  /// No description provided for @oneOnOneFormatLite.
+  ///
+  /// In ja, this message translates to:
+  /// **'ライト'**
+  String get oneOnOneFormatLite;
+
+  /// No description provided for @oneOnOneFormatLiteDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックイン → 業務 → 締め（3フェーズ）'**
+  String get oneOnOneFormatLiteDesc;
+
+  /// No description provided for @oneOnOneFormatGrowth.
+  ///
+  /// In ja, this message translates to:
+  /// **'成長深掘り'**
+  String get oneOnOneFormatGrowth;
+
+  /// No description provided for @oneOnOneFormatGrowthDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'ライト＋成長・キャリア（4フェーズ）'**
+  String get oneOnOneFormatGrowthDesc;
+
+  /// No description provided for @oneOnOneFormatRelationship.
+  ///
+  /// In ja, this message translates to:
+  /// **'関係性・FB'**
+  String get oneOnOneFormatRelationship;
+
+  /// No description provided for @oneOnOneFormatRelationshipDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'ライト＋関係性・フィードバック（4フェーズ）'**
+  String get oneOnOneFormatRelationshipDesc;
+
+  /// No description provided for @oneOnOneFormatFull.
+  ///
+  /// In ja, this message translates to:
+  /// **'フル'**
+  String get oneOnOneFormatFull;
+
+  /// No description provided for @oneOnOneFormatFullDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'5フェーズすべて'**
+  String get oneOnOneFormatFullDesc;
+
+  /// No description provided for @oneOnOneStartSession.
+  ///
+  /// In ja, this message translates to:
+  /// **'この型で始める'**
+  String get oneOnOneStartSession;
 
   /// No description provided for @oneOnOnePickPrompt.
   ///
@@ -1982,6 +2072,30 @@ abstract class AppLocalizations {
   /// **'1on1を終える'**
   String get oneOnOneCompleteSession;
 
+  /// No description provided for @oneOnOneThemeAgendaTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日のテーマ'**
+  String get oneOnOneThemeAgendaTitle;
+
+  /// No description provided for @oneOnOneThemeAgendaCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{selected} / {total}'**
+  String oneOnOneThemeAgendaCount(int selected, int total);
+
+  /// No description provided for @oneOnOneThemeAgendaPending.
+  ///
+  /// In ja, this message translates to:
+  /// **'未選択'**
+  String get oneOnOneThemeAgendaPending;
+
+  /// No description provided for @oneOnOneThemeAgendaSelecting.
+  ///
+  /// In ja, this message translates to:
+  /// **'このフェーズで選択中'**
+  String get oneOnOneThemeAgendaSelecting;
+
   /// No description provided for @oneOnOneSessionCompleteTitle.
   ///
   /// In ja, this message translates to:
@@ -1991,8 +2105,8 @@ abstract class AppLocalizations {
   /// No description provided for @oneOnOneSessionCompleteMessage.
   ///
   /// In ja, this message translates to:
-  /// **'7つのフェーズを一通り話せました。次回もチェックインから始めましょう。'**
-  String get oneOnOneSessionCompleteMessage;
+  /// **'{count}つのテーマを話せました。次回もチェックインから始めましょう。'**
+  String oneOnOneSessionCompleteMessage(int count);
 
   /// No description provided for @homeThemeShortOneOnOne.
   ///
@@ -2003,7 +2117,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeThemeDescOneOnOne.
   ///
   /// In ja, this message translates to:
-  /// **'チェックインから順に。定例1on1の型で進める'**
+  /// **'今日の型を選んで進める'**
   String get homeThemeDescOneOnOne;
 
   /// No description provided for @deckOneOnOne.

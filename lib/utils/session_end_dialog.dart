@@ -26,14 +26,18 @@ class SessionEndDialog {
 
   /// 履歴保存済みである前提で、終了／履歴の選択ダイアログを表示する。
   /// 3回目のセッション完了後に App Store / Google Play のレビューを促す。
-  static Future<void> show(BuildContext context) async {
+  static Future<void> show(
+    BuildContext context, {
+    String? title,
+    String? message,
+  }) async {
     final l10n = AppLocalizations.of(context)!;
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.sessionSummary),
-        content: Text(l10n.sessionCompleteAcknowledgeMessage),
+        title: Text(title ?? l10n.sessionSummary),
+        content: Text(message ?? l10n.sessionCompleteAcknowledgeMessage),
         actions: [
           TextButton(
             onPressed: () {

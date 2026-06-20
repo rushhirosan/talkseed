@@ -962,7 +962,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deckSelfReflection => '自己内省・1on1';
 
   @override
-  String get deckSelfReflectionDesc => 'チェックインから締めまで7段。1人の内省も、定例1on1も';
+  String get deckSelfReflectionDesc => 'チェックインから締めまで5段。1人の内省も、1on1も';
 
   @override
   String get oneOnOnePhaseCheckin => 'チェックイン';
@@ -971,7 +971,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oneOnOnePhaseWorkStatus => '業務・進捗';
 
   @override
+  String get oneOnOnePhaseWorkAndWorkstyle => '業務・働き方';
+
+  @override
   String get oneOnOnePhaseSelfReflection => '成長・内省';
+
+  @override
+  String get oneOnOnePhaseGrowthAndCareer => '成長・キャリア';
 
   @override
   String get oneOnOnePhaseGrowth => '関係性・FB';
@@ -997,7 +1003,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oneOnOnePhaseHintWorkStatus => '今週の仕事・進捗・ボトルネック';
 
   @override
+  String get oneOnOnePhaseHintWorkAndWorkstyle => '進捗・ボトルネック・モチベーションと負荷';
+
+  @override
   String get oneOnOnePhaseHintSelfReflection => '学び・強み・意味を探る';
+
+  @override
+  String get oneOnOnePhaseHintGrowthAndCareer => '学び・強み・将来の方向性';
 
   @override
   String get oneOnOnePhaseHintGrowth => 'フィードバックとチームの関係性';
@@ -1010,6 +1022,39 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get oneOnOnePhaseHintClosing => 'コミットと次回への引き継ぎ';
+
+  @override
+  String get oneOnOneFormatTitle => '今日の1on1の型';
+
+  @override
+  String get oneOnOneFormatSubtitle => 'チェックインと締めは毎回入ります';
+
+  @override
+  String get oneOnOneFormatLite => 'ライト';
+
+  @override
+  String get oneOnOneFormatLiteDesc => 'チェックイン → 業務 → 締め（3フェーズ）';
+
+  @override
+  String get oneOnOneFormatGrowth => '成長深掘り';
+
+  @override
+  String get oneOnOneFormatGrowthDesc => 'ライト＋成長・キャリア（4フェーズ）';
+
+  @override
+  String get oneOnOneFormatRelationship => '関係性・FB';
+
+  @override
+  String get oneOnOneFormatRelationshipDesc => 'ライト＋関係性・フィードバック（4フェーズ）';
+
+  @override
+  String get oneOnOneFormatFull => 'フル';
+
+  @override
+  String get oneOnOneFormatFullDesc => '5フェーズすべて';
+
+  @override
+  String get oneOnOneStartSession => 'この型で始める';
 
   @override
   String get oneOnOnePickPrompt => 'このフェーズで話す問いを1つ選んでください';
@@ -1036,17 +1081,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oneOnOneCompleteSession => '1on1を終える';
 
   @override
+  String get oneOnOneThemeAgendaTitle => '今日のテーマ';
+
+  @override
+  String oneOnOneThemeAgendaCount(int selected, int total) {
+    return '$selected / $total';
+  }
+
+  @override
+  String get oneOnOneThemeAgendaPending => '未選択';
+
+  @override
+  String get oneOnOneThemeAgendaSelecting => 'このフェーズで選択中';
+
+  @override
   String get oneOnOneSessionCompleteTitle => '1on1お疲れさまでした';
 
   @override
-  String get oneOnOneSessionCompleteMessage =>
-      '7つのフェーズを一通り話せました。次回もチェックインから始めましょう。';
+  String oneOnOneSessionCompleteMessage(int count) {
+    return '$countつのテーマを話せました。次回もチェックインから始めましょう。';
+  }
 
   @override
   String get homeThemeShortOneOnOne => '1on1';
 
   @override
-  String get homeThemeDescOneOnOne => 'チェックインから順に。定例1on1の型で進める';
+  String get homeThemeDescOneOnOne => '今日の型を選んで進める';
 
   @override
   String get deckOneOnOne => '成長対話';
