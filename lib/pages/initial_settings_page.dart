@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/session_config.dart';
+import 'package:theme_dice/models/session_preset.dart';
+import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/utils/preset_display.dart';
+import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
+import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
 import '../models/polyhedron_type.dart';
 import '../models/theme.dart';
 import '../utils/preferences_helper.dart';
@@ -52,6 +59,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
   bool _ensureVisibleScheduled = false;
   /// 長押し直後に onTap が走り編集を閉じないため
   DateTime? _suppressFaceTapUntil;
+  List<SessionPreset> _savedPresets = [];
 
   void _initializeThemes(AppLocalizations l10n) {
     if (_initialized) return;
@@ -70,6 +78,242 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       _controllers[type] = themes.map((theme) => TextEditingController(text: theme)).toList();
     }
     _initialized = true;
+    if (widget.preselectedMode == PreselectedMode.dice) {
+      _loadSavedPresets();
+    }
+  }
+
+  Future<void> _loadSavedPresets() async {
+    final presets =
+        await PresetService.listPresets(mode: SessionPresetMode.dice);
+    if (!mounted) return;
+    setState(() => _savedPresets = presets);
+  }
+
+  List<String>? _currentCubeThemes() {
+    _updateThemesFromControllers();
+    final themes = _themes?[PolyhedronType.cube];
+    if (themes == null || themes.length != 6) {
+      return null;
+    }
+    return List<String>.from(themes);
+  }
+
+  void _applySavedPreset(SessionPreset preset) {
+    final themes = preset.diceThemes;
+    if (themes == null || themes.length != 6) {
+      return;
+    }
+    setState(() {
+      _themes![PolyhedronType.cube] = List<String>.from(themes);
+      final controllers = _controllers[PolyhedronType.cube];
+      if (controllers != null) {
+        for (var i = 0; i < 6; i++) {
+          controllers[i].text = themes[i];
+        }
+      }
+    });
+  }
+
+  Future<void> _showSavePresetDialog(AppLocalizations l10n) async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.presetSave,
+    );
+    if (!allowed || !mounted) {
+      return;
+    }
+
+    final themes = _currentCubeThemes();
+    if (themes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetInvalidConfigError)),
+      );
+      return;
+    }
+
+    const config = SessionConfig.defaultConfig;
+    final summaryPreset = SessionPreset.dice(
+      id: '',
+      name: '',
+      diceThemes: themes,
+      config: config,
+      updatedAt: DateTime.now(),
+    );
+    final controller = TextEditingController();
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l10n.presetSaveDialogTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: l10n.presetSaveDialogHintDice,
+                ),
+                onSubmitted: (_) => Navigator.of(ctx).pop(true),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                summaryPreset.configSummary(l10n),
+                style: _hintStyle(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    if (saved != true || !mounted) {
+      controller.dispose();
+      return;
+    }
+
+    try {
+      await PresetService.saveDicePreset(
+        name: controller.text,
+        diceThemes: themes,
+        config: config,
+      );
+      if (!mounted) return;
+      await _loadSavedPresets();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetSavedMessage)),
+      );
+    } on PresetValidationException catch (e) {
+      if (!mounted) return;
+      final message = e.isEmptyName
+          ? l10n.presetEmptyNameError
+          : e.isInvalidConfig
+              ? l10n.presetInvalidConfigError
+              : l10n.presetMaxReachedError(PresetService.maxPresets);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  Future<void> _confirmDeletePreset(
+    AppLocalizations l10n,
+    SessionPreset preset,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.presetDeleteConfirmTitle),
+        content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.presetDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await PresetService.deletePreset(preset.id);
+    if (!mounted) return;
+    await _loadSavedPresets();
+  }
+
+  Widget _buildSavedPresetsSection(AppLocalizations l10n) {
+    if (_savedPresets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(l10n.presetSavedSectionTitle, style: _labelStyle(fontSize: 16)),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 76,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _savedPresets.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, index) {
+              final preset = _savedPresets[index];
+              return HomePresetChip(
+                preset: preset,
+                l10n: l10n,
+                onTap: () => _applySavedPreset(preset),
+                onDelete: () => _confirmDeletePreset(l10n, preset),
+              );
+            },
+          ),
+        ),
+        PresetManageHint(text: l10n.presetDeleteHint),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildDicePresetActions(AppLocalizations l10n) {
+    if (widget.preselectedMode != PreselectedMode.dice) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSavedPresetsSection(l10n),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => _showSavePresetDialog(l10n),
+            icon: Icon(Icons.bookmark_add_outlined, color: HomePalette.textMuted),
+            label: Text(
+              l10n.presetSave,
+              style: GoogleFonts.zenKakuGothicNew(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: HomePalette.textMuted,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDiceModeFooter(AppLocalizations l10n) {
+    if (widget.preselectedMode != PreselectedMode.dice) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _buildPlayButtons(l10n),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ..._buildPlayButtons(l10n),
+        const SizedBox(height: 16),
+        _buildDicePresetActions(l10n),
+      ],
+    );
   }
 
   @override
@@ -153,7 +397,10 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
     } else {
       Navigator.of(context).push(
         RouteTransitions.forwardRoute(
-          page: SessionSetupPage(themes: themes),
+          page: SessionSetupPage(
+            themes: themes,
+            forDice: widget.preselectedMode == PreselectedMode.dice,
+          ),
         ),
       );
     }
@@ -300,8 +547,8 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
                           scrollable: false,
                           mobileTapMode: true,
                         ),
-                        const SizedBox(height: 12),
-                        ..._buildPlayButtons(l10n),
+                        const SizedBox(height: 16),
+                        _buildDiceModeFooter(l10n),
                       ],
                     ),
                   ),
@@ -328,18 +575,20 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
               Expanded(
                 child: _panel(
                   padding: panelPadding,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: _buildLeftPanelContent(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildLeftPanelContent(
                           l10n,
                           slotWidth: panelWidth,
+                          scrollable: false,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      ..._buildPlayButtons(l10n),
-                    ],
+                        const SizedBox(height: 16),
+                        _buildDiceModeFooter(l10n),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -389,7 +638,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         ],
         const SizedBox(height: 8),
         _buildFaceColumn(slotWidth, mobileTapMode: mobileTapMode),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         _buildRandomResetRow(l10n),
       ],
     );

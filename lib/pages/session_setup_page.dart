@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/session_preset.dart';
+import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/utils/preset_display.dart';
+import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:theme_dice/widgets/home/home_toggle_icon_button.dart';
+import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
 import '../models/card_deck.dart';
 import '../models/session_config.dart' show SessionConfig;
 import '../models/polyhedron_type.dart';
@@ -31,6 +37,8 @@ class SessionSetupPage extends StatefulWidget {
   final String? deckLabel;
   /// 議論モード時カテゴリー別カード配置に使う（グループディスカッション）
   final CardDeckType? discussionDeckType;
+  /// true のときサイコロ複数人セッション用プリセットを有効化
+  final bool forDice;
 
   const SessionSetupPage({
     super.key,
@@ -41,6 +49,7 @@ class SessionSetupPage extends StatefulWidget {
     this.fromCardSettings = false,
     this.deckLabel,
     this.discussionDeckType,
+    this.forDice = false,
   });
 
   @override
@@ -59,6 +68,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   final List<FocusNode> _playerNameFocusNodes = [];
   bool _vibrationEnabled = true;
   bool _timerSoundEnabled = true;
+  List<SessionPreset> _savedPresets = [];
+  List<String>? _cubeThemes;
 
   final ScrollController _rightScrollController = ScrollController();
 
@@ -90,8 +101,52 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     _discussionPromptsPerCategory = 1;
     _discussionTotalPromptsOnTableSelection = null;
     _discussionIncludedCategories = {};
+    _cubeThemes = widget.themes[PolyhedronType.cube]?.toList();
     _initializePlayerNames();
     _loadFeedbackSettings();
+    if (_supportsPresets) {
+      _loadSavedPresets();
+    }
+  }
+
+  bool get _supportsPresets => _presetMode != null;
+
+  SessionPresetMode? get _presetMode {
+    if (widget.forDiscussion) {
+      return SessionPresetMode.groupDiscussion;
+    }
+    if (widget.forValueCard) {
+      return SessionPresetMode.valueCards;
+    }
+    if (widget.forDice) {
+      return SessionPresetMode.dice;
+    }
+    return null;
+  }
+
+  Map<PolyhedronType, List<String>> get _themesForSession {
+    if (_cubeThemes != null) {
+      return {PolyhedronType.cube: _cubeThemes!};
+    }
+    return widget.themes;
+  }
+
+  List<String>? _currentCubeThemes() {
+    final themes = _cubeThemes ?? widget.themes[PolyhedronType.cube];
+    if (themes == null || themes.length != 6) {
+      return null;
+    }
+    return List<String>.from(themes);
+  }
+
+  Future<void> _loadSavedPresets() async {
+    final mode = _presetMode;
+    if (mode == null) {
+      return;
+    }
+    final presets = await PresetService.listPresets(mode: mode);
+    if (!mounted) return;
+    setState(() => _savedPresets = presets);
   }
 
   Future<void> _loadFeedbackSettings() async {
@@ -163,38 +218,16 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   void _startSession() {
     final l10n = AppLocalizations.of(context)!;
-    if (widget.forDiscussion && widget.discussionDeckType != null) {
-      if (_discussionIncludedCategories.isEmpty) {
+    final finalConfig = _buildCurrentSessionConfig();
+    if (finalConfig == null) {
+      if (widget.forDiscussion && widget.discussionDeckType != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.discussionSelectAtLeastOneCategory)),
         );
-        return;
       }
+      return;
     }
-
-    final playerNames = List.generate(
-      _config.playerCount,
-      (i) => _playerNameControllers[i].text.trim(),
-    );
-
-    final finalConfig = _config.copyWith(
-      playerNames: playerNames,
-      applyDiscussionPromptCap: widget.forDiscussion,
-      discussionPromptCap: null,
-      applyDiscussionPromptsPerCategory: widget.forDiscussion,
-      discussionPromptsPerCategory:
-          widget.forDiscussion ? _discussionPromptsPerCategory : null,
-      applyDiscussionTotalPromptsOnTable: widget.forDiscussion,
-      discussionTotalPromptsOnTable:
-          widget.forDiscussion ? _discussionTotalPromptsOnTableSelection : null,
-      applyDiscussionCategoryIds:
-          widget.forDiscussion && widget.discussionDeckType != null,
-      discussionCategoryIds: widget.forDiscussion &&
-              widget.discussionDeckType != null
-          ? _discussionCategoryIdsForSession()
-          : null,
-    );
-    final themes = widget.themes[PolyhedronType.cube];
+    final themes = _themesForSession[PolyhedronType.cube];
     if (themes != null) {
       PreferencesHelper.saveLastThemes(themes);
     }
@@ -225,12 +258,309 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       Navigator.of(context).push(
         RouteTransitions.forwardRoute(
           page: DicePage(
-            initialThemes: widget.themes,
+            initialThemes: _themesForSession,
             sessionConfig: finalConfig,
           ),
         ),
       );
     }
+  }
+
+  SessionConfig? _buildCurrentSessionConfig() {
+    if (widget.forDiscussion && widget.discussionDeckType != null) {
+      if (_discussionIncludedCategories.isEmpty) {
+        return null;
+      }
+    }
+
+    final playerNames = List.generate(
+      _config.playerCount,
+      (i) => _playerNameControllers[i].text.trim(),
+    );
+
+    return _config.copyWith(
+      playerNames: playerNames,
+      applyDiscussionPromptCap: widget.forDiscussion,
+      discussionPromptCap: null,
+      applyDiscussionPromptsPerCategory: widget.forDiscussion,
+      discussionPromptsPerCategory:
+          widget.forDiscussion ? _discussionPromptsPerCategory : null,
+      applyDiscussionTotalPromptsOnTable: widget.forDiscussion,
+      discussionTotalPromptsOnTable:
+          widget.forDiscussion ? _discussionTotalPromptsOnTableSelection : null,
+      applyDiscussionCategoryIds:
+          widget.forDiscussion && widget.discussionDeckType != null,
+      discussionCategoryIds: widget.forDiscussion &&
+              widget.discussionDeckType != null
+          ? _discussionCategoryIdsForSession()
+          : null,
+    );
+  }
+
+  void _applySavedPreset(SessionPreset preset) {
+    final config = preset.sessionConfig;
+    if (config == null) {
+      return;
+    }
+
+    setState(() {
+      _config = _config.copyWith(
+        playerCount: config.playerCount,
+        timerDuration: config.timerDuration,
+        enableTimer: config.enableTimer,
+      );
+      _initializePlayerNames();
+
+      final names = config.playerNames;
+      if (names != null) {
+        for (var i = 0; i < names.length && i < _playerNameControllers.length; i++) {
+          _playerNameControllers[i].text = names[i];
+        }
+      }
+
+      if (widget.forDiscussion) {
+        _discussionPromptsPerCategory =
+            config.discussionPromptsPerCategory ?? 1;
+        _discussionTotalPromptsOnTableSelection =
+            config.discussionTotalPromptsOnTable;
+        final dt = widget.discussionDeckType;
+        if (dt != null) {
+          final allOrder = CardDeck.discussionCategoryDisplayOrder(dt);
+          final ids = config.discussionCategoryIds;
+          if (ids == null) {
+            _discussionIncludedCategories = allOrder.toSet();
+          } else {
+            _discussionIncludedCategories = ids.toSet();
+          }
+        }
+        _clampDiscussionTotalPromptsOnTable();
+      } else if (widget.forDice) {
+        final themes = preset.diceThemes;
+        if (themes != null && themes.length == 6) {
+          _cubeThemes = List<String>.from(themes);
+        }
+      }
+    });
+  }
+
+  SessionPreset _summaryPresetForDialog(SessionConfig config) {
+    final mode = _presetMode!;
+    switch (mode) {
+      case SessionPresetMode.groupDiscussion:
+        return SessionPreset.groupDiscussion(
+          id: '',
+          name: '',
+          config: config,
+          discussionDeckType:
+              widget.discussionDeckType ?? CardDeckType.groupDiscussion,
+          deckLabel: widget.deckLabel,
+          updatedAt: DateTime.now(),
+        );
+      case SessionPresetMode.valueCards:
+        return SessionPreset.valueCards(
+          id: '',
+          name: '',
+          config: config,
+          updatedAt: DateTime.now(),
+        );
+      case SessionPresetMode.dice:
+        return SessionPreset.dice(
+          id: '',
+          name: '',
+          diceThemes: _currentCubeThemes() ?? List.filled(6, ''),
+          config: config,
+          updatedAt: DateTime.now(),
+        );
+      case SessionPresetMode.oneOnOne:
+        throw StateError('oneOnOne preset is not supported on SessionSetupPage');
+    }
+  }
+
+  String _presetSaveDialogHint(AppLocalizations l10n) {
+    switch (_presetMode!) {
+      case SessionPresetMode.groupDiscussion:
+        return l10n.presetSaveDialogHintGroupDiscussion;
+      case SessionPresetMode.valueCards:
+        return l10n.presetSaveDialogHintValueCards;
+      case SessionPresetMode.dice:
+        return l10n.presetSaveDialogHintDice;
+      case SessionPresetMode.oneOnOne:
+        return l10n.presetSaveDialogHint;
+    }
+  }
+
+  Future<void> _showSavePresetDialog(AppLocalizations l10n) async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.presetSave,
+    );
+    if (!allowed || !mounted) {
+      return;
+    }
+
+    final config = _buildCurrentSessionConfig();
+    if (config == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetInvalidConfigError)),
+      );
+      return;
+    }
+
+    final cubeThemes = _currentCubeThemes();
+    if (_presetMode == SessionPresetMode.dice && cubeThemes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetInvalidConfigError)),
+      );
+      return;
+    }
+
+    final mode = _presetMode!;
+    final summaryPreset = _summaryPresetForDialog(config);
+    final hint = _presetSaveDialogHint(l10n);
+    final controller = TextEditingController();
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l10n.presetSaveDialogTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(hintText: hint),
+                onSubmitted: (_) => Navigator.of(ctx).pop(true),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                summaryPreset.configSummary(l10n),
+                style: _hintStyle(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    if (saved != true || !mounted) {
+      controller.dispose();
+      return;
+    }
+
+    try {
+      switch (mode) {
+        case SessionPresetMode.groupDiscussion:
+          await PresetService.saveGroupDiscussionPreset(
+            name: controller.text,
+            config: config,
+            discussionDeckType:
+                widget.discussionDeckType ?? CardDeckType.groupDiscussion,
+            deckLabel: widget.deckLabel,
+          );
+        case SessionPresetMode.valueCards:
+          await PresetService.saveValueCardsPreset(
+            name: controller.text,
+            config: config,
+          );
+        case SessionPresetMode.dice:
+          await PresetService.saveDicePreset(
+            name: controller.text,
+            diceThemes: cubeThemes!,
+            config: config,
+          );
+        case SessionPresetMode.oneOnOne:
+          break;
+      }
+      if (!mounted) return;
+      await _loadSavedPresets();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetSavedMessage)),
+      );
+    } on PresetValidationException catch (e) {
+      if (!mounted) return;
+      final message = e.isEmptyName
+          ? l10n.presetEmptyNameError
+          : e.isInvalidConfig
+              ? l10n.presetInvalidConfigError
+              : l10n.presetMaxReachedError(PresetService.maxPresets);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  Future<void> _confirmDeletePreset(
+    AppLocalizations l10n,
+    SessionPreset preset,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.presetDeleteConfirmTitle),
+        content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.presetDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await PresetService.deletePreset(preset.id);
+    if (!mounted) return;
+    await _loadSavedPresets();
+  }
+
+  Widget _buildSavedPresetsSection(AppLocalizations l10n) {
+    if (_savedPresets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(l10n.presetSavedSectionTitle, style: _labelStyle(fontSize: 16)),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 76,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _savedPresets.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, index) {
+              final preset = _savedPresets[index];
+              return HomePresetChip(
+                preset: preset,
+                l10n: l10n,
+                onTap: () => _applySavedPreset(preset),
+                onDelete: () => _confirmDeletePreset(l10n, preset),
+              );
+            },
+          ),
+        ),
+        PresetManageHint(text: l10n.presetDeleteHint),
+        const SizedBox(height: 20),
+      ],
+    );
   }
 
   Color _playerFieldTint(int index) {
@@ -426,6 +756,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (_supportsPresets) ...[
+          _buildSavedPresetsSection(l10n),
+        ],
         Text(l10n.playerCount, style: _labelStyle()),
         SizedBox(height: itemSpacing),
         _buildDropdown<int>(
@@ -457,6 +790,17 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         ],
         SizedBox(height: sectionSpacing),
         _buildSessionPreview(l10n),
+        if (_supportsPresets) ...[
+          const SizedBox(height: 12),
+          TextButton.icon(
+            onPressed: () => _showSavePresetDialog(l10n),
+            icon: Icon(Icons.bookmark_add_outlined, color: HomePalette.textMuted),
+            label: Text(
+              l10n.presetSave,
+              style: _bodyStyle(fontSize: 14, weight: FontWeight.w600),
+            ),
+          ),
+        ],
       ],
     );
   }

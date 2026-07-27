@@ -418,8 +418,19 @@ class _DicePageState extends State<DicePage>
       playerCount: playerCount,
       playerNames: playerNames,
       voteResults: voteResults ?? {},
+      sessionConfig: widget.sessionConfig,
+      diceThemes: _cubeThemesForPreset(),
     );
     SessionRecordService.addRecord(record);
+  }
+
+  List<String>? _cubeThemesForPreset() {
+    final themes =
+        _themes?[PolyhedronType.cube] ?? widget.initialThemes?[PolyhedronType.cube];
+    if (themes == null || themes.length != 6) {
+      return null;
+    }
+    return List<String>.from(themes);
   }
 
   /// ソロ時は振り直しごとに履歴を差し替え（最後の出目だけ残す）
@@ -433,8 +444,12 @@ class _DicePageState extends State<DicePage>
       selectedCardsByPlayer: {},
       playerCount: 1,
       voteResults: const {},
+      diceThemes: _cubeThemesForPreset(),
     );
-    await SessionRecordService.addRecord(record);
+    await SessionRecordService.addRecord(
+      record,
+      countTowardUsageStats: false,
+    );
     if (mounted) {
       _soloDiceRecordId = record.id;
     }

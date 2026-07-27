@@ -968,6 +968,114 @@ abstract class AppLocalizations {
   /// **'プライバシーポリシー'**
   String get privacyPolicy;
 
+  /// Pro paywall title
+  ///
+  /// In ja, this message translates to:
+  /// **'Talk Shuffle Pro'**
+  String get proPaywallTitle;
+
+  /// Pro paywall subtitle
+  ///
+  /// In ja, this message translates to:
+  /// **'よく使う設定の保存と、履歴の共有が使えます。'**
+  String get proPaywallSubtitle;
+
+  /// Pro benefit: history export
+  ///
+  /// In ja, this message translates to:
+  /// **'セッション履歴をテキストで共有'**
+  String get proBenefitExport;
+
+  /// Pro benefit: presets
+  ///
+  /// In ja, this message translates to:
+  /// **'名前付きプリセットを保存（最大10件）'**
+  String get proBenefitPreset;
+
+  /// Pro purchase button (production)
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro を購入'**
+  String get proUnlock;
+
+  /// Pro unlock button in debug builds
+  ///
+  /// In ja, this message translates to:
+  /// **'debug: Pro をオンにする'**
+  String get proUnlockDebug;
+
+  /// Restore purchases button — for users who already bought Pro
+  ///
+  /// In ja, this message translates to:
+  /// **'すでに購入済みの方'**
+  String get proRestore;
+
+  /// Hint on paywall in debug mode
+  ///
+  /// In ja, this message translates to:
+  /// **'debug ビルドです。「Pro をオンにする」「すでに購入済みの方」どちらもローカルで Pro になります。'**
+  String get proDebugHint;
+
+  /// Shown when IAP is not wired yet
+  ///
+  /// In ja, this message translates to:
+  /// **'購入はまだ利用できません'**
+  String get proPurchaseUnavailable;
+
+  /// Shown when restore finds nothing
+  ///
+  /// In ja, this message translates to:
+  /// **'購入済みの Pro は見つかりませんでした'**
+  String get proRestoreNothing;
+
+  /// Debug About section title for Pro toggles
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro（debug）'**
+  String get proDebugSectionTitle;
+
+  /// Debug About section subtitle
+  ///
+  /// In ja, this message translates to:
+  /// **'ON/OFF を切り替えて繰り返し確認できます。リリースには出ません。'**
+  String get proDebugSectionSubtitle;
+
+  /// Debug toggle for Pro gating
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro ゲートを試す'**
+  String get proDebugGatingToggle;
+
+  /// Debug gating toggle subtitle
+  ///
+  /// In ja, this message translates to:
+  /// **'OFF だと共有・プリセット保存が常に使えます'**
+  String get proDebugGatingSubtitle;
+
+  /// Debug toggle for Pro unlocked state
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro をオン'**
+  String get proDebugProToggle;
+
+  /// Debug Pro toggle subtitle
+  ///
+  /// In ja, this message translates to:
+  /// **'OFF にするとペイウォールが再表示されます'**
+  String get proDebugProSubtitle;
+
+  /// Debug action to reopen Pro paywall
+  ///
+  /// In ja, this message translates to:
+  /// **'ペイウォールを表示'**
+  String get proDebugShowPaywall;
+
+  /// Debug action subtitle for reopening paywall
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro をオフにして案内シートを開きます'**
+  String get proDebugShowPaywallSubtitle;
+
   /// 履歴が空のときのメッセージ
   ///
   /// In ja, this message translates to:
@@ -1135,6 +1243,54 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'この履歴は元に戻せません。'**
   String get historyDeleteOneMessage;
+
+  /// 履歴詳細の共有ボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'共有'**
+  String get historyShare;
+
+  /// Save this history's settings as a named preset
+  ///
+  /// In ja, this message translates to:
+  /// **'同じ設定をプリセットに保存'**
+  String get historySaveAsPreset;
+
+  /// Hint under save-as-preset on history detail
+  ///
+  /// In ja, this message translates to:
+  /// **'次回からワンタップで同じ進行を始められます（Pro）'**
+  String get historySaveAsPresetHint;
+
+  /// Dialog title when saving preset from history
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセット名'**
+  String get historySaveAsPresetDialogTitle;
+
+  /// Shown when history lacks preset snapshot
+  ///
+  /// In ja, this message translates to:
+  /// **'この履歴からはプリセットを作れません'**
+  String get historySaveAsPresetUnavailable;
+
+  /// 共有テキストの先頭行
+  ///
+  /// In ja, this message translates to:
+  /// **'Talk Shuffle — セッション記録'**
+  String get historyShareHeader;
+
+  /// 共有テキストのフッター
+  ///
+  /// In ja, this message translates to:
+  /// **'Talk Shuffle からエクスポート'**
+  String get historyShareFooter;
+
+  /// 共有シートの件名
+  ///
+  /// In ja, this message translates to:
+  /// **'{date} {mode}'**
+  String historyShareSubject(String date, String mode);
 
   /// 削除ボタン
   ///
@@ -2119,6 +2275,204 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'今日の型を選んで進める'**
   String get homeThemeDescOneOnOne;
+
+  /// Home section label for saved session presets
+  ///
+  /// In ja, this message translates to:
+  /// **'マイプリセット'**
+  String get presetSectionLabel;
+
+  /// Home Quick Start strip label for recently used presets
+  ///
+  /// In ja, this message translates to:
+  /// **'最近使ったプリセット'**
+  String get presetQuickStartLabel;
+
+  /// Link to open full preset library from Quick Start strip
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて見る'**
+  String get presetSeeAll;
+
+  /// Title for preset library bottom sheet and header tooltip
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセット一覧'**
+  String get presetLibraryTitle;
+
+  /// Empty state in preset library sheet
+  ///
+  /// In ja, this message translates to:
+  /// **'保存したプリセットはありません\n各モードの設定画面から保存できます'**
+  String get presetLibraryEmpty;
+
+  /// Mode badge label for 1-on-1 presets
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1'**
+  String get presetModeOneOnOne;
+
+  /// Section header in preset library for 1-on-1 presets
+  ///
+  /// In ja, this message translates to:
+  /// **'1ON1'**
+  String get presetModeSectionOneOnOne;
+
+  /// Mode badge label for group discussion presets
+  ///
+  /// In ja, this message translates to:
+  /// **'グループディスカッション'**
+  String get presetModeGroupDiscussion;
+
+  /// Section header in preset library for group discussion presets
+  ///
+  /// In ja, this message translates to:
+  /// **'グループディスカッション'**
+  String get presetModeSectionGroupDiscussion;
+
+  /// Mode badge label for value card presets
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観'**
+  String get presetModeValueCards;
+
+  /// Section header in preset library for value card presets
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観'**
+  String get presetModeSectionValueCards;
+
+  /// Player count fragment in preset config summary
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}人'**
+  String presetSummaryPlayers(int count);
+
+  /// Selected category count fragment in preset config summary
+  ///
+  /// In ja, this message translates to:
+  /// **'カテゴリ{count}'**
+  String presetSummaryCategories(int count);
+
+  /// All categories selected fragment in preset config summary
+  ///
+  /// In ja, this message translates to:
+  /// **'全カテゴリ'**
+  String get presetSummaryAllCategories;
+
+  /// Validation when discussion preset has no categories
+  ///
+  /// In ja, this message translates to:
+  /// **'カテゴリを1つ以上選んでから保存してください'**
+  String get presetInvalidConfigError;
+
+  /// Hint for group discussion preset name text field
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 定例チーム · 倫理'**
+  String get presetSaveDialogHintGroupDiscussion;
+
+  /// Hint for value card preset name text field
+  ///
+  /// In ja, this message translates to:
+  /// **'例: チーム価値観 · 4人'**
+  String get presetSaveDialogHintValueCards;
+
+  /// Mode badge label for dice presets
+  ///
+  /// In ja, this message translates to:
+  /// **'サイコロ'**
+  String get presetModeDice;
+
+  /// Section header in preset library for dice presets
+  ///
+  /// In ja, this message translates to:
+  /// **'サイコロ'**
+  String get presetModeSectionDice;
+
+  /// Dice preset summary fragment for custom cube themes
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタム6面'**
+  String get presetSummaryDiceCustom;
+
+  /// Hint for dice preset name text field
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 金曜ナイト · カスタムテーマ'**
+  String get presetSaveDialogHintDice;
+
+  /// Hint shown where presets can be deleted via long press
+  ///
+  /// In ja, this message translates to:
+  /// **'長押しで削除できます'**
+  String get presetDeleteHint;
+
+  /// Hint on home Quick Start that deletion is in the preset library
+  ///
+  /// In ja, this message translates to:
+  /// **'削除はヘッダーのプリセット一覧（📑）で長押し'**
+  String get presetQuickStartDeleteHint;
+
+  /// Button to save current session setup as a preset
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットに保存'**
+  String get presetSave;
+
+  /// Title for preset name dialog
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセット名'**
+  String get presetSaveDialogTitle;
+
+  /// Hint for preset name text field
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 週次1on1・ライト'**
+  String get presetSaveDialogHint;
+
+  /// Snackbar after saving a preset
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットを保存しました'**
+  String get presetSavedMessage;
+
+  /// Section title for saved presets on format setup
+  ///
+  /// In ja, this message translates to:
+  /// **'保存済み'**
+  String get presetSavedSectionTitle;
+
+  /// Validation when preset name is empty
+  ///
+  /// In ja, this message translates to:
+  /// **'名前を入力してください'**
+  String get presetEmptyNameError;
+
+  /// Validation when preset limit reached
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットは{max}件まで保存できます'**
+  String presetMaxReachedError(int max);
+
+  /// Delete preset action
+  ///
+  /// In ja, this message translates to:
+  /// **'削除'**
+  String get presetDelete;
+
+  /// Confirm delete preset dialog title
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットを削除'**
+  String get presetDeleteConfirmTitle;
+
+  /// Confirm delete preset dialog body
+  ///
+  /// In ja, this message translates to:
+  /// **'「{name}」を削除しますか？'**
+  String presetDeleteConfirmMessage(String name);
 
   /// No description provided for @deckOneOnOne.
   ///

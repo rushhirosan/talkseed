@@ -113,6 +113,14 @@ TextField, TextFormField, Switch, Checkbox, Slider
 
 ---
 
+## Planning & Backlog
+
+- **Future work and To-Do items live only in [ROADMAP.md](../../ROADMAP.md)** at the repo root.
+- Do not add new actionable checklists to other docs — link to ROADMAP instead.
+- Update ROADMAP when completing or adding tasks.
+
+---
+
 ## Pre-Commit Checklist
 - flutter analyze を通る前提で変更する
 - 不要ファイルが含まれていないか確認

@@ -460,6 +460,78 @@
   "@privacyPolicy": {
     "description": "プライバシーポリシーへのリンク"
   },
+  "proPaywallTitle": "Talk Shuffle Pro",
+  "@proPaywallTitle": {
+    "description": "Pro paywall title"
+  },
+  "proPaywallSubtitle": "よく使う設定の保存と、履歴の共有が使えます。",
+  "@proPaywallSubtitle": {
+    "description": "Pro paywall subtitle"
+  },
+  "proBenefitExport": "セッション履歴をテキストで共有",
+  "@proBenefitExport": {
+    "description": "Pro benefit: history export"
+  },
+  "proBenefitPreset": "名前付きプリセットを保存（最大10件）",
+  "@proBenefitPreset": {
+    "description": "Pro benefit: presets"
+  },
+  "proUnlock": "Pro を購入",
+  "@proUnlock": {
+    "description": "Pro purchase button (production)"
+  },
+  "proUnlockDebug": "debug: Pro をオンにする",
+  "@proUnlockDebug": {
+    "description": "Pro unlock button in debug builds"
+  },
+  "proRestore": "すでに購入済みの方",
+  "@proRestore": {
+    "description": "Restore purchases button — for users who already bought Pro"
+  },
+  "proDebugHint": "debug ビルドです。「Pro をオンにする」「すでに購入済みの方」どちらもローカルで Pro になります。",
+  "@proDebugHint": {
+    "description": "Hint on paywall in debug mode"
+  },
+  "proPurchaseUnavailable": "購入はまだ利用できません",
+  "@proPurchaseUnavailable": {
+    "description": "Shown when IAP is not wired yet"
+  },
+  "proRestoreNothing": "購入済みの Pro は見つかりませんでした",
+  "@proRestoreNothing": {
+    "description": "Shown when restore finds nothing"
+  },
+  "proDebugSectionTitle": "Pro（debug）",
+  "@proDebugSectionTitle": {
+    "description": "Debug About section title for Pro toggles"
+  },
+  "proDebugSectionSubtitle": "ON/OFF を切り替えて繰り返し確認できます。リリースには出ません。",
+  "@proDebugSectionSubtitle": {
+    "description": "Debug About section subtitle"
+  },
+  "proDebugGatingToggle": "Pro ゲートを試す",
+  "@proDebugGatingToggle": {
+    "description": "Debug toggle for Pro gating"
+  },
+  "proDebugGatingSubtitle": "OFF だと共有・プリセット保存が常に使えます",
+  "@proDebugGatingSubtitle": {
+    "description": "Debug gating toggle subtitle"
+  },
+  "proDebugProToggle": "Pro をオン",
+  "@proDebugProToggle": {
+    "description": "Debug toggle for Pro unlocked state"
+  },
+  "proDebugProSubtitle": "OFF にするとペイウォールが再表示されます",
+  "@proDebugProSubtitle": {
+    "description": "Debug Pro toggle subtitle"
+  },
+  "proDebugShowPaywall": "ペイウォールを表示",
+  "@proDebugShowPaywall": {
+    "description": "Debug action to reopen Pro paywall"
+  },
+  "proDebugShowPaywallSubtitle": "Pro をオフにして案内シートを開きます",
+  "@proDebugShowPaywallSubtitle": {
+    "description": "Debug action subtitle for reopening paywall"
+  },
   "historyEmptyMessage": "まだ記録がありません",
   "@historyEmptyMessage": {
     "description": "履歴が空のときのメッセージ"
@@ -573,6 +645,46 @@
   "historyDeleteOneMessage": "この履歴は元に戻せません。",
   "@historyDeleteOneMessage": {
     "description": "履歴1件削除の確認ダイアログ本文"
+  },
+  "historyShare": "共有",
+  "@historyShare": {
+    "description": "履歴詳細の共有ボタン"
+  },
+  "historySaveAsPreset": "同じ設定をプリセットに保存",
+  "@historySaveAsPreset": {
+    "description": "Save this history's settings as a named preset"
+  },
+  "historySaveAsPresetHint": "次回からワンタップで同じ進行を始められます（Pro）",
+  "@historySaveAsPresetHint": {
+    "description": "Hint under save-as-preset on history detail"
+  },
+  "historySaveAsPresetDialogTitle": "プリセット名",
+  "@historySaveAsPresetDialogTitle": {
+    "description": "Dialog title when saving preset from history"
+  },
+  "historySaveAsPresetUnavailable": "この履歴からはプリセットを作れません",
+  "@historySaveAsPresetUnavailable": {
+    "description": "Shown when history lacks preset snapshot"
+  },
+  "historyShareHeader": "Talk Shuffle — セッション記録",
+  "@historyShareHeader": {
+    "description": "共有テキストの先頭行"
+  },
+  "historyShareFooter": "Talk Shuffle からエクスポート",
+  "@historyShareFooter": {
+    "description": "共有テキストのフッター"
+  },
+  "historyShareSubject": "{date} {mode}",
+  "@historyShareSubject": {
+    "description": "共有シートの件名",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
   },
   "delete": "削除",
   "@delete": {
@@ -1006,6 +1118,158 @@
   },
   "homeThemeShortOneOnOne": "1on1",
   "homeThemeDescOneOnOne": "今日の型を選んで進める",
+  "presetSectionLabel": "マイプリセット",
+  "@presetSectionLabel": {
+    "description": "Home section label for saved session presets"
+  },
+  "presetQuickStartLabel": "最近使ったプリセット",
+  "@presetQuickStartLabel": {
+    "description": "Home Quick Start strip label for recently used presets"
+  },
+  "presetSeeAll": "すべて見る",
+  "@presetSeeAll": {
+    "description": "Link to open full preset library from Quick Start strip"
+  },
+  "presetLibraryTitle": "プリセット一覧",
+  "@presetLibraryTitle": {
+    "description": "Title for preset library bottom sheet and header tooltip"
+  },
+  "presetLibraryEmpty": "保存したプリセットはありません\n各モードの設定画面から保存できます",
+  "@presetLibraryEmpty": {
+    "description": "Empty state in preset library sheet"
+  },
+  "presetModeOneOnOne": "1on1",
+  "@presetModeOneOnOne": {
+    "description": "Mode badge label for 1-on-1 presets"
+  },
+  "presetModeSectionOneOnOne": "1ON1",
+  "@presetModeSectionOneOnOne": {
+    "description": "Section header in preset library for 1-on-1 presets"
+  },
+  "presetModeGroupDiscussion": "グループディスカッション",
+  "@presetModeGroupDiscussion": {
+    "description": "Mode badge label for group discussion presets"
+  },
+  "presetModeSectionGroupDiscussion": "グループディスカッション",
+  "@presetModeSectionGroupDiscussion": {
+    "description": "Section header in preset library for group discussion presets"
+  },
+  "presetModeValueCards": "価値観",
+  "@presetModeValueCards": {
+    "description": "Mode badge label for value card presets"
+  },
+  "presetModeSectionValueCards": "価値観",
+  "@presetModeSectionValueCards": {
+    "description": "Section header in preset library for value card presets"
+  },
+  "presetSummaryPlayers": "{count}人",
+  "@presetSummaryPlayers": {
+    "description": "Player count fragment in preset config summary",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "presetSummaryCategories": "カテゴリ{count}",
+  "@presetSummaryCategories": {
+    "description": "Selected category count fragment in preset config summary",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "presetSummaryAllCategories": "全カテゴリ",
+  "@presetSummaryAllCategories": {
+    "description": "All categories selected fragment in preset config summary"
+  },
+  "presetInvalidConfigError": "カテゴリを1つ以上選んでから保存してください",
+  "@presetInvalidConfigError": {
+    "description": "Validation when discussion preset has no categories"
+  },
+  "presetSaveDialogHintGroupDiscussion": "例: 定例チーム · 倫理",
+  "@presetSaveDialogHintGroupDiscussion": {
+    "description": "Hint for group discussion preset name text field"
+  },
+  "presetSaveDialogHintValueCards": "例: チーム価値観 · 4人",
+  "@presetSaveDialogHintValueCards": {
+    "description": "Hint for value card preset name text field"
+  },
+  "presetModeDice": "サイコロ",
+  "@presetModeDice": {
+    "description": "Mode badge label for dice presets"
+  },
+  "presetModeSectionDice": "サイコロ",
+  "@presetModeSectionDice": {
+    "description": "Section header in preset library for dice presets"
+  },
+  "presetSummaryDiceCustom": "カスタム6面",
+  "@presetSummaryDiceCustom": {
+    "description": "Dice preset summary fragment for custom cube themes"
+  },
+  "presetSaveDialogHintDice": "例: 金曜ナイト · カスタムテーマ",
+  "@presetSaveDialogHintDice": {
+    "description": "Hint for dice preset name text field"
+  },
+  "presetDeleteHint": "長押しで削除できます",
+  "@presetDeleteHint": {
+    "description": "Hint shown where presets can be deleted via long press"
+  },
+  "presetQuickStartDeleteHint": "削除はヘッダーのプリセット一覧（📑）で長押し",
+  "@presetQuickStartDeleteHint": {
+    "description": "Hint on home Quick Start that deletion is in the preset library"
+  },
+  "presetSave": "プリセットに保存",
+  "@presetSave": {
+    "description": "Button to save current session setup as a preset"
+  },
+  "presetSaveDialogTitle": "プリセット名",
+  "@presetSaveDialogTitle": {
+    "description": "Title for preset name dialog"
+  },
+  "presetSaveDialogHint": "例: 週次1on1・ライト",
+  "@presetSaveDialogHint": {
+    "description": "Hint for preset name text field"
+  },
+  "presetSavedMessage": "プリセットを保存しました",
+  "@presetSavedMessage": {
+    "description": "Snackbar after saving a preset"
+  },
+  "presetSavedSectionTitle": "保存済み",
+  "@presetSavedSectionTitle": {
+    "description": "Section title for saved presets on format setup"
+  },
+  "presetEmptyNameError": "名前を入力してください",
+  "@presetEmptyNameError": {
+    "description": "Validation when preset name is empty"
+  },
+  "presetMaxReachedError": "プリセットは{max}件まで保存できます",
+  "@presetMaxReachedError": {
+    "description": "Validation when preset limit reached",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "presetDelete": "削除",
+  "@presetDelete": {
+    "description": "Delete preset action"
+  },
+  "presetDeleteConfirmTitle": "プリセットを削除",
+  "@presetDeleteConfirmTitle": {
+    "description": "Confirm delete preset dialog title"
+  },
+  "presetDeleteConfirmMessage": "「{name}」を削除しますか？",
+  "@presetDeleteConfirmMessage": {
+    "description": "Confirm delete preset dialog body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "deckOneOnOne": "成長対話",
   "deckOneOnOneDesc": "1on1で。評価を抜きに、未来・詰まり・伸ばしたいことを話す",
   "deckRetrospective": "振り返り",

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:theme_dice/models/session_record.dart';
+import 'package:theme_dice/services/usage_stats_service.dart';
 
 /// セッション履歴の保存/取得を行うサービス
 class SessionRecordService {
@@ -22,8 +23,16 @@ class SessionRecordService {
     return _box().listenable();
   }
 
-  static Future<void> addRecord(SessionRecord record) async {
+  /// [countTowardUsageStats] が true のときのみ端末内利用集計に加算する。
+  /// サイコロソロの振り直し中間保存など、セッション未完了の保存は false にする。
+  static Future<void> addRecord(
+    SessionRecord record, {
+    bool countTowardUsageStats = true,
+  }) async {
     await _box().put(record.id, record.toMap());
+    if (countTowardUsageStats) {
+      await UsageStatsService.recordSessionCompleted(record.mode);
+    }
   }
 
   static List<SessionRecord> getRecords() {

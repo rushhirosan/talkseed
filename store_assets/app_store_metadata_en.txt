@@ -5,7 +5,7 @@ Subtitle (30 chars max):
 Pick a topic fast
 
 Promotional Text:
-From team building to 1:1 reflection, pick conversation prompts in seconds with 3D dice and curated card decks.
+Redesigned guided 1-on-1s: pick a format, track themes in one agenda, and move from check-in to closing. Plus 3D dice and card decks. Japanese & English.
 
 Description:
 Talk Shuffle helps you choose a conversation topic quickly and naturally.
@@ -39,6 +39,9 @@ Privacy Policy URL:
 https://talk-seed.web.app/privacy.html
 
 What's New (4000 chars max):
-- Redesigned guided 1-on-1 sessions with format presets and a theme agenda
-- Added English prompts and aligned the UX with the Japanese experience
-- Improved spacing and phase headings in the 1-on-1 flow
+Major update to guided 1-on-1 sessions.
+
+• Start with a session format (Lite, Growth, Relationship, or Full)
+• Review chosen prompts in the Today's themes agenda as you go
+• English prompt bank added, with the same UX as Japanese
+• Cleaner spacing and phase headings in the 1-on-1 flow

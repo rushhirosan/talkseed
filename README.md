@@ -2,6 +2,8 @@
 
 会話のテーマを 3D サイコロやカードデッキで決める Flutter アプリ（pub パッケージ名: `theme_dice`）。
 
+**将来の改善・To-Do:** [ROADMAP.md](ROADMAP.md)
+
 ## Getting Started
 
 ```bash

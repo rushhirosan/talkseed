@@ -54,3 +54,4 @@ description: >-
 
 - 「コミットしてプッシュしてデプロイ」→ `./scripts/release.sh --ship`（メッセージ自動）。
 - `memo.txt` 等にトークンが残っているとシークレットチェックで失敗する。
+- **将来の改善・To-Do は [ROADMAP.md](../ROADMAP.md) のみを更新する**（他ドキュメントは参照リンク）。

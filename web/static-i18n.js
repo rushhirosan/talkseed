@@ -92,7 +92,7 @@
         navTop: 'Talk Shuffle トップ',
         navAppStore: 'App Store',
         h1: 'プライバシーポリシー',
-        updated: '最終更新日: 2025年3月',
+        updated: '最終更新日: 2026年6月',
         s1Title: '1. はじめに',
         s1Body:
           'Talk Shuffle（以下「本アプリ」）は、会話のテーマを決める際の支援を目的としたアプリです。本プライバシーポリシーは、本アプリにおける利用者情報の取り扱いについて説明します。',
@@ -101,7 +101,7 @@
           '本アプリは、利用者を特定する個人情報を収集しません。アカウント登録も不要です。',
         s3Title: '3. 端末内でのデータ保存',
         s3Body:
-          'セッション履歴（使用したテーマや日時など）は、本アプリを利用している端末内にのみ保存されます。これらのデータは外部サーバーへ送信されません。',
+          'セッション履歴（使用したテーマや日時など）は、本アプリを利用している端末内にのみ保存されます。これらのデータは外部サーバーへ送信されません。加えて、モード別の完了セッション数など、個人を特定しない利用回数の集計を端末内にのみ保持することがあります（外部送信は行いません）。',
         s4Title: '4. 外部へのデータ送信',
         s4Body:
           '本アプリは、個人を特定できる情報を外部のサーバーや第三者へ送信しません。アプリの利用状況の分析や広告配信の目的でデータを収集することもありません。',
@@ -132,7 +132,7 @@
         navTop: 'Talk Shuffle home',
         navAppStore: 'App Store',
         h1: 'Privacy Policy',
-        updated: 'Last updated: March 2025',
+        updated: 'Last updated: June 2026',
         s1Title: '1. Introduction',
         s1Body:
           'Talk Shuffle (the "App") helps you choose conversation topics. This Privacy Policy explains how we handle information when you use the App.',
@@ -141,7 +141,7 @@
           'The App does not collect personally identifiable information. No account sign-up is required.',
         s3Title: '3. Data stored on your device',
         s3Body:
-          'Session history (topics used, dates, etc.) is stored only on the device where you use the App. This data is not sent to external servers.',
+          'Session history (topics used, dates, etc.) is stored only on the device where you use the App. This data is not sent to external servers. We may also keep anonymous, on-device counters such as completed sessions per mode (not sent externally).',
         s4Title: '4. Data sent externally',
         s4Body:
           'The App does not send personally identifiable information to external servers or third parties. We do not collect data for analytics or advertising.',

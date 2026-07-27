@@ -336,6 +336,10 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
         configPlayerNames: s.config.playerNames,
         defaultName: l10n.playerName,
       ),
+      sessionConfig: widget.sessionConfig,
+      discussionDeckTypeName:
+          (widget.discussionDeckType ?? CardDeckType.groupDiscussion).name,
+      deckLabel: widget.deckTitle,
     );
     _didSaveHistory = true;
     SessionRecordService.addRecord(record);

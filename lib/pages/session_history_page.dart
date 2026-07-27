@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/one_on_one_phase.dart';
 import 'package:theme_dice/models/session_record.dart';
+import 'package:theme_dice/services/preset_service.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/services/usage_stats_service.dart';
+import 'package:theme_dice/utils/pro_access.dart';
+import 'package:theme_dice/utils/session_record_preset_factory.dart';
+import 'package:theme_dice/utils/session_record_share_text.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
+import 'package:theme_dice/widgets/home/home_primary_button.dart';
 
 class SessionHistoryPage extends StatefulWidget {
   const SessionHistoryPage({super.key});
@@ -344,6 +351,11 @@ class SessionHistoryDetailPage extends StatelessWidget {
       leading: HomeBackButton(onPressed: () => Navigator.of(context).pop()),
       actions: [
         HomeHeaderIconButton(
+          icon: Icons.ios_share,
+          tooltip: l10n.historyShare,
+          onPressed: () => _shareRecord(context, l10n),
+        ),
+        HomeHeaderIconButton(
           icon: Icons.delete_outline,
           tooltip: l10n.historyDeleteOne,
           onPressed: () => _confirmDeleteOne(context, l10n),
@@ -480,9 +492,133 @@ class SessionHistoryDetailPage extends StatelessWidget {
               ),
             ),
           ],
+          if (SessionRecordPresetFactory.canSaveAsPreset(record)) ...[
+            const SizedBox(height: 24),
+            HomePrimaryButton(
+              label: l10n.historySaveAsPreset,
+              icon: Icons.bookmark_add_outlined,
+              onPressed: () => _saveAsPreset(context, l10n),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.historySaveAsPresetHint,
+              textAlign: TextAlign.center,
+              style: _mutedStyle(fontSize: 12),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  Future<void> _shareRecord(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    await UsageStatsService.recordExportAttempt();
+    if (!context.mounted) {
+      return;
+    }
+
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.historyExport,
+    );
+    if (!allowed || !context.mounted) {
+      return;
+    }
+
+    final dateFormat = DateFormat.yMMMMd(l10n.localeName);
+    final dateLabel = dateFormat.format(record.playedAt);
+    final modeLabel = _modeLabel(l10n);
+    final text = formatSessionRecordShareText(record, l10n);
+    final subject = l10n.historyShareSubject(dateLabel, modeLabel);
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? null
+        : box.localToGlobal(Offset.zero) & box.size;
+
+    await Share.share(
+      text,
+      subject: subject,
+      sharePositionOrigin: origin,
+    );
+  }
+
+  Future<void> _saveAsPreset(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.presetSave,
+    );
+    if (!allowed || !context.mounted) {
+      return;
+    }
+
+    final dateFormat = DateFormat.yMMMd(l10n.localeName);
+    final suggested =
+        '${_modeLabel(l10n)} · ${dateFormat.format(record.playedAt)}';
+    final controller = TextEditingController(text: suggested);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: HomePalette.surface,
+        title: Text(
+          l10n.historySaveAsPresetDialogTitle,
+          style: _titleStyle(fontSize: 18),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: l10n.presetSaveDialogHint,
+          ),
+          onSubmitted: (_) => Navigator.of(ctx).pop(true),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) {
+      controller.dispose();
+      return;
+    }
+
+    try {
+      await SessionRecordPresetFactory.saveAsPreset(
+        record: record,
+        name: controller.text,
+      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetSavedMessage)),
+      );
+    } on PresetValidationException catch (e) {
+      if (!context.mounted) return;
+      final message = e.isEmptyName
+          ? l10n.presetEmptyNameError
+          : l10n.presetMaxReachedError(PresetService.maxPresets);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.historySaveAsPresetUnavailable)),
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   Future<void> _confirmDeleteOne(

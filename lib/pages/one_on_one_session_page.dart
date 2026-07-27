@@ -5,19 +5,35 @@ import 'package:vibration/vibration.dart';
 import 'package:theme_dice/exceptions/theme_dice_exceptions.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/one_on_one_phase.dart';
+import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/pages/mode_selection_page.dart';
+import 'package:theme_dice/services/preset_service.dart';
 import 'package:theme_dice/services/self_reflection_service.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
+import 'package:theme_dice/utils/preset_display.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/home/home_preset_chip.dart';
+import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
 import 'package:theme_dice/widgets/play/play_session_ui.dart';
 
 /// 1on1向け：今日の型を選び、選んだフェーズで進むガイド付きセッション
 class OneOnOneSessionPage extends StatefulWidget {
-  const OneOnOneSessionPage({super.key});
+  /// ホームのプリセットから渡す初期型
+  final OneOnOneSessionFormat? initialFormat;
+
+  /// true のときデータ読み込み後に [initialFormat] でセッションを開始
+  final bool autoStartSession;
+
+  const OneOnOneSessionPage({
+    super.key,
+    this.initialFormat,
+    this.autoStartSession = false,
+  });
 
   @override
   State<OneOnOneSessionPage> createState() => _OneOnOneSessionPageState();
@@ -45,10 +61,30 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   bool _agendaExpanded = false;
   String? _loadedLanguageCode;
   final ScrollController _phaseStripScrollController = ScrollController();
+  List<SessionPreset> _savedPresets = [];
+  bool _autoStartPending = false;
 
   OneOnOnePhase get _currentPhase => _activePhases[_phaseIndex];
 
   bool get _isLastPhase => _phaseIndex >= _activePhases.length - 1;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFormat != null) {
+      _selectedFormat = widget.initialFormat!;
+      _activePhases = widget.initialFormat!.phases;
+    }
+    _autoStartPending = widget.autoStartSession && widget.initialFormat != null;
+    _loadSavedPresets();
+  }
+
+  Future<void> _loadSavedPresets() async {
+    final presets =
+        await PresetService.listPresets(mode: SessionPresetMode.oneOnOne);
+    if (!mounted) return;
+    setState(() => _savedPresets = presets);
+  }
 
   @override
   void didChangeDependencies() {
@@ -100,6 +136,12 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
         _questionsByPhase = data;
         _loading = false;
       });
+      if (_autoStartPending && !_sessionStarted) {
+        _autoStartPending = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _startSession();
+        });
+      }
     } on ThemeDiceException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -262,6 +304,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       mode: SessionRecord.modeOneOnOne,
       topics: const [],
       selectedCardsByPlayer: _buildHistoryPromptsByPhase(),
+      oneOnOneFormatName: _selectedFormat.name,
     );
     await SessionRecordService.addRecord(record);
     if (!mounted) return;
@@ -459,9 +502,162 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
     );
   }
 
+  Future<void> _showSavePresetDialog(AppLocalizations l10n) async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.presetSave,
+    );
+    if (!allowed || !mounted) {
+      return;
+    }
+
+    final summary = SessionPreset.oneOnOne(
+      id: '',
+      name: '',
+      format: _selectedFormat,
+      updatedAt: DateTime.now(),
+    ).configSummary(l10n);
+    final controller = TextEditingController(text: _selectedFormat.title(l10n));
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l10n.presetSaveDialogTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(hintText: l10n.presetSaveDialogHint),
+                onSubmitted: (_) => Navigator.of(ctx).pop(true),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                summary,
+                style: PlayTextStyles.hint(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    if (saved != true || !mounted) {
+      controller.dispose();
+      return;
+    }
+
+    try {
+      await PresetService.saveOneOnOnePreset(
+        name: controller.text,
+        format: _selectedFormat,
+      );
+      if (!mounted) return;
+      await _loadSavedPresets();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetSavedMessage)),
+      );
+    } on PresetValidationException catch (e) {
+      if (!mounted) return;
+      final message = e.isEmptyName
+          ? l10n.presetEmptyNameError
+          : l10n.presetMaxReachedError(PresetService.maxPresets);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  Future<void> _confirmDeletePreset(
+    AppLocalizations l10n,
+    SessionPreset preset,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.presetDeleteConfirmTitle),
+        content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.presetDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await PresetService.deletePreset(preset.id);
+    if (!mounted) return;
+    await _loadSavedPresets();
+  }
+
+  void _applySavedPreset(SessionPreset preset) {
+    final format = preset.oneOnOneFormat;
+    if (format == null) return;
+    setState(() => _selectedFormat = format);
+  }
+
+  Widget _buildSavedPresetsSection(AppLocalizations l10n) {
+    if (_savedPresets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.presetSavedSectionTitle,
+          style: PlayTextStyles.caption(),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 76,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _savedPresets.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, index) {
+              final preset = _savedPresets[index];
+              return HomePresetChip(
+                preset: preset,
+                l10n: l10n,
+                onTap: () => _applySavedPreset(preset),
+                onDelete: () => _confirmDeletePreset(l10n, preset),
+              );
+            },
+          ),
+        ),
+        PresetManageHint(
+          text: l10n.presetDeleteHint,
+          usePlayStyle: true,
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Widget _buildFormatSetup(AppLocalizations l10n) {
     return PlayPageScroll(
       children: [
+        _buildSavedPresetsSection(l10n),
         Text(
           l10n.oneOnOneFormatTitle,
           style: PlayTextStyles.prompt(fontSize: 22),
@@ -552,6 +748,15 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
           label: l10n.oneOnOneStartSession,
           icon: Icons.play_arrow,
           onPressed: _startSession,
+        ),
+        const SizedBox(height: 8),
+        TextButton.icon(
+          onPressed: () => _showSavePresetDialog(l10n),
+          icon: Icon(Icons.bookmark_add_outlined, color: PlayColors.textSecondary),
+          label: Text(
+            l10n.presetSave,
+            style: PlayTextStyles.hint(),
+          ),
         ),
       ],
     );

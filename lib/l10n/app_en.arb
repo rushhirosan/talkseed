@@ -251,6 +251,78 @@
   "@privacyPolicy": {
     "description": "Link to privacy policy"
   },
+  "proPaywallTitle": "Talk Shuffle Pro",
+  "@proPaywallTitle": {
+    "description": "Pro paywall title"
+  },
+  "proPaywallSubtitle": "Save presets you reuse often, and share session history.",
+  "@proPaywallSubtitle": {
+    "description": "Pro paywall subtitle"
+  },
+  "proBenefitExport": "Share session history as text",
+  "@proBenefitExport": {
+    "description": "Pro benefit: history export"
+  },
+  "proBenefitPreset": "Save named presets (up to 10)",
+  "@proBenefitPreset": {
+    "description": "Pro benefit: presets"
+  },
+  "proUnlock": "Buy Pro",
+  "@proUnlock": {
+    "description": "Pro purchase button (production)"
+  },
+  "proUnlockDebug": "debug: turn Pro on",
+  "@proUnlockDebug": {
+    "description": "Pro unlock button in debug builds"
+  },
+  "proRestore": "Already purchased?",
+  "@proRestore": {
+    "description": "Restore purchases button — for users who already bought Pro"
+  },
+  "proDebugHint": "Debug build — both buttons turn Pro on locally (store not connected).",
+  "@proDebugHint": {
+    "description": "Hint on paywall in debug mode"
+  },
+  "proPurchaseUnavailable": "Purchases are not available yet",
+  "@proPurchaseUnavailable": {
+    "description": "Shown when IAP is not wired yet"
+  },
+  "proRestoreNothing": "No Pro purchase found",
+  "@proRestoreNothing": {
+    "description": "Shown when restore finds nothing"
+  },
+  "proDebugSectionTitle": "Pro (debug)",
+  "@proDebugSectionTitle": {
+    "description": "Debug About section title for Pro toggles"
+  },
+  "proDebugSectionSubtitle": "Toggle ON/OFF to retest. Hidden in release builds.",
+  "@proDebugSectionSubtitle": {
+    "description": "Debug About section subtitle"
+  },
+  "proDebugGatingToggle": "Try Pro gating",
+  "@proDebugGatingToggle": {
+    "description": "Debug toggle for Pro gating"
+  },
+  "proDebugGatingSubtitle": "When OFF, share and preset save always work",
+  "@proDebugGatingSubtitle": {
+    "description": "Debug gating toggle subtitle"
+  },
+  "proDebugProToggle": "Pro on",
+  "@proDebugProToggle": {
+    "description": "Debug toggle for Pro unlocked state"
+  },
+  "proDebugProSubtitle": "Turn OFF to show the paywall again",
+  "@proDebugProSubtitle": {
+    "description": "Debug Pro toggle subtitle"
+  },
+  "proDebugShowPaywall": "Show paywall",
+  "@proDebugShowPaywall": {
+    "description": "Debug action to reopen Pro paywall"
+  },
+  "proDebugShowPaywallSubtitle": "Turns Pro off and opens the sheet",
+  "@proDebugShowPaywallSubtitle": {
+    "description": "Debug action subtitle for reopening paywall"
+  },
   "historyEmptyMessage": "No records yet",
   "@historyEmptyMessage": {
     "description": "Message when history is empty"
@@ -364,6 +436,46 @@
   "historyDeleteOneMessage": "This history cannot be restored.",
   "@historyDeleteOneMessage": {
     "description": "Confirm delete one message"
+  },
+  "historyShare": "Share",
+  "@historyShare": {
+    "description": "Share button on history detail"
+  },
+  "historySaveAsPreset": "Save settings as preset",
+  "@historySaveAsPreset": {
+    "description": "Save this history's settings as a named preset"
+  },
+  "historySaveAsPresetHint": "Start the same setup in one tap next time (Pro)",
+  "@historySaveAsPresetHint": {
+    "description": "Hint under save-as-preset on history detail"
+  },
+  "historySaveAsPresetDialogTitle": "Preset name",
+  "@historySaveAsPresetDialogTitle": {
+    "description": "Dialog title when saving preset from history"
+  },
+  "historySaveAsPresetUnavailable": "This record can't be saved as a preset",
+  "@historySaveAsPresetUnavailable": {
+    "description": "Shown when history lacks preset snapshot"
+  },
+  "historyShareHeader": "Talk Shuffle — Session Record",
+  "@historyShareHeader": {
+    "description": "First line of shared text"
+  },
+  "historyShareFooter": "Exported from Talk Shuffle",
+  "@historyShareFooter": {
+    "description": "Footer line of shared text"
+  },
+  "historyShareSubject": "{date} {mode}",
+  "@historyShareSubject": {
+    "description": "Share sheet subject",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
   },
   "delete": "Delete",
   "@delete": {
@@ -732,6 +844,158 @@
   },
   "homeThemeShortOneOnOne": "1-on-1",
   "homeThemeDescOneOnOne": "Pick today's format and go",
+  "presetSectionLabel": "My presets",
+  "@presetSectionLabel": {
+    "description": "Home section label for saved session presets"
+  },
+  "presetQuickStartLabel": "Recent presets",
+  "@presetQuickStartLabel": {
+    "description": "Home Quick Start strip label for recently used presets"
+  },
+  "presetSeeAll": "See all",
+  "@presetSeeAll": {
+    "description": "Link to open full preset library from Quick Start strip"
+  },
+  "presetLibraryTitle": "Presets",
+  "@presetLibraryTitle": {
+    "description": "Title for preset library bottom sheet and header tooltip"
+  },
+  "presetLibraryEmpty": "No saved presets yet.\nSave from a session setup screen.",
+  "@presetLibraryEmpty": {
+    "description": "Empty state in preset library sheet"
+  },
+  "presetModeOneOnOne": "1-on-1",
+  "@presetModeOneOnOne": {
+    "description": "Mode badge label for 1-on-1 presets"
+  },
+  "presetModeSectionOneOnOne": "1ON1",
+  "@presetModeSectionOneOnOne": {
+    "description": "Section header in preset library for 1-on-1 presets"
+  },
+  "presetModeGroupDiscussion": "Group discussion",
+  "@presetModeGroupDiscussion": {
+    "description": "Mode badge label for group discussion presets"
+  },
+  "presetModeSectionGroupDiscussion": "GROUP DISCUSSION",
+  "@presetModeSectionGroupDiscussion": {
+    "description": "Section header in preset library for group discussion presets"
+  },
+  "presetModeValueCards": "Values",
+  "@presetModeValueCards": {
+    "description": "Mode badge label for value card presets"
+  },
+  "presetModeSectionValueCards": "VALUES",
+  "@presetModeSectionValueCards": {
+    "description": "Section header in preset library for value card presets"
+  },
+  "presetSummaryPlayers": "{count} players",
+  "@presetSummaryPlayers": {
+    "description": "Player count fragment in preset config summary",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "presetSummaryCategories": "{count} categories",
+  "@presetSummaryCategories": {
+    "description": "Selected category count fragment in preset config summary",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "presetSummaryAllCategories": "All categories",
+  "@presetSummaryAllCategories": {
+    "description": "All categories selected fragment in preset config summary"
+  },
+  "presetInvalidConfigError": "Select at least one category before saving",
+  "@presetInvalidConfigError": {
+    "description": "Validation when discussion preset has no categories"
+  },
+  "presetSaveDialogHintGroupDiscussion": "e.g. Weekly team · Ethics",
+  "@presetSaveDialogHintGroupDiscussion": {
+    "description": "Hint for group discussion preset name text field"
+  },
+  "presetSaveDialogHintValueCards": "e.g. Team values · 4 people",
+  "@presetSaveDialogHintValueCards": {
+    "description": "Hint for value card preset name text field"
+  },
+  "presetModeDice": "Dice",
+  "@presetModeDice": {
+    "description": "Mode badge label for dice presets"
+  },
+  "presetModeSectionDice": "DICE",
+  "@presetModeSectionDice": {
+    "description": "Section header in preset library for dice presets"
+  },
+  "presetSummaryDiceCustom": "Custom 6 faces",
+  "@presetSummaryDiceCustom": {
+    "description": "Dice preset summary fragment for custom cube themes"
+  },
+  "presetSaveDialogHintDice": "e.g. Friday night · custom themes",
+  "@presetSaveDialogHintDice": {
+    "description": "Hint for dice preset name text field"
+  },
+  "presetDeleteHint": "Long press a preset to delete",
+  "@presetDeleteHint": {
+    "description": "Hint shown where presets can be deleted via long press"
+  },
+  "presetQuickStartDeleteHint": "To delete, open Presets (📑) in the header and long-press",
+  "@presetQuickStartDeleteHint": {
+    "description": "Hint on home Quick Start that deletion is in the preset library"
+  },
+  "presetSave": "Save preset",
+  "@presetSave": {
+    "description": "Button to save current session setup as a preset"
+  },
+  "presetSaveDialogTitle": "Preset name",
+  "@presetSaveDialogTitle": {
+    "description": "Title for preset name dialog"
+  },
+  "presetSaveDialogHint": "e.g. Weekly 1-on-1 · Lite",
+  "@presetSaveDialogHint": {
+    "description": "Hint for preset name text field"
+  },
+  "presetSavedMessage": "Preset saved",
+  "@presetSavedMessage": {
+    "description": "Snackbar after saving a preset"
+  },
+  "presetSavedSectionTitle": "Saved",
+  "@presetSavedSectionTitle": {
+    "description": "Section title for saved presets on format setup"
+  },
+  "presetEmptyNameError": "Enter a name",
+  "@presetEmptyNameError": {
+    "description": "Validation when preset name is empty"
+  },
+  "presetMaxReachedError": "You can save up to {max} presets",
+  "@presetMaxReachedError": {
+    "description": "Validation when preset limit reached",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "presetDelete": "Delete",
+  "@presetDelete": {
+    "description": "Delete preset action"
+  },
+  "presetDeleteConfirmTitle": "Delete preset",
+  "@presetDeleteConfirmTitle": {
+    "description": "Confirm delete preset dialog title"
+  },
+  "presetDeleteConfirmMessage": "Delete \"{name}\"?",
+  "@presetDeleteConfirmMessage": {
+    "description": "Confirm delete preset dialog body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "deckOneOnOne": "Growth Dialogue",
   "deckOneOnOneDesc": "For 1-on-1s. Talk about future, blockers, and what you want to grow—without evaluation.",
   "deckRetrospective": "Retrospective",

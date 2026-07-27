@@ -469,6 +469,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
+  String get proPaywallTitle => 'Talk Shuffle Pro';
+
+  @override
+  String get proPaywallSubtitle =>
+      'Save presets you reuse often, and share session history.';
+
+  @override
+  String get proBenefitExport => 'Share session history as text';
+
+  @override
+  String get proBenefitPreset => 'Save named presets (up to 10)';
+
+  @override
+  String get proUnlock => 'Buy Pro';
+
+  @override
+  String get proUnlockDebug => 'debug: turn Pro on';
+
+  @override
+  String get proRestore => 'Already purchased?';
+
+  @override
+  String get proDebugHint =>
+      'Debug build — both buttons turn Pro on locally (store not connected).';
+
+  @override
+  String get proPurchaseUnavailable => 'Purchases are not available yet';
+
+  @override
+  String get proRestoreNothing => 'No Pro purchase found';
+
+  @override
+  String get proDebugSectionTitle => 'Pro (debug)';
+
+  @override
+  String get proDebugSectionSubtitle =>
+      'Toggle ON/OFF to retest. Hidden in release builds.';
+
+  @override
+  String get proDebugGatingToggle => 'Try Pro gating';
+
+  @override
+  String get proDebugGatingSubtitle =>
+      'When OFF, share and preset save always work';
+
+  @override
+  String get proDebugProToggle => 'Pro on';
+
+  @override
+  String get proDebugProSubtitle => 'Turn OFF to show the paywall again';
+
+  @override
+  String get proDebugShowPaywall => 'Show paywall';
+
+  @override
+  String get proDebugShowPaywallSubtitle => 'Turns Pro off and opens the sheet';
+
+  @override
   String get historyEmptyMessage => 'No records yet';
 
   @override
@@ -559,6 +617,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyDeleteOneMessage => 'This history cannot be restored.';
+
+  @override
+  String get historyShare => 'Share';
+
+  @override
+  String get historySaveAsPreset => 'Save settings as preset';
+
+  @override
+  String get historySaveAsPresetHint =>
+      'Start the same setup in one tap next time (Pro)';
+
+  @override
+  String get historySaveAsPresetDialogTitle => 'Preset name';
+
+  @override
+  String get historySaveAsPresetUnavailable =>
+      'This record can\'t be saved as a preset';
+
+  @override
+  String get historyShareHeader => 'Talk Shuffle — Session Record';
+
+  @override
+  String get historyShareFooter => 'Exported from Talk Shuffle';
+
+  @override
+  String historyShareSubject(String date, String mode) {
+    return '$date $mode';
+  }
 
   @override
   String get delete => 'Delete';
@@ -1138,6 +1224,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeThemeDescOneOnOne => 'Pick today\'s format and go';
+
+  @override
+  String get presetSectionLabel => 'My presets';
+
+  @override
+  String get presetQuickStartLabel => 'Recent presets';
+
+  @override
+  String get presetSeeAll => 'See all';
+
+  @override
+  String get presetLibraryTitle => 'Presets';
+
+  @override
+  String get presetLibraryEmpty =>
+      'No saved presets yet.\nSave from a session setup screen.';
+
+  @override
+  String get presetModeOneOnOne => '1-on-1';
+
+  @override
+  String get presetModeSectionOneOnOne => '1ON1';
+
+  @override
+  String get presetModeGroupDiscussion => 'Group discussion';
+
+  @override
+  String get presetModeSectionGroupDiscussion => 'GROUP DISCUSSION';
+
+  @override
+  String get presetModeValueCards => 'Values';
+
+  @override
+  String get presetModeSectionValueCards => 'VALUES';
+
+  @override
+  String presetSummaryPlayers(int count) {
+    return '$count players';
+  }
+
+  @override
+  String presetSummaryCategories(int count) {
+    return '$count categories';
+  }
+
+  @override
+  String get presetSummaryAllCategories => 'All categories';
+
+  @override
+  String get presetInvalidConfigError =>
+      'Select at least one category before saving';
+
+  @override
+  String get presetSaveDialogHintGroupDiscussion => 'e.g. Weekly team · Ethics';
+
+  @override
+  String get presetSaveDialogHintValueCards => 'e.g. Team values · 4 people';
+
+  @override
+  String get presetModeDice => 'Dice';
+
+  @override
+  String get presetModeSectionDice => 'DICE';
+
+  @override
+  String get presetSummaryDiceCustom => 'Custom 6 faces';
+
+  @override
+  String get presetSaveDialogHintDice => 'e.g. Friday night · custom themes';
+
+  @override
+  String get presetDeleteHint => 'Long press a preset to delete';
+
+  @override
+  String get presetQuickStartDeleteHint =>
+      'To delete, open Presets (📑) in the header and long-press';
+
+  @override
+  String get presetSave => 'Save preset';
+
+  @override
+  String get presetSaveDialogTitle => 'Preset name';
+
+  @override
+  String get presetSaveDialogHint => 'e.g. Weekly 1-on-1 · Lite';
+
+  @override
+  String get presetSavedMessage => 'Preset saved';
+
+  @override
+  String get presetSavedSectionTitle => 'Saved';
+
+  @override
+  String get presetEmptyNameError => 'Enter a name';
+
+  @override
+  String presetMaxReachedError(int max) {
+    return 'You can save up to $max presets';
+  }
+
+  @override
+  String get presetDelete => 'Delete';
+
+  @override
+  String get presetDeleteConfirmTitle => 'Delete preset';
+
+  @override
+  String presetDeleteConfirmMessage(String name) {
+    return 'Delete \"$name\"?';
+  }
 
   @override
   String get deckOneOnOne => 'Growth Dialogue';

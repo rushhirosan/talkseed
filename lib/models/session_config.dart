@@ -121,6 +121,46 @@ class SessionConfig {
     );
   }
 
+  /// プリセット保存用 JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'playerCount': playerCount,
+      'timerDurationMs': timerDuration.inMilliseconds,
+      'enableTimer': enableTimer,
+      if (playerNames != null) 'playerNames': playerNames,
+      if (discussionPromptCap != null)
+        'discussionPromptCap': discussionPromptCap,
+      if (discussionPromptsPerCategory != null)
+        'discussionPromptsPerCategory': discussionPromptsPerCategory,
+      if (discussionTotalPromptsOnTable != null)
+        'discussionTotalPromptsOnTable': discussionTotalPromptsOnTable,
+      if (discussionCategoryIds != null)
+        'discussionCategoryIds': discussionCategoryIds,
+    };
+  }
+
+  factory SessionConfig.fromJson(Map<String, dynamic> json) {
+    return SessionConfig(
+      playerCount: json['playerCount'] as int,
+      timerDuration: Duration(
+        milliseconds: json['timerDurationMs'] as int,
+      ),
+      enableTimer: json['enableTimer'] as bool? ?? true,
+      playerNames: (json['playerNames'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      discussionPromptCap: json['discussionPromptCap'] as int?,
+      discussionPromptsPerCategory:
+          json['discussionPromptsPerCategory'] as int?,
+      discussionTotalPromptsOnTable:
+          json['discussionTotalPromptsOnTable'] as int?,
+      discussionCategoryIds:
+          (json['discussionCategoryIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+    );
+  }
+
   /// [PlayerIndicator] / [GameSession.playerLabelAt] と同じ表示規則
   String displayLabelForPlayer(int playerIndex, AppLocalizations l10n) {
     if (playerNames != null && playerIndex < playerNames!.length) {

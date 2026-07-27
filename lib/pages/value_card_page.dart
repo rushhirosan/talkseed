@@ -238,6 +238,14 @@ class _ValueCardPageState extends State<ValueCardPage> {
       selectedCardsByPlayer: selectedCardsByPlayer,
       playerCount: playerCount,
       playerNames: selectedCardsByPlayer.keys.toList(),
+      sessionConfig: widget.sessionConfig ??
+          SessionConfig(
+            playerCount: playerCount < 2
+                ? 2
+                : (playerCount > 10 ? 10 : playerCount),
+            timerDuration: SessionConfig.defaultConfig.timerDuration,
+            enableTimer: false,
+          ),
     );
     _didSaveHistory = true;
     SessionRecordService.addRecord(record);
@@ -494,29 +502,35 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildCardGrid(List<String> cards, {void Function(int)? onTap, bool compact = false}) {
-    final spacing = compact ? 8.0 : 12.0;
-    const columns = 2;
-    final width = MediaQuery.sizeOf(context).width -
-        playScreenHorizontalPadding * 2;
-    final cardWidth = (width - spacing * (columns - 1)) / columns;
-    final cardHeight = cardWidth * (compact ? 0.58 : 0.7);
+    // MediaQuery 幅だと WebAdaptiveLayout / 親パディングとずれて
+    // 1列・左寄せの巨大カードになる（391bde0 のデグレ）。実幅で計算する。
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final spacing = compact ? 8.0 : 12.0;
+        const columns = 2;
+        final cardWidth =
+            (constraints.maxWidth - spacing * (columns - 1)) / columns;
+        final cardHeight = cardWidth * (compact ? 0.5 : 0.65);
 
-    return Wrap(
-      spacing: spacing,
-      runSpacing: spacing,
-      children: cards.asMap().entries.map((entry) {
-        final index = entry.key;
-        final card = entry.value;
-        return SizedBox(
-          width: cardWidth,
-          height: cardHeight,
-          child: _ValueCard(
-            key: ValueKey('$index-$card'),
-            text: card,
-            onTap: onTap != null ? () => onTap(index) : null,
-          ),
+        return Wrap(
+          spacing: spacing,
+          runSpacing: spacing,
+          alignment: WrapAlignment.center,
+          children: cards.asMap().entries.map((entry) {
+            final index = entry.key;
+            final card = entry.value;
+            return SizedBox(
+              width: cardWidth,
+              height: cardHeight,
+              child: _ValueCard(
+                key: ValueKey('$index-$card'),
+                text: card,
+                onTap: onTap != null ? () => onTap(index) : null,
+              ),
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 

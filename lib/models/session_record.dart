@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:theme_dice/models/session_config.dart';
+
 /// セッション履歴の保存用モデル（端末内ローカル）
 class SessionRecord {
   final String id;
@@ -22,6 +24,21 @@ class SessionRecord {
   /// 投票結果（サイコロ用：プレイヤー名 -> 票数）
   final Map<String, int> voteResults;
 
+  /// プリセット化用: 1on1 の型（[OneOnOneSessionFormat.name]）
+  final String? oneOnOneFormatName;
+
+  /// プリセット化用: セッション設定スナップショット
+  final SessionConfig? sessionConfig;
+
+  /// プリセット化用: 議論デッキ種別（[CardDeckType.name]）
+  final String? discussionDeckTypeName;
+
+  /// プリセット化用: デッキ表示名
+  final String? deckLabel;
+
+  /// プリセット化用: サイコロ 6 面テーマ
+  final List<String>? diceThemes;
+
   SessionRecord({
     required this.id,
     required this.playedAt,
@@ -31,6 +48,11 @@ class SessionRecord {
     this.playerCount,
     this.playerNames = const [],
     required this.voteResults,
+    this.oneOnOneFormatName,
+    this.sessionConfig,
+    this.discussionDeckTypeName,
+    this.deckLabel,
+    this.diceThemes,
   });
 
   /// 履歴表示用の参加者名（新形式の [playerNames]、または価値観カードの map キー）
@@ -66,6 +88,11 @@ class SessionRecord {
     int? playerCount,
     List<String>? playerNames,
     Map<String, int>? voteResults,
+    String? oneOnOneFormatName,
+    SessionConfig? sessionConfig,
+    String? discussionDeckTypeName,
+    String? deckLabel,
+    List<String>? diceThemes,
   }) {
     final now = DateTime.now();
     final rand = Random().nextInt(1000000);
@@ -78,6 +105,11 @@ class SessionRecord {
       playerCount: playerCount,
       playerNames: playerNames ?? const [],
       voteResults: voteResults ?? {},
+      oneOnOneFormatName: oneOnOneFormatName,
+      sessionConfig: sessionConfig,
+      discussionDeckTypeName: discussionDeckTypeName,
+      deckLabel: deckLabel,
+      diceThemes: diceThemes,
     );
   }
 
@@ -91,16 +123,24 @@ class SessionRecord {
       'playerCount': playerCount,
       'playerNames': playerNames,
       'voteResults': voteResults,
+      if (oneOnOneFormatName != null) 'oneOnOneFormatName': oneOnOneFormatName,
+      if (sessionConfig != null) 'sessionConfig': sessionConfig!.toJson(),
+      if (discussionDeckTypeName != null)
+        'discussionDeckTypeName': discussionDeckTypeName,
+      if (deckLabel != null) 'deckLabel': deckLabel,
+      if (diceThemes != null) 'diceThemes': diceThemes,
     };
   }
 
   factory SessionRecord.fromMap(Map<dynamic, dynamic> map) {
     final topicsRaw = map['topics'] as List<dynamic>? ?? [];
-    final selectedRaw = map['selectedCardsByPlayer'] as Map<dynamic, dynamic>? ?? {};
+    final selectedRaw =
+        map['selectedCardsByPlayer'] as Map<dynamic, dynamic>? ?? {};
     final selectedConverted = <String, List<String>>{};
     for (final entry in selectedRaw.entries) {
       final key = entry.key?.toString() ?? '';
-      final list = (entry.value as List<dynamic>? ?? []).map((e) => e.toString()).toList();
+      final list =
+          (entry.value as List<dynamic>? ?? []).map((e) => e.toString()).toList();
       if (key.isNotEmpty) {
         selectedConverted[key] = list;
       }
@@ -123,16 +163,36 @@ class SessionRecord {
         }
       }
     }
+    final configRaw = map['sessionConfig'];
+    SessionConfig? sessionConfig;
+    if (configRaw is Map) {
+      try {
+        sessionConfig = SessionConfig.fromJson(
+          Map<String, dynamic>.from(configRaw),
+        );
+      } catch (_) {
+        sessionConfig = null;
+      }
+    }
+    final themesRaw = map['diceThemes'] as List<dynamic>?;
     return SessionRecord(
       id: map['id']?.toString() ?? '',
-      playedAt: DateTime.tryParse(map['playedAt']?.toString() ?? '') ?? DateTime.now(),
+      playedAt:
+          DateTime.tryParse(map['playedAt']?.toString() ?? '') ?? DateTime.now(),
       mode: map['mode']?.toString() ?? 'dice',
       topics: topicsRaw.map((e) => e.toString()).toList(),
       selectedCardsByPlayer: selectedConverted,
       playerCount: map['playerCount'] is int ? map['playerCount'] as int : null,
-      playerNames:
-          playerNamesRaw.map((e) => e.toString()).where((e) => e.isNotEmpty).toList(),
+      playerNames: playerNamesRaw
+          .map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList(),
       voteResults: voteConverted,
+      oneOnOneFormatName: map['oneOnOneFormatName']?.toString(),
+      sessionConfig: sessionConfig,
+      discussionDeckTypeName: map['discussionDeckTypeName']?.toString(),
+      deckLabel: map['deckLabel']?.toString(),
+      diceThemes: themesRaw?.map((e) => e.toString()).toList(),
     );
   }
 }

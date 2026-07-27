@@ -466,6 +466,61 @@ class AppLocalizationsJa extends AppLocalizations {
   String get privacyPolicy => 'プライバシーポリシー';
 
   @override
+  String get proPaywallTitle => 'Talk Shuffle Pro';
+
+  @override
+  String get proPaywallSubtitle => 'よく使う設定の保存と、履歴の共有が使えます。';
+
+  @override
+  String get proBenefitExport => 'セッション履歴をテキストで共有';
+
+  @override
+  String get proBenefitPreset => '名前付きプリセットを保存（最大10件）';
+
+  @override
+  String get proUnlock => 'Pro を購入';
+
+  @override
+  String get proUnlockDebug => 'debug: Pro をオンにする';
+
+  @override
+  String get proRestore => 'すでに購入済みの方';
+
+  @override
+  String get proDebugHint =>
+      'debug ビルドです。「Pro をオンにする」「すでに購入済みの方」どちらもローカルで Pro になります。';
+
+  @override
+  String get proPurchaseUnavailable => '購入はまだ利用できません';
+
+  @override
+  String get proRestoreNothing => '購入済みの Pro は見つかりませんでした';
+
+  @override
+  String get proDebugSectionTitle => 'Pro（debug）';
+
+  @override
+  String get proDebugSectionSubtitle => 'ON/OFF を切り替えて繰り返し確認できます。リリースには出ません。';
+
+  @override
+  String get proDebugGatingToggle => 'Pro ゲートを試す';
+
+  @override
+  String get proDebugGatingSubtitle => 'OFF だと共有・プリセット保存が常に使えます';
+
+  @override
+  String get proDebugProToggle => 'Pro をオン';
+
+  @override
+  String get proDebugProSubtitle => 'OFF にするとペイウォールが再表示されます';
+
+  @override
+  String get proDebugShowPaywall => 'ペイウォールを表示';
+
+  @override
+  String get proDebugShowPaywallSubtitle => 'Pro をオフにして案内シートを開きます';
+
+  @override
   String get historyEmptyMessage => 'まだ記録がありません';
 
   @override
@@ -555,6 +610,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get historyDeleteOneMessage => 'この履歴は元に戻せません。';
+
+  @override
+  String get historyShare => '共有';
+
+  @override
+  String get historySaveAsPreset => '同じ設定をプリセットに保存';
+
+  @override
+  String get historySaveAsPresetHint => '次回からワンタップで同じ進行を始められます（Pro）';
+
+  @override
+  String get historySaveAsPresetDialogTitle => 'プリセット名';
+
+  @override
+  String get historySaveAsPresetUnavailable => 'この履歴からはプリセットを作れません';
+
+  @override
+  String get historyShareHeader => 'Talk Shuffle — セッション記録';
+
+  @override
+  String get historyShareFooter => 'Talk Shuffle からエクスポート';
+
+  @override
+  String historyShareSubject(String date, String mode) {
+    return '$date $mode';
+  }
 
   @override
   String get delete => '削除';
@@ -1107,6 +1188,113 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeThemeDescOneOnOne => '今日の型を選んで進める';
+
+  @override
+  String get presetSectionLabel => 'マイプリセット';
+
+  @override
+  String get presetQuickStartLabel => '最近使ったプリセット';
+
+  @override
+  String get presetSeeAll => 'すべて見る';
+
+  @override
+  String get presetLibraryTitle => 'プリセット一覧';
+
+  @override
+  String get presetLibraryEmpty => '保存したプリセットはありません\n各モードの設定画面から保存できます';
+
+  @override
+  String get presetModeOneOnOne => '1on1';
+
+  @override
+  String get presetModeSectionOneOnOne => '1ON1';
+
+  @override
+  String get presetModeGroupDiscussion => 'グループディスカッション';
+
+  @override
+  String get presetModeSectionGroupDiscussion => 'グループディスカッション';
+
+  @override
+  String get presetModeValueCards => '価値観';
+
+  @override
+  String get presetModeSectionValueCards => '価値観';
+
+  @override
+  String presetSummaryPlayers(int count) {
+    return '$count人';
+  }
+
+  @override
+  String presetSummaryCategories(int count) {
+    return 'カテゴリ$count';
+  }
+
+  @override
+  String get presetSummaryAllCategories => '全カテゴリ';
+
+  @override
+  String get presetInvalidConfigError => 'カテゴリを1つ以上選んでから保存してください';
+
+  @override
+  String get presetSaveDialogHintGroupDiscussion => '例: 定例チーム · 倫理';
+
+  @override
+  String get presetSaveDialogHintValueCards => '例: チーム価値観 · 4人';
+
+  @override
+  String get presetModeDice => 'サイコロ';
+
+  @override
+  String get presetModeSectionDice => 'サイコロ';
+
+  @override
+  String get presetSummaryDiceCustom => 'カスタム6面';
+
+  @override
+  String get presetSaveDialogHintDice => '例: 金曜ナイト · カスタムテーマ';
+
+  @override
+  String get presetDeleteHint => '長押しで削除できます';
+
+  @override
+  String get presetQuickStartDeleteHint => '削除はヘッダーのプリセット一覧（📑）で長押し';
+
+  @override
+  String get presetSave => 'プリセットに保存';
+
+  @override
+  String get presetSaveDialogTitle => 'プリセット名';
+
+  @override
+  String get presetSaveDialogHint => '例: 週次1on1・ライト';
+
+  @override
+  String get presetSavedMessage => 'プリセットを保存しました';
+
+  @override
+  String get presetSavedSectionTitle => '保存済み';
+
+  @override
+  String get presetEmptyNameError => '名前を入力してください';
+
+  @override
+  String presetMaxReachedError(int max) {
+    return 'プリセットは$max件まで保存できます';
+  }
+
+  @override
+  String get presetDelete => '削除';
+
+  @override
+  String get presetDeleteConfirmTitle => 'プリセットを削除';
+
+  @override
+  String presetDeleteConfirmMessage(String name) {
+    return '「$name」を削除しますか？';
+  }
 
   @override
   String get deckOneOnOne => '成長対話';
