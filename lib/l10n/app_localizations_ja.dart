@@ -481,6 +481,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get proUnlock => 'Pro を購入';
 
   @override
+  String proUnlockWithPrice(String price) {
+    return 'Pro を購入 — $price';
+  }
+
+  @override
   String get proUnlockDebug => 'debug: Pro をオンにする';
 
   @override
@@ -491,10 +496,22 @@ class AppLocalizationsJa extends AppLocalizations {
       'debug ビルドです。「Pro をオンにする」「すでに購入済みの方」どちらもローカルで Pro になります。';
 
   @override
-  String get proPurchaseUnavailable => '購入はまだ利用できません';
+  String get proPurchaseUnavailable => 'この端末では購入できません';
+
+  @override
+  String get proPurchaseCanceled => '購入をキャンセルしました';
+
+  @override
+  String get proPurchasePending => '購入の承認待ちです';
+
+  @override
+  String get proPurchaseError => '購入に失敗しました。もう一度お試しください。';
 
   @override
   String get proRestoreNothing => '購入済みの Pro は見つかりませんでした';
+
+  @override
+  String get proRestoreSuccess => 'Pro を復元しました';
 
   @override
   String get proDebugSectionTitle => 'Pro（debug）';

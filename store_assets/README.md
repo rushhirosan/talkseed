@@ -15,12 +15,15 @@ Talk Shuffle ストア素材（ドラフト）
 - screenshot_plan.md
 - screenshots/（撮影した画像の保存先：ios/, android/）
 - FIREBASE_DEPLOY.md（Firebase Hosting デプロイ手順）
+- IAP_SETUP.md（Pro アプリ内課金の商品 ID・ASC / サンドボックス手順）
 
 次にやること
 1) [ROADMAP.md](../ROADMAP.md) の「いま最優先」を確認
-2) スクリーンショットを撮影（screenshot_plan.md を参照）→ screenshots/ に保存
-3) 各ストアの入力フォームに本ファイルの文面を転記
+2) IAP: [IAP_SETUP.md](IAP_SETUP.md) で App Store Connect 商品登録 → サンドボックス確認
+3) スクリーンショットを撮影（screenshot_plan.md を参照）→ screenshots/ に保存
+4) 各ストアの入力フォームに本ファイルの文面を転記
 
 注意
-- 本アプリはアカウント/課金/広告なし、データは端末内保存の想定
+- 無料コア（お題・各モード）は維持。Pro はプリセット保存と履歴共有（[ROADMAP.md](../ROADMAP.md)）
 - 機能の記述は現行実装に合わせて作成済み（タイマー/参加人数/履歴）
+- 「課金なし」と書いてある旧メタデータは IAP 有効化直前に更新すること

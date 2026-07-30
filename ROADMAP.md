@@ -3,7 +3,7 @@
 **このファイルが将来の改善・拡張の唯一の To-Do 集約先です。**  
 完了した項目はここから削除する（履歴は git）。新しいタスクはここに追記。
 
-最終更新: 2026-07-28
+最終更新: 2026-07-30
 
 ---
 
@@ -24,23 +24,25 @@
 
 ## いま最優先（Next）
 
-**Step 2 — Pro / IAP 基盤（ローカル確認中）**
+**Step 2 — Pro / IAP 基盤（コード接続済・ストア登録待ち）**
 
-- コード側: `PurchaseService` / Pro ゲート / ペイウォール / debug トグルまで実装済
-- 次: App Store Connect 商品登録 → `in_app_purchase` 接続 → サンドボックス購入テスト
+- コード側: `in_app_purchase` 接続・購入ストリーム・ペイウォール価格表示・復元まで実装済
+- `PurchaseService.iapEnabled` は **false**（ASC 商品登録＋サンドボックス確認後に true）
+- 手順: [store_assets/IAP_SETUP.md](store_assets/IAP_SETUP.md)
+- 次: App Store Connect 商品登録 → `iapEnabled = true` → サンドボックス購入テスト
 
 その後: 第三モード → リリース v3
 
 ---
 
-## 実装状況サマリ（2026-07-28）
+## 実装状況サマリ（2026-07-30）
 
 | 領域 | 状態 | コード |
 | --- | --- | --- |
 | 端末内利用集計 | **実装済**（UI なし・IAP Go 判定用） | [usage_stats_service.dart](lib/services/usage_stats_service.dart), [data/usage_stats_policy.md](data/usage_stats_policy.md) |
 | 履歴テキスト共有 | **実装済**（Pro ゲート: debug で確認可） | [session_record_share_text.dart](lib/utils/session_record_share_text.dart), [session_history_page.dart](lib/pages/session_history_page.dart) |
 | プリセット | **Phase 1–4 実装済**（Pro ゲート: debug で確認可） | [session_preset.dart](lib/models/session_preset.dart), [preset_service.dart](lib/services/preset_service.dart) |
-| IAP / Pro | **ローカル基盤実装済**（StoreKit 未接続） | [purchase_service.dart](lib/services/purchase_service.dart), [pro_access.dart](lib/utils/pro_access.dart), [pro_paywall_sheet.dart](lib/widgets/pro_paywall_sheet.dart) |
+| IAP / Pro | **Store 接続実装済**（`iapEnabled` オフのまま） | [purchase_service.dart](lib/services/purchase_service.dart), [pro_access.dart](lib/utils/pro_access.dart), [pro_paywall_sheet.dart](lib/widgets/pro_paywall_sheet.dart), [IAP_SETUP.md](store_assets/IAP_SETUP.md) |
 | 第三モード | **未着手** | — |
 
 ---
@@ -107,23 +109,25 @@ Step 0 基盤（集計・共有・プリセット Phase 1）→ プリセット 
 
 ### Step 2 — Pro / IAP 基盤
 
-- [ ] **2.1** `in_app_purchase` 追加（ローカル確認後）
-- [x] **2.2** `PurchaseService` — Pro 状態の永続化・debug 解除（非消費型 1 商品の骨格）。本番購入は未接続
+- [x] **2.1** `in_app_purchase` 追加・`PurchaseService` 接続（購入ストリーム・completePurchase）
+- [x] **2.2** `PurchaseService` — Pro 状態の永続化・debug 解除（非消費型 1 商品）
 - [x] **2.3** Pro 判定の単一入口 — `PurchaseService.isPro` / `ProAccess.ensure`
 - [x] **2.4** **Pro ゲート** — 未購入時はペイウォール（debug ゲートデフォルト ON / リリースは `iapEnabled` まで無料）
   - 履歴エクスポート（共有）
   - プリセット保存（新規・無料 1 件）
   - （任意）複数件 CSV
-- [ ] **2.5** App Store Connect — 非消費型 IAP 商品登録（価格は仮 tier で可）
-- [ ] **2.6** iOS サンドボックスで購入・復元テスト
-- [ ] **2.7** [web/privacy.html](web/privacy.html) — 課金・復元の記載
+- [ ] **2.5** App Store Connect — 非消費型 IAP 商品登録（ID: `talk_shuffle_pro`、価格は仮 tier で可）→ [IAP_SETUP.md](store_assets/IAP_SETUP.md)
+- [ ] **2.6** iOS サンドボックスで購入・復元テスト（確認後 `iapEnabled = true`）
+- [x] **2.7** [web/privacy.html](web/privacy.html) — 課金・復元の記載
 - [ ] **2.8**（Android 提出予定なら）Play Console 同商品 + テスト
 
-**ローカル確認手順（debug）:**
+**ローカル確認手順（debug・IAP オフ時）:**
 1. `flutter run`（debug）
 2. ホーム「アプリについて」→ **Pro ゲートを有効化**（デフォルト ON）/ **Pro 解除済み** を切替
 3. 履歴詳細の共有、またはプリセット 2 件目保存 → ペイウォール
 4. 「Pro を解除（debug）」で解除後、同じ操作が通ることを確認
+
+**ストア接続確認:** [store_assets/IAP_SETUP.md](store_assets/IAP_SETUP.md)（StoreKit Configuration / サンドボックス）
 
 ### Step 3 — 第三モード：選定・設計
 
@@ -270,6 +274,7 @@ Step 0 基盤（集計・共有・プリセット Phase 1）→ プリセット 
 | ファイル | 用途 |
 | --- | --- |
 | [data/usage_stats_policy.md](data/usage_stats_policy.md) | 端末内集計方針 |
+| [store_assets/IAP_SETUP.md](store_assets/IAP_SETUP.md) | Pro IAP 商品登録・サンドボックス手順 |
 | [store_assets/FIREBASE_DEPLOY.md](store_assets/FIREBASE_DEPLOY.md) | Web デプロイ手順 |
 | [scripts/release.sh](scripts/release.sh) | リリース前チェック・deploy |
 | [store_assets/screenshot_plan.md](store_assets/screenshot_plan.md) | SS 撮影シナリオ |

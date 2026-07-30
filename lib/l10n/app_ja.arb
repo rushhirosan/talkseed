@@ -480,6 +480,16 @@
   "@proUnlock": {
     "description": "Pro purchase button (production)"
   },
+  "proUnlockWithPrice": "Pro を購入 — {price}",
+  "@proUnlockWithPrice": {
+    "description": "Pro purchase button with localized store price",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "¥480"
+      }
+    }
+  },
   "proUnlockDebug": "debug: Pro をオンにする",
   "@proUnlockDebug": {
     "description": "Pro unlock button in debug builds"
@@ -492,13 +502,29 @@
   "@proDebugHint": {
     "description": "Hint on paywall in debug mode"
   },
-  "proPurchaseUnavailable": "購入はまだ利用できません",
+  "proPurchaseUnavailable": "この端末では購入できません",
   "@proPurchaseUnavailable": {
-    "description": "Shown when IAP is not wired yet"
+    "description": "Shown when the store cannot sell the Pro product"
+  },
+  "proPurchaseCanceled": "購入をキャンセルしました",
+  "@proPurchaseCanceled": {
+    "description": "Shown when the user cancels the store purchase sheet"
+  },
+  "proPurchasePending": "購入の承認待ちです",
+  "@proPurchasePending": {
+    "description": "Shown when a purchase is waiting (e.g. Ask to Buy)"
+  },
+  "proPurchaseError": "購入に失敗しました。もう一度お試しください。",
+  "@proPurchaseError": {
+    "description": "Shown when the store purchase errors"
   },
   "proRestoreNothing": "購入済みの Pro は見つかりませんでした",
   "@proRestoreNothing": {
     "description": "Shown when restore finds nothing"
+  },
+  "proRestoreSuccess": "Pro を復元しました",
+  "@proRestoreSuccess": {
+    "description": "Shown when restore unlocks Pro from About"
   },
   "proDebugSectionTitle": "Pro（debug）",
   "@proDebugSectionTitle": {

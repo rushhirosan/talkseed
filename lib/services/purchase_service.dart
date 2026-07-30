@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Pro / IAP 状態の単一入口（ROADMAP Step 2）。
 ///
-/// 本番 StoreKit / Play Billing は未接続。ローカル確認は debug ゲート + 解除トグルで行う。
+/// - [iapEnabled] が false: リリースはゲートなし。debug はローカル解除で確認
+/// - [iapEnabled] が true: StoreKit / Play Billing で非消費型 [productId] を購入・復元
+///
+/// レシートのサーバー検証は行わない（端末内フラグ + ストアの所有権）。
 class PurchaseService {
   PurchaseService._();
 
-  /// App Store / Play に登録する非消費型商品 ID（仮）
+  /// App Store Connect / Play Console に登録する非消費型商品 ID
   static const productId = 'talk_shuffle_pro';
 
   /// 未購入時のお試しプリセット件数
@@ -16,12 +22,107 @@ class PurchaseService {
   /// Pro 時のプリセット上限
   static const int proPresetLimit = 10;
 
-  /// 本番 IAP を有効化するときに true にする（商品登録・サンドボックス確認後）
+  /// 本番 IAP を有効化するときに true（ASC 商品登録・サンドボックス確認後）
   static const bool iapEnabled = false;
 
   static const _keyProUnlocked = 'pro_unlocked_v1';
   static const _keyDebugGating = 'debug_pro_gating_v1';
   static const _keyDebugForcePro = 'debug_force_pro_v1';
+
+  static final InAppPurchase _iap = InAppPurchase.instance;
+
+  static StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+  static ProductDetails? _proProduct;
+  static Completer<PurchaseActionResult>? _pendingAction;
+  static bool _listening = false;
+  static bool _restoreExpecting = false;
+  static Timer? _restoreTimeout;
+
+  /// ストアから取得した Pro 商品（価格表示用）。未取得なら null。
+  static ProductDetails? get proProduct => _proProduct;
+
+  /// ローカライズ済み価格文字列（例: `¥480`）。未取得なら null。
+  static String? get proPrice => _proProduct?.price;
+
+  static bool get _storeSupported {
+    if (kIsWeb) {
+      return false;
+    }
+    return defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
+  /// 起動時に呼ぶ。購入ストリーム購読と商品情報の先読み。
+  static Future<void> init() async {
+    if (!iapEnabled || !_storeSupported) {
+      return;
+    }
+    try {
+      final available = await _iap.isAvailable();
+      if (!available) {
+        return;
+      }
+      await _ensureListening();
+      await refreshProducts();
+    } catch (e, st) {
+      debugPrint('PurchaseService.init failed: $e\n$st');
+    }
+  }
+
+  static Future<void> _ensureListening() async {
+    if (_listening) {
+      return;
+    }
+    _listening = true;
+    _purchaseSub = _iap.purchaseStream.listen(
+      _onPurchaseUpdated,
+      onError: (Object e, StackTrace st) {
+        debugPrint('PurchaseService.purchaseStream error: $e\n$st');
+        _finishPending(PurchaseActionResult.error);
+      },
+      onDone: () {
+        _listening = false;
+        _purchaseSub = null;
+      },
+    );
+  }
+
+  /// 商品詳細を再取得（ペイウォール表示前など）。
+  static Future<bool> refreshProducts() async {
+    if (!iapEnabled || !_storeSupported) {
+      return false;
+    }
+    try {
+      final available = await _iap.isAvailable();
+      if (!available) {
+        _proProduct = null;
+        return false;
+      }
+      await _ensureListening();
+      final response = await _iap.queryProductDetails({productId});
+      if (response.error != null) {
+        debugPrint(
+          'PurchaseService.queryProductDetails error: ${response.error}',
+        );
+      }
+      if (response.productDetails.isEmpty) {
+        _proProduct = null;
+        if (response.notFoundIDs.isNotEmpty) {
+          debugPrint(
+            'PurchaseService: product not found: ${response.notFoundIDs}',
+          );
+        }
+        return false;
+      }
+      _proProduct = response.productDetails.first;
+      return true;
+    } catch (e, st) {
+      debugPrint('PurchaseService.refreshProducts failed: $e\n$st');
+      _proProduct = null;
+      return false;
+    }
+  }
 
   /// Pro 判定の単一入口。
   ///
@@ -80,7 +181,7 @@ class PurchaseService {
     return isPro();
   }
 
-  /// 購入成功時（将来の IAP）またはローカル解除で呼ぶ
+  /// 購入成功時またはローカル解除で呼ぶ
   static Future<void> unlockPro() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyProUnlocked, true);
@@ -143,37 +244,207 @@ class PurchaseService {
     return prefs.getBool(_keyDebugGating) ?? true;
   }
 
-  /// ペイウォールの「購入」相当。IAP 未接続時は debug のみローカル解除。
+  /// Pro 購入。IAP 有効時はストア、無効時は debug のみローカル解除。
   static Future<PurchaseActionResult> purchasePro() async {
-    if (iapEnabled) {
-      // TODO(Step 2.1): in_app_purchase で [productId] を購入
+    if (!iapEnabled) {
+      if (kDebugMode) {
+        await unlockPro();
+        return PurchaseActionResult.unlockedLocally;
+      }
       return PurchaseActionResult.unavailable;
     }
-    if (kDebugMode) {
-      await unlockPro();
-      return PurchaseActionResult.unlockedLocally;
-    }
-    return PurchaseActionResult.unavailable;
-  }
 
-  /// 復元。IAP 未接続時は debug のみローカル解除（繰り返し確認用）。
-  static Future<PurchaseActionResult> restorePurchases() async {
-    if (iapEnabled) {
-      // TODO(Step 2.1): in_app_purchase.restorePurchases()
-      return PurchaseActionResult.unavailable;
-    }
     if (await isPro()) {
       return PurchaseActionResult.alreadyPro;
     }
-    if (kDebugMode) {
-      // ストア未接続のため、復元ボタンもローカルで Pro をオンにする
-      await unlockPro();
-      return PurchaseActionResult.unlockedLocally;
+    if (!_storeSupported) {
+      return PurchaseActionResult.unavailable;
     }
-    return PurchaseActionResult.unavailable;
+
+    final available = await _iap.isAvailable();
+    if (!available) {
+      return PurchaseActionResult.unavailable;
+    }
+
+    await _ensureListening();
+    if (_proProduct == null) {
+      await refreshProducts();
+    }
+    final product = _proProduct;
+    if (product == null) {
+      return PurchaseActionResult.unavailable;
+    }
+
+    if (_pendingAction != null && !_pendingAction!.isCompleted) {
+      return PurchaseActionResult.pending;
+    }
+
+    final completer = Completer<PurchaseActionResult>();
+    _pendingAction = completer;
+    _restoreExpecting = false;
+
+    try {
+      final started = await _iap.buyNonConsumable(
+        purchaseParam: PurchaseParam(productDetails: product),
+      );
+      if (!started) {
+        _clearPending();
+        return PurchaseActionResult.unavailable;
+      }
+    } catch (e, st) {
+      debugPrint('PurchaseService.purchasePro failed: $e\n$st');
+      _clearPending();
+      return PurchaseActionResult.error;
+    }
+
+    return completer.future.timeout(
+      const Duration(minutes: 5),
+      onTimeout: () {
+        _clearPending();
+        return PurchaseActionResult.error;
+      },
+    );
+  }
+
+  /// 購入復元。IAP 有効時はストア、無効時は debug のみローカル解除。
+  static Future<PurchaseActionResult> restorePurchases() async {
+    if (!iapEnabled) {
+      if (await isPro()) {
+        return PurchaseActionResult.alreadyPro;
+      }
+      if (kDebugMode) {
+        await unlockPro();
+        return PurchaseActionResult.unlockedLocally;
+      }
+      return PurchaseActionResult.unavailable;
+    }
+
+    if (await isPro()) {
+      return PurchaseActionResult.alreadyPro;
+    }
+    if (!_storeSupported) {
+      return PurchaseActionResult.unavailable;
+    }
+
+    final available = await _iap.isAvailable();
+    if (!available) {
+      return PurchaseActionResult.unavailable;
+    }
+
+    await _ensureListening();
+
+    if (_pendingAction != null && !_pendingAction!.isCompleted) {
+      return PurchaseActionResult.pending;
+    }
+
+    final completer = Completer<PurchaseActionResult>();
+    _pendingAction = completer;
+    _restoreExpecting = true;
+    _restoreTimeout?.cancel();
+    _restoreTimeout = Timer(const Duration(seconds: 12), () {
+      if (_restoreExpecting) {
+        _finishPending(PurchaseActionResult.nothingToRestore);
+      }
+    });
+
+    try {
+      await _iap.restorePurchases();
+    } catch (e, st) {
+      debugPrint('PurchaseService.restorePurchases failed: $e\n$st');
+      _restoreTimeout?.cancel();
+      _clearPending();
+      return PurchaseActionResult.error;
+    }
+
+    return completer.future;
+  }
+
+  static Future<void> _onPurchaseUpdated(
+    List<PurchaseDetails> purchases,
+  ) async {
+    var sawProOwned = false;
+
+    for (final purchase in purchases) {
+      if (purchase.productID != productId) {
+        if (purchase.pendingCompletePurchase) {
+          await _safeComplete(purchase);
+        }
+        continue;
+      }
+
+      switch (purchase.status) {
+        case PurchaseStatus.pending:
+          // ユーザー操作待ち。Completer は維持。
+          break;
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+          sawProOwned = true;
+          await unlockPro();
+          if (purchase.pendingCompletePurchase) {
+            await _safeComplete(purchase);
+          }
+          _finishPending(
+            purchase.status == PurchaseStatus.restored
+                ? PurchaseActionResult.restored
+                : PurchaseActionResult.purchased,
+          );
+        case PurchaseStatus.error:
+          if (purchase.pendingCompletePurchase) {
+            await _safeComplete(purchase);
+          }
+          _finishPending(PurchaseActionResult.error);
+        case PurchaseStatus.canceled:
+          if (purchase.pendingCompletePurchase) {
+            await _safeComplete(purchase);
+          }
+          _finishPending(PurchaseActionResult.canceled);
+      }
+    }
+
+    // 復元で空リストだけ来た場合はタイムアウト待ち（何も所有していない）
+    if (_restoreExpecting && purchases.isEmpty && !sawProOwned) {
+      // 空の更新は無視し、タイマーに任せる
+    }
+  }
+
+  static Future<void> _safeComplete(PurchaseDetails purchase) async {
+    try {
+      await _iap.completePurchase(purchase);
+    } catch (e, st) {
+      debugPrint('PurchaseService.completePurchase failed: $e\n$st');
+    }
+  }
+
+  static void _finishPending(PurchaseActionResult result) {
+    final pending = _pendingAction;
+    if (pending == null || pending.isCompleted) {
+      _restoreExpecting = false;
+      _restoreTimeout?.cancel();
+      _restoreTimeout = null;
+      return;
+    }
+    _restoreExpecting = false;
+    _restoreTimeout?.cancel();
+    _restoreTimeout = null;
+    pending.complete(result);
+    _pendingAction = null;
+  }
+
+  static void _clearPending() {
+    _restoreExpecting = false;
+    _restoreTimeout?.cancel();
+    _restoreTimeout = null;
+    _pendingAction = null;
   }
 
   static Future<void> resetForTesting() async {
+    _restoreTimeout?.cancel();
+    _restoreTimeout = null;
+    _clearPending();
+    await _purchaseSub?.cancel();
+    _purchaseSub = null;
+    _listening = false;
+    _proProduct = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyProUnlocked);
     await prefs.remove(_keyDebugGating);
@@ -182,8 +453,19 @@ class PurchaseService {
 }
 
 enum PurchaseActionResult {
+  /// debug / IAP 無効時のローカル解除
   unlockedLocally,
+
+  /// ストア購入完了
+  purchased,
+
+  /// ストア復元完了
+  restored,
+
   alreadyPro,
   nothingToRestore,
+  canceled,
+  pending,
+  error,
   unavailable,
 }

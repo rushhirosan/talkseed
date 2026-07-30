@@ -6,7 +6,7 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/services/purchase_service.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 
-/// Pro 案内（簡易ペイウォール）。購入成功で true を返す。
+/// Pro 案内（簡易ペイウォール）。購入・復元成功で true を返す。
 Future<bool?> showProPaywallSheet(BuildContext context) {
   return showModalBottomSheet<bool>(
     context: context,
@@ -27,6 +27,8 @@ class _ProPaywallSheet extends StatefulWidget {
 
 class _ProPaywallSheetState extends State<_ProPaywallSheet> {
   bool _busy = false;
+  bool _loadingPrice = false;
+  String? _price;
 
   TextStyle get _titleStyle => GoogleFonts.zenKakuGothicNew(
         fontSize: 20,
@@ -40,25 +42,43 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
         color: HomePalette.textMuted,
       );
 
+  @override
+  void initState() {
+    super.initState();
+    _loadPrice();
+  }
+
+  Future<void> _loadPrice() async {
+    if (!PurchaseService.iapEnabled) {
+      return;
+    }
+    setState(() => _loadingPrice = true);
+    await PurchaseService.refreshProducts();
+    if (!mounted) return;
+    setState(() {
+      _price = PurchaseService.proPrice;
+      _loadingPrice = false;
+    });
+  }
+
+  String _purchaseLabel(AppLocalizations l10n) {
+    if (!PurchaseService.iapEnabled && kDebugMode) {
+      return l10n.proUnlockDebug;
+    }
+    final price = _price;
+    if (price != null && price.isNotEmpty) {
+      return l10n.proUnlockWithPrice(price);
+    }
+    return l10n.proUnlock;
+  }
+
   Future<void> _onPurchase() async {
     if (_busy) return;
     setState(() => _busy = true);
     final result = await PurchaseService.purchasePro();
     if (!mounted) return;
     setState(() => _busy = false);
-
-    final l10n = AppLocalizations.of(context)!;
-    switch (result) {
-      case PurchaseActionResult.unlockedLocally:
-        Navigator.of(context).pop(true);
-      case PurchaseActionResult.alreadyPro:
-        Navigator.of(context).pop(true);
-      case PurchaseActionResult.nothingToRestore:
-      case PurchaseActionResult.unavailable:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.proPurchaseUnavailable)),
-        );
-    }
+    _handleResult(result);
   }
 
   Future<void> _onRestore() async {
@@ -67,15 +87,32 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
     final result = await PurchaseService.restorePurchases();
     if (!mounted) return;
     setState(() => _busy = false);
+    _handleResult(result);
+  }
 
+  void _handleResult(PurchaseActionResult result) {
     final l10n = AppLocalizations.of(context)!;
     switch (result) {
-      case PurchaseActionResult.alreadyPro:
       case PurchaseActionResult.unlockedLocally:
+      case PurchaseActionResult.purchased:
+      case PurchaseActionResult.restored:
+      case PurchaseActionResult.alreadyPro:
         Navigator.of(context).pop(true);
       case PurchaseActionResult.nothingToRestore:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.proRestoreNothing)),
+        );
+      case PurchaseActionResult.canceled:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.proPurchaseCanceled)),
+        );
+      case PurchaseActionResult.pending:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.proPurchasePending)),
+        );
+      case PurchaseActionResult.error:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.proPurchaseError)),
         );
       case PurchaseActionResult.unavailable:
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,6 +124,7 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final useStore = PurchaseService.iapEnabled;
 
     return SafeArea(
       child: Padding(
@@ -101,24 +139,30 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
             const SizedBox(height: 16),
             _BenefitRow(text: l10n.proBenefitExport),
             _BenefitRow(text: l10n.proBenefitPreset),
-            if (kDebugMode) ...[
+            if (kDebugMode && !useStore) ...[
               const SizedBox(height: 12),
               Text(l10n.proDebugHint, style: _bodyStyle),
             ],
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: _busy ? null : _onPurchase,
+              onPressed: _busy || _loadingPrice ? null : _onPurchase,
               style: FilledButton.styleFrom(
                 backgroundColor: HomePalette.accent,
                 foregroundColor: HomePalette.bg,
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-              child: Text(
-                kDebugMode ? l10n.proUnlockDebug : l10n.proUnlock,
-                style: GoogleFonts.zenKakuGothicNew(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: _busy || _loadingPrice
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(
+                      _purchaseLabel(l10n),
+                      style: GoogleFonts.zenKakuGothicNew(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
             const SizedBox(height: 8),
             TextButton(

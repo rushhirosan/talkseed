@@ -998,6 +998,12 @@ abstract class AppLocalizations {
   /// **'Pro を購入'**
   String get proUnlock;
 
+  /// Pro purchase button with localized store price
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro を購入 — {price}'**
+  String proUnlockWithPrice(String price);
+
   /// Pro unlock button in debug builds
   ///
   /// In ja, this message translates to:
@@ -1016,17 +1022,41 @@ abstract class AppLocalizations {
   /// **'debug ビルドです。「Pro をオンにする」「すでに購入済みの方」どちらもローカルで Pro になります。'**
   String get proDebugHint;
 
-  /// Shown when IAP is not wired yet
+  /// Shown when the store cannot sell the Pro product
   ///
   /// In ja, this message translates to:
-  /// **'購入はまだ利用できません'**
+  /// **'この端末では購入できません'**
   String get proPurchaseUnavailable;
+
+  /// Shown when the user cancels the store purchase sheet
+  ///
+  /// In ja, this message translates to:
+  /// **'購入をキャンセルしました'**
+  String get proPurchaseCanceled;
+
+  /// Shown when a purchase is waiting (e.g. Ask to Buy)
+  ///
+  /// In ja, this message translates to:
+  /// **'購入の承認待ちです'**
+  String get proPurchasePending;
+
+  /// Shown when the store purchase errors
+  ///
+  /// In ja, this message translates to:
+  /// **'購入に失敗しました。もう一度お試しください。'**
+  String get proPurchaseError;
 
   /// Shown when restore finds nothing
   ///
   /// In ja, this message translates to:
   /// **'購入済みの Pro は見つかりませんでした'**
   String get proRestoreNothing;
+
+  /// Shown when restore unlocks Pro from About
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro を復元しました'**
+  String get proRestoreSuccess;
 
   /// Debug About section title for Pro toggles
   ///

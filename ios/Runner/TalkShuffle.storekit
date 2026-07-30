@@ -1,0 +1,43 @@
+{
+  "identifier" : "TalkShuffle",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "480",
+      "familyShareable" : false,
+      "internalID" : "A1B2C3D4E5F6",
+      "localizations" : [
+        {
+          "description" : "Save named presets and share session history.",
+          "displayName" : "Talk Shuffle Pro",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "名前付きプリセットの保存と、セッション履歴の共有が使えます。",
+          "displayName" : "Talk Shuffle Pro",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "talk_shuffle_pro",
+      "referenceName" : "Talk Shuffle Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "ja",
+    "_storefront" : "JPN",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

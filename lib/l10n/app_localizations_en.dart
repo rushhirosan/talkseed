@@ -485,6 +485,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proUnlock => 'Buy Pro';
 
   @override
+  String proUnlockWithPrice(String price) {
+    return 'Buy Pro — $price';
+  }
+
+  @override
   String get proUnlockDebug => 'debug: turn Pro on';
 
   @override
@@ -495,10 +500,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Debug build — both buttons turn Pro on locally (store not connected).';
 
   @override
-  String get proPurchaseUnavailable => 'Purchases are not available yet';
+  String get proPurchaseUnavailable =>
+      'Purchases are not available on this device';
+
+  @override
+  String get proPurchaseCanceled => 'Purchase canceled';
+
+  @override
+  String get proPurchasePending => 'Purchase is pending approval';
+
+  @override
+  String get proPurchaseError => 'Purchase failed. Please try again.';
 
   @override
   String get proRestoreNothing => 'No Pro purchase found';
+
+  @override
+  String get proRestoreSuccess => 'Pro restored';
 
   @override
   String get proDebugSectionTitle => 'Pro (debug)';

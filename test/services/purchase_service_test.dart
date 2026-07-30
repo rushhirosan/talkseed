@@ -93,4 +93,9 @@ void main() {
     expect(result, PurchaseActionResult.unlockedLocally);
     expect(await PurchaseService.isPro(), isTrue);
   });
+
+  test('iapEnabled stays off until store sandbox is verified', () {
+    expect(PurchaseService.iapEnabled, isFalse);
+    expect(PurchaseService.productId, 'talk_shuffle_pro');
+  });
 }

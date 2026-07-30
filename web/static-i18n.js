@@ -92,7 +92,7 @@
         navTop: 'Talk Shuffle トップ',
         navAppStore: 'App Store',
         h1: 'プライバシーポリシー',
-        updated: '最終更新日: 2026年6月',
+        updated: '最終更新日: 2026年7月',
         s1Title: '1. はじめに',
         s1Body:
           'Talk Shuffle（以下「本アプリ」）は、会話のテーマを決める際の支援を目的としたアプリです。本プライバシーポリシーは、本アプリにおける利用者情報の取り扱いについて説明します。',
@@ -108,6 +108,9 @@
         s5Title: '5. サードパーティサービス',
         s5Body:
           '本アプリは、現時点ではサードパーティの分析ツールや広告ネットワークを含んでいません。将来的にこれらを導入する場合は、本ポリシーを更新してお知らせします。',
+        s5bTitle: '5-2. アプリ内課金',
+        s5bBody:
+          '本アプリでは、任意の Pro 機能（名前付きプリセットの保存・セッション履歴の共有など）を App Store / Google Play のアプリ内課金で提供する場合があります。購入・復元の処理は各ストアが行い、支払情報はストア側で管理されます。本アプリは決済カード番号などを収集・保存しません。購入状態は端末内に保持し、同じストアアカウントであれば「購入の復元」から再適用できます。',
         s6Title: '6. お問い合わせ',
         s6Body: {
           html: true,
@@ -132,7 +135,7 @@
         navTop: 'Talk Shuffle home',
         navAppStore: 'App Store',
         h1: 'Privacy Policy',
-        updated: 'Last updated: June 2026',
+        updated: 'Last updated: July 2026',
         s1Title: '1. Introduction',
         s1Body:
           'Talk Shuffle (the "App") helps you choose conversation topics. This Privacy Policy explains how we handle information when you use the App.',
@@ -148,6 +151,9 @@
         s5Title: '5. Third-party services',
         s5Body:
           'The App currently does not include third-party analytics or ad networks. If we add them in the future, we will update this policy.',
+        s5bTitle: '5-2. In-app purchases',
+        s5bBody:
+          'The App may offer optional Pro features (named presets and session history sharing) via App Store / Google Play in-app purchases. Purchase and restore are handled by each store; payment details stay with the store. The App does not collect or store card numbers. Purchase status is kept on device and can be re-applied with Restore Purchases under the same store account.',
         s6Title: '6. Contact',
         s6Body: {
           html: true,
@@ -185,6 +191,9 @@
         faq2Q: 'Q: データはどこに保存されますか？',
         faq2A:
           'A: セッション履歴は端末内にのみ保存されます。外部サーバーへは送信されません。',
+        faq3Q: 'Q: Pro を購入済みなのに使えません',
+        faq3A:
+          'A: 「アプリについて」または Pro 案内の「すでに購入済みの方」から復元してください。同じ Apple / Google アカウントである必要があります。',
         linksTitle: '関連リンク',
         linksBody: {
           html: true,
@@ -212,6 +221,9 @@
         faq2Q: 'Q: Where is my data stored?',
         faq2A:
           'A: Session history is stored only on your device. Nothing is sent to external servers.',
+        faq3Q: 'Q: I bought Pro but it is not unlocked',
+        faq3A:
+          'A: Use Restore from About or the Pro sheet. You must be signed in with the same Apple / Google account used for the purchase.',
         linksTitle: 'Related links',
         linksBody: {
           html: true,

@@ -5,6 +5,7 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/utils/web_locale_query.dart';
 import 'package:theme_dice/widgets/web_adaptive_layout.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
+import 'package:theme_dice/services/purchase_service.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
@@ -39,6 +40,12 @@ class _HiveBootstrapAppState extends State<_HiveBootstrapApp> {
   Future<void> _initHive() async {
     try {
       await SessionRecordService.init();
+      // IAP は失敗してもアプリ起動を止めない
+      try {
+        await PurchaseService.init();
+      } catch (e, st) {
+        debugPrint('PurchaseService.init (boot): $e\n$st');
+      }
       if (mounted) setState(() => _ready = true);
     } catch (e) {
       if (mounted) setState(() => _initError = e);

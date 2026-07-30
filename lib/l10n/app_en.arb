@@ -271,6 +271,16 @@
   "@proUnlock": {
     "description": "Pro purchase button (production)"
   },
+  "proUnlockWithPrice": "Buy Pro — {price}",
+  "@proUnlockWithPrice": {
+    "description": "Pro purchase button with localized store price",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "¥480"
+      }
+    }
+  },
   "proUnlockDebug": "debug: turn Pro on",
   "@proUnlockDebug": {
     "description": "Pro unlock button in debug builds"
@@ -283,13 +293,29 @@
   "@proDebugHint": {
     "description": "Hint on paywall in debug mode"
   },
-  "proPurchaseUnavailable": "Purchases are not available yet",
+  "proPurchaseUnavailable": "Purchases are not available on this device",
   "@proPurchaseUnavailable": {
-    "description": "Shown when IAP is not wired yet"
+    "description": "Shown when the store cannot sell the Pro product"
+  },
+  "proPurchaseCanceled": "Purchase canceled",
+  "@proPurchaseCanceled": {
+    "description": "Shown when the user cancels the store purchase sheet"
+  },
+  "proPurchasePending": "Purchase is pending approval",
+  "@proPurchasePending": {
+    "description": "Shown when a purchase is waiting (e.g. Ask to Buy)"
+  },
+  "proPurchaseError": "Purchase failed. Please try again.",
+  "@proPurchaseError": {
+    "description": "Shown when the store purchase errors"
   },
   "proRestoreNothing": "No Pro purchase found",
   "@proRestoreNothing": {
     "description": "Shown when restore finds nothing"
+  },
+  "proRestoreSuccess": "Pro restored",
+  "@proRestoreSuccess": {
+    "description": "Shown when restore unlocks Pro from About"
   },
   "proDebugSectionTitle": "Pro (debug)",
   "@proDebugSectionTitle": {
