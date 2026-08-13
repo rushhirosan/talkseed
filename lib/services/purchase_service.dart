@@ -22,8 +22,14 @@ class PurchaseService {
   /// Pro 時のプリセット上限
   static const int proPresetLimit = 10;
 
-  /// 本番 IAP を有効化するときに true（ASC 商品登録・サンドボックス確認後）
-  static const bool iapEnabled = false;
+  /// 本番 IAP（ASC サンドボックス確認済み）
+  static const bool iapEnabled = true;
+
+  /// Sandbox は restore の purchaseStream が遅いことがある
+  static const Duration restoreTimeout = Duration(seconds: 45);
+
+  /// Face ID / Already purchased 後の stream 待ち上限
+  static const Duration purchaseTimeout = Duration(seconds: 90);
 
   static const _keyProUnlocked = 'pro_unlocked_v1';
   static const _keyDebugGating = 'debug_pro_gating_v1';
@@ -37,6 +43,7 @@ class PurchaseService {
   static bool _listening = false;
   static bool _restoreExpecting = false;
   static Timer? _restoreTimeout;
+  static Timer? _restoreRetryTimer;
 
   /// ストアから取得した Pro 商品（価格表示用）。未取得なら null。
   static ProductDetails? get proProduct => _proProduct;
@@ -54,17 +61,23 @@ class PurchaseService {
   }
 
   /// 起動時に呼ぶ。購入ストリーム購読と商品情報の先読み。
+  ///
+  /// 商品取得は待たない（StoreKit ハングで起動が真っ白になるのを防ぐ）。
   static Future<void> init() async {
     if (!iapEnabled || !_storeSupported) {
       return;
     }
     try {
-      final available = await _iap.isAvailable();
+      final available = await _iap.isAvailable().timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => false,
+      );
       if (!available) {
         return;
       }
       await _ensureListening();
-      await refreshProducts();
+      // ignore: unawaited_futures
+      refreshProducts();
     } catch (e, st) {
       debugPrint('PurchaseService.init failed: $e\n$st');
     }
@@ -275,9 +288,8 @@ class PurchaseService {
       return PurchaseActionResult.unavailable;
     }
 
-    if (_pendingAction != null && !_pendingAction!.isCompleted) {
-      return PurchaseActionResult.pending;
-    }
+    // 前回の購入待ちが残っていると UI が busy のままになるので破棄して続行
+    _abandonPending(PurchaseActionResult.canceled);
 
     final completer = Completer<PurchaseActionResult>();
     _pendingAction = completer;
@@ -288,25 +300,28 @@ class PurchaseService {
         purchaseParam: PurchaseParam(productDetails: product),
       );
       if (!started) {
-        _clearPending();
+        _abandonPending(PurchaseActionResult.unavailable);
         return PurchaseActionResult.unavailable;
       }
     } catch (e, st) {
       debugPrint('PurchaseService.purchasePro failed: $e\n$st');
-      _clearPending();
+      _abandonPending(PurchaseActionResult.error);
       return PurchaseActionResult.error;
     }
 
     return completer.future.timeout(
-      const Duration(minutes: 5),
+      purchaseTimeout,
       onTimeout: () {
-        _clearPending();
+        _abandonPending(PurchaseActionResult.error);
         return PurchaseActionResult.error;
       },
     );
   }
 
   /// 購入復元。IAP 有効時はストア、無効時は debug のみローカル解除。
+  ///
+  /// iOS Sandbox では stream が遅い／空で来ることがあるため、
+  /// タイムアウトを長めに取り、一度だけ restore を再試行する。
   static Future<PurchaseActionResult> restorePurchases() async {
     if (!iapEnabled) {
       if (await isPro()) {
@@ -333,26 +348,40 @@ class PurchaseService {
 
     await _ensureListening();
 
-    if (_pendingAction != null && !_pendingAction!.isCompleted) {
-      return PurchaseActionResult.pending;
-    }
+    // 「購入」待ちのまま restore が弾かれる／何も起きないのを防ぐ
+    _abandonPending(PurchaseActionResult.canceled);
 
     final completer = Completer<PurchaseActionResult>();
     _pendingAction = completer;
     _restoreExpecting = true;
     _restoreTimeout?.cancel();
-    _restoreTimeout = Timer(const Duration(seconds: 12), () {
+    _restoreRetryTimer?.cancel();
+    _restoreTimeout = Timer(restoreTimeout, () {
       if (_restoreExpecting) {
         _finishPending(PurchaseActionResult.nothingToRestore);
       }
+    });
+    // 初回が空でもう一回だけ StoreKit に問い合わせる
+    _restoreRetryTimer = Timer(const Duration(seconds: 3), () {
+      if (!_restoreExpecting) {
+        return;
+      }
+      unawaited(() async {
+        try {
+          await _iap.restorePurchases();
+        } catch (e, st) {
+          debugPrint(
+            'PurchaseService.restorePurchases retry failed: $e\n$st',
+          );
+        }
+      }());
     });
 
     try {
       await _iap.restorePurchases();
     } catch (e, st) {
       debugPrint('PurchaseService.restorePurchases failed: $e\n$st');
-      _restoreTimeout?.cancel();
-      _clearPending();
+      _abandonPending(PurchaseActionResult.error);
       return PurchaseActionResult.error;
     }
 
@@ -362,8 +391,6 @@ class PurchaseService {
   static Future<void> _onPurchaseUpdated(
     List<PurchaseDetails> purchases,
   ) async {
-    var sawProOwned = false;
-
     for (final purchase in purchases) {
       if (purchase.productID != productId) {
         if (purchase.pendingCompletePurchase) {
@@ -378,13 +405,13 @@ class PurchaseService {
           break;
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-          sawProOwned = true;
           await unlockPro();
           if (purchase.pendingCompletePurchase) {
             await _safeComplete(purchase);
           }
+          // 復元フロー中の purchased（Already purchased 経由）も restored 扱いにする
           _finishPending(
-            purchase.status == PurchaseStatus.restored
+            _restoreExpecting || purchase.status == PurchaseStatus.restored
                 ? PurchaseActionResult.restored
                 : PurchaseActionResult.purchased,
           );
@@ -400,11 +427,6 @@ class PurchaseService {
           _finishPending(PurchaseActionResult.canceled);
       }
     }
-
-    // 復元で空リストだけ来た場合はタイムアウト待ち（何も所有していない）
-    if (_restoreExpecting && purchases.isEmpty && !sawProOwned) {
-      // 空の更新は無視し、タイマーに任せる
-    }
   }
 
   static Future<void> _safeComplete(PurchaseDetails purchase) async {
@@ -417,30 +439,38 @@ class PurchaseService {
 
   static void _finishPending(PurchaseActionResult result) {
     final pending = _pendingAction;
-    if (pending == null || pending.isCompleted) {
-      _restoreExpecting = false;
-      _restoreTimeout?.cancel();
-      _restoreTimeout = null;
-      return;
-    }
     _restoreExpecting = false;
     _restoreTimeout?.cancel();
     _restoreTimeout = null;
+    _restoreRetryTimer?.cancel();
+    _restoreRetryTimer = null;
+    if (pending == null || pending.isCompleted) {
+      return;
+    }
     pending.complete(result);
     _pendingAction = null;
   }
 
-  static void _clearPending() {
+  /// 待ち中の Completer を結果付きで終わらせてからクリアする（ハング防止）。
+  static void _abandonPending(PurchaseActionResult result) {
+    final pending = _pendingAction;
     _restoreExpecting = false;
     _restoreTimeout?.cancel();
     _restoreTimeout = null;
+    _restoreRetryTimer?.cancel();
+    _restoreRetryTimer = null;
     _pendingAction = null;
+    if (pending != null && !pending.isCompleted) {
+      pending.complete(result);
+    }
   }
 
   static Future<void> resetForTesting() async {
     _restoreTimeout?.cancel();
     _restoreTimeout = null;
-    _clearPending();
+    _restoreRetryTimer?.cancel();
+    _restoreRetryTimer = null;
+    _abandonPending(PurchaseActionResult.canceled);
     await _purchaseSub?.cancel();
     _purchaseSub = null;
     _listening = false;

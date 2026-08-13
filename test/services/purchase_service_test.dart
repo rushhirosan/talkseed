@@ -49,15 +49,10 @@ void main() {
     );
   });
 
-  test('disabling debug gating restores free access', () async {
+  test('iapEnabled keeps gating on even if debug gating off', () async {
     await PurchaseService.setDebugGatingEnabled(false);
-    expect(await PurchaseService.isGatingActive(), isFalse);
-    expect(await PurchaseService.canExportHistory(), isTrue);
-    expect(await PurchaseService.canSaveNewPreset(9), isTrue);
-    expect(
-      await PurchaseService.maxPresetsAllowed(),
-      PurchaseService.proPresetLimit,
-    );
+    expect(await PurchaseService.isGatingActive(), isTrue);
+    expect(await PurchaseService.canExportHistory(), isFalse);
   });
 
   test('debug force Pro overrides unlocked flag', () async {
@@ -79,23 +74,9 @@ void main() {
     expect(await PurchaseService.canExportHistory(), isFalse);
   });
 
-  test('purchasePro unlocks locally in debug', () async {
-    final result = await PurchaseService.purchasePro();
-    expect(result, PurchaseActionResult.unlockedLocally);
-    expect(await PurchaseService.isPro(), isTrue);
-
-    await PurchaseService.setDebugProEnabled(false);
-    expect(await PurchaseService.isPro(), isFalse);
-  });
-
-  test('restorePurchases unlocks locally in debug', () async {
-    final result = await PurchaseService.restorePurchases();
-    expect(result, PurchaseActionResult.unlockedLocally);
-    expect(await PurchaseService.isPro(), isTrue);
-  });
-
-  test('iapEnabled stays off until store sandbox is verified', () {
-    expect(PurchaseService.iapEnabled, isFalse);
+  test('iap product id and store flag', () {
+    expect(PurchaseService.iapEnabled, isTrue);
     expect(PurchaseService.productId, 'talk_shuffle_pro');
+    expect(PurchaseService.restoreTimeout.inSeconds, greaterThanOrEqualTo(30));
   });
 }

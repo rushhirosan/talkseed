@@ -24,14 +24,11 @@
 
 ## いま最優先（Next）
 
-**Step 2 — Pro / IAP 基盤（コード接続済・ストア登録待ち）**
+**Step 2 — Pro / IAP（サンドボックス確認済・復元改善済）**
 
-- コード側: `in_app_purchase` 接続・購入ストリーム・ペイウォール価格表示・復元まで実装済
-- `PurchaseService.iapEnabled` は **false**（ASC 商品登録＋サンドボックス確認後に true）
+- コード側: `iapEnabled = true`、復元タイムアウト／再試行・起動ブロック回避を反映
 - 手順: [store_assets/IAP_SETUP.md](store_assets/IAP_SETUP.md)
-- 次: App Store Connect 商品登録 → `iapEnabled = true` → サンドボックス購入テスト
-
-その後: 第三モード → リリース v3
+- 次: 変更をコミット → ルート A（Pro 先出し）or B（第三モード → v3）を決める
 
 ---
 

@@ -40,12 +40,11 @@ class _HiveBootstrapAppState extends State<_HiveBootstrapApp> {
   Future<void> _initHive() async {
     try {
       await SessionRecordService.init();
-      // IAP は失敗してもアプリ起動を止めない
-      try {
-        await PurchaseService.init();
-      } catch (e, st) {
+      // IAP は起動をブロックしない（StoreKit 待ちで真っ白になるのを防ぐ）
+      // ignore: unawaited_futures
+      PurchaseService.init().catchError((Object e, StackTrace st) {
         debugPrint('PurchaseService.init (boot): $e\n$st');
-      }
+      });
       if (mounted) setState(() => _ready = true);
     } catch (e) {
       if (mounted) setState(() => _initError = e);

@@ -75,19 +75,25 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
   Future<void> _onPurchase() async {
     if (_busy) return;
     setState(() => _busy = true);
-    final result = await PurchaseService.purchasePro();
-    if (!mounted) return;
-    setState(() => _busy = false);
-    _handleResult(result);
+    try {
+      final result = await PurchaseService.purchasePro();
+      if (!mounted) return;
+      _handleResult(result);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   Future<void> _onRestore() async {
     if (_busy) return;
     setState(() => _busy = true);
-    final result = await PurchaseService.restorePurchases();
-    if (!mounted) return;
-    setState(() => _busy = false);
-    _handleResult(result);
+    try {
+      final result = await PurchaseService.restorePurchases();
+      if (!mounted) return;
+      _handleResult(result);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   void _handleResult(PurchaseActionResult result) {
