@@ -16,14 +16,15 @@ Talk Shuffle ストア素材（ドラフト）
 - screenshots/（撮影した画像の保存先：ios/, android/）
 - FIREBASE_DEPLOY.md（Firebase Hosting デプロイ手順）
 - IAP_SETUP.md（Pro アプリ内課金の商品 ID・ASC / サンドボックス手順）
+- iap/（IAP 審査用スクショ）
 
-次にやること
-1) [ROADMAP.md](../ROADMAP.md) の「いま最優先」を確認
-2) IAP: [IAP_SETUP.md](IAP_SETUP.md) で App Store Connect 商品登録 → サンドボックス確認
-3) スクリーンショットを撮影（screenshot_plan.md を参照）→ screenshots/ に保存
-4) 各ストアの入力フォームに本ファイルの文面を転記
+次にやること（ルート A — Pro 先出し）
+1) メタデータを ASC / Play に転記（本ファイル群）
+2) ペイウォール等のスクショを差し替え（任意だが推奨）
+3) `flutter build ipa` / Archive → ASC へアップロード
+4) 新バージョンに `talk_shuffle_pro` を紐づけて審査提出
 
 注意
 - 無料コア（お題・各モード）は維持。Pro はプリセット保存と履歴共有（[ROADMAP.md](../ROADMAP.md)）
-- 機能の記述は現行実装に合わせて作成済み（タイマー/参加人数/履歴）
-- 「課金なし」と書いてある旧メタデータは IAP 有効化直前に更新すること
+- 価格は仮 tier（例: ¥100）。本決めは Step 6
+- 機能の記述は現行実装に合わせて更新済み

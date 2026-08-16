@@ -24,11 +24,12 @@
 
 ## いま最優先（Next）
 
-**Step 2 — Pro / IAP（サンドボックス確認済・復元改善済）**
+**ルート A — Pro 先出し提出準備**
 
-- コード側: `iapEnabled = true`、復元タイムアウト／再試行・起動ブロック回避を反映
-- 手順: [store_assets/IAP_SETUP.md](store_assets/IAP_SETUP.md)
-- 次: 変更をコミット → ルート A（Pro 先出し）or B（第三モード → v3）を決める
+- IAP / サンドボックス確認済・`iapEnabled = true`
+- ストア文面を Pro 方針に更新・バージョン **2.2.0+8**
+- 次: スクショ差し替え（任意）→ Archive → ASC で IAP 紐づけ → 審査提出
+- 第三モード（Step 3–4）は公開後で可
 
 ---
 

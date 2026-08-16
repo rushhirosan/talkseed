@@ -5,11 +5,13 @@ Subtitle (30 chars max):
 Pick a topic fast
 
 Promotional Text:
-Redesigned guided 1-on-1s: pick a format, track themes in one agenda, and move from check-in to closing. Plus 3D dice and card decks. Japanese & English.
+Topics stay free. Pro unlocks presets and history sharing. 1:1, dice, and decks. JA & EN.
 
 Description:
 Talk Shuffle helps you choose a conversation topic quickly and naturally.
 Roll a 3D dice for a random prompt, or use curated card decks designed for work and reflection.
+
+Core modes and prompts stay free. Optional Talk Shuffle Pro unlocks named preset saves and text sharing of session history.
 
 Highlights
 - 3D dice to select a topic at random
@@ -18,6 +20,8 @@ Highlights
 - Player count and name setup
 - Optional timer
 - Session history stored on device
+- Named presets and one-tap restart (Pro)
+- Share session history as text (Pro)
 - Japanese / English support
 
 Great for
@@ -27,7 +31,7 @@ Great for
 
 Privacy
 Talk Shuffle works without account registration and does not send personal data to external servers.
-(Session history is stored locally on your device.)
+(Session history is stored locally. Pro purchases and restores are handled by the App Store.)
 
 Keywords (100 chars max, comma-separated):
 shuffle,icebreaker,team building,conversation,dice,meeting,reflection,1on1,brainstorm
@@ -39,9 +43,11 @@ Privacy Policy URL:
 https://talk-seed.web.app/privacy.html
 
 What's New (4000 chars max):
-Major update to guided 1-on-1 sessions.
+Introducing optional Talk Shuffle Pro (in-app purchase).
 
-• Start with a session format (Lite, Growth, Relationship, or Full)
-• Review chosen prompts in the Today's themes agenda as you go
-• English prompt bank added, with the same UX as Japanese
-• Cleaner spacing and phase headings in the 1-on-1 flow
+• Core topics and modes stay free
+• Pro: save named presets to reuse your session setup
+• Pro: share session history as text
+• Restore purchases if you already own Pro
+
+See the App Store for current pricing.
