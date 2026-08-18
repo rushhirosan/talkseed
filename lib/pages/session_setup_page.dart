@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/preset_display.dart';
 import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
@@ -454,15 +455,18 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       },
     );
     if (saved != true || !mounted) {
-      controller.dispose();
+      disposeTextControllerSoon(controller);
       return;
     }
+
+    final name = controller.text;
+    disposeTextControllerSoon(controller);
 
     try {
       switch (mode) {
         case SessionPresetMode.groupDiscussion:
           await PresetService.saveGroupDiscussionPreset(
-            name: controller.text,
+            name: name,
             config: config,
             discussionDeckType:
                 widget.discussionDeckType ?? CardDeckType.groupDiscussion,
@@ -470,12 +474,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           );
         case SessionPresetMode.valueCards:
           await PresetService.saveValueCardsPreset(
-            name: controller.text,
+            name: name,
             config: config,
           );
         case SessionPresetMode.dice:
           await PresetService.saveDicePreset(
-            name: controller.text,
+            name: name,
             diceThemes: cubeThemes!,
             config: config,
           );
@@ -498,8 +502,6 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
-    } finally {
-      controller.dispose();
     }
   }
 

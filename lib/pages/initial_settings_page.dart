@@ -5,6 +5,7 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/session_config.dart';
 import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/preset_display.dart';
 import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
@@ -179,13 +180,16 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       },
     );
     if (saved != true || !mounted) {
-      controller.dispose();
+      disposeTextControllerSoon(controller);
       return;
     }
 
+    final name = controller.text;
+    disposeTextControllerSoon(controller);
+
     try {
       await PresetService.saveDicePreset(
-        name: controller.text,
+        name: name,
         diceThemes: themes,
         config: config,
       );
@@ -205,8 +209,6 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
-    } finally {
-      controller.dispose();
     }
   }
 

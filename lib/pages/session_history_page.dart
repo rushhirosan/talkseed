@@ -8,6 +8,7 @@ import 'package:theme_dice/models/session_record.dart';
 import 'package:theme_dice/services/preset_service.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/services/usage_stats_service.dart';
+import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/session_record_preset_factory.dart';
 import 'package:theme_dice/utils/session_record_share_text.dart';
@@ -590,14 +591,17 @@ class SessionHistoryDetailPage extends StatelessWidget {
       ),
     );
     if (confirmed != true || !context.mounted) {
-      controller.dispose();
+      disposeTextControllerSoon(controller);
       return;
     }
+
+    final name = controller.text;
+    disposeTextControllerSoon(controller);
 
     try {
       await SessionRecordPresetFactory.saveAsPreset(
         record: record,
-        name: controller.text,
+        name: name,
       );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -616,8 +620,6 @@ class SessionHistoryDetailPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.historySaveAsPresetUnavailable)),
       );
-    } finally {
-      controller.dispose();
     }
   }
 

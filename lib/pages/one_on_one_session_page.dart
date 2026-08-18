@@ -11,6 +11,7 @@ import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/services/preset_service.dart';
 import 'package:theme_dice/services/self_reflection_service.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
@@ -554,13 +555,16 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       },
     );
     if (saved != true || !mounted) {
-      controller.dispose();
+      disposeTextControllerSoon(controller);
       return;
     }
 
+    final name = controller.text;
+    disposeTextControllerSoon(controller);
+
     try {
       await PresetService.saveOneOnOnePreset(
-        name: controller.text,
+        name: name,
         format: _selectedFormat,
       );
       if (!mounted) return;
@@ -577,8 +581,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
-    } finally {
-      controller.dispose();
     }
   }
 
