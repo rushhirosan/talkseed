@@ -573,8 +573,17 @@ class SessionHistoryDetailPage extends StatelessWidget {
         content: TextField(
           controller: controller,
           autofocus: true,
+          cursorColor: HomePalette.accent,
+          style: _bodyStyle(),
           decoration: InputDecoration(
             hintText: l10n.presetSaveDialogHint,
+            hintStyle: _mutedStyle(),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: HomePalette.border),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: HomePalette.accent),
+            ),
           ),
           onSubmitted: (_) => Navigator.of(ctx).pop(true),
         ),

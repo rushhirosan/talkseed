@@ -111,6 +111,10 @@
   "@faceThemesList": {
     "description": "リセットと面リストの間の小タイトル"
   },
+  "faceThemesListWithLongPress": "面のテーマ（長押しで自分で入力）",
+  "@faceThemesListWithLongPress": {
+    "description": "モバイル：面リスト見出しと長押し編集ヒントを1行にまとめた文言"
+  },
   "themeCandidates": "テーマ候補",
   "@themeCandidates": {
     "description": "テーマ候補セクションのタイトル"
@@ -194,10 +198,6 @@
   "themeTapToReplaceHint": "入れ替えたいテーマをタップ → 下の候補をタップ",
   "@themeTapToReplaceHint": {
     "description": "テーマ候補エリアの説明文（モバイル）"
-  },
-  "themeLongPressToEdit": "長押しで自分で入力",
-  "@themeLongPressToEdit": {
-    "description": "モバイルでテーマ面を手入力するヒント"
   },
   "themeSelectFaceFirst": "先に入れ替えたいテーマをタップしてください",
   "@themeSelectFaceFirst": {
@@ -298,6 +298,18 @@
   "enableTimer": "タイマーを有効にする",
   "@enableTimer": {
     "description": "タイマー有効化のチェックボックス"
+  },
+  "enableVoting": "終了後に投票する",
+  "@enableVoting": {
+    "description": "サイコロセッション終了後の投票オプション"
+  },
+  "sessionPreviewVoting": "終了後に投票あり",
+  "@sessionPreviewVoting": {
+    "description": "セッション設定プレビュー：投票あり"
+  },
+  "sessionPreviewNoVoting": "投票なし",
+  "@sessionPreviewNoVoting": {
+    "description": "セッション設定プレビュー：投票なし"
   },
   "timerDuration": "時間",
   "@timerDuration": {

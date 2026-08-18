@@ -9,6 +9,7 @@ void main() {
       expect(config.playerCount, 4);
       expect(config.timerDuration, const Duration(minutes: 3));
       expect(config.enableTimer, true);
+      expect(config.enableVoting, false);
       expect(config.playerNames, isNull);
       expect(config.discussionPromptCap, isNull);
       expect(config.discussionPromptsPerCategory, isNull);
@@ -192,6 +193,26 @@ void main() {
       );
       final copied = config.copyWith(timerDuration: const Duration(minutes: 10));
       expect(copied.timerDuration, const Duration(minutes: 10));
+    });
+
+    test('copyWith updates enableVoting', () {
+      final enabled = SessionConfig.defaultConfig.copyWith(enableVoting: true);
+      expect(enabled.enableVoting, true);
+      expect(enabled.copyWith(enableVoting: false).enableVoting, false);
+    });
+
+    test('toJson/fromJson round-trips enableVoting', () {
+      final config = SessionConfig.defaultConfig.copyWith(enableVoting: true);
+      final restored = SessionConfig.fromJson(config.toJson());
+      expect(restored.enableVoting, true);
+      expect(
+        SessionConfig.fromJson({
+          'playerCount': 4,
+          'timerDurationMs': 180000,
+          'enableTimer': true,
+        }).enableVoting,
+        false,
+      );
     });
 
     test('constructor asserts playerCount 2-10', () {

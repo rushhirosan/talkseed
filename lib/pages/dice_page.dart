@@ -374,9 +374,13 @@ class _DicePageState extends State<DicePage>
       }
     });
 
-    // 最後のプレイヤーが終わってセッション終了したら振り返り画面を表示
+    // 最後のプレイヤーが終わってセッション終了したら、投票（任意）または終了ダイアログ
     if (wasLastPlayer && _session != null && !_session!.isActive) {
-      _startVoting();
+      if (_session!.config.enableVoting) {
+        _startVoting();
+      } else {
+        _presentSessionEndDialog();
+      }
     }
   }
 

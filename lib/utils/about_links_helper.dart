@@ -27,56 +27,58 @@ class AboutLinksHelper {
       context: context,
       isScrollControlled: true,
       builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.support_agent),
-                title: Text(l10n.support),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  openUrl(supportUrl);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: Text(l10n.privacyPolicy),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  openUrl(privacyUrl);
-                },
-              ),
-              if (PurchaseService.iapEnabled)
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 ListTile(
-                  leading: const Icon(Icons.restore),
-                  title: Text(l10n.proRestore),
-                  onTap: () async {
+                  leading: const Icon(Icons.support_agent),
+                  title: Text(l10n.support),
+                  onTap: () {
                     Navigator.of(ctx).pop();
-                    final result = await PurchaseService.restorePurchases();
-                    if (!parentContext.mounted) return;
-                    final messenger = ScaffoldMessenger.of(parentContext);
-                    final msg = switch (result) {
-                      PurchaseActionResult.purchased ||
-                      PurchaseActionResult.restored ||
-                      PurchaseActionResult.unlockedLocally ||
-                      PurchaseActionResult.alreadyPro =>
-                        l10n.proRestoreSuccess,
-                      PurchaseActionResult.nothingToRestore =>
-                        l10n.proRestoreNothing,
-                      PurchaseActionResult.canceled =>
-                        l10n.proPurchaseCanceled,
-                      PurchaseActionResult.pending => l10n.proPurchasePending,
-                      PurchaseActionResult.error ||
-                      PurchaseActionResult.unavailable =>
-                        l10n.proPurchaseUnavailable,
-                    };
-                    messenger.showSnackBar(SnackBar(content: Text(msg)));
+                    openUrl(supportUrl);
                   },
                 ),
-              if (kDebugMode) _DebugProSection(parentContext: parentContext),
-            ],
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: Text(l10n.privacyPolicy),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    openUrl(privacyUrl);
+                  },
+                ),
+                if (PurchaseService.iapEnabled)
+                  ListTile(
+                    leading: const Icon(Icons.restore),
+                    title: Text(l10n.proRestore),
+                    onTap: () async {
+                      Navigator.of(ctx).pop();
+                      final result = await PurchaseService.restorePurchases();
+                      if (!parentContext.mounted) return;
+                      final messenger = ScaffoldMessenger.of(parentContext);
+                      final msg = switch (result) {
+                        PurchaseActionResult.purchased ||
+                        PurchaseActionResult.restored ||
+                        PurchaseActionResult.unlockedLocally ||
+                        PurchaseActionResult.alreadyPro =>
+                          l10n.proRestoreSuccess,
+                        PurchaseActionResult.nothingToRestore =>
+                          l10n.proRestoreNothing,
+                        PurchaseActionResult.canceled =>
+                          l10n.proPurchaseCanceled,
+                        PurchaseActionResult.pending => l10n.proPurchasePending,
+                        PurchaseActionResult.error ||
+                        PurchaseActionResult.unavailable =>
+                          l10n.proPurchaseUnavailable,
+                      };
+                      messenger.showSnackBar(SnackBar(content: Text(msg)));
+                    },
+                  ),
+                if (kDebugMode) _DebugProSection(parentContext: parentContext),
+              ],
+            ),
           ),
         ),
       ),

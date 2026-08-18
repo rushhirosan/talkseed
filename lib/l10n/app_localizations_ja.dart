@@ -89,6 +89,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get faceThemesList => 'サイコロの面の表示';
 
   @override
+  String get faceThemesListWithLongPress => '面のテーマ（長押しで自分で入力）';
+
+  @override
   String get themeCandidates => 'テーマ候補';
 
   @override
@@ -155,9 +158,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get themeTapToReplaceHint => '入れ替えたいテーマをタップ → 下の候補をタップ';
-
-  @override
-  String get themeLongPressToEdit => '長押しで自分で入力';
 
   @override
   String get themeSelectFaceFirst => '先に入れ替えたいテーマをタップしてください';
@@ -359,6 +359,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get enableTimer => 'タイマーを有効にする';
+
+  @override
+  String get enableVoting => '終了後に投票する';
+
+  @override
+  String get sessionPreviewVoting => '終了後に投票あり';
+
+  @override
+  String get sessionPreviewNoVoting => '投票なし';
 
   @override
   String get timerDuration => '時間';

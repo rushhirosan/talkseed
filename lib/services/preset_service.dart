@@ -185,6 +185,7 @@ class PresetService {
       playerCount: config.playerCount,
       timerDuration: config.timerDuration,
       enableTimer: config.enableTimer,
+      enableVoting: config.enableVoting,
       playerNames: config.playerNames,
     );
   }

@@ -89,6 +89,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faceThemesList => 'Display per face';
 
   @override
+  String get faceThemesListWithLongPress =>
+      'Themes per face (long-press to type your own)';
+
+  @override
   String get themeCandidates => 'Theme Candidates';
 
   @override
@@ -157,9 +161,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get themeTapToReplaceHint =>
       'Tap a theme above, then tap a candidate below';
-
-  @override
-  String get themeLongPressToEdit => 'Long press a theme to type your own';
 
   @override
   String get themeSelectFaceFirst => 'Tap a theme above first';
@@ -361,6 +362,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableTimer => 'Enable Timer';
+
+  @override
+  String get enableVoting => 'Vote after session';
+
+  @override
+  String get sessionPreviewVoting => 'Voting after session';
+
+  @override
+  String get sessionPreviewNoVoting => 'No voting';
 
   @override
   String get timerDuration => 'Duration';

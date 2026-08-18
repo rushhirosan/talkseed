@@ -250,7 +250,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         Text(l10n.presetSavedSectionTitle, style: _labelStyle(fontSize: 16)),
         const SizedBox(height: 10),
         SizedBox(
-          height: 76,
+          height: 80,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _savedPresets.length,
@@ -633,11 +633,12 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
       children: [
         _buildThemeTitleSection(),
         const SizedBox(height: 8),
-        Text(l10n.faceThemesList, style: _hintStyle(fontSize: 14)),
-        if (mobileTapMode) ...[
-          const SizedBox(height: 4),
-          Text(l10n.themeLongPressToEdit, style: _hintStyle(fontSize: 12)),
-        ],
+        Text(
+          mobileTapMode
+              ? l10n.faceThemesListWithLongPress
+              : l10n.faceThemesList,
+          style: _hintStyle(fontSize: 14),
+        ),
         const SizedBox(height: 8),
         _buildFaceColumn(slotWidth, mobileTapMode: mobileTapMode),
         const SizedBox(height: 16),

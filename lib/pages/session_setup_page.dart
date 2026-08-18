@@ -112,6 +112,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   bool get _supportsPresets => _presetMode != null;
 
+  /// サイコロ複数人セッション（投票オプション表示対象）。
+  /// グループ導線は [forDice] を付けないことがあるため、カード系以外を対象にする。
+  bool get _isDiceSessionSetup =>
+      !widget.forValueCard && !widget.forDiscussion;
+
   SessionPresetMode? get _presetMode {
     if (widget.forDiscussion) {
       return SessionPresetMode.groupDiscussion;
@@ -204,6 +209,12 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void _toggleTimer(bool enabled) {
     setState(() {
       _config = _config.copyWith(enableTimer: enabled);
+    });
+  }
+
+  void _toggleVoting(bool enabled) {
+    setState(() {
+      _config = _config.copyWith(enableVoting: enabled);
     });
   }
 
@@ -309,6 +320,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         playerCount: config.playerCount,
         timerDuration: config.timerDuration,
         enableTimer: config.enableTimer,
+        enableVoting: config.enableVoting,
       );
       _initializePlayerNames();
 
@@ -543,7 +555,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         Text(l10n.presetSavedSectionTitle, style: _labelStyle(fontSize: 16)),
         const SizedBox(height: 10),
         SizedBox(
-          height: 76,
+          height: 80,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _savedPresets.length,
@@ -839,6 +851,15 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
                 : l10n.sessionPreviewNoTimer,
             style: _bodyStyle(fontSize: 14),
           ),
+          if (_isDiceSessionSetup) ...[
+            const SizedBox(height: 4),
+            Text(
+              _config.enableVoting
+                  ? l10n.sessionPreviewVoting
+                  : l10n.sessionPreviewNoVoting,
+              style: _bodyStyle(fontSize: 14),
+            ),
+          ],
           if (widget.forDiscussion) ...[
             const SizedBox(height: 8),
             Text(
@@ -1199,6 +1220,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   Widget _buildFeedbackIconRow(AppLocalizations l10n, {required double gap}) {
     final timerEnabled = _config.enableTimer;
+    final votingEnabled = _config.enableVoting;
     return HomeToggleIconButtonRow(
       gap: gap,
       children: [
@@ -1208,6 +1230,13 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           onPressed: () => _toggleTimer(!timerEnabled),
           icon: timerEnabled ? Icons.timer : Icons.timer_off,
         ),
+        if (_isDiceSessionSetup)
+          HomeToggleIconButton(
+            tooltip: l10n.enableVoting,
+            enabled: votingEnabled,
+            onPressed: () => _toggleVoting(!votingEnabled),
+            icon: Icons.how_to_vote_outlined,
+          ),
         HomeToggleIconButton(
           tooltip: l10n.vibrationEnabled,
           enabled: _vibrationEnabled,

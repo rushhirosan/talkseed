@@ -245,6 +245,7 @@ void main() {
       playerCount: 3,
       timerDuration: Duration(minutes: 2),
       enableTimer: true,
+      enableVoting: true,
       playerNames: ['A', 'B', 'C'],
     );
 
@@ -260,6 +261,7 @@ void main() {
     expect(presets.single.name, 'Friday dice');
     expect(presets.single.diceThemes, themes);
     expect(presets.single.sessionConfig?.playerCount, 3);
+    expect(presets.single.sessionConfig?.enableVoting, true);
   });
 
   test('saveDicePreset rejects invalid theme count', () async {
@@ -281,6 +283,7 @@ void main() {
       config: const SessionConfig(
         playerCount: 4,
         timerDuration: Duration(minutes: 3),
+        enableVoting: true,
       ),
       updatedAt: DateTime.utc(2026, 7, 7),
     );
@@ -290,5 +293,6 @@ void main() {
     expect(restored.mode, SessionPresetMode.dice);
     expect(restored.diceThemes, preset.diceThemes);
     expect(restored.sessionConfig?.playerCount, 4);
+    expect(restored.sessionConfig?.enableVoting, true);
   });
 }

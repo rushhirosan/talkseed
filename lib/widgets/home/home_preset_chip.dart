@@ -78,20 +78,21 @@ class HomePresetChip extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: HomePalette.text,
-                        height: 1.25,
+                        height: 1.2,
                       ),
                     ),
                   ),
                 ],
               ),
               if (showSubtitle) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.zenKakuGothicNew(
                     fontSize: 11,
+                    height: 1.2,
                     color: HomePalette.textMuted,
                   ),
                 ),

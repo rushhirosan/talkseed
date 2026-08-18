@@ -631,7 +631,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 76,
+          height: 80,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _savedPresets.length,

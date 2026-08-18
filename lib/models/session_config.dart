@@ -21,6 +21,9 @@ class SessionConfig {
   
   /// タイマーを有効にするかどうか
   final bool enableTimer;
+
+  /// セッション終了後の投票を有効にするかどうか（サイコロ用）
+  final bool enableVoting;
   
   /// プレイヤー名のリスト（オプション、nullの場合は番号のみ使用）
   final List<String>? playerNames;
@@ -46,6 +49,7 @@ class SessionConfig {
     required this.playerCount,
     required this.timerDuration,
     this.enableTimer = true,
+    this.enableVoting = false,
     this.playerNames,
     this.discussionPromptCap,
     this.discussionPromptsPerCategory,
@@ -69,6 +73,7 @@ class SessionConfig {
     playerCount: 4,
     timerDuration: Duration(minutes: 3),
     enableTimer: true,
+    enableVoting: false,
     discussionPromptCap: null,
     discussionPromptsPerCategory: null,
     discussionTotalPromptsOnTable: null,
@@ -90,6 +95,7 @@ class SessionConfig {
     int? playerCount,
     Duration? timerDuration,
     bool? enableTimer,
+    bool? enableVoting,
     List<String>? playerNames,
     int? discussionPromptCap,
     bool applyDiscussionPromptCap = false,
@@ -105,6 +111,7 @@ class SessionConfig {
       playerCount: playerCount ?? this.playerCount,
       timerDuration: timerDuration ?? this.timerDuration,
       enableTimer: enableTimer ?? this.enableTimer,
+      enableVoting: enableVoting ?? this.enableVoting,
       playerNames: playerNames ?? this.playerNames,
       discussionPromptCap: applyDiscussionPromptCap
           ? discussionPromptCap
@@ -127,6 +134,7 @@ class SessionConfig {
       'playerCount': playerCount,
       'timerDurationMs': timerDuration.inMilliseconds,
       'enableTimer': enableTimer,
+      'enableVoting': enableVoting,
       if (playerNames != null) 'playerNames': playerNames,
       if (discussionPromptCap != null)
         'discussionPromptCap': discussionPromptCap,
@@ -146,6 +154,7 @@ class SessionConfig {
         milliseconds: json['timerDurationMs'] as int,
       ),
       enableTimer: json['enableTimer'] as bool? ?? true,
+      enableVoting: json['enableVoting'] as bool? ?? false,
       playerNames: (json['playerNames'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),

@@ -180,7 +180,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
 
   Widget _buildQuickStartPresetStrip(AppLocalizations l10n) {
     return SizedBox(
-      height: 76,
+      height: 80,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: _quickStartPresets.length,
@@ -296,20 +296,24 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
           ),
           child: Row(
             children: [
-              ShaderMask(
-                shaderCallback: (bounds) =>
-                    HomePalette.logoGradient.createShader(bounds),
-                child: Text(
-                  l10n.appTitle,
-                  style: GoogleFonts.syne(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                    color: Colors.white,
+              Expanded(
+                child: ShaderMask(
+                  shaderCallback: (bounds) =>
+                      HomePalette.logoGradient.createShader(bounds),
+                  child: Text(
+                    l10n.appTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.syne(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               _headerIconButton(
                 icon: Icons.history,
                 tooltip: l10n.historyTitle,
@@ -321,19 +325,19 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                   );
                 },
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               _headerIconButton(
                 icon: Icons.bookmarks_outlined,
                 tooltip: l10n.presetLibraryTitle,
                 onPressed: _openPresetLibrary,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               _headerIconButton(
                 icon: Icons.help_outline,
                 tooltip: l10n.showTutorial,
                 onPressed: _showTutorial,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               _headerIconButton(
                 icon: Icons.info_outline,
                 tooltip: l10n.aboutApp,

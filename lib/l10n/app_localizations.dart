@@ -248,6 +248,12 @@ abstract class AppLocalizations {
   /// **'サイコロの面の表示'**
   String get faceThemesList;
 
+  /// モバイル：面リスト見出しと長押し編集ヒントを1行にまとめた文言
+  ///
+  /// In ja, this message translates to:
+  /// **'面のテーマ（長押しで自分で入力）'**
+  String get faceThemesListWithLongPress;
+
   /// テーマ候補セクションのタイトル
   ///
   /// In ja, this message translates to:
@@ -373,12 +379,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'入れ替えたいテーマをタップ → 下の候補をタップ'**
   String get themeTapToReplaceHint;
-
-  /// モバイルでテーマ面を手入力するヒント
-  ///
-  /// In ja, this message translates to:
-  /// **'長押しで自分で入力'**
-  String get themeLongPressToEdit;
 
   /// 候補タップ時に面が未選択のとき
   ///
@@ -781,6 +781,24 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'タイマーを有効にする'**
   String get enableTimer;
+
+  /// サイコロセッション終了後の投票オプション
+  ///
+  /// In ja, this message translates to:
+  /// **'終了後に投票する'**
+  String get enableVoting;
+
+  /// セッション設定プレビュー：投票あり
+  ///
+  /// In ja, this message translates to:
+  /// **'終了後に投票あり'**
+  String get sessionPreviewVoting;
+
+  /// セッション設定プレビュー：投票なし
+  ///
+  /// In ja, this message translates to:
+  /// **'投票なし'**
+  String get sessionPreviewNoVoting;
 
   /// タイマー時間のラベル
   ///
