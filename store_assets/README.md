@@ -16,15 +16,17 @@ Talk Shuffle ストア素材（ドラフト）
 - screenshots/（撮影した画像の保存先：ios/, android/）
 - FIREBASE_DEPLOY.md（Firebase Hosting デプロイ手順）
 - IAP_SETUP.md（Pro アプリ内課金の商品 ID・ASC / サンドボックス手順）
+- GOOGLE_PLAY_LAUNCH.md（**Play 公開: Create app → クローズド 12×14 → 本番**）
+- play_feature_graphic.png（Play ストア Feature graphic 1024×500）
 - iap/（IAP 審査用スクショ）
 
-次にやること（ルート A — Pro 先出し）
-1) メタデータを ASC / Play に転記（本ファイル群）
-2) ペイウォール等のスクショを差し替え（任意だが推奨）
-3) `flutter build ipa` / Archive → ASC へアップロード
-4) 新バージョンに `talk_shuffle_pro` を紐づけて審査提出
+次にやること
+1) **Google Play** — [GOOGLE_PLAY_LAUNCH.md](GOOGLE_PLAY_LAUNCH.md) のチェックリストを上から消化
+2) メタデータを Play に転記（google_play_metadata_*.txt）
+3) AAB → クローズドテスト → テスター確保 → Production Access
+4) Play に `talk_shuffle_pro` を作成（IAP_SETUP.md Android 節）
 
 注意
-- 無料コア（お題・各モード）は維持。Pro はプリセット保存と履歴共有（[ROADMAP.md](../ROADMAP.md)）
-- 価格は仮 tier（例: ¥100）。本決めは Step 6
-- 機能の記述は現行実装に合わせて更新済み
+- Package name は **`com.talkseed.app`**（変更不可）
+- 無料コアは維持。Pro はひらめきモード + プリセット + 履歴共有（[ROADMAP.md](../ROADMAP.md)）
+- 個人アカウントはクローズド 12人×14日が本番申請の前提

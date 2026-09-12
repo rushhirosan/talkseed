@@ -11,6 +11,9 @@ enum ProFeature {
 
   /// プリセット新規保存（無料枠あり）
   presetSave,
+
+  /// ひらめきモード（マッシュアップ・ビンゴ）
+  sparkModes,
 }
 
 /// UI から Pro 可否を問い合わせる入口。未許可ならペイウォールを出す。
@@ -27,6 +30,7 @@ class ProAccess {
       ProFeature.presetSave => await PurchaseService.canSaveNewPreset(
           (await PresetService.listPresets()).length,
         ),
+      ProFeature.sparkModes => await PurchaseService.canUseSparkModes(),
     };
     if (allowed) {
       return true;

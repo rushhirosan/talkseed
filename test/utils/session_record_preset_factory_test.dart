@@ -96,4 +96,53 @@ void main() {
     expect(preset.mode, SessionPresetMode.dice);
     expect(preset.diceThemes, ['a', 'b', 'c', 'd', 'e', 'f']);
   });
+
+  test('mashup record saves preset from config snapshot', () async {
+    const config = SessionConfig(
+      playerCount: 3,
+      timerDuration: Duration(minutes: 1),
+      mashupEnabledAxisIds: ['category', 'angle', 'constraint'],
+    );
+    final record = SessionRecord.create(
+      mode: SessionRecord.modeMashup,
+      topics: const ['仕事の失敗談を30秒で'],
+      selectedCardsByPlayer: const {
+        'プレイヤー1': ['仕事の失敗談を30秒で'],
+      },
+      playerCount: 3,
+      sessionConfig: config,
+    );
+
+    final preset = await SessionRecordPresetFactory.saveAsPreset(
+      record: record,
+      name: 'Team mashup',
+    );
+    expect(preset.mode, SessionPresetMode.mashup);
+    expect(preset.sessionConfig?.mashupEnabledAxisIds,
+        ['category', 'angle', 'constraint']);
+  });
+
+  test('bingo record saves preset from config snapshot', () async {
+    const config = SessionConfig(
+      playerCount: 4,
+      timerDuration: Duration(minutes: 1),
+      bingoWinOnBlackout: true,
+    );
+    final record = SessionRecord.create(
+      mode: SessionRecord.modeBingo,
+      topics: const ['最近うれしかったこと'],
+      selectedCardsByPlayer: const {
+        'プレイヤー1': ['最近うれしかったこと'],
+      },
+      playerCount: 4,
+      sessionConfig: config,
+    );
+
+    final preset = await SessionRecordPresetFactory.saveAsPreset(
+      record: record,
+      name: 'Team bingo',
+    );
+    expect(preset.mode, SessionPresetMode.bingo);
+    expect(preset.sessionConfig?.bingoWinOnBlackout, isTrue);
+  });
 }

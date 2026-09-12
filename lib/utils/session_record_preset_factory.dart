@@ -62,6 +62,20 @@ class SessionRecordPresetFactory {
           diceThemes: themes,
           config: config,
         );
+      case SessionPresetMode.mashup:
+        final config = record.sessionConfig;
+        if (config == null ||
+            config.mashupEnabledAxisIds == null ||
+            config.mashupEnabledAxisIds!.isEmpty) {
+          throw StateError('preset_unavailable');
+        }
+        return PresetService.saveMashupPreset(name: name, config: config);
+      case SessionPresetMode.bingo:
+        final config = record.sessionConfig;
+        if (config == null) {
+          throw StateError('preset_unavailable');
+        }
+        return PresetService.saveBingoPreset(name: name, config: config);
     }
   }
 
@@ -85,6 +99,11 @@ class SessionRecordPresetFactory {
         return themes != null && themes.length == 6
             ? SessionPresetMode.dice
             : null;
+      case SessionRecord.modeMashup:
+        final ids = record.sessionConfig?.mashupEnabledAxisIds;
+        return ids != null && ids.isNotEmpty ? SessionPresetMode.mashup : null;
+      case SessionRecord.modeBingo:
+        return record.sessionConfig != null ? SessionPresetMode.bingo : null;
       default:
         return null;
     }

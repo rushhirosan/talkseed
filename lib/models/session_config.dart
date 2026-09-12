@@ -44,6 +44,21 @@ class SessionConfig {
   /// null なら全カテゴリ。空リスト [] は「1つも選んでいない」。非空ならそのカテゴリのみ。
   final List<String>? discussionCategoryIds;
 
+  /// マッシュアップのみ: 有効にする軸 ID（例: category, angle, constraint）
+  final List<String>? mashupEnabledAxisIds;
+
+  /// ビンゴのみ: true なら全マス埋め、false ならラインでビンゴ
+  final bool bingoWinOnBlackout;
+
+  /// ビンゴのみ: 中央マスを最初から埋める（FREE）
+  final bool bingoFreeCenter;
+
+  /// ビンゴのみ: 既に埋まったマスに隣接するマスだけ選べる
+  final bool bingoAdjacentOnly;
+
+  /// ビンゴのみ: お題を見ずにマスをめくってから話す
+  final bool bingoFlipMode;
+
   const SessionConfig({
     this.playMode = PlayMode.dice,
     required this.playerCount,
@@ -55,6 +70,11 @@ class SessionConfig {
     this.discussionPromptsPerCategory,
     this.discussionTotalPromptsOnTable,
     this.discussionCategoryIds,
+    this.mashupEnabledAxisIds,
+    this.bingoWinOnBlackout = false,
+    this.bingoFreeCenter = true,
+    this.bingoAdjacentOnly = false,
+    this.bingoFlipMode = false,
   })  : assert(playerCount >= 2 && playerCount <= 10, '参加人数は2-10人の範囲で設定してください'),
         assert(
           discussionPromptsPerCategory == null ||
@@ -78,6 +98,11 @@ class SessionConfig {
     discussionPromptsPerCategory: null,
     discussionTotalPromptsOnTable: null,
     discussionCategoryIds: null,
+    mashupEnabledAxisIds: null,
+    bingoWinOnBlackout: false,
+    bingoFreeCenter: true,
+    bingoAdjacentOnly: false,
+    bingoFlipMode: false,
   );
   
   /// プレイヤー名を取得（インデックスは0始まり、カスタム名がない場合はnull）
@@ -105,6 +130,12 @@ class SessionConfig {
     bool applyDiscussionTotalPromptsOnTable = false,
     List<String>? discussionCategoryIds,
     bool applyDiscussionCategoryIds = false,
+    List<String>? mashupEnabledAxisIds,
+    bool applyMashupEnabledAxisIds = false,
+    bool? bingoWinOnBlackout,
+    bool? bingoFreeCenter,
+    bool? bingoAdjacentOnly,
+    bool? bingoFlipMode,
   }) {
     return SessionConfig(
       playMode: playMode ?? this.playMode,
@@ -125,6 +156,13 @@ class SessionConfig {
       discussionCategoryIds: applyDiscussionCategoryIds
           ? discussionCategoryIds
           : this.discussionCategoryIds,
+      mashupEnabledAxisIds: applyMashupEnabledAxisIds
+          ? mashupEnabledAxisIds
+          : this.mashupEnabledAxisIds,
+      bingoWinOnBlackout: bingoWinOnBlackout ?? this.bingoWinOnBlackout,
+      bingoFreeCenter: bingoFreeCenter ?? this.bingoFreeCenter,
+      bingoAdjacentOnly: bingoAdjacentOnly ?? this.bingoAdjacentOnly,
+      bingoFlipMode: bingoFlipMode ?? this.bingoFlipMode,
     );
   }
 
@@ -144,6 +182,12 @@ class SessionConfig {
         'discussionTotalPromptsOnTable': discussionTotalPromptsOnTable,
       if (discussionCategoryIds != null)
         'discussionCategoryIds': discussionCategoryIds,
+      if (mashupEnabledAxisIds != null)
+        'mashupEnabledAxisIds': mashupEnabledAxisIds,
+      if (bingoWinOnBlackout) 'bingoWinOnBlackout': true,
+      if (!bingoFreeCenter) 'bingoFreeCenter': false,
+      if (bingoAdjacentOnly) 'bingoAdjacentOnly': true,
+      if (bingoFlipMode) 'bingoFlipMode': true,
     };
   }
 
@@ -167,6 +211,14 @@ class SessionConfig {
           (json['discussionCategoryIds'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(),
+      mashupEnabledAxisIds:
+          (json['mashupEnabledAxisIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      bingoWinOnBlackout: json['bingoWinOnBlackout'] as bool? ?? false,
+      bingoFreeCenter: json['bingoFreeCenter'] as bool? ?? true,
+      bingoAdjacentOnly: json['bingoAdjacentOnly'] as bool? ?? false,
+      bingoFlipMode: json['bingoFlipMode'] as bool? ?? false,
     );
   }
 

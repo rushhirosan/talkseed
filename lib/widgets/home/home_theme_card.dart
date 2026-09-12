@@ -9,6 +9,7 @@ class HomeThemeCard extends StatefulWidget {
   final Color accentColor;
   final VoidCallback onTap;
   final int animationIndex;
+  final String? badge;
 
   const HomeThemeCard({
     super.key,
@@ -18,6 +19,7 @@ class HomeThemeCard extends StatefulWidget {
     required this.accentColor,
     required this.onTap,
     this.animationIndex = 0,
+    this.badge,
   });
 
   @override
@@ -57,14 +59,14 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
           onTapCancel: () => setState(() => _pressed = false),
           onTap: widget.onTap,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             child: AnimatedContainer(
               duration: _duration,
               curve: _curve,
-              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               decoration: BoxDecoration(
                 color: _hovered ? HomePalette.surface2 : HomePalette.surface,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: _hovered
                       ? Colors.white.withValues(alpha: 0.12)
@@ -75,7 +77,7 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
                 children: [
                   SizedBox(
                     width: 3,
-                    height: 44,
+                    height: 36,
                     child: AnimatedOpacity(
                       duration: _duration,
                       curve: _curve,
@@ -88,12 +90,12 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 13),
+                  const SizedBox(width: 10),
                   SizedBox(
-                    width: 44,
-                    height: 44,
+                    width: 36,
+                    height: 36,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       child: AnimatedScale(
                         scale: _hovered ? 1.08 : 1,
                         duration: _duration,
@@ -102,13 +104,13 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: HomePalette.border),
                           ),
                           child: Center(
                             child: Icon(
                               widget.icon,
-                              size: 22,
+                              size: 18,
                               color: widget.accentColor,
                             ),
                           ),
@@ -116,28 +118,61 @@ class _HomeThemeCardState extends State<HomeThemeCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.name,
-                          style: GoogleFonts.zenKakuGothicNew(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: HomePalette.text,
-                            height: 1.2,
-                          ),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                widget.name,
+                                style: GoogleFonts.zenKakuGothicNew(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: HomePalette.text,
+                                  height: 1.15,
+                                ),
+                              ),
+                            ),
+                            if (widget.badge != null) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: HomePalette.accent
+                                      .withValues(alpha: 0.18),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: HomePalette.accent
+                                        .withValues(alpha: 0.45),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.badge!,
+                                  style: GoogleFonts.zenKakuGothicNew(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                    color: HomePalette.accent,
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 2),
                         Text(
                           widget.description,
                           style: GoogleFonts.zenKakuGothicNew(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w400,
-                            color: HomePalette.textMuted,
-                            height: 1.35,
+                            color: HomePalette.textSecondary,
+                            height: 1.25,
                           ),
                         ),
                       ],

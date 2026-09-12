@@ -30,7 +30,7 @@ void main() {
   });
 
   test('ignores unknown mode', () async {
-    await UsageStatsService.recordSessionCompleted('mashup');
+    await UsageStatsService.recordSessionCompleted('not_a_mode');
 
     final snapshot = await UsageStatsService.getSnapshot();
     expect(snapshot.totalByMode, isEmpty);

@@ -8,6 +8,8 @@ enum SessionPresetMode {
   groupDiscussion,
   valueCards,
   dice,
+  mashup,
+  bingo,
 }
 
 /// 名前付きセッション設定（Pro 向け機能の基盤）
@@ -109,6 +111,40 @@ class SessionPreset {
       name: name,
       mode: SessionPresetMode.dice,
       diceThemes: diceThemes,
+      sessionConfig: config,
+      updatedAt: updatedAt,
+      lastUsedAt: lastUsedAt,
+    );
+  }
+
+  factory SessionPreset.mashup({
+    required String id,
+    required String name,
+    required SessionConfig config,
+    required DateTime updatedAt,
+    DateTime? lastUsedAt,
+  }) {
+    return SessionPreset(
+      id: id,
+      name: name,
+      mode: SessionPresetMode.mashup,
+      sessionConfig: config,
+      updatedAt: updatedAt,
+      lastUsedAt: lastUsedAt,
+    );
+  }
+
+  factory SessionPreset.bingo({
+    required String id,
+    required String name,
+    required SessionConfig config,
+    required DateTime updatedAt,
+    DateTime? lastUsedAt,
+  }) {
+    return SessionPreset(
+      id: id,
+      name: name,
+      mode: SessionPresetMode.bingo,
       sessionConfig: config,
       updatedAt: updatedAt,
       lastUsedAt: lastUsedAt,

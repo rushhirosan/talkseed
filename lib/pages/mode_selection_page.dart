@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/utils/about_links_helper.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
+import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/utils/preset_launcher.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
@@ -13,6 +14,7 @@ import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/models/theme.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/services/purchase_service.dart';
 import 'package:theme_dice/widgets/home/home_ambient_background.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_random_button.dart';
@@ -20,7 +22,10 @@ import 'package:theme_dice/widgets/home/home_theme_card.dart';
 import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/preset_library_sheet.dart';
 import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 import 'initial_settings_page.dart';
+import 'bingo_setup_page.dart';
+import 'mashup_setup_page.dart';
 import 'session_setup_page.dart';
 import 'tutorial_page.dart';
 import 'package:theme_dice/pages/one_on_one_session_page.dart';
@@ -41,6 +46,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
   static const int _quickStartLimit = 3;
 
   bool _alwaysOpenWithDice = false;
+  bool _hasSparkModes = false;
   List<SessionPreset> _allPresets = [];
   List<SessionPreset> _quickStartPresets = [];
 
@@ -51,6 +57,13 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       _loadDefaultPlayMode();
     }
     _loadPresets();
+    _loadProAccess();
+  }
+
+  Future<void> _loadProAccess() async {
+    final hasSpark = await PurchaseService.canUseSparkModes();
+    if (!mounted) return;
+    setState(() => _hasSparkModes = hasSpark);
   }
 
   Future<void> _loadPresets() async {
@@ -139,6 +152,32 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     }
   }
 
+  Future<void> _goToMashup() async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.sparkModes,
+    );
+    if (!allowed || !mounted) return;
+    await Navigator.of(context).push(
+      RouteTransitions.forwardRoute(page: const MashupSetupPage()),
+    );
+    if (!mounted) return;
+    await _loadProAccess();
+  }
+
+  Future<void> _goToBingo() async {
+    final allowed = await ProAccess.ensure(
+      context,
+      feature: ProFeature.sparkModes,
+    );
+    if (!allowed || !mounted) return;
+    await Navigator.of(context).push(
+      RouteTransitions.forwardRoute(page: const BingoSetupPage()),
+    );
+    if (!mounted) return;
+    await _loadProAccess();
+  }
+
   Future<void> _launchQuickStartPreset(SessionPreset preset) async {
     await PresetLauncher.launch(context, preset);
     if (!mounted) return;
@@ -149,7 +188,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => TalkShuffleAlertDialog(
         title: Text(l10n.presetDeleteConfirmTitle),
         content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
         actions: [
@@ -210,9 +249,9 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         _buildCardLabel(l10n.presetQuickStartLabel),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         _buildQuickStartPresetStrip(l10n),
         PresetManageHint(text: l10n.presetDeleteHint),
         if (hasMorePresets)
@@ -221,7 +260,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             child: TextButton(
               onPressed: _openPresetLibrary,
               style: TextButton.styleFrom(
-                foregroundColor: HomePalette.textMuted,
+                foregroundColor: HomePalette.textSecondary,
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -231,7 +270,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                 style: _bodyFont(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: HomePalette.textMuted,
+                  color: HomePalette.textSecondary,
                 ),
               ),
             ),
@@ -245,7 +284,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildCardLabel(l10n.homeCardLabel),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         _buildTitle(l10n),
         _buildQuickStartSection(l10n),
       ],
@@ -289,7 +328,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 14, 16, 14),
+          padding: const EdgeInsets.fromLTRB(20, 10, 16, 10),
           decoration: const BoxDecoration(
             color: HomePalette.headerBg,
             border: Border(bottom: BorderSide(color: HomePalette.border)),
@@ -305,7 +344,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.syne(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.5,
                       color: Colors.white,
@@ -359,26 +398,26 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
       message: tooltip,
       child: Material(
         color: HomePalette.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           child: Container(
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: HomePalette.border),
             ),
-            child: Icon(icon, size: 20, color: HomePalette.textMuted),
+            child: Icon(icon, size: 18, color: HomePalette.textMuted),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildCardLabel(String text) {
+  Widget _buildCardLabel(String text, {String? badge}) {
     return Row(
       children: [
         Container(
@@ -401,22 +440,46 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             ),
           ),
         ),
+        if (badge != null) ...[
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: HomePalette.accent.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: HomePalette.accent.withValues(alpha: 0.45),
+              ),
+            ),
+            child: Text(
+              badge,
+              style: _bodyFont(
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                color: HomePalette.accent,
+                letterSpacing: 0.4,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
 
   Widget _buildTitle(AppLocalizations l10n) {
     const titleStyle = TextStyle(
-      fontSize: 42,
+      fontSize: 30,
       fontWeight: FontWeight.w900,
-      height: 1.1,
-      letterSpacing: -1.5,
+      height: 1.15,
+      letterSpacing: -1.0,
     );
+    // JA: 「テーマを選ぼう」はスペース不要 / EN: "Choose a theme" はスペースあり
+    final joiner = l10n.homeThemeTitleLine1.endsWith('を') ? '' : ' ';
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
-            text: '${l10n.homeThemeTitleLine1}\n',
+            text: '${l10n.homeThemeTitleLine1}$joiner',
             style: GoogleFonts.zenKakuGothicNew(
               color: HomePalette.text,
             ).merge(titleStyle),
@@ -453,36 +516,43 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
             children: [
               SafeArea(bottom: false, child: _buildHeader(l10n)),
               Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 40, 24, 48),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 520),
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0, end: 1),
-                        duration: const Duration(milliseconds: 600),
-                        curve: const Cubic(0.22, 1, 0.36, 1),
-                        builder: (context, value, child) {
-                          return Opacity(
-                            opacity: value,
-                            child: Transform.translate(
-                              offset: Offset(0, 32 * (1 - value)),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Column(
+                child: LayoutBuilder(
+                  builder: (context, viewport) {
+                    // 短い画面では余白をさらに詰めて一画面に収める
+                    final compact = viewport.maxHeight < 720;
+                    final sectionGap = compact ? 12.0 : 16.0;
+                    final cardGap = compact ? 6.0 : 8.0;
+                    final topPad = compact ? 12.0 : 16.0;
+                    final bottomPad = compact ? 16.0 : 24.0;
+
+                    return Center(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.fromLTRB(24, topPad, 24, bottomPad),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 520),
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 600),
+                            curve: const Cubic(0.22, 1, 0.36, 1),
+                            builder: (context, value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Transform.translate(
+                                  offset: Offset(0, 24 * (1 - value)),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _buildHeroSection(l10n),
-                                const SizedBox(height: 24),
+                                SizedBox(height: sectionGap),
                                 HomeRandomButton(
                                   label: l10n.homeRandomDecideLabel,
                                   onPressed: _goToDice,
                                 ),
-                                const SizedBox(height: 20),
+                                SizedBox(height: sectionGap),
                                 HomeThemeCard(
                                   icon: Icons.eco_outlined,
                                   name: l10n.homeThemeShortValues,
@@ -493,7 +563,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                                     CardDeckType.teamBuilding,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                SizedBox(height: cardGap),
                                 HomeThemeCard(
                                   icon: Icons.forum_outlined,
                                   name: l10n.homeThemeShortGroupDiscussion,
@@ -505,7 +575,7 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                                     CardDeckType.groupDiscussion,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                SizedBox(height: cardGap),
                                 HomeThemeCard(
                                   icon: Icons.psychology_outlined,
                                   name: l10n.homeThemeShortOneOnOne,
@@ -515,13 +585,37 @@ class _ModeSelectionPageState extends State<ModeSelectionPage> {
                                   onTap: () =>
                                       _goToWorkDeck(CardDeckType.oneOnOne),
                                 ),
+                                SizedBox(height: sectionGap),
+                                _buildCardLabel(
+                                  l10n.homeSparkModesLabel,
+                                  badge:
+                                      _hasSparkModes ? null : l10n.proBadge,
+                                ),
+                                SizedBox(height: cardGap),
+                                HomeThemeCard(
+                                  icon: Icons.shuffle_rounded,
+                                  name: l10n.homeThemeShortMashup,
+                                  description: l10n.homeThemeDescMashup,
+                                  accentColor: HomePalette.accentOrange,
+                                  animationIndex: 3,
+                                  onTap: _goToMashup,
+                                ),
+                                SizedBox(height: cardGap),
+                                HomeThemeCard(
+                                  icon: Icons.grid_3x3_rounded,
+                                  name: l10n.homeThemeShortBingo,
+                                  description: l10n.homeThemeDescBingo,
+                                  accentColor: const Color(0xFF4ECDC4),
+                                  animationIndex: 4,
+                                  onTap: _goToBingo,
+                                ),
                               ],
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ],

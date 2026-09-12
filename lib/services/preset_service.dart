@@ -146,6 +146,51 @@ class PresetService {
     return preset;
   }
 
+  static Future<SessionPreset> saveMashupPreset({
+    required String name,
+    required SessionConfig config,
+    String? existingId,
+  }) async {
+    final trimmed = _validateName(name);
+    _validateMashupConfig(config);
+    final presets = await _loadAll();
+    await _ensureCapacity(presets, existingId);
+
+    final now = DateTime.now();
+    final preset = SessionPreset.mashup(
+      id: existingId ?? now.microsecondsSinceEpoch.toString(),
+      name: trimmed,
+      config: _mashupSessionConfigSnapshot(config),
+      updatedAt: now,
+      lastUsedAt: _preservedLastUsedAt(presets, existingId),
+    );
+
+    await _upsert(presets, preset);
+    return preset;
+  }
+
+  static Future<SessionPreset> saveBingoPreset({
+    required String name,
+    required SessionConfig config,
+    String? existingId,
+  }) async {
+    final trimmed = _validateName(name);
+    final presets = await _loadAll();
+    await _ensureCapacity(presets, existingId);
+
+    final now = DateTime.now();
+    final preset = SessionPreset.bingo(
+      id: existingId ?? now.microsecondsSinceEpoch.toString(),
+      name: trimmed,
+      config: _bingoSessionConfigSnapshot(config),
+      updatedAt: now,
+      lastUsedAt: _preservedLastUsedAt(presets, existingId),
+    );
+
+    await _upsert(presets, preset);
+    return preset;
+  }
+
   static String _validateName(String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) {
@@ -180,6 +225,13 @@ class PresetService {
     }
   }
 
+  static void _validateMashupConfig(SessionConfig config) {
+    final ids = config.mashupEnabledAxisIds;
+    if (ids == null || ids.isEmpty) {
+      throw PresetValidationException.invalidConfig();
+    }
+  }
+
   static SessionConfig _basicSessionConfigSnapshot(SessionConfig config) {
     return SessionConfig(
       playerCount: config.playerCount,
@@ -187,6 +239,33 @@ class PresetService {
       enableTimer: config.enableTimer,
       enableVoting: config.enableVoting,
       playerNames: config.playerNames,
+    );
+  }
+
+  static SessionConfig _mashupSessionConfigSnapshot(SessionConfig config) {
+    return SessionConfig(
+      playerCount: config.playerCount,
+      timerDuration: config.timerDuration,
+      enableTimer: config.enableTimer,
+      enableVoting: config.enableVoting,
+      playerNames: config.playerNames,
+      mashupEnabledAxisIds: config.mashupEnabledAxisIds == null
+          ? null
+          : List<String>.from(config.mashupEnabledAxisIds!),
+    );
+  }
+
+  static SessionConfig _bingoSessionConfigSnapshot(SessionConfig config) {
+    return SessionConfig(
+      playerCount: config.playerCount,
+      timerDuration: config.timerDuration,
+      enableTimer: config.enableTimer,
+      enableVoting: config.enableVoting,
+      playerNames: config.playerNames,
+      bingoWinOnBlackout: config.bingoWinOnBlackout,
+      bingoFreeCenter: config.bingoFreeCenter,
+      bingoAdjacentOnly: config.bingoAdjacentOnly,
+      bingoFlipMode: config.bingoFlipMode,
     );
   }
 

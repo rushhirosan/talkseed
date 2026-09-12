@@ -4,6 +4,7 @@ import 'package:theme_dice/pages/mode_selection_page.dart';
 import 'package:theme_dice/pages/session_history_page.dart';
 import 'package:theme_dice/services/review_prompt_service.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// セッション終了後の共通ダイアログ（終了 → トップ、履歴 → 履歴画面）。
 class SessionEndDialog {
@@ -35,7 +36,7 @@ class SessionEndDialog {
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => TalkShuffleAlertDialog(
         title: Text(title ?? l10n.sessionSummary),
         content: Text(message ?? l10n.sessionCompleteAcknowledgeMessage),
         actions: [

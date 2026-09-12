@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/services/purchase_service.dart';
 import 'package:theme_dice/widgets/pro_paywall_sheet.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// サポート・プライバシーポリシーへのリンクを表示する共通ヘルパー
 class AboutLinksHelper {
@@ -23,7 +24,7 @@ class AboutLinksHelper {
   static void showAboutSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final parentContext = context;
-    showModalBottomSheet<void>(
+    showTalkShuffleModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (ctx) => SafeArea(

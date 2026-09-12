@@ -478,13 +478,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get proPaywallTitle => 'Talk Shuffle Pro';
 
   @override
-  String get proPaywallSubtitle => 'よく使う設定の保存と、履歴の共有が使えます。';
+  String get proPaywallSubtitle => 'ひらめきモードと、よく使う設定の保存・履歴共有が使えます。';
+
+  @override
+  String get proBenefitSparkModes => 'ひらめきモード（マッシュアップ・会話ビンゴ）';
 
   @override
   String get proBenefitExport => 'セッション履歴をテキストで共有';
 
   @override
   String get proBenefitPreset => '名前付きプリセットを保存（最大10件）';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get homeSparkModesLabel => 'ひらめきモード';
 
   @override
   String get proUnlock => 'Pro を購入';
@@ -1214,6 +1223,294 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeThemeDescOneOnOne => '今日の型を選んで進める';
+
+  @override
+  String get homeThemeShortMashup => 'マッシュアップ';
+
+  @override
+  String get homeThemeDescMashup => 'テーマ×切り口で毎回違うお題';
+
+  @override
+  String get mashupTitle => 'マッシュアップ';
+
+  @override
+  String get mashupAxesLabel => '使う軸';
+
+  @override
+  String get mashupSpin => 'ぜんぶ回す';
+
+  @override
+  String get mashupSpinAgain => 'もう一度回す';
+
+  @override
+  String get mashupSpinHint => '回すとお題ができます';
+
+  @override
+  String get mashupLockAxis => 'この軸を固定する';
+
+  @override
+  String get mashupUnlockAxis => '固定を解除する';
+
+  @override
+  String get historyModeMashup => 'マッシュアップ';
+
+  @override
+  String get historyFilterMashup => 'マッシュアップ';
+
+  @override
+  String get historyMashupPromptsTitle => '話したお題';
+
+  @override
+  String get mashupAllAxesLocked => '固定を1つ以上外してから回してください';
+
+  @override
+  String get mashupLeaveTitle => 'セッションを終了しますか？';
+
+  @override
+  String get mashupLeaveMessage => '進行中の内容は保存されません。';
+
+  @override
+  String get mashupLeaveConfirm => '終了する';
+
+  @override
+  String get mashupEmptySessionTitle => 'お題がありません';
+
+  @override
+  String get mashupEmptySessionMessage => 'まだお題が出ていません。このまま終了しますか？';
+
+  @override
+  String get tutorialMashup => 'マッシュアップ';
+
+  @override
+  String get tutorialMashupBody =>
+      'テーマ・切り口・制約を組み合わせて、毎回違うお題を作れます（Pro のひらめきモード）。軸を固定して一部だけ振り直すこともできます。';
+
+  @override
+  String get presetModeMashup => 'マッシュアップ';
+
+  @override
+  String get presetModeSectionMashup => 'マッシュアップ';
+
+  @override
+  String get presetSaveDialogHintMashup => '例: 雑談3人・制約あり';
+
+  @override
+  String presetSummaryMashupAxes(int count) {
+    return '$count軸';
+  }
+
+  @override
+  String get homeThemeShortBingo => 'ビンゴ';
+
+  @override
+  String get homeThemeDescBingo => '最大6人・盤は人数で変化';
+
+  @override
+  String get bingoTitle => '会話ビンゴ';
+
+  @override
+  String get bingoSetupHint =>
+      '3×3 または 5×5 のお題ボードを配ります。人数は最大6人。マスを取り合って点数を稼ぎ、ラインが揃うとビンゴです。';
+
+  @override
+  String bingoBoardSizeHint(int rows, int cols) {
+    return '盤面: $rows×$cols（人数に応じて自動）';
+  }
+
+  @override
+  String get bingoWinModeLabel => '終了条件';
+
+  @override
+  String get bingoWinModeLine => 'ラインでビンゴ';
+
+  @override
+  String get bingoWinModeBlackout => '全部埋める';
+
+  @override
+  String get bingoPickHint => 'マスを選んで話そう';
+
+  @override
+  String get bingoMarkCell => '話した';
+
+  @override
+  String get bingoHotHint => 'あと1マスでビンゴ！';
+
+  @override
+  String get bingoFreeCenterLabel => '中央マスはFREE';
+
+  @override
+  String get bingoFreeCenterHint => '最初から中央が埋まっている定番ルール';
+
+  @override
+  String get bingoFreeCenterBadge => 'FREE';
+
+  @override
+  String get bingoAdjacentOnlyLabel => '隣接マスのみ';
+
+  @override
+  String get bingoAdjacentOnlyHint => '埋まったマスに隣接するマスだけ選べる';
+
+  @override
+  String get bingoAdjacentBlocked => '埋まったマスに隣接するマスを選んでください';
+
+  @override
+  String get bingoFlipModeLabel => 'めくりモード';
+
+  @override
+  String get bingoFlipModeHint => 'お題は隠したまま。タップでめくってから話します';
+
+  @override
+  String get bingoFlipPickHint => 'マスをタップしてめくろう';
+
+  @override
+  String get bingoFlipHiddenBadge => '?';
+
+  @override
+  String get bingoFlipAdjacentOnlyLabel => '隣接マスのみ（めくり）';
+
+  @override
+  String get bingoFlipAdjacentOnlyHint => '埋まったマスの隣だけめくれる。進路が縛られます';
+
+  @override
+  String get bingoJam => '封じる';
+
+  @override
+  String get bingoJamThisCell => 'このマスを封じる（1回）';
+
+  @override
+  String get bingoJamNeedSelect => '先にマスを選んでから封じる';
+
+  @override
+  String get bingoJamDone => '次の人の番まで封じました';
+
+  @override
+  String get bingoJammedCell => 'このマスは封じられています';
+
+  @override
+  String get bingoExtraTurn => 'ボーナス！もう1ターン';
+
+  @override
+  String bingoPointsGained(int count) {
+    return '+$count点';
+  }
+
+  @override
+  String get bingoBonusCellHint => 'ボーナスマス：＋点＆もう1ターン';
+
+  @override
+  String get bingoScoreTitle => 'スコア';
+
+  @override
+  String bingoScorePoints(int count) {
+    return '$count点';
+  }
+
+  @override
+  String bingoWinner(String name) {
+    return '$name の勝ち！';
+  }
+
+  @override
+  String get bingoTie => '引き分け';
+
+  @override
+  String get bingoBingoTitle => 'ビンゴ！';
+
+  @override
+  String get bingoBingoMessageLine => 'ラインが揃いました。続けますか？';
+
+  @override
+  String get bingoBingoMessageBlackout => 'マスが埋まりました。';
+
+  @override
+  String get bingoContinue => '続ける';
+
+  @override
+  String get historyModeBingo => 'ビンゴ';
+
+  @override
+  String get historyFilterBingo => 'ビンゴ';
+
+  @override
+  String get historyBingoPromptsTitle => '話したお題';
+
+  @override
+  String get bingoLeaveTitle => 'セッションを終了しますか？';
+
+  @override
+  String get bingoLeaveMessage => '進行中の内容は保存されません。';
+
+  @override
+  String get bingoLeaveConfirm => '終了する';
+
+  @override
+  String get bingoEmptySessionTitle => 'お題がありません';
+
+  @override
+  String get bingoEmptySessionMessage => 'まだマスを埋めていません。このまま終了しますか？';
+
+  @override
+  String get tutorialBingo => '会話ビンゴ';
+
+  @override
+  String get tutorialBingoBody =>
+      '人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。設定画面の「ヒント」から詳しい遊び方を確認できます。';
+
+  @override
+  String get bingoTipsTitle => '会話ビンゴのヒント';
+
+  @override
+  String get bingoTipsOpen => 'ヒント';
+
+  @override
+  String get bingoTipsCta => '遊び方ヒントを見る';
+
+  @override
+  String get bingoTipBasicTitle => 'マスを選んで話す';
+
+  @override
+  String get bingoTipBasicBody =>
+      'お題ボードからマスを選び、話したら「話した」で埋めます。手番は順番に回り、埋めたマスには自分の色と番号が付きます。一度埋めたマスは取れません。人数は最大6人です。';
+
+  @override
+  String get bingoTipBoardTitle => 'FREEとホットマス';
+
+  @override
+  String get bingoTipBoardBody =>
+      '2〜3人は3×3、4〜6人は5×5の盤になります。「中央マスはFREE」がオンだと中央が最初から埋まっています。オレンジに光るマスは、あと1つでライン完成です。';
+
+  @override
+  String get bingoTipScoreTitle => '点数の付き方';
+
+  @override
+  String get bingoTipScoreBody =>
+      'マスを埋めると+1、ライン完成で+3。ギフト印のボーナスマスは+2ともう1ターン。自分のマスの隣を埋めると+1、連続ターンだとさらに+2です。';
+
+  @override
+  String get bingoTipRulesTitle => '隣接と封じる';
+
+  @override
+  String get bingoTipRulesBody =>
+      '「隣接マスのみ」は、埋まったマスの隣だけ選べます。話しにくいお題にも寄ることがあります。「封じる」は選んだマスを次の人の番までロック（各1回）。';
+
+  @override
+  String get bingoTipEndTitle => 'ビンゴと終わり方';
+
+  @override
+  String get bingoTipEndBody =>
+      'デフォルトはラインが揃ったらビンゴ。続けても、セッション終了でもOKです。「全部埋める」ルールにも切り替えられます。';
+
+  @override
+  String get presetModeBingo => 'ビンゴ';
+
+  @override
+  String get presetSummaryBingoFlip => 'めくり';
+
+  @override
+  String get presetModeSectionBingo => 'ビンゴ';
+
+  @override
+  String get presetSaveDialogHintBingo => '例: 雑談4人・ライン';
 
   @override
   String get presetSectionLabel => 'マイプリセット';

@@ -23,9 +23,12 @@ class ThemeDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inset = useHomeStyle
+        ? const EdgeInsets.symmetric(horizontal: 4)
+        : const EdgeInsets.symmetric(horizontal: 32);
     if (selectedTheme != null) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: inset,
         child: _BounceThemeResult(
           key: ValueKey(selectedTheme),
           selectedTheme: selectedTheme!,
@@ -38,14 +41,14 @@ class ThemeDisplay extends StatelessWidget {
         ? l10n.selectThemePromptCard
         : l10n.selectThemePrompt;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: inset,
       child: Text(
         prompt,
         textAlign: TextAlign.center,
         style: useHomeStyle
             ? GoogleFonts.zenKakuGothicNew(
                 fontSize: 16,
-                color: HomePalette.textMuted,
+                color: HomePalette.textSecondary,
               )
             : TextStyle(
                 fontSize: 16,
@@ -79,13 +82,16 @@ class _BounceThemeResult extends StatelessWidget {
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.elasticOut,
+      duration: Duration(milliseconds: useHomeStyle ? 280 : 600),
+      curve: useHomeStyle ? Curves.easeOutCubic : Curves.elasticOut,
       builder: (context, value, child) {
         return Transform.scale(scale: value, child: child);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: EdgeInsets.symmetric(
+          horizontal: useHomeStyle ? 16 : 24,
+          vertical: useHomeStyle ? 12 : 20,
+        ),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(16),
@@ -104,10 +110,10 @@ class _BounceThemeResult extends StatelessWidget {
           selectedTheme,
           style: useHomeStyle
               ? GoogleFonts.zenKakuGothicNew(
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: textColor,
-                  height: 1.4,
+                  height: 1.35,
                 )
               : const TextStyle(
                   fontSize: 22,

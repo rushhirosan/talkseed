@@ -18,7 +18,6 @@ import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/widgets/dice_widget.dart';
 import 'package:theme_dice/widgets/theme_display.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
-import 'package:theme_dice/widgets/player_indicator.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
@@ -28,6 +27,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
+import 'package:theme_dice/widgets/play/play_session_ui.dart';
 
 /// サイコロゲームのメインページ。
 /// 3Dサイコロのアニメーション、テーマ表示、セッション（複数プレイヤー・タイマー）を担当。
@@ -590,7 +590,7 @@ class _DicePageState extends State<DicePage>
 
   TextStyle _mutedStyle({double fontSize = 13}) => GoogleFonts.zenKakuGothicNew(
         fontSize: fontSize,
-        color: HomePalette.textMuted,
+        color: HomePalette.textSecondary,
       );
 
   @override
@@ -605,133 +605,110 @@ class _DicePageState extends State<DicePage>
       ),
       body: _showingVoteScreen && _session != null
           ? _buildVoteBody(l10n)
-          : SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width,
-            minHeight: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).padding.top -
-                kToolbarHeight,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 12),
+          : _buildPlayBody(l10n),
+    );
+  }
 
-              // プレイヤー表示（セッション中の場合）
-              if (_session != null) ...[
-                PlayerIndicator(
-                  currentPlayerIndex: _session!.currentPlayerIndex,
-                  totalPlayers: _session!.config.playerCount,
-                  currentPlayerName: _session!.currentPlayerName,
-                  useHomeStyle: true,
-                ),
-                const SizedBox(height: 10),
-              ],
+  Widget _buildPlayBody(AppLocalizations l10n) {
+    final showNext = _session != null && _selectedTheme != null;
+    Widget? timer;
+    if (_session != null &&
+        _session!.config.enableTimer &&
+        _timerService != null) {
+      timer = TimerDisplay(
+        timerService: _timerService,
+        onPause: _toggleTimer,
+        onResume: _toggleTimer,
+        onExtendOneMinute: _extendTimerOneMinute,
+        useHomeStyle: true,
+      );
+    }
 
-              // タイマー表示（セッション中でタイマー有効の場合）
-              if (_session != null && _session!.config.enableTimer && _timerService != null) ...[
-                TimerDisplay(
-                  timerService: _timerService,
-                  onPause: _toggleTimer,
-                  onResume: _toggleTimer,
-                  onExtendOneMinute: _extendTimerOneMinute,
-                  useHomeStyle: true,
-                ),
-                const SizedBox(height: 10),
-              ],
-
-              const SizedBox(height: 12),
-
-              // サイコロ表示エリア（アニメーション付き）
-              // diceDisplaySize を使用し回転時に角が切れない十分な領域を確保
-              SizedBox(
-                width: Dice3DUtils.diceDisplaySize + 40,
-                height: Dice3DUtils.diceDisplaySize + 40,
-                child: Center(
-                  child: Builder(
-                    builder: (context) {
-                      // _themesが変更されたときにも再構築されるようにする
-                      final l10n = AppLocalizations.of(context)!;
-                      final currentThemes = ThemeModel.getThemesForType(_selectedPolyhedronType, _themes ?? {}, l10n);
-
-                      return AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, child) {
-                          if (!_isDiceVisible) {
-                            return const SizedBox.shrink();
-                          }
-
-                          final progress = _animationController.value;
-                          final curveValue = Curves.easeOutCubic.transform(progress);
-
-                          // 回転値の補間
-                          final currentX = _startRotationX + (_endRotationX - _startRotationX) * curveValue;
-                          final currentY = _startRotationY + (_endRotationY - _startRotationY) * curveValue;
-                          final currentZ = _startRotationZ + (_endRotationZ - _startRotationZ) * curveValue;
-
-                          return DiceWidget(
-                            rotX: currentX,
-                            rotY: currentY,
-                            rotZ: currentZ,
-                            polyhedronType: _selectedPolyhedronType,
-                            themes: currentThemes,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
+    return PlayStickyChrome(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
+      header: _session == null
+          ? null
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: PlaySessionMetaBar(
+                currentPlayerIndex: _session!.currentPlayerIndex,
+                totalPlayers: _session!.config.playerCount,
+                currentPlayerName: _session!.currentPlayerName,
+                trailing: timer,
               ),
-
-              const SizedBox(height: 36),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: HomePrimaryButton(
-                  label: l10n.rollDice,
-                  icon: Icons.casino,
-                  onPressed: _rollDice,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              ThemeDisplay(
-                selectedTheme: _selectedTheme,
-                useHomeStyle: true,
-              ),
-
-              const SizedBox(height: 16),
-
-              // セッション中の場合、次のプレイヤー／セッション終了ボタンを表示
-              if (_session != null && _selectedTheme != null) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: HomePrimaryButton(
-                    label: _session!.isLastPlayer
-                        ? l10n.endSession
-                        : l10n.nextPlayer,
-                    icon: _session!.isLastPlayer
-                        ? Icons.check_circle
-                        : Icons.arrow_forward,
-                    onPressed: _nextPlayer,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-              ],
-              // 画面下部に余白を確保（セーフエリア＋追加マージン）
-              SizedBox(
-                height: MediaQuery.of(context).padding.bottom + 32,
-              ),
-            ],
+            ),
+      body: Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox(
+            width: Dice3DUtils.diceDisplaySize + 24,
+            height: Dice3DUtils.diceDisplaySize + 24,
+            child: _buildDice(),
           ),
         ),
       ),
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          HomePrimaryButton(
+            label: l10n.rollDice,
+            icon: Icons.casino,
+            onPressed: _rollDice,
+          ),
+          const SizedBox(height: 10),
+          ThemeDisplay(
+            selectedTheme: _selectedTheme,
+            useHomeStyle: true,
+          ),
+          if (showNext) ...[
+            const SizedBox(height: 10),
+            PlayOutlineButton(
+              label: _session!.isLastPlayer ? l10n.endSession : l10n.nextPlayer,
+              onPressed: _nextPlayer,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDice() {
+    return Builder(
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        final currentThemes = ThemeModel.getThemesForType(
+          _selectedPolyhedronType,
+          _themes ?? {},
+          l10n,
+        );
+
+        return AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            if (!_isDiceVisible) {
+              return const SizedBox.shrink();
+            }
+
+            final progress = _animationController.value;
+            final curveValue = Curves.easeOutCubic.transform(progress);
+
+            final currentX =
+                _startRotationX + (_endRotationX - _startRotationX) * curveValue;
+            final currentY =
+                _startRotationY + (_endRotationY - _startRotationY) * curveValue;
+            final currentZ =
+                _startRotationZ + (_endRotationZ - _startRotationZ) * curveValue;
+
+            return DiceWidget(
+              rotX: currentX,
+              rotY: currentY,
+              rotZ: currentZ,
+              polyhedronType: _selectedPolyhedronType,
+              themes: currentThemes,
+            );
+          },
+        );
+      },
     );
   }
 

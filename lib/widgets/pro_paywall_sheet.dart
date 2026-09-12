@@ -5,15 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/services/purchase_service.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// Pro 案内（簡易ペイウォール）。購入・復元成功で true を返す。
 Future<bool?> showProPaywallSheet(BuildContext context) {
-  return showModalBottomSheet<bool>(
+  return showTalkShuffleModalBottomSheet<bool>(
     context: context,
-    backgroundColor: HomePalette.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+    isScrollControlled: true,
     builder: (ctx) => const _ProPaywallSheet(),
   );
 }
@@ -39,7 +37,7 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
   TextStyle get _bodyStyle => GoogleFonts.zenKakuGothicNew(
         fontSize: 14,
         height: 1.45,
-        color: HomePalette.textMuted,
+        color: HomePalette.textSecondary,
       );
 
   @override
@@ -134,52 +132,63 @@ class _ProPaywallSheetState extends State<_ProPaywallSheet> {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(l10n.proPaywallTitle, style: _titleStyle),
-            const SizedBox(height: 8),
-            Text(l10n.proPaywallSubtitle, style: _bodyStyle),
-            const SizedBox(height: 16),
-            _BenefitRow(text: l10n.proBenefitExport),
-            _BenefitRow(text: l10n.proBenefitPreset),
-            if (kDebugMode && !useStore) ...[
-              const SizedBox(height: 12),
-              Text(l10n.proDebugHint, style: _bodyStyle),
-            ],
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: _busy || _loadingPrice ? null : _onPurchase,
-              style: FilledButton.styleFrom(
-                backgroundColor: HomePalette.accent,
-                foregroundColor: HomePalette.bg,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: _busy || _loadingPrice
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(
-                      _purchaseLabel(l10n),
-                      style: GoogleFonts.zenKakuGothicNew(
-                        fontWeight: FontWeight.w700,
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.proPaywallTitle, style: _titleStyle),
+              const SizedBox(height: 8),
+              Text(l10n.proPaywallSubtitle, style: _bodyStyle),
+              const SizedBox(height: 16),
+              _BenefitRow(text: l10n.proBenefitSparkModes),
+              _BenefitRow(text: l10n.proBenefitExport),
+              _BenefitRow(text: l10n.proBenefitPreset),
+              if (kDebugMode && !useStore) ...[
+                const SizedBox(height: 12),
+                Text(l10n.proDebugHint, style: _bodyStyle),
+              ],
+              const SizedBox(height: 20),
+              FilledButton(
+                onPressed: _busy || _loadingPrice ? null : _onPurchase,
+                style: FilledButton.styleFrom(
+                  backgroundColor: HomePalette.accent,
+                  foregroundColor: HomePalette.bg,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: _busy || _loadingPrice
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(
+                        _purchaseLabel(l10n),
+                        style: GoogleFonts.zenKakuGothicNew(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-            ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: _busy ? null : _onRestore,
-              child: Text(l10n.proRestore),
-            ),
-            TextButton(
-              onPressed: _busy ? null : () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel),
-            ),
-          ],
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: _busy ? null : _onRestore,
+                style: TextButton.styleFrom(
+                  foregroundColor: HomePalette.textSecondary,
+                  visualDensity: VisualDensity.compact,
+                ),
+                child: Text(l10n.proRestore),
+              ),
+              TextButton(
+                onPressed: _busy ? null : () => Navigator.of(context).pop(false),
+                style: TextButton.styleFrom(
+                  foregroundColor: HomePalette.textSecondary,
+                  visualDensity: VisualDensity.compact,
+                ),
+                child: Text(l10n.cancel),
+              ),
+            ],
+          ),
         ),
       ),
     );

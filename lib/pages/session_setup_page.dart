@@ -12,6 +12,7 @@ import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:theme_dice/widgets/home/home_toggle_icon_button.dart';
 import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 import '../models/card_deck.dart';
 import '../models/session_config.dart' show SessionConfig;
 import '../models/polyhedron_type.dart';
@@ -83,14 +84,14 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   TextStyle _hintStyle() => GoogleFonts.zenKakuGothicNew(
         fontSize: 13,
         height: 1.35,
-        color: HomePalette.textMuted,
+        color: HomePalette.textSecondary,
       );
 
   TextStyle _bodyStyle({double fontSize = 14, FontWeight weight = FontWeight.w400}) =>
       GoogleFonts.zenKakuGothicNew(
         fontSize: fontSize,
         fontWeight: weight,
-        color: const Color(0xFFB8B8D4),
+        color: HomePalette.textSecondary,
       );
 
   static const double _stackedLayoutBreakpoint = 560;
@@ -386,6 +387,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         );
       case SessionPresetMode.oneOnOne:
         throw StateError('oneOnOne preset is not supported on SessionSetupPage');
+      case SessionPresetMode.mashup:
+        throw StateError('mashup preset is not supported on SessionSetupPage');
+      case SessionPresetMode.bingo:
+        throw StateError('bingo preset is not supported on SessionSetupPage');
     }
   }
 
@@ -399,6 +404,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         return l10n.presetSaveDialogHintDice;
       case SessionPresetMode.oneOnOne:
         return l10n.presetSaveDialogHint;
+      case SessionPresetMode.mashup:
+        return l10n.presetSaveDialogHintMashup;
+      case SessionPresetMode.bingo:
+        return l10n.presetSaveDialogHintBingo;
     }
   }
 
@@ -434,7 +443,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     final saved = await showDialog<bool>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return TalkShuffleAlertDialog(
           title: Text(l10n.presetSaveDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -443,7 +452,14 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
               TextField(
                 controller: controller,
                 autofocus: true,
-                decoration: InputDecoration(hintText: hint),
+                cursorColor: HomePalette.accent,
+                style: GoogleFonts.zenKakuGothicNew(
+                  fontSize: 14,
+                  color: HomePalette.text,
+                ),
+                decoration: TalkShuffleAlertDialog.inputDecoration(
+                  hintText: hint,
+                ),
                 onSubmitted: (_) => Navigator.of(ctx).pop(true),
               ),
               const SizedBox(height: 12),
@@ -497,6 +513,10 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           );
         case SessionPresetMode.oneOnOne:
           break;
+        case SessionPresetMode.mashup:
+          break;
+        case SessionPresetMode.bingo:
+          break;
       }
       if (!mounted) return;
       await _loadSavedPresets();
@@ -523,7 +543,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => TalkShuffleAlertDialog(
         title: Text(l10n.presetDeleteConfirmTitle),
         content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
         actions: [
@@ -808,7 +828,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           const SizedBox(height: 12),
           TextButton.icon(
             onPressed: () => _showSavePresetDialog(l10n),
-            icon: Icon(Icons.bookmark_add_outlined, color: HomePalette.textMuted),
+            icon: Icon(Icons.bookmark_add_outlined, color: HomePalette.textSecondary),
             label: Text(
               l10n.presetSave,
               style: _bodyStyle(fontSize: 14, weight: FontWeight.w600),
@@ -1182,37 +1202,34 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     void Function(T?)? onChanged,
   }) {
     final disabled = onChanged == null;
-    return Opacity(
-      opacity: disabled ? 0.55 : 1,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        decoration: BoxDecoration(
-          color: HomePalette.surface2,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: HomePalette.border),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<T>(
-            value: value,
-            isExpanded: true,
-            dropdownColor: HomePalette.surface2,
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: disabled ? HomePalette.textMuted : HomePalette.text,
-            ),
-            style: GoogleFonts.zenKakuGothicNew(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: disabled ? HomePalette.textMuted : HomePalette.text,
-            ),
-            items: items.map((v) {
-              return DropdownMenuItem<T>(
-                value: v,
-                child: Text(labelBuilder(v)),
-              );
-            }).toList(),
-            onChanged: onChanged,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: HomePalette.surface2,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: HomePalette.border),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isExpanded: true,
+          dropdownColor: HomePalette.surface2,
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: disabled ? HomePalette.textMuted : HomePalette.text,
           ),
+          style: GoogleFonts.zenKakuGothicNew(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: disabled ? HomePalette.textMuted : HomePalette.text,
+          ),
+          items: items.map((v) {
+            return DropdownMenuItem<T>(
+              value: v,
+              child: Text(labelBuilder(v)),
+            );
+          }).toList(),
+          onChanged: onChanged,
         ),
       ),
     );

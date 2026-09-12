@@ -258,9 +258,13 @@
   "@proPaywallTitle": {
     "description": "Pro paywall title"
   },
-  "proPaywallSubtitle": "Save presets you reuse often, and share session history.",
+  "proPaywallSubtitle": "Unlock Spark modes, save presets, and share session history.",
   "@proPaywallSubtitle": {
     "description": "Pro paywall subtitle"
+  },
+  "proBenefitSparkModes": "Spark modes (Mashup & Conversation bingo)",
+  "@proBenefitSparkModes": {
+    "description": "Pro benefit: spark modes"
   },
   "proBenefitExport": "Share session history as text",
   "@proBenefitExport": {
@@ -269,6 +273,14 @@
   "proBenefitPreset": "Save named presets (up to 10)",
   "@proBenefitPreset": {
     "description": "Pro benefit: presets"
+  },
+  "proBadge": "Pro",
+  "@proBadge": {
+    "description": "Small Pro badge on gated mode cards"
+  },
+  "homeSparkModesLabel": "Spark modes",
+  "@homeSparkModesLabel": {
+    "description": "Home section label for mashup and bingo"
   },
   "proUnlock": "Buy Pro",
   "@proUnlock": {
@@ -432,6 +444,124 @@
   "historyModeDiscussion": "Group",
   "historyFilterDiscussion": "Group",
   "historyModeOneOnOne": "1-on-1",
+  "homeThemeShortMashup": "Mashup",
+  "homeThemeDescMashup": "Topic x angle, never the same twice",
+  "mashupTitle": "Mashup",
+  "mashupAxesLabel": "Reels in play",
+  "mashupSpin": "Spin all",
+  "mashupSpinAgain": "Spin again",
+  "mashupSpinHint": "Spin to build a prompt",
+  "mashupLockAxis": "Lock this reel",
+  "mashupUnlockAxis": "Unlock this reel",
+  "historyModeMashup": "Mashup",
+  "historyFilterMashup": "Mashup",
+  "historyMashupPromptsTitle": "Prompts discussed",
+  "mashupAllAxesLocked": "Unlock at least one reel before spinning",
+  "mashupLeaveTitle": "Leave this session?",
+  "mashupLeaveMessage": "Your progress will not be saved.",
+  "mashupLeaveConfirm": "Leave",
+  "mashupEmptySessionTitle": "No prompts yet",
+  "mashupEmptySessionMessage": "You have not spun any prompts yet. End anyway?",
+  "tutorialMashup": "Mashup",
+  "tutorialMashupBody": "Combine topic, angle, and twist into a fresh prompt (Pro Spark modes). Lock a reel to re-spin only part of it.",
+  "presetModeMashup": "Mashup",
+  "presetModeSectionMashup": "Mashup",
+  "presetSaveDialogHintMashup": "e.g. Casual trio with twist",
+  "presetSummaryMashupAxes": "{count} reels",
+  "@presetSummaryMashupAxes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeThemeShortBingo": "Bingo",
+  "homeThemeDescBingo": "Up to 6 players, board scales",
+  "bingoTitle": "Conversation bingo",
+  "bingoSetupHint": "We'll deal a 3×3 or 5×5 prompt board (max 6 players). Claim squares, score points, and complete a line for bingo.",
+  "bingoBoardSizeHint": "Board: {rows}×{cols} (scales with player count)",
+  "@bingoBoardSizeHint": {
+    "placeholders": {
+      "rows": { "type": "int" },
+      "cols": { "type": "int" }
+    }
+  },
+  "bingoWinModeLabel": "Win condition",
+  "bingoWinModeLine": "Bingo on a line",
+  "bingoWinModeBlackout": "Fill the board",
+  "bingoPickHint": "Pick a square to talk about",
+  "bingoMarkCell": "Marked it",
+  "bingoHotHint": "One more square for bingo!",
+  "bingoFreeCenterLabel": "FREE center",
+  "bingoFreeCenterHint": "Classic rule: the center square starts marked",
+  "bingoFreeCenterBadge": "FREE",
+  "bingoAdjacentOnlyLabel": "Adjacent picks only",
+  "bingoAdjacentOnlyHint": "You can only pick squares next to a marked one",
+  "bingoAdjacentBlocked": "Pick a square next to a marked one",
+  "bingoFlipModeLabel": "Flip mode",
+  "bingoFlipModeHint": "Topics stay hidden until you tap to flip a square",
+  "bingoFlipPickHint": "Tap a square to flip it",
+  "bingoFlipHiddenBadge": "?",
+  "bingoFlipAdjacentOnlyLabel": "Adjacent flips only",
+  "bingoFlipAdjacentOnlyHint": "You can only flip squares next to a marked one",
+  "bingoJam": "Block",
+  "bingoJamThisCell": "Block this square (once)",
+  "bingoJamNeedSelect": "Pick a square first, then block",
+  "bingoJamDone": "Blocked until the next player finishes",
+  "bingoJammedCell": "That square is blocked",
+  "bingoExtraTurn": "Bonus! Extra turn",
+  "bingoPointsGained": "+{count} pts",
+  "@bingoPointsGained": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bingoBonusCellHint": "Bonus square: extra points and an extra turn",
+  "bingoScoreTitle": "Score",
+  "bingoScorePoints": "{count} pts",
+  "@bingoScorePoints": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bingoWinner": "{name} wins!",
+  "@bingoWinner": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "bingoTie": "It's a tie",
+  "bingoBingoTitle": "Bingo!",
+  "bingoBingoMessageLine": "You completed a line. Keep going?",
+  "bingoBingoMessageBlackout": "The board is full.",
+  "bingoContinue": "Keep going",
+  "historyModeBingo": "Bingo",
+  "historyFilterBingo": "Bingo",
+  "historyBingoPromptsTitle": "Prompts discussed",
+  "bingoLeaveTitle": "Leave this session?",
+  "bingoLeaveMessage": "Your progress will not be saved.",
+  "bingoLeaveConfirm": "Leave",
+  "bingoEmptySessionTitle": "No prompts yet",
+  "bingoEmptySessionMessage": "You have not marked any squares yet. End anyway?",
+  "tutorialBingo": "Conversation bingo",
+  "tutorialBingoBody": "Up to 6 players. Boards are 3×3 for 2–3 people and 5×5 for 4–6 (Pro Spark modes). Open Hints on the bingo setup screen for the full how-to.",
+  "bingoTipsTitle": "Conversation bingo hints",
+  "bingoTipsOpen": "Hints",
+  "bingoTipsCta": "See how to play",
+  "bingoTipBasicTitle": "Pick a square and talk",
+  "bingoTipBasicBody": "Choose a square, talk it through, then tap Marked it. Turns rotate, and claimed squares get your color and number. Marked squares can't be taken again. Max 6 players.",
+  "bingoTipBoardTitle": "FREE and hot squares",
+  "bingoTipBoardBody": "2–3 players get a 3×3 board; 4–6 get 5×5. With FREE center on, the middle starts marked. Orange hot squares are one mark away from completing a line.",
+  "bingoTipScoreTitle": "How scoring works",
+  "bingoTipScoreBody": "Marking a square is +1, completing a line is +3. A gift bonus square is +2 plus an extra turn. Adjacent to your own square is +1; a consecutive turn adds +2.",
+  "bingoTipRulesTitle": "Adjacent picks and blocks",
+  "bingoTipRulesBody": "Adjacent only means you can only pick next to a marked square — sometimes a tougher prompt. Block locks the selected square until the next player finishes (once each).",
+  "bingoTipEndTitle": "Bingo and ending",
+  "bingoTipEndBody": "By default, a completed line is bingo. Keep going or end the session. You can also switch to fill-the-board mode.",
+  "presetModeBingo": "Bingo",
+  "presetSummaryBingoFlip": "Flip",
+  "presetModeSectionBingo": "Bingo",
+  "presetSaveDialogHintBingo": "e.g. Casual 4, line bingo",
   "historyFilterOneOnOne": "1-on-1",
   "historyOneOnOnePromptsTitle": "Prompts discussed",
   "historyOneOnOneSubtitle": "{count} phases",

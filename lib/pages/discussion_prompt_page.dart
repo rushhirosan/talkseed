@@ -551,148 +551,143 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
     final picking = _flowPhase == _FlowPhase.pickingTopics;
     final pickingEnabled = picking && _session != null && _session!.isActive;
 
+    Widget? stickyFooter;
+    if (picking &&
+        _session != null &&
+        _session!.isActive &&
+        _totalCards > 0) {
+      stickyFooter = Opacity(
+        opacity: _selectionReadyForProceed ? 1 : 0.45,
+        child: PlayPrimaryButton(
+          label: l10n.discussionKickoffStartButton,
+          onPressed:
+              _selectionReadyForProceed ? _proceedToDiscussionPhase : null,
+        ),
+      );
+    } else if (_session != null &&
+        _session!.isActive &&
+        _flowPhase == _FlowPhase.discussion) {
+      final showNextRound = _discussionPromptsRounds.length > 1 &&
+          _currentDiscussionRound < _discussionPromptsRounds.length - 1;
+      stickyFooter = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showNextRound) ...[
+            PlayOutlineButton(
+              label: l10n.discussionNextRoundButton,
+              onPressed: _goToNextDiscussionRound,
+            ),
+            const SizedBox(height: 10),
+          ],
+          PlayPrimaryButton(
+            label: l10n.discussionEndDiscussionButton,
+            icon: Icons.check_circle,
+            onPressed: _endDiscussionSession,
+          ),
+        ],
+      );
+    }
+
     return PlaySessionScaffold(
       title: widget.deckTitle,
       onBack: _goBack,
       backTooltip: l10n.backToSettings,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          playScreenHorizontalPadding,
-          playScreenVerticalPadding,
-          playScreenHorizontalPadding,
-          24,
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_flowPhase == _FlowPhase.discussion &&
-                  _session != null &&
-                  _session!.isActive) ...[
-                _buildDiscussionActiveGroupHint(l10n),
-                const SizedBox(height: 12),
-                if (_session!.config.enableTimer && _timerService != null) ...[
-                  PlayTimerPanel(
-                    timerService: _timerService!,
-                    onPause: _toggleTimer,
-                    onResume: _toggleTimer,
-                    onExtendOneMinute: _extendTimerOneMinute,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ],
-              if (picking)
-                Text(
-                  l10n.discussionHint,
-                  style: PlayTextStyles.hint(),
-                  textAlign: TextAlign.center,
-                ),
-              if (picking && _discussionTargetCount > 0) ...[
-                const SizedBox(height: 10),
-                Text(
-                  l10n.discussionPickTopicsInstruction(_discussionTargetCount),
-                  style: PlayTextStyles.bodyEmphasis(),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.discussionSelectionProgress(
-                    _selectedDiscussionIds.length,
-                    _discussionTargetCount,
-                  ),
-                  textAlign: TextAlign.center,
-                  style: PlayTextStyles.caption(),
-                ),
-                if (_discussionTargetCount == _totalCards &&
-                    _selectedDiscussionIds.isEmpty) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.discussionPickTopicsAllOrSelectHint,
-                    textAlign: TextAlign.center,
-                    style: PlayTextStyles.timerNote(),
-                  ),
-                ],
-              ],
-              if (picking) const SizedBox(height: 16),
-              if (picking &&
-                  _session != null &&
-                  _session!.isActive &&
-                  _totalCards > 0)
-                Text(
-                  widget.discussionDeckType != null &&
-                          cardDeckTypeUsesCategorizedDiscussion(
-                            widget.discussionDeckType!,
-                          )
-                      ? l10n.discussionTableSummary(
-                          widget.sessionConfig.discussionPromptsPerCategory ??
-                              1,
-                          _totalCards,
-                        )
-                      : l10n.discussionTotalCardsOnTable(_totalCards),
-                  textAlign: TextAlign.center,
-                  style: PlayTextStyles.caption(),
-                ),
-              if (picking) const SizedBox(height: 16),
-              if (picking) ...[
-                Text(
-                  l10n.discussionPickFromCardsHeading,
-                  textAlign: TextAlign.center,
-                  style: PlayTextStyles.sectionTitle(),
-                ),
-                const SizedBox(height: 10),
-                ..._groups.map(
-                  (g) => _buildCategoryRow(
-                    group: g,
-                    ts: ts,
-                    pickingEnabled: pickingEnabled,
-                  ),
-                ),
-              ],
-              if (picking &&
-                  _session != null &&
-                  _session!.isActive &&
-                  _totalCards > 0) ...[
-                const SizedBox(height: 16),
-                _buildPickingKickoffSummary(l10n),
-                const SizedBox(height: 12),
-                Opacity(
-                  opacity: _selectionReadyForProceed ? 1 : 0.45,
-                  child: PlayPrimaryButton(
-                    label: l10n.discussionKickoffStartButton,
-                    onPressed: _selectionReadyForProceed
-                        ? _proceedToDiscussionPhase
-                        : null,
-                  ),
-                ),
-              ],
-              if (_showMainPromptCard) ...[
-                const SizedBox(height: 16),
-                _buildMainPromptCard(l10n, ts),
-              ],
-              if (_session != null &&
-                  _session!.isActive &&
-                  _flowPhase == _FlowPhase.discussion &&
-                  _discussionPromptsRounds.length > 1 &&
-                  _currentDiscussionRound <
-                      _discussionPromptsRounds.length - 1) ...[
-                const SizedBox(height: 14),
-                PlayOutlineButton(
-                  label: l10n.discussionNextRoundButton,
-                  onPressed: _goToNextDiscussionRound,
-                ),
-              ],
-              if (_session != null &&
-                  _session!.isActive &&
-                  _flowPhase == _FlowPhase.discussion) ...[
-                const SizedBox(height: 24),
-                PlayPrimaryButton(
-                  label: l10n.discussionEndDiscussionButton,
-                  icon: Icons.check_circle,
-                  onPressed: _endDiscussionSession,
-                ),
-              ],
+      body: PlayPageScroll(
+        stickyFooter: stickyFooter,
+        children: [
+          if (_flowPhase == _FlowPhase.discussion &&
+              _session != null &&
+              _session!.isActive) ...[
+            _buildDiscussionActiveGroupHint(l10n),
+            const SizedBox(height: 12),
+            if (_session!.config.enableTimer && _timerService != null) ...[
+              PlayTimerPanel(
+                timerService: _timerService!,
+                onPause: _toggleTimer,
+                onResume: _toggleTimer,
+                onExtendOneMinute: _extendTimerOneMinute,
+              ),
+              const SizedBox(height: 16),
             ],
-          ),
-        ),
+          ],
+          if (picking)
+            Text(
+              l10n.discussionHint,
+              style: PlayTextStyles.hint(),
+              textAlign: TextAlign.center,
+            ),
+          if (picking && _discussionTargetCount > 0) ...[
+            const SizedBox(height: 10),
+            Text(
+              l10n.discussionPickTopicsInstruction(_discussionTargetCount),
+              style: PlayTextStyles.bodyEmphasis(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              l10n.discussionSelectionProgress(
+                _selectedDiscussionIds.length,
+                _discussionTargetCount,
+              ),
+              textAlign: TextAlign.center,
+              style: PlayTextStyles.caption(),
+            ),
+            if (_discussionTargetCount == _totalCards &&
+                _selectedDiscussionIds.isEmpty) ...[
+              const SizedBox(height: 6),
+              Text(
+                l10n.discussionPickTopicsAllOrSelectHint,
+                textAlign: TextAlign.center,
+                style: PlayTextStyles.timerNote(),
+              ),
+            ],
+          ],
+          if (picking) const SizedBox(height: 16),
+          if (picking &&
+              _session != null &&
+              _session!.isActive &&
+              _totalCards > 0)
+            Text(
+              widget.discussionDeckType != null &&
+                      cardDeckTypeUsesCategorizedDiscussion(
+                        widget.discussionDeckType!,
+                      )
+                  ? l10n.discussionTableSummary(
+                      widget.sessionConfig.discussionPromptsPerCategory ?? 1,
+                      _totalCards,
+                    )
+                  : l10n.discussionTotalCardsOnTable(_totalCards),
+              textAlign: TextAlign.center,
+              style: PlayTextStyles.caption(),
+            ),
+          if (picking) const SizedBox(height: 16),
+          if (picking) ...[
+            Text(
+              l10n.discussionPickFromCardsHeading,
+              textAlign: TextAlign.center,
+              style: PlayTextStyles.sectionTitle(),
+            ),
+            const SizedBox(height: 10),
+            ..._groups.map(
+              (g) => _buildCategoryRow(
+                group: g,
+                ts: ts,
+                pickingEnabled: pickingEnabled,
+              ),
+            ),
+            if (_session != null &&
+                _session!.isActive &&
+                _totalCards > 0) ...[
+              const SizedBox(height: 16),
+              _buildPickingKickoffSummary(l10n),
+            ],
+          ],
+          if (_showMainPromptCard) ...[
+            const SizedBox(height: 16),
+            _buildMainPromptCard(l10n, ts),
+          ],
+        ],
+      ),
     );
   }
 }

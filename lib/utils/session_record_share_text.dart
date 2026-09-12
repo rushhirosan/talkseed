@@ -31,7 +31,9 @@ String formatSessionRecordShareText(
   }
 
   final hideFlatTopics = (record.mode == SessionRecord.modeDiscussion ||
-          record.mode == SessionRecord.modeOneOnOne) &&
+          record.mode == SessionRecord.modeOneOnOne ||
+          record.mode == SessionRecord.modeMashup ||
+          record.mode == SessionRecord.modeBingo) &&
       record.selectedCardsByPlayer.isNotEmpty;
   if (record.topics.isNotEmpty && !hideFlatTopics) {
     buffer.writeln();
@@ -63,7 +65,11 @@ String formatSessionRecordShareText(
     buffer.writeln(
       record.mode == SessionRecord.modeDiscussion
           ? l10n.historyDiscussionPromptsTitle
-          : l10n.historySelectedCardsTitle,
+          : record.mode == SessionRecord.modeMashup
+              ? l10n.historyMashupPromptsTitle
+              : record.mode == SessionRecord.modeBingo
+                  ? l10n.historyBingoPromptsTitle
+                  : l10n.historySelectedCardsTitle,
     );
     for (final entry in record.selectedCardsByPlayer.entries) {
       buffer.writeln();
@@ -80,9 +86,16 @@ String formatSessionRecordShareText(
 
   if (record.voteResults.isNotEmpty) {
     buffer.writeln();
-    buffer.writeln(l10n.voteResultsTitle);
+    buffer.writeln(
+      record.mode == SessionRecord.modeBingo
+          ? l10n.bingoScoreTitle
+          : l10n.voteResultsTitle,
+    );
     for (final entry in record.voteResults.entries) {
-      buffer.writeln('${entry.key} — ${l10n.voteCount(entry.value)}');
+      final amount = record.mode == SessionRecord.modeBingo
+          ? l10n.bingoScorePoints(entry.value)
+          : l10n.voteCount(entry.value);
+      buffer.writeln('${entry.key} — $amount');
     }
   }
 
@@ -101,6 +114,10 @@ String _modeLabel(AppLocalizations l10n, String mode) {
       return l10n.historyModeDiscussion;
     case SessionRecord.modeOneOnOne:
       return l10n.historyModeOneOnOne;
+    case SessionRecord.modeMashup:
+      return l10n.historyModeMashup;
+    case SessionRecord.modeBingo:
+      return l10n.historyModeBingo;
     case SessionRecord.modeDice:
     default:
       return l10n.historyModeDice;

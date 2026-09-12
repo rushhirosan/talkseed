@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,12 +32,22 @@ class PlaySessionScaffold extends StatelessWidget {
     final baseTheme = Theme.of(context);
     final playTheme = baseTheme.copyWith(
       colorScheme: baseTheme.colorScheme.copyWith(
+        surface: HomePalette.surface,
         onSurface: PlayColors.text,
         onSurfaceVariant: PlayColors.textSecondary,
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: HomePalette.surface,
+        surfaceTintColor: Colors.transparent,
       ),
       textTheme: baseTheme.textTheme.apply(
         bodyColor: PlayColors.text,
         displayColor: PlayColors.text,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: HomePalette.accent,
+        ),
       ),
     );
 
@@ -64,8 +76,7 @@ class PlaySessionScaffold extends StatelessWidget {
 /// プレイ画面共通色（セッション設定などと同じ [HomePalette]）。
 abstract final class PlayColors {
   static const text = HomePalette.text;
-  /// ダーク背景でも読める補助テキスト（[HomePalette.textMuted] より明るめ）
-  static const textSecondary = Color(0xFFB8B8D4);
+  static const textSecondary = HomePalette.textSecondary;
   static const textMuted = HomePalette.textMuted;
   static const surface = HomePalette.surface2;
   static const border = HomePalette.border;
@@ -76,7 +87,8 @@ abstract final class PlayTextStyles {
   /// [emphasis] 1.0 = そのまま、それ未満は不透明度で弱める（旧ライトテーマ API 互換）
   static Color _emphasis(Color base, double emphasis) {
     if (emphasis >= 1) return base;
-    return base.withValues(alpha: emphasis.clamp(0.35, 1.0));
+    // 暗背景では 0.35 まで落とすと読めなくなる
+    return base.withValues(alpha: emphasis.clamp(0.72, 1.0));
   }
 
   static TextStyle _base({
@@ -158,29 +170,157 @@ abstract final class PlayTextStyles {
 }
 
 /// ディスカッション画面と同じ 1 本スクロールの本文。
+/// 内容が画面に収まるときはスクロールせず、[stickyFooter] は常に画面内に残す。
 class PlayPageScroll extends StatelessWidget {
   final List<Widget> children;
   final double bottomPadding;
+  final Widget? stickyFooter;
 
   const PlayPageScroll({
     super.key,
     required this.children,
     this.bottomPadding = 24,
+    this.stickyFooter,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        playScreenHorizontalPadding,
-        playScreenVerticalPadding,
-        playScreenHorizontalPadding,
-        bottomPadding,
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final scrollPadding = EdgeInsets.fromLTRB(
+      playScreenHorizontalPadding,
+      playScreenVerticalPadding,
+      playScreenHorizontalPadding,
+      stickyFooter == null ? bottomPadding : 12,
+    );
+
+    final scroll = LayoutBuilder(
+      builder: (context, constraints) {
+        final maxH = constraints.maxHeight;
+        final minHeight = maxH.isFinite
+            ? math.max(0.0, maxH - scrollPadding.vertical)
+            : 0.0;
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          padding: scrollPadding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: minHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            ),
+          ),
+        );
+      },
+    );
+
+    if (stickyFooter == null) return scroll;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(child: scroll),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            playScreenHorizontalPadding,
+            4,
+            playScreenHorizontalPadding,
+            8 + bottomInset,
+          ),
+          child: stickyFooter,
+        ),
+      ],
+    );
+  }
+}
+
+/// ヘッダーとフッター（主CTA）を画面内に残し、中央は余白に合わせて伸縮する。
+/// [scrollBody] が true のとき中央だけスクロールし、フッターは常に見える。
+class PlayStickyChrome extends StatelessWidget {
+  final Widget? header;
+  final Widget body;
+  final Widget footer;
+  final EdgeInsetsGeometry padding;
+  final bool scrollBody;
+
+  const PlayStickyChrome({
+    super.key,
+    this.header,
+    required this.body,
+    required this.footer,
+    this.padding = const EdgeInsets.fromLTRB(20, 8, 20, 8),
+    this.scrollBody = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final resolved = padding.resolve(Directionality.of(context));
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    return Padding(
+      padding: resolved.copyWith(
+        bottom: resolved.bottom + (bottomInset > 0 ? bottomInset : 8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
+        children: [
+          ?header,
+          Expanded(
+            child: scrollBody
+                ? SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: body,
+                  )
+                : body,
+          ),
+          footer,
+        ],
       ),
+    );
+  }
+}
+
+/// プレイヤーとタイマーを 1 行にまとめて縦方向のスペースを節約する。
+class PlaySessionMetaBar extends StatelessWidget {
+  final int currentPlayerIndex;
+  final int totalPlayers;
+  final String? currentPlayerName;
+  final Widget? trailing;
+  final bool useHomeStyle;
+
+  const PlaySessionMetaBar({
+    super.key,
+    required this.currentPlayerIndex,
+    required this.totalPlayers,
+    this.currentPlayerName,
+    this.trailing,
+    this.useHomeStyle = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final indicator = PlayerIndicator(
+      currentPlayerIndex: currentPlayerIndex,
+      totalPlayers: totalPlayers,
+      currentPlayerName: currentPlayerName,
+      useHomeStyle: useHomeStyle,
+    );
+    if (trailing == null) {
+      return Center(child: indicator);
+    }
+    return Row(
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: indicator,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        trailing!,
+      ],
     );
   }
 }

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/models/session_preset.dart';
+import 'package:theme_dice/pages/bingo_page.dart';
 import 'package:theme_dice/pages/discussion_prompt_page.dart';
 import 'package:theme_dice/pages/dice_page.dart';
+import 'package:theme_dice/pages/mashup_page.dart';
 import 'package:theme_dice/pages/one_on_one_session_page.dart';
 import 'package:theme_dice/pages/value_card_page.dart';
+import 'package:theme_dice/services/bingo_picker.dart';
+import 'package:theme_dice/services/bingo_service.dart';
+import 'package:theme_dice/services/mashup_service.dart';
 import 'package:theme_dice/services/preset_service.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
+import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
 
 /// 保存済みプリセットからセッションを起動する
@@ -33,6 +40,24 @@ class PresetLauncher {
         await _launchValueCards(context, preset);
       case SessionPresetMode.dice:
         await _launchDice(context, preset);
+      case SessionPresetMode.mashup:
+        final allowed = await ProAccess.ensure(
+          context,
+          feature: ProFeature.sparkModes,
+        );
+        if (!allowed || !context.mounted) {
+          return;
+        }
+        await _launchMashup(context, preset);
+      case SessionPresetMode.bingo:
+        final allowed = await ProAccess.ensure(
+          context,
+          feature: ProFeature.sparkModes,
+        );
+        if (!allowed || !context.mounted) {
+          return;
+        }
+        await _launchBingo(context, preset);
     }
   }
 
@@ -130,6 +155,59 @@ class PresetLauncher {
           initialType: PolyhedronType.cube,
           initialThemes: {PolyhedronType.cube: themes},
           sessionConfig: config,
+        ),
+      ),
+    );
+  }
+
+  static Future<void> _launchMashup(
+    BuildContext context,
+    SessionPreset preset,
+  ) async {
+    final config = preset.sessionConfig;
+    final axisIds = config?.mashupEnabledAxisIds;
+    if (config == null || axisIds == null || axisIds.isEmpty) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final deck = await MashupService.loadDeck(languageCode: l10n.localeName);
+    final axes = deck.axes.where((a) => axisIds.contains(a.id)).toList();
+    if (axes.isEmpty || !context.mounted) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      RouteTransitions.forwardRoute(
+        page: MashupPage(deck: deck, axes: axes, config: config),
+      ),
+    );
+  }
+
+  static Future<void> _launchBingo(
+    BuildContext context,
+    SessionPreset preset,
+  ) async {
+    final config = preset.sessionConfig;
+    if (config == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final deck = await BingoService.loadDeck(languageCode: l10n.localeName);
+    if (!context.mounted) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      RouteTransitions.forwardRoute(
+        page: BingoPage(
+          board: BingoPicker(deck: deck).deal(
+            playerCount: config.playerCount.clamp(2, BingoBoard.maxPlayers),
+          ),
+          config: config.playerCount > BingoBoard.maxPlayers
+              ? config.copyWith(playerCount: BingoBoard.maxPlayers)
+              : config,
         ),
       ),
     );

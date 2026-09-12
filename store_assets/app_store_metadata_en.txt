@@ -5,18 +5,19 @@ Subtitle (30 chars max):
 Pick a topic fast
 
 Promotional Text:
-Topics stay free. Pro unlocks presets and history sharing. 1:1, dice, and decks. JA & EN.
+Core modes stay free. Pro unlocks Spark modes, presets, and history sharing. JA & EN.
 
 Description:
 Talk Shuffle helps you choose a conversation topic quickly and naturally.
 Roll a 3D dice for a random prompt, or use curated card decks designed for work and reflection.
 
-Core modes and prompts stay free. Optional Talk Shuffle Pro unlocks named preset saves and text sharing of session history.
+Core modes and prompts stay free. Optional Talk Shuffle Pro unlocks Spark modes (Mashup & Conversation bingo), named preset saves, and text sharing of session history.
 
 Highlights
 - 3D dice to select a topic at random
 - Drag & drop to set your topic candidates
 - Card decks for work and reflection (values, group discussion, self-reflection, 1:1)
+- Spark modes: Mashup and Conversation bingo (Pro)
 - Player count and name setup
 - Optional timer
 - Session history stored on device
@@ -43,11 +44,11 @@ Privacy Policy URL:
 https://talk-seed.web.app/privacy.html
 
 What's New (4000 chars max):
-Introducing optional Talk Shuffle Pro (in-app purchase).
+Spark modes are now included with Talk Shuffle Pro.
 
-• Core topics and modes stay free
-• Pro: save named presets to reuse your session setup
-• Pro: share session history as text
+• Core modes (dice, values, group discussion, 1:1) stay free
+• Pro: Mashup and Conversation bingo (Spark modes)
+• Pro: named presets and session history sharing
 • Restore purchases if you already own Pro
 
 See the App Store for current pricing.

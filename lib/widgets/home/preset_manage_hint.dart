@@ -18,13 +18,14 @@ class PresetManageHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor =
-        usePlayStyle ? PlayColors.textMuted : HomePalette.textMuted;
+    final iconColor = usePlayStyle
+        ? PlayColors.textSecondary
+        : HomePalette.textSecondary;
     final textStyle = usePlayStyle
         ? PlayTextStyles.hint()
         : GoogleFonts.zenKakuGothicNew(
             fontSize: 12,
-            color: HomePalette.textMuted,
+            color: HomePalette.textSecondary,
             height: 1.4,
           );
 

@@ -295,4 +295,37 @@ void main() {
     expect(restored.sessionConfig?.playerCount, 4);
     expect(restored.sessionConfig?.enableVoting, true);
   });
+
+  test('saveMashupPreset stores axis ids in config', () async {
+    const config = SessionConfig(
+      playerCount: 3,
+      timerDuration: Duration(minutes: 1),
+      mashupEnabledAxisIds: ['category', 'angle'],
+    );
+
+    await PresetService.saveMashupPreset(name: 'Casual mashup', config: config);
+
+    final presets =
+        await PresetService.listPresets(mode: SessionPresetMode.mashup);
+    expect(presets, hasLength(1));
+    expect(presets.single.name, 'Casual mashup');
+    expect(presets.single.sessionConfig?.mashupEnabledAxisIds,
+        ['category', 'angle']);
+  });
+
+  test('saveBingoPreset stores win mode in config', () async {
+    const config = SessionConfig(
+      playerCount: 4,
+      timerDuration: Duration(minutes: 1),
+      bingoWinOnBlackout: true,
+    );
+
+    await PresetService.saveBingoPreset(name: 'Icebreaker bingo', config: config);
+
+    final presets =
+        await PresetService.listPresets(mode: SessionPresetMode.bingo);
+    expect(presets, hasLength(1));
+    expect(presets.single.name, 'Icebreaker bingo');
+    expect(presets.single.sessionConfig?.bingoWinOnBlackout, isTrue);
+  });
 }

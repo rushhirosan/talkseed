@@ -22,6 +22,8 @@ class UsageStatsService {
     SessionRecord.modeValueCards,
     SessionRecord.modeDiscussion,
     SessionRecord.modeOneOnOne,
+    SessionRecord.modeMashup,
+    SessionRecord.modeBingo,
   };
 
   /// セッション完了時に呼ぶ（[SessionRecordService.addRecord] から連携）

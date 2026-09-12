@@ -197,8 +197,9 @@ class _ValueCardTutorialPageState extends State<ValueCardTutorialPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Transform.rotate(
-                angle: -0.1,
+              // 黄色ロゴバナー（回転なし。rotate すると角が欠ける）
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: isNarrowScreen ? 16 : 24,

@@ -93,7 +93,7 @@ class HomePresetChip extends StatelessWidget {
                   style: GoogleFonts.zenKakuGothicNew(
                     fontSize: 11,
                     height: 1.2,
-                    color: HomePalette.textMuted,
+                    color: HomePalette.textSecondary,
                   ),
                 ),
               ],

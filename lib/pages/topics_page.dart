@@ -18,6 +18,7 @@ import '../widgets/card_draw_widget.dart';
 import 'mode_selection_page.dart';
 import 'session_setup_page.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
+import 'package:theme_dice/widgets/play/play_session_ui.dart';
 
 /// トピックカード/リストでテーマを引いて遊ぶ画面（案B: 初期画面「カードで遊ぶ」またはセッション設定で選択）
 class TopicsPage extends StatefulWidget {
@@ -448,37 +449,38 @@ class _TopicsPageState extends State<TopicsPage> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
+        bottom: false,
+        child: PlayStickyChrome(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+          header: _session == null
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: PlaySessionMetaBar(
+                    currentPlayerIndex: _session!.currentPlayerIndex,
+                    totalPlayers: _session!.config.playerCount,
+                    currentPlayerName: _session!.currentPlayerName,
+                    useHomeStyle: false,
+                    trailing: _session!.config.enableTimer &&
+                            _timerService != null
+                        ? TimerDisplay(
+                            timerService: _timerService!,
+                            onPause: _toggleTimer,
+                            onResume: _toggleTimer,
+                            onExtendOneMinute: _extendTimerOneMinute,
+                          )
+                        : null,
+                  ),
+                ),
+          scrollBody: true,
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_session != null) ...[
-                PlayerIndicator(
-                  currentPlayerIndex: _session!.currentPlayerIndex,
-                  totalPlayers: _session!.config.playerCount,
-                  currentPlayerName: _session!.currentPlayerName,
-                ),
-                const SizedBox(height: 16),
-              ],
-              if (_session != null &&
-                  _session!.config.enableTimer &&
-                  _timerService != null) ...[
-                TimerDisplay(
-                  timerService: _timerService!,
-                  onPause: _toggleTimer,
-                  onResume: _toggleTimer,
-                  onExtendOneMinute: _extendTimerOneMinute,
-                ),
-                const SizedBox(height: 16),
-              ],
               if (_isCheckInCheckOutMode) ...[
                 _buildPhaseSegment(l10n),
                 const SizedBox(height: 16),
               ],
-              const SizedBox(height: 24),
-              // チェックイン・チェックアウト専用UI
               if (_isCheckInCheckOutMode) ...[
                 if (_phase == _CheckInPhase.before) ...[
                   if (!_hasCheckInSelection) ...[
@@ -570,7 +572,6 @@ class _TopicsPageState extends State<TopicsPage> {
                     ),
                   ],
                 ] else ...[
-                  // 会議後
                   if (!_hasCheckOutSelection) ...[
                     Text(
                       l10n.checkInPickOnePrompt,
@@ -597,12 +598,13 @@ class _TopicsPageState extends State<TopicsPage> {
                     Center(
                       child: CardDrawWidget(
                         theme: _selectedCheckOutItem!.text,
-                        levelLabel: _levelLabel(l10n, _selectedCheckOutItem!.level),
+                        levelLabel:
+                            _levelLabel(l10n, _selectedCheckOutItem!.level),
                         onDrawRequest: _reselectQuestion,
                         canDraw: true,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _reselectQuestion,
                       icon: const Icon(Icons.refresh, color: _black),
@@ -630,7 +632,6 @@ class _TopicsPageState extends State<TopicsPage> {
                   ],
                 ],
               ] else ...[
-                // 通常のトピックカード（自己内省・チームビルディング等）
                 if (_session != null && _currentTopic != null) ...[
                   Text(
                     l10n.promptBelongsToTurn(
@@ -659,7 +660,7 @@ class _TopicsPageState extends State<TopicsPage> {
                     category: _getCategoryForCurrentTopic(),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: _themes.isEmpty ? null : _drawTopic,
                   icon: const Icon(Icons.style, color: _black),
@@ -685,42 +686,48 @@ class _TopicsPageState extends State<TopicsPage> {
                   ),
                 ),
               ],
-              const SizedBox(height: 24),
-              if (_session != null &&
-                  (_currentTopic != null ||
-                      (_isCheckInCheckOutMode && (_hasCheckInSelection || _hasCheckOutSelection)))) ...[
-                ElevatedButton.icon(
-                  onPressed: _nextPlayer,
-                  icon: Icon(
-                    _session!.isLastPlayer ? Icons.check_circle : Icons.arrow_forward,
-                    color: _black,
-                  ),
-                  label: Text(
-                    _session!.isLastPlayer ? l10n.endSession : l10n.nextPlayer,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _white,
-                    foregroundColor: _black,
-                    side: const BorderSide(color: _black, width: 1.5),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 1,
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
             ],
           ),
+          footer: _session != null &&
+                  (_currentTopic != null ||
+                      (_isCheckInCheckOutMode &&
+                          (_hasCheckInSelection || _hasCheckOutSelection)))
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ElevatedButton.icon(
+                    onPressed: _nextPlayer,
+                    icon: Icon(
+                      _session!.isLastPlayer
+                          ? Icons.check_circle
+                          : Icons.arrow_forward,
+                      color: _black,
+                    ),
+                    label: Text(
+                      _session!.isLastPlayer
+                          ? l10n.endSession
+                          : l10n.nextPlayer,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: _black,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _white,
+                      foregroundColor: _black,
+                      side: const BorderSide(color: _black, width: 1.5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 1,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
       ),
     );

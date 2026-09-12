@@ -194,6 +194,14 @@ class PurchaseService {
     return isPro();
   }
 
+  /// ひらめきモード（マッシュアップ・ビンゴ）が可能か
+  static Future<bool> canUseSparkModes() async {
+    if (!await isGatingActive()) {
+      return true;
+    }
+    return isPro();
+  }
+
   /// 購入成功時またはローカル解除で呼ぶ
   static Future<void> unlockPro() async {
     final prefs = await SharedPreferences.getInstance();

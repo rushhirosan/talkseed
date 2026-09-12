@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/session_config.dart';
 import 'package:theme_dice/models/session_preset.dart';
 
@@ -15,6 +16,10 @@ extension SessionPresetDisplay on SessionPreset {
         return l10n.presetModeValueCards;
       case SessionPresetMode.dice:
         return l10n.presetModeDice;
+      case SessionPresetMode.mashup:
+        return l10n.presetModeMashup;
+      case SessionPresetMode.bingo:
+        return l10n.presetModeBingo;
     }
   }
 
@@ -29,6 +34,8 @@ extension SessionPresetDisplay on SessionPreset {
       case SessionPresetMode.groupDiscussion:
       case SessionPresetMode.valueCards:
       case SessionPresetMode.dice:
+      case SessionPresetMode.mashup:
+      case SessionPresetMode.bingo:
         final config = sessionConfig;
         if (config == null) {
           return modeLabel(l10n);
@@ -47,6 +54,10 @@ extension SessionPresetDisplay on SessionPreset {
         return const Color(0xFFBA68C8);
       case SessionPresetMode.dice:
         return const Color(0xFFFFB74D);
+      case SessionPresetMode.mashup:
+        return const Color(0xFFFFB347);
+      case SessionPresetMode.bingo:
+        return const Color(0xFF4ECDC4);
     }
   }
 
@@ -60,6 +71,10 @@ extension SessionPresetDisplay on SessionPreset {
         return Icons.style_outlined;
       case SessionPresetMode.dice:
         return Icons.casino_outlined;
+      case SessionPresetMode.mashup:
+        return Icons.shuffle_rounded;
+      case SessionPresetMode.bingo:
+        return Icons.grid_3x3_rounded;
     }
   }
 }
@@ -79,6 +94,22 @@ String presetSessionConfigSummary(
   }
   if (mode == SessionPresetMode.dice) {
     return '${l10n.presetSummaryDiceCustom} · $playerPart · $timerLabel';
+  }
+  if (mode == SessionPresetMode.mashup) {
+    final axisCount = config.mashupEnabledAxisIds?.length;
+    final axisPart = axisCount == null
+        ? l10n.presetModeMashup
+        : l10n.presetSummaryMashupAxes(axisCount);
+    return '$axisPart · $playerPart · $timerLabel';
+  }
+  if (mode == SessionPresetMode.bingo) {
+    final size = BingoBoard.sizeForPlayerCount(config.playerCount);
+    final winPart = config.bingoWinOnBlackout
+        ? l10n.bingoWinModeBlackout
+        : l10n.bingoWinModeLine;
+    final flipPart =
+        config.bingoFlipMode ? ' · ${l10n.presetSummaryBingoFlip}' : '';
+    return '$winPart · $size×$size$flipPart · $playerPart · $timerLabel';
   }
   return '$playerPart · $timerLabel';
 }
@@ -121,6 +152,10 @@ String presetModeSectionTitle(
       return l10n.presetModeSectionValueCards;
     case SessionPresetMode.dice:
       return l10n.presetModeSectionDice;
+    case SessionPresetMode.mashup:
+      return l10n.presetModeSectionMashup;
+    case SessionPresetMode.bingo:
+      return l10n.presetModeSectionBingo;
   }
 }
 
@@ -149,6 +184,10 @@ Color presetModeBadgeBackground(SessionPresetMode mode) {
       return const Color(0xFFBA68C8).withValues(alpha: 0.15);
     case SessionPresetMode.dice:
       return const Color(0xFFFFB74D).withValues(alpha: 0.15);
+    case SessionPresetMode.mashup:
+      return const Color(0xFFFFB347).withValues(alpha: 0.15);
+    case SessionPresetMode.bingo:
+      return const Color(0xFF4ECDC4).withValues(alpha: 0.15);
   }
 }
 
@@ -162,5 +201,9 @@ Color presetModeBadgeForeground(SessionPresetMode mode) {
       return const Color(0xFFBA68C8);
     case SessionPresetMode.dice:
       return const Color(0xFFFFB74D);
+    case SessionPresetMode.mashup:
+      return const Color(0xFFFFB347);
+    case SessionPresetMode.bingo:
+      return const Color(0xFF4ECDC4);
   }
 }

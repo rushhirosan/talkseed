@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/pages/bingo_tips_page.dart';
+import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/widgets/home/home_ambient_background.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import '../utils/preferences_helper.dart';
 import 'dart:math' as math;
 
-/// チュートリアル画面（全6ページ）
+/// チュートリアル画面（全8ページ）
 class TutorialPage extends StatefulWidget {
   final VoidCallback onComplete;
 
@@ -54,6 +56,17 @@ class _TutorialPageState extends State<TutorialPage> {
           title: l10n.tutorialGroupDiscussion,
           body: l10n.tutorialGroupDiscussionBody,
           icon: Icons.forum_outlined,
+        ),
+        TutorialPageData(
+          title: l10n.tutorialMashup,
+          body: l10n.tutorialMashupBody,
+          icon: Icons.shuffle_rounded,
+        ),
+        TutorialPageData(
+          title: l10n.tutorialBingo,
+          body: l10n.tutorialBingoBody,
+          icon: Icons.grid_3x3_rounded,
+          tipsCta: l10n.bingoTipsCta,
         ),
         TutorialPageData(
           title: l10n.tutorialPlayersHistory,
@@ -243,37 +256,8 @@ class _TutorialPageState extends State<TutorialPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 黄色のバナー（少し回転）
-              Transform.rotate(
-                angle: -0.1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isNarrowScreen ? 16 : 24,
-                    vertical: isNarrowScreen ? 8 : 12,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: HomePalette.logoGradient,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: HomePalette.accent.withValues(alpha: 0.35),
-                        offset: const Offset(0, 4),
-                        blurRadius: 16,
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    'Talk Shuffle',
-                    style: GoogleFonts.syne(
-                      color: HomePalette.bg,
-                      fontWeight: FontWeight.w800,
-                      fontSize: isNarrowScreen ? 18 : 24,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: isSmallScreen ? 20 : 32),
+              _buildLogoBanner(isNarrowScreen: isNarrowScreen),
+              SizedBox(height: isSmallScreen ? 14 : 32),
               // メインタイトル（FittedBoxで収まるように）
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -291,18 +275,48 @@ class _TutorialPageState extends State<TutorialPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(height: isSmallScreen ? 16 : 24),
+              SizedBox(height: isSmallScreen ? 12 : 24),
               // 本文（スクロール可能）
               Text(
                 pageData.body,
                 style: GoogleFonts.zenKakuGothicNew(
-                  color: HomePalette.textMuted,
+                  color: HomePalette.textSecondary,
                   fontSize: bodyFontSize,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(height: isSmallScreen ? 16 : 24),
+              if (pageData.tipsCta != null) ...[
+                SizedBox(height: isSmallScreen ? 12 : 16),
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      RouteTransitions.forwardRoute(
+                        page: const BingoTipsPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: 18,
+                    color: HomePalette.accent,
+                  ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: HomePalette.accent,
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  label: Text(
+                    pageData.tipsCta!,
+                    style: GoogleFonts.zenKakuGothicNew(
+                      fontSize: bodyFontSize,
+                      fontWeight: FontWeight.w700,
+                      color: HomePalette.accent,
+                    ),
+                  ),
+                ),
+              ],
+              SizedBox(height: isSmallScreen ? 10 : 16),
               if (showVersion)
                 Text(
                   'v1.0 | ${DateTime.now().year}',
@@ -310,6 +324,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     color: HomePalette.textMuted,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
+                    height: 1.2,
                   ),
                 ),
             ],
@@ -317,10 +332,10 @@ class _TutorialPageState extends State<TutorialPage> {
         );
 
         final iconSize = useColumnLayout
-            ? (isSmallScreen ? 72.0 : 96.0)
+            ? (isSmallScreen ? 64.0 : 88.0)
             : (isSmallScreen ? 120.0 : 180.0);
         final iconSizeSingle = useColumnLayout
-            ? (isSmallScreen ? 36.0 : 48.0)
+            ? (isSmallScreen ? 32.0 : 44.0)
             : (isSmallScreen ? 60.0 : 90.0);
 
         // 2つアイコンの Row は FittedBox で包み、overflow を防止
@@ -357,32 +372,23 @@ class _TutorialPageState extends State<TutorialPage> {
                 ),
               );
 
-        final content = Padding(
+        return Padding(
           padding: EdgeInsets.symmetric(
             horizontal: isNarrowScreen ? 20 : 32,
             vertical: isNarrowScreen ? 16 : 24,
           ),
           child: useColumnLayout
-              ? SizedBox(
-                  height: constraints.maxHeight,
-                  child: Column(
-                    children: [
-                      // 上部: テキスト（スクロール可能）
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: textColumn,
-                        ),
-                      ),
-                      SizedBox(height: isNarrowScreen ? 20 : 28),
-                      // 中央付近: アイコン
-                      iconSection,
-                      // 下部: アイコンを視覚的に中央寄せするための余白
-                      Expanded(
-                        child: const SizedBox.shrink(),
-                      ),
-                    ],
-                  ),
+              ? Column(
+                  children: [
+                    // 本文＋バージョンが切れないようテキスト側を厚めに取る
+                    Expanded(
+                      flex: 5,
+                      child: textColumn,
+                    ),
+                    SizedBox(height: isNarrowScreen ? 12 : 20),
+                    iconSection,
+                    SizedBox(height: isNarrowScreen ? 8 : 16),
+                  ],
                 )
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -402,15 +408,37 @@ class _TutorialPageState extends State<TutorialPage> {
                   ],
                 ),
         );
-
-        return SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: content,
-          ),
-        );
       },
+    );
+  }
+
+  /// 黄色ロゴバナー。Transform.rotate は親にクリップされて角が欠けるため使わない。
+  Widget _buildLogoBanner({required bool isNarrowScreen}) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isNarrowScreen ? 16 : 24,
+        vertical: isNarrowScreen ? 8 : 12,
+      ),
+      decoration: BoxDecoration(
+        gradient: HomePalette.logoGradient,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: HomePalette.accent.withValues(alpha: 0.35),
+            offset: const Offset(0, 4),
+            blurRadius: 16,
+          ),
+        ],
+      ),
+      child: Text(
+        'Talk Shuffle',
+        style: GoogleFonts.syne(
+          color: HomePalette.bg,
+          fontWeight: FontWeight.w800,
+          fontSize: isNarrowScreen ? 18 : 24,
+          letterSpacing: 0.5,
+        ),
+      ),
     );
   }
 
@@ -461,11 +489,14 @@ class TutorialPageData {
   final IconData icon;
   /// 1ページ目など、2つアイコンを並べる場合は指定（例: サイコロ＋カード）
   final IconData? icon2;
+  /// 詳細ヒントへの導線ラベル（例: 会話ビンゴ）
+  final String? tipsCta;
 
   TutorialPageData({
     required this.title,
     required this.body,
     required this.icon,
     this.icon2,
+    this.tipsCta,
   });
 }

@@ -483,13 +483,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proPaywallSubtitle =>
-      'Save presets you reuse often, and share session history.';
+      'Unlock Spark modes, save presets, and share session history.';
+
+  @override
+  String get proBenefitSparkModes =>
+      'Spark modes (Mashup & Conversation bingo)';
 
   @override
   String get proBenefitExport => 'Share session history as text';
 
   @override
   String get proBenefitPreset => 'Save named presets (up to 10)';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get homeSparkModesLabel => 'Spark modes';
 
   @override
   String get proUnlock => 'Buy Pro';
@@ -1252,6 +1262,301 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeThemeDescOneOnOne => 'Pick today\'s format and go';
+
+  @override
+  String get homeThemeShortMashup => 'Mashup';
+
+  @override
+  String get homeThemeDescMashup => 'Topic x angle, never the same twice';
+
+  @override
+  String get mashupTitle => 'Mashup';
+
+  @override
+  String get mashupAxesLabel => 'Reels in play';
+
+  @override
+  String get mashupSpin => 'Spin all';
+
+  @override
+  String get mashupSpinAgain => 'Spin again';
+
+  @override
+  String get mashupSpinHint => 'Spin to build a prompt';
+
+  @override
+  String get mashupLockAxis => 'Lock this reel';
+
+  @override
+  String get mashupUnlockAxis => 'Unlock this reel';
+
+  @override
+  String get historyModeMashup => 'Mashup';
+
+  @override
+  String get historyFilterMashup => 'Mashup';
+
+  @override
+  String get historyMashupPromptsTitle => 'Prompts discussed';
+
+  @override
+  String get mashupAllAxesLocked => 'Unlock at least one reel before spinning';
+
+  @override
+  String get mashupLeaveTitle => 'Leave this session?';
+
+  @override
+  String get mashupLeaveMessage => 'Your progress will not be saved.';
+
+  @override
+  String get mashupLeaveConfirm => 'Leave';
+
+  @override
+  String get mashupEmptySessionTitle => 'No prompts yet';
+
+  @override
+  String get mashupEmptySessionMessage =>
+      'You have not spun any prompts yet. End anyway?';
+
+  @override
+  String get tutorialMashup => 'Mashup';
+
+  @override
+  String get tutorialMashupBody =>
+      'Combine topic, angle, and twist into a fresh prompt (Pro Spark modes). Lock a reel to re-spin only part of it.';
+
+  @override
+  String get presetModeMashup => 'Mashup';
+
+  @override
+  String get presetModeSectionMashup => 'Mashup';
+
+  @override
+  String get presetSaveDialogHintMashup => 'e.g. Casual trio with twist';
+
+  @override
+  String presetSummaryMashupAxes(int count) {
+    return '$count reels';
+  }
+
+  @override
+  String get homeThemeShortBingo => 'Bingo';
+
+  @override
+  String get homeThemeDescBingo => 'Up to 6 players, board scales';
+
+  @override
+  String get bingoTitle => 'Conversation bingo';
+
+  @override
+  String get bingoSetupHint =>
+      'We\'ll deal a 3×3 or 5×5 prompt board (max 6 players). Claim squares, score points, and complete a line for bingo.';
+
+  @override
+  String bingoBoardSizeHint(int rows, int cols) {
+    return 'Board: $rows×$cols (scales with player count)';
+  }
+
+  @override
+  String get bingoWinModeLabel => 'Win condition';
+
+  @override
+  String get bingoWinModeLine => 'Bingo on a line';
+
+  @override
+  String get bingoWinModeBlackout => 'Fill the board';
+
+  @override
+  String get bingoPickHint => 'Pick a square to talk about';
+
+  @override
+  String get bingoMarkCell => 'Marked it';
+
+  @override
+  String get bingoHotHint => 'One more square for bingo!';
+
+  @override
+  String get bingoFreeCenterLabel => 'FREE center';
+
+  @override
+  String get bingoFreeCenterHint =>
+      'Classic rule: the center square starts marked';
+
+  @override
+  String get bingoFreeCenterBadge => 'FREE';
+
+  @override
+  String get bingoAdjacentOnlyLabel => 'Adjacent picks only';
+
+  @override
+  String get bingoAdjacentOnlyHint =>
+      'You can only pick squares next to a marked one';
+
+  @override
+  String get bingoAdjacentBlocked => 'Pick a square next to a marked one';
+
+  @override
+  String get bingoFlipModeLabel => 'Flip mode';
+
+  @override
+  String get bingoFlipModeHint =>
+      'Topics stay hidden until you tap to flip a square';
+
+  @override
+  String get bingoFlipPickHint => 'Tap a square to flip it';
+
+  @override
+  String get bingoFlipHiddenBadge => '?';
+
+  @override
+  String get bingoFlipAdjacentOnlyLabel => 'Adjacent flips only';
+
+  @override
+  String get bingoFlipAdjacentOnlyHint =>
+      'You can only flip squares next to a marked one';
+
+  @override
+  String get bingoJam => 'Block';
+
+  @override
+  String get bingoJamThisCell => 'Block this square (once)';
+
+  @override
+  String get bingoJamNeedSelect => 'Pick a square first, then block';
+
+  @override
+  String get bingoJamDone => 'Blocked until the next player finishes';
+
+  @override
+  String get bingoJammedCell => 'That square is blocked';
+
+  @override
+  String get bingoExtraTurn => 'Bonus! Extra turn';
+
+  @override
+  String bingoPointsGained(int count) {
+    return '+$count pts';
+  }
+
+  @override
+  String get bingoBonusCellHint =>
+      'Bonus square: extra points and an extra turn';
+
+  @override
+  String get bingoScoreTitle => 'Score';
+
+  @override
+  String bingoScorePoints(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String bingoWinner(String name) {
+    return '$name wins!';
+  }
+
+  @override
+  String get bingoTie => 'It\'s a tie';
+
+  @override
+  String get bingoBingoTitle => 'Bingo!';
+
+  @override
+  String get bingoBingoMessageLine => 'You completed a line. Keep going?';
+
+  @override
+  String get bingoBingoMessageBlackout => 'The board is full.';
+
+  @override
+  String get bingoContinue => 'Keep going';
+
+  @override
+  String get historyModeBingo => 'Bingo';
+
+  @override
+  String get historyFilterBingo => 'Bingo';
+
+  @override
+  String get historyBingoPromptsTitle => 'Prompts discussed';
+
+  @override
+  String get bingoLeaveTitle => 'Leave this session?';
+
+  @override
+  String get bingoLeaveMessage => 'Your progress will not be saved.';
+
+  @override
+  String get bingoLeaveConfirm => 'Leave';
+
+  @override
+  String get bingoEmptySessionTitle => 'No prompts yet';
+
+  @override
+  String get bingoEmptySessionMessage =>
+      'You have not marked any squares yet. End anyway?';
+
+  @override
+  String get tutorialBingo => 'Conversation bingo';
+
+  @override
+  String get tutorialBingoBody =>
+      'Up to 6 players. Boards are 3×3 for 2–3 people and 5×5 for 4–6 (Pro Spark modes). Open Hints on the bingo setup screen for the full how-to.';
+
+  @override
+  String get bingoTipsTitle => 'Conversation bingo hints';
+
+  @override
+  String get bingoTipsOpen => 'Hints';
+
+  @override
+  String get bingoTipsCta => 'See how to play';
+
+  @override
+  String get bingoTipBasicTitle => 'Pick a square and talk';
+
+  @override
+  String get bingoTipBasicBody =>
+      'Choose a square, talk it through, then tap Marked it. Turns rotate, and claimed squares get your color and number. Marked squares can\'t be taken again. Max 6 players.';
+
+  @override
+  String get bingoTipBoardTitle => 'FREE and hot squares';
+
+  @override
+  String get bingoTipBoardBody =>
+      '2–3 players get a 3×3 board; 4–6 get 5×5. With FREE center on, the middle starts marked. Orange hot squares are one mark away from completing a line.';
+
+  @override
+  String get bingoTipScoreTitle => 'How scoring works';
+
+  @override
+  String get bingoTipScoreBody =>
+      'Marking a square is +1, completing a line is +3. A gift bonus square is +2 plus an extra turn. Adjacent to your own square is +1; a consecutive turn adds +2.';
+
+  @override
+  String get bingoTipRulesTitle => 'Adjacent picks and blocks';
+
+  @override
+  String get bingoTipRulesBody =>
+      'Adjacent only means you can only pick next to a marked square — sometimes a tougher prompt. Block locks the selected square until the next player finishes (once each).';
+
+  @override
+  String get bingoTipEndTitle => 'Bingo and ending';
+
+  @override
+  String get bingoTipEndBody =>
+      'By default, a completed line is bingo. Keep going or end the session. You can also switch to fill-the-board mode.';
+
+  @override
+  String get presetModeBingo => 'Bingo';
+
+  @override
+  String get presetSummaryBingoFlip => 'Flip';
+
+  @override
+  String get presetModeSectionBingo => 'Bingo';
+
+  @override
+  String get presetSaveDialogHintBingo => 'e.g. Casual 4, line bingo';
 
   @override
   String get presetSectionLabel => 'My presets';

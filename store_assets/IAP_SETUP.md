@@ -45,8 +45,8 @@ Bundle ID: `com.talkseed.app`
 
 | 言語 | 表示名 | 説明例 |
 | --- | --- | --- |
-| 日本語 | Talk Shuffle Pro | 名前付きプリセットの保存と、セッション履歴の共有が使えます。 |
-| English | Talk Shuffle Pro | Save named presets and share session history. |
+| 日本語 | Talk Shuffle Pro | ひらめきモード（マッシュアップ・ビンゴ）、プリセット保存、履歴共有が使えます。 |
+| English | Talk Shuffle Pro | Unlock Spark modes (Mashup & bingo), save presets, and share history. |
 
 6. **審査用スクリーンショット**（必須）
    - ペイウォール画面のスクショで可（シミュレータで OK）
@@ -118,6 +118,8 @@ ASC 登録と**並行可**。実ストアに繋がず、ローカル課金シー
 ---
 
 ## Android（提出する場合・並行可）
+
+公開全体の手順・進捗: [GOOGLE_PLAY_LAUNCH.md](GOOGLE_PLAY_LAUNCH.md)
 
 1. Play Console で同じ製品 ID `talk_shuffle_pro`（管理対象商品 / 非消費）
 2. ライセンステスターで購入確認

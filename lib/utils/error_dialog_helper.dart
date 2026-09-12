@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// エラー表示用の共通ユーティリティ
 class ErrorDialogHelper {
@@ -15,7 +16,7 @@ class ErrorDialogHelper {
     final l10n = AppLocalizations.of(context)!;
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => TalkShuffleAlertDialog(
         title: Text(l10n.errorDataLoadTitle),
         content: Text(l10n.errorDataLoadMessage),
         actions: [

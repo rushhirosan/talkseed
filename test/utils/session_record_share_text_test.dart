@@ -136,5 +136,31 @@ void main() {
       expect(text, contains('・Anything else?'));
       expect(text, isNot(contains('Participants')));
     });
+
+    test('formats bingo scores instead of votes', () {
+      final record = SessionRecord(
+        id: 'test-bingo',
+        playedAt: playedAt,
+        mode: SessionRecord.modeBingo,
+        topics: const ['Prompt A'],
+        selectedCardsByPlayer: const {
+          'Alice': ['Prompt A'],
+        },
+        playerCount: 2,
+        playerNames: const ['Alice', 'Bob'],
+        voteResults: const {'Alice': 5, 'Bob': 2},
+      );
+
+      final text = formatSessionRecordShareText(
+        record,
+        AppLocalizationsEn('en'),
+      );
+
+      expect(text, contains('Score'));
+      expect(text, contains('Alice — 5 pts'));
+      expect(text, contains('Bob — 2 pts'));
+      expect(text, isNot(contains('Voting results')));
+      expect(text, isNot(contains('votes')));
+    });
   });
 }

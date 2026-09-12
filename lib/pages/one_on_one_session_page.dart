@@ -21,6 +21,7 @@ import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
 import 'package:theme_dice/widgets/play/play_session_ui.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// 1on1向け：今日の型を選び、選んだフェーズで進むガイド付きセッション
 class OneOnOneSessionPage extends StatefulWidget {
@@ -522,7 +523,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
     final saved = await showDialog<bool>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return TalkShuffleAlertDialog(
           title: Text(l10n.presetSaveDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -531,7 +532,11 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
               TextField(
                 controller: controller,
                 autofocus: true,
-                decoration: InputDecoration(hintText: l10n.presetSaveDialogHint),
+                cursorColor: HomePalette.accent,
+                style: PlayTextStyles.prompt(fontSize: 14),
+                decoration: TalkShuffleAlertDialog.inputDecoration(
+                  hintText: l10n.presetSaveDialogHint,
+                ),
                 onSubmitted: (_) => Navigator.of(ctx).pop(true),
               ),
               const SizedBox(height: 12),
@@ -590,7 +595,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => TalkShuffleAlertDialog(
         title: Text(l10n.presetDeleteConfirmTitle),
         content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
         actions: [
@@ -955,6 +960,32 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
     final totalPhases = _activePhases.length;
 
     return PlayPageScroll(
+      stickyFooter: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PlayPrimaryButton(
+            label: _isLastPhase
+                ? l10n.oneOnOneCompleteSession
+                : l10n.oneOnOneNextPhase,
+            icon: _isLastPhase ? Icons.check_circle : Icons.arrow_forward,
+            onPressed: _selectedQuestion == null ? null : _goToNextPhase,
+          ),
+          if (_phaseIndex > 0) ...[
+            TextButton.icon(
+              onPressed: _goToPreviousPhase,
+              icon: Icon(
+                Icons.arrow_back,
+                size: 18,
+                color: PlayColors.textSecondary,
+              ),
+              label: Text(
+                l10n.oneOnOnePreviousPhase,
+                style: PlayTextStyles.hint(),
+              ),
+            ),
+          ],
+        ],
+      ),
       children: [
         Text(
           l10n.oneOnOnePhaseProgress(
@@ -989,29 +1020,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
           const SizedBox(height: 8),
         ] else ...[
           _buildCandidateList(l10n),
-        ],
-        const SizedBox(height: 20),
-        PlayPrimaryButton(
-          label: _isLastPhase
-              ? l10n.oneOnOneCompleteSession
-              : l10n.oneOnOneNextPhase,
-          icon: _isLastPhase ? Icons.check_circle : Icons.arrow_forward,
-          onPressed: _selectedQuestion == null ? null : _goToNextPhase,
-        ),
-        if (_phaseIndex > 0) ...[
-          const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: _goToPreviousPhase,
-            icon: Icon(
-              Icons.arrow_back,
-              size: 18,
-              color: PlayColors.textSecondary,
-            ),
-            label: Text(
-              l10n.oneOnOnePreviousPhase,
-              style: PlayTextStyles.hint(),
-            ),
-          ),
         ],
       ],
     );

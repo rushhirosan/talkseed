@@ -995,8 +995,14 @@ abstract class AppLocalizations {
   /// Pro paywall subtitle
   ///
   /// In ja, this message translates to:
-  /// **'よく使う設定の保存と、履歴の共有が使えます。'**
+  /// **'ひらめきモードと、よく使う設定の保存・履歴共有が使えます。'**
   String get proPaywallSubtitle;
+
+  /// Pro benefit: spark modes
+  ///
+  /// In ja, this message translates to:
+  /// **'ひらめきモード（マッシュアップ・会話ビンゴ）'**
+  String get proBenefitSparkModes;
 
   /// Pro benefit: history export
   ///
@@ -1009,6 +1015,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'名前付きプリセットを保存（最大10件）'**
   String get proBenefitPreset;
+
+  /// Small Pro badge on gated mode cards
+  ///
+  /// In ja, this message translates to:
+  /// **'Pro'**
+  String get proBadge;
+
+  /// Home section label for mashup and bingo
+  ///
+  /// In ja, this message translates to:
+  /// **'ひらめきモード'**
+  String get homeSparkModesLabel;
 
   /// Pro purchase button (production)
   ///
@@ -2323,6 +2341,546 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'今日の型を選んで進める'**
   String get homeThemeDescOneOnOne;
+
+  /// No description provided for @homeThemeShortMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get homeThemeShortMashup;
+
+  /// No description provided for @homeThemeDescMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ×切り口で毎回違うお題'**
+  String get homeThemeDescMashup;
+
+  /// No description provided for @mashupTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get mashupTitle;
+
+  /// No description provided for @mashupAxesLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'使う軸'**
+  String get mashupAxesLabel;
+
+  /// No description provided for @mashupSpin.
+  ///
+  /// In ja, this message translates to:
+  /// **'ぜんぶ回す'**
+  String get mashupSpin;
+
+  /// No description provided for @mashupSpinAgain.
+  ///
+  /// In ja, this message translates to:
+  /// **'もう一度回す'**
+  String get mashupSpinAgain;
+
+  /// No description provided for @mashupSpinHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'回すとお題ができます'**
+  String get mashupSpinHint;
+
+  /// No description provided for @mashupLockAxis.
+  ///
+  /// In ja, this message translates to:
+  /// **'この軸を固定する'**
+  String get mashupLockAxis;
+
+  /// No description provided for @mashupUnlockAxis.
+  ///
+  /// In ja, this message translates to:
+  /// **'固定を解除する'**
+  String get mashupUnlockAxis;
+
+  /// No description provided for @historyModeMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get historyModeMashup;
+
+  /// No description provided for @historyFilterMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get historyFilterMashup;
+
+  /// No description provided for @historyMashupPromptsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'話したお題'**
+  String get historyMashupPromptsTitle;
+
+  /// No description provided for @mashupAllAxesLocked.
+  ///
+  /// In ja, this message translates to:
+  /// **'固定を1つ以上外してから回してください'**
+  String get mashupAllAxesLocked;
+
+  /// No description provided for @mashupLeaveTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'セッションを終了しますか？'**
+  String get mashupLeaveTitle;
+
+  /// No description provided for @mashupLeaveMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'進行中の内容は保存されません。'**
+  String get mashupLeaveMessage;
+
+  /// No description provided for @mashupLeaveConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'終了する'**
+  String get mashupLeaveConfirm;
+
+  /// No description provided for @mashupEmptySessionTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題がありません'**
+  String get mashupEmptySessionTitle;
+
+  /// No description provided for @mashupEmptySessionMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだお題が出ていません。このまま終了しますか？'**
+  String get mashupEmptySessionMessage;
+
+  /// No description provided for @tutorialMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get tutorialMashup;
+
+  /// No description provided for @tutorialMashupBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ・切り口・制約を組み合わせて、毎回違うお題を作れます（Pro のひらめきモード）。軸を固定して一部だけ振り直すこともできます。'**
+  String get tutorialMashupBody;
+
+  /// No description provided for @presetModeMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get presetModeMashup;
+
+  /// No description provided for @presetModeSectionMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップ'**
+  String get presetModeSectionMashup;
+
+  /// No description provided for @presetSaveDialogHintMashup.
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 雑談3人・制約あり'**
+  String get presetSaveDialogHintMashup;
+
+  /// No description provided for @presetSummaryMashupAxes.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}軸'**
+  String presetSummaryMashupAxes(int count);
+
+  /// No description provided for @homeThemeShortBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ'**
+  String get homeThemeShortBingo;
+
+  /// No description provided for @homeThemeDescBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'最大6人・盤は人数で変化'**
+  String get homeThemeDescBingo;
+
+  /// No description provided for @bingoTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'会話ビンゴ'**
+  String get bingoTitle;
+
+  /// No description provided for @bingoSetupHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'3×3 または 5×5 のお題ボードを配ります。人数は最大6人。マスを取り合って点数を稼ぎ、ラインが揃うとビンゴです。'**
+  String get bingoSetupHint;
+
+  /// No description provided for @bingoBoardSizeHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'盤面: {rows}×{cols}（人数に応じて自動）'**
+  String bingoBoardSizeHint(int rows, int cols);
+
+  /// No description provided for @bingoWinModeLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'終了条件'**
+  String get bingoWinModeLabel;
+
+  /// No description provided for @bingoWinModeLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'ラインでビンゴ'**
+  String get bingoWinModeLine;
+
+  /// No description provided for @bingoWinModeBlackout.
+  ///
+  /// In ja, this message translates to:
+  /// **'全部埋める'**
+  String get bingoWinModeBlackout;
+
+  /// No description provided for @bingoPickHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'マスを選んで話そう'**
+  String get bingoPickHint;
+
+  /// No description provided for @bingoMarkCell.
+  ///
+  /// In ja, this message translates to:
+  /// **'話した'**
+  String get bingoMarkCell;
+
+  /// No description provided for @bingoHotHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'あと1マスでビンゴ！'**
+  String get bingoHotHint;
+
+  /// No description provided for @bingoFreeCenterLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'中央マスはFREE'**
+  String get bingoFreeCenterLabel;
+
+  /// No description provided for @bingoFreeCenterHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'最初から中央が埋まっている定番ルール'**
+  String get bingoFreeCenterHint;
+
+  /// No description provided for @bingoFreeCenterBadge.
+  ///
+  /// In ja, this message translates to:
+  /// **'FREE'**
+  String get bingoFreeCenterBadge;
+
+  /// No description provided for @bingoAdjacentOnlyLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'隣接マスのみ'**
+  String get bingoAdjacentOnlyLabel;
+
+  /// No description provided for @bingoAdjacentOnlyHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'埋まったマスに隣接するマスだけ選べる'**
+  String get bingoAdjacentOnlyHint;
+
+  /// No description provided for @bingoAdjacentBlocked.
+  ///
+  /// In ja, this message translates to:
+  /// **'埋まったマスに隣接するマスを選んでください'**
+  String get bingoAdjacentBlocked;
+
+  /// No description provided for @bingoFlipModeLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'めくりモード'**
+  String get bingoFlipModeLabel;
+
+  /// No description provided for @bingoFlipModeHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題は隠したまま。タップでめくってから話します'**
+  String get bingoFlipModeHint;
+
+  /// No description provided for @bingoFlipPickHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'マスをタップしてめくろう'**
+  String get bingoFlipPickHint;
+
+  /// No description provided for @bingoFlipHiddenBadge.
+  ///
+  /// In ja, this message translates to:
+  /// **'?'**
+  String get bingoFlipHiddenBadge;
+
+  /// No description provided for @bingoFlipAdjacentOnlyLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'隣接マスのみ（めくり）'**
+  String get bingoFlipAdjacentOnlyLabel;
+
+  /// No description provided for @bingoFlipAdjacentOnlyHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'埋まったマスの隣だけめくれる。進路が縛られます'**
+  String get bingoFlipAdjacentOnlyHint;
+
+  /// No description provided for @bingoJam.
+  ///
+  /// In ja, this message translates to:
+  /// **'封じる'**
+  String get bingoJam;
+
+  /// No description provided for @bingoJamThisCell.
+  ///
+  /// In ja, this message translates to:
+  /// **'このマスを封じる（1回）'**
+  String get bingoJamThisCell;
+
+  /// No description provided for @bingoJamNeedSelect.
+  ///
+  /// In ja, this message translates to:
+  /// **'先にマスを選んでから封じる'**
+  String get bingoJamNeedSelect;
+
+  /// No description provided for @bingoJamDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'次の人の番まで封じました'**
+  String get bingoJamDone;
+
+  /// No description provided for @bingoJammedCell.
+  ///
+  /// In ja, this message translates to:
+  /// **'このマスは封じられています'**
+  String get bingoJammedCell;
+
+  /// No description provided for @bingoExtraTurn.
+  ///
+  /// In ja, this message translates to:
+  /// **'ボーナス！もう1ターン'**
+  String get bingoExtraTurn;
+
+  /// No description provided for @bingoPointsGained.
+  ///
+  /// In ja, this message translates to:
+  /// **'+{count}点'**
+  String bingoPointsGained(int count);
+
+  /// No description provided for @bingoBonusCellHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'ボーナスマス：＋点＆もう1ターン'**
+  String get bingoBonusCellHint;
+
+  /// No description provided for @bingoScoreTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'スコア'**
+  String get bingoScoreTitle;
+
+  /// No description provided for @bingoScorePoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}点'**
+  String bingoScorePoints(int count);
+
+  /// No description provided for @bingoWinner.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} の勝ち！'**
+  String bingoWinner(String name);
+
+  /// No description provided for @bingoTie.
+  ///
+  /// In ja, this message translates to:
+  /// **'引き分け'**
+  String get bingoTie;
+
+  /// No description provided for @bingoBingoTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ！'**
+  String get bingoBingoTitle;
+
+  /// No description provided for @bingoBingoMessageLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'ラインが揃いました。続けますか？'**
+  String get bingoBingoMessageLine;
+
+  /// No description provided for @bingoBingoMessageBlackout.
+  ///
+  /// In ja, this message translates to:
+  /// **'マスが埋まりました。'**
+  String get bingoBingoMessageBlackout;
+
+  /// No description provided for @bingoContinue.
+  ///
+  /// In ja, this message translates to:
+  /// **'続ける'**
+  String get bingoContinue;
+
+  /// No description provided for @historyModeBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ'**
+  String get historyModeBingo;
+
+  /// No description provided for @historyFilterBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ'**
+  String get historyFilterBingo;
+
+  /// No description provided for @historyBingoPromptsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'話したお題'**
+  String get historyBingoPromptsTitle;
+
+  /// No description provided for @bingoLeaveTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'セッションを終了しますか？'**
+  String get bingoLeaveTitle;
+
+  /// No description provided for @bingoLeaveMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'進行中の内容は保存されません。'**
+  String get bingoLeaveMessage;
+
+  /// No description provided for @bingoLeaveConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'終了する'**
+  String get bingoLeaveConfirm;
+
+  /// No description provided for @bingoEmptySessionTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題がありません'**
+  String get bingoEmptySessionTitle;
+
+  /// No description provided for @bingoEmptySessionMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだマスを埋めていません。このまま終了しますか？'**
+  String get bingoEmptySessionMessage;
+
+  /// No description provided for @tutorialBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'会話ビンゴ'**
+  String get tutorialBingo;
+
+  /// No description provided for @tutorialBingoBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。設定画面の「ヒント」から詳しい遊び方を確認できます。'**
+  String get tutorialBingoBody;
+
+  /// No description provided for @bingoTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'会話ビンゴのヒント'**
+  String get bingoTipsTitle;
+
+  /// No description provided for @bingoTipsOpen.
+  ///
+  /// In ja, this message translates to:
+  /// **'ヒント'**
+  String get bingoTipsOpen;
+
+  /// No description provided for @bingoTipsCta.
+  ///
+  /// In ja, this message translates to:
+  /// **'遊び方ヒントを見る'**
+  String get bingoTipsCta;
+
+  /// No description provided for @bingoTipBasicTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'マスを選んで話す'**
+  String get bingoTipBasicTitle;
+
+  /// No description provided for @bingoTipBasicBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'お題ボードからマスを選び、話したら「話した」で埋めます。手番は順番に回り、埋めたマスには自分の色と番号が付きます。一度埋めたマスは取れません。人数は最大6人です。'**
+  String get bingoTipBasicBody;
+
+  /// No description provided for @bingoTipBoardTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'FREEとホットマス'**
+  String get bingoTipBoardTitle;
+
+  /// No description provided for @bingoTipBoardBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'2〜3人は3×3、4〜6人は5×5の盤になります。「中央マスはFREE」がオンだと中央が最初から埋まっています。オレンジに光るマスは、あと1つでライン完成です。'**
+  String get bingoTipBoardBody;
+
+  /// No description provided for @bingoTipScoreTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'点数の付き方'**
+  String get bingoTipScoreTitle;
+
+  /// No description provided for @bingoTipScoreBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'マスを埋めると+1、ライン完成で+3。ギフト印のボーナスマスは+2ともう1ターン。自分のマスの隣を埋めると+1、連続ターンだとさらに+2です。'**
+  String get bingoTipScoreBody;
+
+  /// No description provided for @bingoTipRulesTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'隣接と封じる'**
+  String get bingoTipRulesTitle;
+
+  /// No description provided for @bingoTipRulesBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'「隣接マスのみ」は、埋まったマスの隣だけ選べます。話しにくいお題にも寄ることがあります。「封じる」は選んだマスを次の人の番までロック（各1回）。'**
+  String get bingoTipRulesBody;
+
+  /// No description provided for @bingoTipEndTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴと終わり方'**
+  String get bingoTipEndTitle;
+
+  /// No description provided for @bingoTipEndBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'デフォルトはラインが揃ったらビンゴ。続けても、セッション終了でもOKです。「全部埋める」ルールにも切り替えられます。'**
+  String get bingoTipEndBody;
+
+  /// No description provided for @presetModeBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ'**
+  String get presetModeBingo;
+
+  /// No description provided for @presetSummaryBingoFlip.
+  ///
+  /// In ja, this message translates to:
+  /// **'めくり'**
+  String get presetSummaryBingoFlip;
+
+  /// No description provided for @presetModeSectionBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'ビンゴ'**
+  String get presetModeSectionBingo;
+
+  /// No description provided for @presetSaveDialogHintBingo.
+  ///
+  /// In ja, this message translates to:
+  /// **'例: 雑談4人・ライン'**
+  String get presetSaveDialogHintBingo;
 
   /// Home section label for saved session presets
   ///

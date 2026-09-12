@@ -29,12 +29,14 @@ void main() {
     expect(await PurchaseService.isPro(), isFalse);
   });
 
-  test('gating defaults on in debug; export requires Pro', () async {
+  test('gating defaults on in debug; export and spark modes require Pro', () async {
     expect(await PurchaseService.isGatingActive(), isTrue);
     expect(await PurchaseService.canExportHistory(), isFalse);
+    expect(await PurchaseService.canUseSparkModes(), isFalse);
 
     await PurchaseService.unlockPro();
     expect(await PurchaseService.canExportHistory(), isTrue);
+    expect(await PurchaseService.canUseSparkModes(), isTrue);
   });
 
   test('free preset limit allows one save then blocks', () async {

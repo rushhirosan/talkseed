@@ -6,11 +6,13 @@ import 'package:theme_dice/models/session_config.dart';
 class SessionRecord {
   final String id;
   final DateTime playedAt;
-  /// 'dice' | 'value_cards' | 'discussion' | 'one_on_one'
+  /// 'dice' | 'value_cards' | 'discussion' | 'one_on_one' | 'mashup' | 'bingo'
   static const String modeDice = 'dice';
   static const String modeValueCards = 'value_cards';
   static const String modeDiscussion = 'discussion';
   static const String modeOneOnOne = 'one_on_one';
+  static const String modeMashup = 'mashup';
+  static const String modeBingo = 'bingo';
 
   final String mode;
   /// 出たテーマ一覧（サイコロ用）

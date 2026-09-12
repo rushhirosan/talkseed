@@ -476,9 +476,13 @@
   "@proPaywallTitle": {
     "description": "Pro paywall title"
   },
-  "proPaywallSubtitle": "よく使う設定の保存と、履歴の共有が使えます。",
+  "proPaywallSubtitle": "ひらめきモードと、よく使う設定の保存・履歴共有が使えます。",
   "@proPaywallSubtitle": {
     "description": "Pro paywall subtitle"
+  },
+  "proBenefitSparkModes": "ひらめきモード（マッシュアップ・会話ビンゴ）",
+  "@proBenefitSparkModes": {
+    "description": "Pro benefit: spark modes"
   },
   "proBenefitExport": "セッション履歴をテキストで共有",
   "@proBenefitExport": {
@@ -487,6 +491,14 @@
   "proBenefitPreset": "名前付きプリセットを保存（最大10件）",
   "@proBenefitPreset": {
     "description": "Pro benefit: presets"
+  },
+  "proBadge": "Pro",
+  "@proBadge": {
+    "description": "Small Pro badge on gated mode cards"
+  },
+  "homeSparkModesLabel": "ひらめきモード",
+  "@homeSparkModesLabel": {
+    "description": "Home section label for mashup and bingo"
   },
   "proUnlock": "Pro を購入",
   "@proUnlock": {
@@ -1156,6 +1168,124 @@
   },
   "homeThemeShortOneOnOne": "1on1",
   "homeThemeDescOneOnOne": "今日の型を選んで進める",
+  "homeThemeShortMashup": "マッシュアップ",
+  "homeThemeDescMashup": "テーマ×切り口で毎回違うお題",
+  "mashupTitle": "マッシュアップ",
+  "mashupAxesLabel": "使う軸",
+  "mashupSpin": "ぜんぶ回す",
+  "mashupSpinAgain": "もう一度回す",
+  "mashupSpinHint": "回すとお題ができます",
+  "mashupLockAxis": "この軸を固定する",
+  "mashupUnlockAxis": "固定を解除する",
+  "historyModeMashup": "マッシュアップ",
+  "historyFilterMashup": "マッシュアップ",
+  "historyMashupPromptsTitle": "話したお題",
+  "mashupAllAxesLocked": "固定を1つ以上外してから回してください",
+  "mashupLeaveTitle": "セッションを終了しますか？",
+  "mashupLeaveMessage": "進行中の内容は保存されません。",
+  "mashupLeaveConfirm": "終了する",
+  "mashupEmptySessionTitle": "お題がありません",
+  "mashupEmptySessionMessage": "まだお題が出ていません。このまま終了しますか？",
+  "tutorialMashup": "マッシュアップ",
+  "tutorialMashupBody": "テーマ・切り口・制約を組み合わせて、毎回違うお題を作れます（Pro のひらめきモード）。軸を固定して一部だけ振り直すこともできます。",
+  "presetModeMashup": "マッシュアップ",
+  "presetModeSectionMashup": "マッシュアップ",
+  "presetSaveDialogHintMashup": "例: 雑談3人・制約あり",
+  "presetSummaryMashupAxes": "{count}軸",
+  "@presetSummaryMashupAxes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeThemeShortBingo": "ビンゴ",
+  "homeThemeDescBingo": "最大6人・盤は人数で変化",
+  "bingoTitle": "会話ビンゴ",
+  "bingoSetupHint": "3×3 または 5×5 のお題ボードを配ります。人数は最大6人。マスを取り合って点数を稼ぎ、ラインが揃うとビンゴです。",
+  "bingoBoardSizeHint": "盤面: {rows}×{cols}（人数に応じて自動）",
+  "@bingoBoardSizeHint": {
+    "placeholders": {
+      "rows": { "type": "int" },
+      "cols": { "type": "int" }
+    }
+  },
+  "bingoWinModeLabel": "終了条件",
+  "bingoWinModeLine": "ラインでビンゴ",
+  "bingoWinModeBlackout": "全部埋める",
+  "bingoPickHint": "マスを選んで話そう",
+  "bingoMarkCell": "話した",
+  "bingoHotHint": "あと1マスでビンゴ！",
+  "bingoFreeCenterLabel": "中央マスはFREE",
+  "bingoFreeCenterHint": "最初から中央が埋まっている定番ルール",
+  "bingoFreeCenterBadge": "FREE",
+  "bingoAdjacentOnlyLabel": "隣接マスのみ",
+  "bingoAdjacentOnlyHint": "埋まったマスに隣接するマスだけ選べる",
+  "bingoAdjacentBlocked": "埋まったマスに隣接するマスを選んでください",
+  "bingoFlipModeLabel": "めくりモード",
+  "bingoFlipModeHint": "お題は隠したまま。タップでめくってから話します",
+  "bingoFlipPickHint": "マスをタップしてめくろう",
+  "bingoFlipHiddenBadge": "?",
+  "bingoFlipAdjacentOnlyLabel": "隣接マスのみ（めくり）",
+  "bingoFlipAdjacentOnlyHint": "埋まったマスの隣だけめくれる。進路が縛られます",
+  "bingoJam": "封じる",
+  "bingoJamThisCell": "このマスを封じる（1回）",
+  "bingoJamNeedSelect": "先にマスを選んでから封じる",
+  "bingoJamDone": "次の人の番まで封じました",
+  "bingoJammedCell": "このマスは封じられています",
+  "bingoExtraTurn": "ボーナス！もう1ターン",
+  "bingoPointsGained": "+{count}点",
+  "@bingoPointsGained": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bingoBonusCellHint": "ボーナスマス：＋点＆もう1ターン",
+  "bingoScoreTitle": "スコア",
+  "bingoScorePoints": "{count}点",
+  "@bingoScorePoints": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bingoWinner": "{name} の勝ち！",
+  "@bingoWinner": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "bingoTie": "引き分け",
+  "bingoBingoTitle": "ビンゴ！",
+  "bingoBingoMessageLine": "ラインが揃いました。続けますか？",
+  "bingoBingoMessageBlackout": "マスが埋まりました。",
+  "bingoContinue": "続ける",
+  "historyModeBingo": "ビンゴ",
+  "historyFilterBingo": "ビンゴ",
+  "historyBingoPromptsTitle": "話したお題",
+  "bingoLeaveTitle": "セッションを終了しますか？",
+  "bingoLeaveMessage": "進行中の内容は保存されません。",
+  "bingoLeaveConfirm": "終了する",
+  "bingoEmptySessionTitle": "お題がありません",
+  "bingoEmptySessionMessage": "まだマスを埋めていません。このまま終了しますか？",
+  "tutorialBingo": "会話ビンゴ",
+  "tutorialBingoBody": "人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。設定画面の「ヒント」から詳しい遊び方を確認できます。",
+  "bingoTipsTitle": "会話ビンゴのヒント",
+  "bingoTipsOpen": "ヒント",
+  "bingoTipsCta": "遊び方ヒントを見る",
+  "bingoTipBasicTitle": "マスを選んで話す",
+  "bingoTipBasicBody": "お題ボードからマスを選び、話したら「話した」で埋めます。手番は順番に回り、埋めたマスには自分の色と番号が付きます。一度埋めたマスは取れません。人数は最大6人です。",
+  "bingoTipBoardTitle": "FREEとホットマス",
+  "bingoTipBoardBody": "2〜3人は3×3、4〜6人は5×5の盤になります。「中央マスはFREE」がオンだと中央が最初から埋まっています。オレンジに光るマスは、あと1つでライン完成です。",
+  "bingoTipScoreTitle": "点数の付き方",
+  "bingoTipScoreBody": "マスを埋めると+1、ライン完成で+3。ギフト印のボーナスマスは+2ともう1ターン。自分のマスの隣を埋めると+1、連続ターンだとさらに+2です。",
+  "bingoTipRulesTitle": "隣接と封じる",
+  "bingoTipRulesBody": "「隣接マスのみ」は、埋まったマスの隣だけ選べます。話しにくいお題にも寄ることがあります。「封じる」は選んだマスを次の人の番までロック（各1回）。",
+  "bingoTipEndTitle": "ビンゴと終わり方",
+  "bingoTipEndBody": "デフォルトはラインが揃ったらビンゴ。続けても、セッション終了でもOKです。「全部埋める」ルールにも切り替えられます。",
+  "presetModeBingo": "ビンゴ",
+  "presetSummaryBingoFlip": "めくり",
+  "presetModeSectionBingo": "ビンゴ",
+  "presetSaveDialogHintBingo": "例: 雑談4人・ライン",
   "presetSectionLabel": "マイプリセット",
   "@presetSectionLabel": {
     "description": "Home section label for saved session presets"

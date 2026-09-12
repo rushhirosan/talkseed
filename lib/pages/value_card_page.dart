@@ -376,6 +376,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
     }
     if (state.isSharing) {
       return PlayPageScroll(
+        stickyFooter: _sharingFooter(l10n, state),
         children: [
           ..._sessionHeaderWidgets(l10n, state),
           ..._sharingContent(l10n, state),
@@ -432,12 +433,6 @@ class _ValueCardPageState extends State<ValueCardPage> {
         RepaintBoundary(
           child: _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
         ),
-        const SizedBox(height: 16),
-        PlayPrimaryButton(
-          label: l10n.valueConfirmRanking,
-          icon: Icons.check,
-          onPressed: _onConfirmRanking,
-        ),
       ],
       if (state.needsToDraw) ...[
         const Center(
@@ -456,7 +451,16 @@ class _ValueCardPageState extends State<ValueCardPage> {
 
     return Stack(
       children: [
-        PlayPageScroll(children: scrollChildren),
+        PlayPageScroll(
+          stickyFooter: state.needsToRank && _rankedCards != null
+              ? PlayPrimaryButton(
+                  label: l10n.valueConfirmRanking,
+                  icon: Icons.check,
+                  onPressed: _onConfirmRanking,
+                )
+              : null,
+          children: scrollChildren,
+        ),
         if (_playerSwitchBannerPlayer != null)
           _PlayerSwitchBanner(
             message: l10n.valuePlayerTurn(
@@ -552,23 +556,20 @@ class _ValueCardPageState extends State<ValueCardPage> {
       ),
       const SizedBox(height: 12),
       _buildCardGrid(hand, compact: true),
-      const SizedBox(height: 16),
-      PlayPrimaryButton(
-        label: playerIndex < state.playerCount - 1
-            ? l10n.valueNext
-            : l10n.valueSessionCompleteAndBack,
-        icon: playerIndex < state.playerCount - 1
-            ? Icons.arrow_forward
-            : Icons.check_circle,
-        onPressed: () {
-          if (playerIndex < state.playerCount - 1) {
-            _onNextSharing();
-          } else {
-            _onNextSharing();
-          }
-        },
-      ),
     ];
+  }
+
+  Widget _sharingFooter(AppLocalizations l10n, ValueGameState state) {
+    final playerIndex = state.sharingPlayerIndex;
+    return PlayPrimaryButton(
+      label: playerIndex < state.playerCount - 1
+          ? l10n.valueNext
+          : l10n.valueSessionCompleteAndBack,
+      icon: playerIndex < state.playerCount - 1
+          ? Icons.arrow_forward
+          : Icons.check_circle,
+      onPressed: _onNextSharing,
+    );
   }
 
 }

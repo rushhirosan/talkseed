@@ -7,6 +7,7 @@ import 'package:theme_dice/utils/preset_display.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 /// ヘッダーのプリセットアイコンから開く一覧ボトムシート
 Future<void> showPresetLibrarySheet({
@@ -14,7 +15,7 @@ Future<void> showPresetLibrarySheet({
   required VoidCallback onPresetsChanged,
   required Future<void> Function(SessionPreset preset) onLaunchPreset,
 }) {
-  return showModalBottomSheet<void>(
+  return showTalkShuffleModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
@@ -63,7 +64,7 @@ class _PresetLibrarySheetState extends State<_PresetLibrarySheet> {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
+      builder: (dialogCtx) => TalkShuffleAlertDialog(
         title: Text(l10n.presetDeleteConfirmTitle),
         content: Text(l10n.presetDeleteConfirmMessage(preset.name)),
         actions: [
@@ -106,7 +107,7 @@ class _PresetLibrarySheetState extends State<_PresetLibrarySheet> {
         builder: (context, scrollController) {
           return Container(
             decoration: const BoxDecoration(
-              color: HomePalette.bg,
+              color: HomePalette.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               border: Border(
                 top: BorderSide(color: HomePalette.border),
@@ -141,7 +142,7 @@ class _PresetLibrarySheetState extends State<_PresetLibrarySheet> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.close),
-                        color: HomePalette.textMuted,
+                        color: HomePalette.textSecondary,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
@@ -164,7 +165,7 @@ class _PresetLibrarySheetState extends State<_PresetLibrarySheet> {
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.zenKakuGothicNew(
                                     fontSize: 14,
-                                    color: HomePalette.textMuted,
+                                    color: HomePalette.textSecondary,
                                     height: 1.5,
                                   ),
                                 ),

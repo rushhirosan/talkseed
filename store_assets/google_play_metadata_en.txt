@@ -2,18 +2,19 @@ App Name:
 Talk Shuffle
 
 Short description (80 chars max):
-Pick a topic fast. Pro unlocks presets and history sharing.
+Core modes free. Pro: Spark modes, presets, history share.
 
 Full description:
 Talk Shuffle helps you choose a conversation topic quickly and naturally.
 Roll a 3D dice for a random prompt, or use curated card decks for work and reflection.
 
-Core modes and prompts stay free. Optional Talk Shuffle Pro unlocks named preset saves and text sharing of session history.
+Core modes and prompts stay free. Optional Talk Shuffle Pro unlocks Spark modes (Mashup & Conversation bingo), named preset saves, and text sharing of session history.
 
 Highlights
 - 3D dice to select a topic at random
 - Drag & drop to set your topic candidates
 - Card decks for work and reflection (values, group discussion, self-reflection, 1:1)
+- Spark modes: Mashup and Conversation bingo (Pro)
 - Player count and name setup
 - Optional timer
 - Session history stored on device

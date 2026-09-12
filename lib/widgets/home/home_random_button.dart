@@ -84,8 +84,8 @@ class _HomeRandomButtonState extends State<HomeRandomButton>
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 20,
+                    horizontal: 28,
+                    vertical: 14,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -100,15 +100,15 @@ class _HomeRandomButtonState extends State<HomeRandomButton>
                         },
                         child: const Icon(
                           Icons.casino,
-                          size: 24,
+                          size: 22,
                           color: HomePalette.bg,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Text(
                         widget.label,
                         style: GoogleFonts.zenKakuGothicNew(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w900,
                           color: HomePalette.bg,
                           letterSpacing: 0.5,

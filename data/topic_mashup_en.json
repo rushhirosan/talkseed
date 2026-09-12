@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "template": "{angle} about {category} — {constraint}",
+  "templateWithoutConstraint": "{angle} about {category}",
+  "blocklist": [
+    ["childhood", "Where you want to be in 10 years"],
+    ["childhood", "Money well spent"],
+    ["this past year", "Where you want to be in 10 years"],
+    ["your team", "A quiet brag"],
+    ["days off", "What's secretly a hassle"],
+    ["health", "Money well spent"]
+  ],
+  "axes": [
+    {
+      "id": "category",
+      "label": "Topic",
+      "items": [
+        "work",
+        "learning",
+        "money",
+        "food",
+        "travel",
+        "where you live",
+        "family",
+        "friends",
+        "hobbies",
+        "health",
+        "music",
+        "books & movies",
+        "childhood",
+        "this past year",
+        "your team",
+        "days off"
+      ]
+    },
+    {
+      "id": "angle",
+      "label": "Angle",
+      "items": [
+        "What you're into lately",
+        "Your biggest flop",
+        "A quiet brag",
+        "A rule you never break",
+        "Something you quit",
+        "Something you want to start",
+        "What people don't know",
+        "Money well spent",
+        "What you'd recommend",
+        "When your mind changed",
+        "What's secretly a hassle",
+        "Where you want to be in 10 years",
+        "A first-time experience",
+        "A small joy",
+        "Your funniest story lately",
+        "A slightly embarrassing story",
+        "A small change recently",
+        "What you're most grateful for",
+        "If you could only keep one thing",
+        "What you'd tell your younger self"
+      ]
+    },
+    {
+      "id": "constraint",
+      "label": "Twist",
+      "optional": true,
+      "items": [
+        "in 30 seconds",
+        "in one word",
+        "as a metaphor",
+        "with a number in it",
+        "with your hands too",
+        "conclusion first",
+        "name three",
+        "while praising someone"
+      ]
+    }
+  ]
+}

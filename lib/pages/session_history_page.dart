@@ -15,6 +15,7 @@ import 'package:theme_dice/utils/session_record_share_text.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
+import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
 class SessionHistoryPage extends StatefulWidget {
   const SessionHistoryPage({super.key});
@@ -34,7 +35,7 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
 
   TextStyle _subtitleStyle() => GoogleFonts.zenKakuGothicNew(
         fontSize: 12,
-        color: HomePalette.textMuted,
+        color: HomePalette.textSecondary,
       );
 
   String _modeLabel(AppLocalizations l10n, SessionRecord record) {
@@ -45,6 +46,10 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
         return l10n.historyModeDiscussion;
       case SessionRecord.modeOneOnOne:
         return l10n.historyModeOneOnOne;
+      case SessionRecord.modeMashup:
+        return l10n.historyModeMashup;
+      case SessionRecord.modeBingo:
+        return l10n.historyModeBingo;
       case SessionRecord.modeDice:
       default:
         return l10n.historyModeDice;
@@ -233,6 +238,16 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
           selected: _filter == SessionRecord.modeOneOnOne,
           onTap: () => setState(() => _filter = SessionRecord.modeOneOnOne),
         ),
+        _buildFilterChip(
+          label: l10n.historyFilterMashup,
+          selected: _filter == SessionRecord.modeMashup,
+          onTap: () => setState(() => _filter = SessionRecord.modeMashup),
+        ),
+        _buildFilterChip(
+          label: l10n.historyFilterBingo,
+          selected: _filter == SessionRecord.modeBingo,
+          onTap: () => setState(() => _filter = SessionRecord.modeBingo),
+        ),
       ],
     );
   }
@@ -243,16 +258,9 @@ class _SessionHistoryPageState extends State<SessionHistoryPage> {
   ) async {
     final shouldDelete = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: HomePalette.surface,
-            title: Text(
-              l10n.historyDeleteAllTitle,
-              style: _titleStyle(fontSize: 18),
-            ),
-            content: Text(
-              l10n.historyDeleteAllMessage,
-              style: _subtitleStyle(),
-            ),
+          builder: (context) => TalkShuffleAlertDialog(
+            title: Text(l10n.historyDeleteAllTitle),
+            content: Text(l10n.historyDeleteAllMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -293,7 +301,7 @@ class SessionHistoryDetailPage extends StatelessWidget {
 
   TextStyle _mutedStyle({double fontSize = 13}) => GoogleFonts.zenKakuGothicNew(
         fontSize: fontSize,
-        color: HomePalette.textMuted,
+        color: HomePalette.textSecondary,
       );
 
   String _modeLabel(AppLocalizations l10n) {
@@ -304,6 +312,10 @@ class SessionHistoryDetailPage extends StatelessWidget {
         return l10n.historyModeDiscussion;
       case SessionRecord.modeOneOnOne:
         return l10n.historyModeOneOnOne;
+      case SessionRecord.modeMashup:
+        return l10n.historyModeMashup;
+      case SessionRecord.modeBingo:
+        return l10n.historyModeBingo;
       case SessionRecord.modeDice:
       default:
         return l10n.historyModeDice;
@@ -343,7 +355,9 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final dateLabel = dateFormat.format(record.playedAt);
     final modeLabel = _modeLabel(l10n);
     final hideFlatTopics = (record.mode == SessionRecord.modeDiscussion ||
-            record.mode == SessionRecord.modeOneOnOne) &&
+            record.mode == SessionRecord.modeOneOnOne ||
+            record.mode == SessionRecord.modeMashup ||
+            record.mode == SessionRecord.modeBingo) &&
         record.selectedCardsByPlayer.isNotEmpty;
     final playersSummary = _buildPlayersSummary(l10n);
 
@@ -437,7 +451,11 @@ class SessionHistoryDetailPage extends StatelessWidget {
             _buildSectionCard(
               title: record.mode == SessionRecord.modeDiscussion
                   ? l10n.historyDiscussionPromptsTitle
-                  : l10n.historySelectedCardsTitle,
+                  : record.mode == SessionRecord.modeMashup
+                      ? l10n.historyMashupPromptsTitle
+                      : record.mode == SessionRecord.modeBingo
+                          ? l10n.historyBingoPromptsTitle
+                          : l10n.historySelectedCardsTitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -472,7 +490,9 @@ class SessionHistoryDetailPage extends StatelessWidget {
           if (record.voteResults.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildSectionCard(
-              title: l10n.voteResultsTitle,
+              title: record.mode == SessionRecord.modeBingo
+                  ? l10n.bingoScoreTitle
+                  : l10n.voteResultsTitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: record.voteResults.entries.map((entry) {
@@ -483,7 +503,9 @@ class SessionHistoryDetailPage extends StatelessWidget {
                       children: [
                         Text(entry.key, style: _bodyStyle()),
                         Text(
-                          l10n.voteCount(entry.value),
+                          record.mode == SessionRecord.modeBingo
+                              ? l10n.bingoScorePoints(entry.value)
+                              : l10n.voteCount(entry.value),
                           style: _mutedStyle(),
                         ),
                       ],
@@ -564,26 +586,15 @@ class SessionHistoryDetailPage extends StatelessWidget {
     final controller = TextEditingController(text: suggested);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: HomePalette.surface,
-        title: Text(
-          l10n.historySaveAsPresetDialogTitle,
-          style: _titleStyle(fontSize: 18),
-        ),
+      builder: (ctx) => TalkShuffleAlertDialog(
+        title: Text(l10n.historySaveAsPresetDialogTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           cursorColor: HomePalette.accent,
           style: _bodyStyle(),
-          decoration: InputDecoration(
+          decoration: TalkShuffleAlertDialog.inputDecoration(
             hintText: l10n.presetSaveDialogHint,
-            hintStyle: _mutedStyle(),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: HomePalette.border),
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: HomePalette.accent),
-            ),
           ),
           onSubmitted: (_) => Navigator.of(ctx).pop(true),
         ),
@@ -638,23 +649,9 @@ class SessionHistoryDetailPage extends StatelessWidget {
   ) async {
     final shouldDelete = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: HomePalette.surface,
-            title: Text(
-              l10n.historyDeleteOneTitle,
-              style: GoogleFonts.zenKakuGothicNew(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: HomePalette.text,
-              ),
-            ),
-            content: Text(
-              l10n.historyDeleteOneMessage,
-              style: GoogleFonts.zenKakuGothicNew(
-                fontSize: 14,
-                color: HomePalette.textMuted,
-              ),
-            ),
+          builder: (context) => TalkShuffleAlertDialog(
+            title: Text(l10n.historyDeleteOneTitle),
+            content: Text(l10n.historyDeleteOneMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
