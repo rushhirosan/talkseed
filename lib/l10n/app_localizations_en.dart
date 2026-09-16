@@ -113,6 +113,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap \"Roll Dice\" to roll the dice and pick a random theme.';
 
   @override
+  String get tutorialOneOnOne => '1-on-1';
+
+  @override
+  String get tutorialOneOnOneBody =>
+      'Move through phases from check-in to wrap-up, picking one prompt each step. Great for solo reflection or manager–report 1-on-1s.';
+
+  @override
+  String get tutorialWorkModes => 'Work conversations';
+
+  @override
+  String get tutorialWorkModesBody =>
+      'Use 1-on-1, value cards, and group discussion for team or one-to-one dialogue. Open the lightbulb tip on each theme screen anytime for how-to details.';
+
+  @override
   String get tutorialValues => 'Discover Your Values';
 
   @override
@@ -138,7 +152,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialReadyBody =>
-      'Choose a mode and jump in. Use dice, value cards, or group discussion—whatever fits the moment.';
+      'Pick a theme on the home screen and jump in. Pro Spark modes (Mashup and Conversation bingo) are there too. Reopen how-to tips anytime from the lightbulb on each theme screen.';
 
   @override
   String get skip => 'Skip';
@@ -474,6 +488,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get support => 'Support';
+
+  @override
+  String get rateApp => 'Rate this app';
 
   @override
   String get privacyPolicy => 'Privacy Policy';
@@ -1233,6 +1250,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get oneOnOnePreviousPhase => 'Previous phase';
 
   @override
+  String get oneOnOneReviewThemes => 'Review today\'s themes';
+
+  @override
+  String get oneOnOneReviewStepLabel => 'Today\'s wrap-up';
+
+  @override
+  String get oneOnOneReviewThemesHint =>
+      'Look back at the themes you chose, then wrap up.';
+
+  @override
+  String get oneOnOneBackToLastPhase => 'Back to closing';
+
+  @override
   String get oneOnOneCompleteSession => 'End 1-on-1';
 
   @override
@@ -1545,6 +1575,108 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bingoTipEndBody =>
       'By default, a completed line is bingo. Keep going or end the session. You can also switch to fill-the-board mode.';
+
+  @override
+  String get modeTipsOpen => 'Hints';
+
+  @override
+  String get diceTipsTitle => 'Dice tips';
+
+  @override
+  String get diceTipRollTitle => 'Roll for a theme';
+
+  @override
+  String get diceTipRollBody =>
+      'Tap Roll Dice to spin. When it stops, talk about the theme on that face, then pass to the next person.';
+
+  @override
+  String get diceTipSessionTitle => 'Players, timer, voting';
+
+  @override
+  String get diceTipSessionBody =>
+      'Before you start, set player count, names, a timer, and optional end-of-session voting to match the room.';
+
+  @override
+  String get diceTipHistoryTitle => 'Saved in history';
+
+  @override
+  String get diceTipHistoryBody =>
+      'When a session ends, it is saved. Open History from home to look back later.';
+
+  @override
+  String get valuesTipsTitle => 'Value card tips';
+
+  @override
+  String get discussionTipsTitle => 'Group discussion tips';
+
+  @override
+  String get discussionTipSetupTitle => 'Choose categories';
+
+  @override
+  String get discussionTipSetupBody =>
+      'On setup, pick the deck, categories, and how many prompts land on the table. Leave filters open to keep the full pool.';
+
+  @override
+  String get discussionTipPickTitle => 'Pick what to discuss';
+
+  @override
+  String get discussionTipPickBody =>
+      'After you start, choose prompts from the candidates. Discuss them in turn until everyone has spoken once.';
+
+  @override
+  String get discussionTipFlowTitle => 'Use the timer';
+
+  @override
+  String get discussionTipFlowBody =>
+      'With the timer on, you get a per-person pace. Pause or extend when the conversation needs it.';
+
+  @override
+  String get oneOnOneTipsTitle => '1-on-1 tips';
+
+  @override
+  String get oneOnOneTipFormatTitle => 'Pick a format';
+
+  @override
+  String get oneOnOneTipFormatBody =>
+      'Choose Lite through Full based on how deep you want to go. Check-in and wrap-up are always included.';
+
+  @override
+  String get oneOnOneTipPhaseTitle => 'One prompt per phase';
+
+  @override
+  String get oneOnOneTipPhaseBody =>
+      'In each phase, pick one prompt, talk it through, then move on. You can swap candidates before advancing.';
+
+  @override
+  String get oneOnOneTipReviewTitle => 'Review today\'s themes';
+
+  @override
+  String get oneOnOneTipReviewBody =>
+      'At the end, skim the themes you chose, then finish the session.';
+
+  @override
+  String get mashupTipsTitle => 'Mashup tips';
+
+  @override
+  String get mashupTipCombineTitle => 'Combine the axes';
+
+  @override
+  String get mashupTipCombineBody =>
+      'Spin topic, angle, and twist to build a fresh prompt. Choose which axes to use before you start.';
+
+  @override
+  String get mashupTipLockTitle => 'Re-spin part of it';
+
+  @override
+  String get mashupTipLockBody =>
+      'Lock axes you like and re-spin the rest to keep direction while exploring variations.';
+
+  @override
+  String get mashupTipTurnTitle => 'Take turns';
+
+  @override
+  String get mashupTipTurnBody =>
+      'With multiple players, talk through the prompt, then pass to the next person.';
 
   @override
   String get presetModeBingo => 'Bingo';

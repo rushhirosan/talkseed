@@ -22,6 +22,7 @@ import 'package:theme_dice/widgets/home/home_preset_chip.dart';
 import 'package:theme_dice/widgets/home/preset_manage_hint.dart';
 import 'package:theme_dice/widgets/play/play_session_ui.dart';
 import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
 
 /// 1on1向け：今日の型を選び、選んだフェーズで進むガイド付きセッション
 class OneOnOneSessionPage extends StatefulWidget {
@@ -61,6 +62,8 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   bool _loading = true;
   Object? _loadError;
   bool _agendaExpanded = false;
+  /// 全フェーズ選択後の「今日のテーマ」まとめ（終了前の1テンポ）
+  bool _reviewingThemes = false;
   String? _loadedLanguageCode;
   final ScrollController _phaseStripScrollController = ScrollController();
   List<SessionPreset> _savedPresets = [];
@@ -113,6 +116,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       _selectedByPhaseId.clear();
       _recentlyShownInPhase.clear();
       _agendaExpanded = false;
+      _reviewingThemes = false;
       _candidateQuestions = [];
     });
   }
@@ -175,6 +179,8 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       _selectedQuestion = null;
       _selectedByPhaseId.clear();
       _recentlyShownInPhase.clear();
+      _agendaExpanded = false;
+      _reviewingThemes = false;
     });
     _refreshCandidates(resetRecent: true);
   }
@@ -218,7 +224,6 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   void _selectQuestion(String question) {
     setState(() {
       _selectedQuestion = question;
-      if (_isLastPhase) _agendaExpanded = true;
     });
     _triggerVibration();
   }
@@ -233,11 +238,33 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
     _selectedByPhaseId[_currentPhase.sessionId] = question;
   }
 
+  void _enterThemeReview() {
+    setState(() {
+      _reviewingThemes = true;
+      _agendaExpanded = true;
+    });
+  }
+
+  void _exitReviewToLastPhase() {
+    if (!_reviewingThemes) return;
+    setState(() {
+      _reviewingThemes = false;
+      _phaseIndex = _activePhases.length - 1;
+      _selectedQuestion =
+          _selectedByPhaseId[_currentPhase.sessionId];
+    });
+    _refreshCandidates(
+      resetRecent: true,
+      clearSelection: _selectedQuestion == null,
+    );
+    _scrollActivePhaseIntoView();
+  }
+
   void _goToNextPhase() {
     if (_selectedQuestion == null) return;
     _commitCurrentPhaseSelection();
     if (_isLastPhase) {
-      _completeSession();
+      _enterThemeReview();
       return;
     }
     setState(() {
@@ -255,6 +282,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   void _goToPreviousPhase() {
     if (_phaseIndex <= 0) return;
     setState(() {
+      _reviewingThemes = false;
       _phaseIndex--;
       _selectedQuestion =
           _selectedByPhaseId[_currentPhase.sessionId];
@@ -332,7 +360,9 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
 
   String? _questionForPhaseAt(int index) {
     final phase = _activePhases[index];
-    if (index == _phaseIndex && _selectedQuestion != null) {
+    if (!_reviewingThemes &&
+        index == _phaseIndex &&
+        _selectedQuestion != null) {
       return _selectedQuestion;
     }
     return _selectedByPhaseId[phase.sessionId];
@@ -347,8 +377,10 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   }
 
   void _jumpToPhase(int index) {
-    if (index >= _phaseIndex || index < 0) return;
+    if (index < 0 || index >= _activePhases.length) return;
+    if (!_reviewingThemes && index >= _phaseIndex) return;
     setState(() {
+      _reviewingThemes = false;
       _phaseIndex = index;
       _selectedQuestion = _selectedByPhaseId[_currentPhase.sessionId];
     });
@@ -357,6 +389,86 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       clearSelection: _selectedQuestion == null,
     );
     _scrollActivePhaseIntoView();
+  }
+
+  Widget _buildThemeAgendaItems(
+    AppLocalizations l10n, {
+    required bool allowJumpToAnySelected,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: List.generate(_activePhases.length, (index) {
+        final phase = _activePhases[index];
+        final question = _questionForPhaseAt(index);
+        final isCurrent = !_reviewingThemes && index == _phaseIndex;
+        final accent = _OneOnOnePhaseColors.accentFor(phase);
+        final canJump = question != null &&
+            (allowJumpToAnySelected || index < _phaseIndex);
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index < _activePhases.length - 1 ? 12 : 0,
+          ),
+          child: InkWell(
+            onTap: canJump ? () => _jumpToPhase(index) : null,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    _OneOnOnePhaseColors.iconFor(phase),
+                    size: 16,
+                    color: question != null ? accent : PlayColors.textMuted,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _phaseTitle(l10n, phase),
+                          style: PlayTextStyles.caption(
+                            question != null ? 0.9 : 0.55,
+                          ).copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: question != null
+                                ? accent
+                                : PlayColors.textMuted,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          question ??
+                              (isCurrent
+                                  ? l10n.oneOnOneThemeAgendaSelecting
+                                  : l10n.oneOnOneThemeAgendaPending),
+                          style: PlayTextStyles.hint().copyWith(
+                            fontStyle: question == null
+                                ? FontStyle.italic
+                                : FontStyle.normal,
+                            color: question != null
+                                ? PlayColors.text
+                                : PlayColors.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (canJump)
+                    Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                      color: PlayColors.textMuted,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
   }
 
   Widget _buildThemeAgenda(AppLocalizations l10n) {
@@ -421,86 +533,89 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
                   const SizedBox(height: 12),
                   const Divider(height: 1, color: PlayColors.border),
                   const SizedBox(height: 10),
-                  ...List.generate(_activePhases.length, (index) {
-                    final phase = _activePhases[index];
-                    final question = _questionForPhaseAt(index);
-                    final isCurrent = index == _phaseIndex;
-                    final accent = _OneOnOnePhaseColors.accentFor(phase);
-                    final canJump = index < _phaseIndex && question != null;
-
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: index < _activePhases.length - 1 ? 12 : 0,
-                      ),
-                      child: InkWell(
-                        onTap: canJump ? () => _jumpToPhase(index) : null,
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                _OneOnOnePhaseColors.iconFor(phase),
-                                size: 16,
-                                color: question != null
-                                    ? accent
-                                    : PlayColors.textMuted,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _phaseTitle(l10n, phase),
-                                      style: PlayTextStyles.caption(
-                                        question != null ? 0.9 : 0.55,
-                                      ).copyWith(
-                                        fontWeight: FontWeight.w800,
-                                        color: question != null
-                                            ? accent
-                                            : PlayColors.textMuted,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    Text(
-                                      question ??
-                                          (isCurrent
-                                              ? l10n.oneOnOneThemeAgendaSelecting
-                                              : l10n
-                                                  .oneOnOneThemeAgendaPending),
-                                      style: PlayTextStyles.hint().copyWith(
-                                        fontStyle: question == null
-                                            ? FontStyle.italic
-                                            : FontStyle.normal,
-                                        color: question != null
-                                            ? PlayColors.text
-                                            : PlayColors.textMuted,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (canJump)
-                                Icon(
-                                  Icons.chevron_right,
-                                  size: 18,
-                                  color: PlayColors.textMuted,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+                  _buildThemeAgendaItems(
+                    l10n,
+                    allowJumpToAnySelected: false,
+                  ),
                 ],
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildThemeReviewBody(AppLocalizations l10n) {
+    final total = _activePhases.length;
+    final selected = _selectedThemeCount;
+
+    return PlayPageScroll(
+      stickyFooter: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PlayPrimaryButton(
+            label: l10n.oneOnOneCompleteSession,
+            icon: Icons.check_circle,
+            onPressed: _completeSession,
+          ),
+          TextButton.icon(
+            onPressed: _exitReviewToLastPhase,
+            icon: Icon(
+              Icons.arrow_back,
+              size: 18,
+              color: PlayColors.textSecondary,
+            ),
+            label: Text(
+              l10n.oneOnOneBackToLastPhase,
+              style: PlayTextStyles.hint(),
+            ),
+          ),
+        ],
+      ),
+      children: [
+        Text(
+          l10n.oneOnOneReviewStepLabel,
+          style: PlayTextStyles.caption(),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 12),
+        _buildPhaseStrip(l10n),
+        const SizedBox(height: 24),
+        Text(
+          l10n.oneOnOneThemeAgendaTitle,
+          style: PlayTextStyles.prompt(fontSize: 22),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          l10n.oneOnOneReviewThemesHint,
+          style: PlayTextStyles.hint(),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.oneOnOneThemeAgendaCount(selected, total),
+          style: PlayTextStyles.caption(),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 20),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: PlayColors.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: PlayColors.accent.withValues(alpha: 0.45),
+            ),
+          ),
+          child: _buildThemeAgendaItems(
+            l10n,
+            allowJumpToAnySelected: true,
+          ),
+        ),
+      ],
     );
   }
 
@@ -790,15 +905,15 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
                   child: Container(
                     height: 2,
                     margin: EdgeInsets.only(bottom: metrics.labelSpacing + 12),
-                    color: i <= _phaseIndex
+                    color: _reviewingThemes || i <= _phaseIndex
                         ? PlayColors.accent.withValues(alpha: 0.55)
                         : PlayColors.border,
                   ),
                 ),
               _PhaseDot(
                 label: _phaseTitle(l10n, phases[i]),
-                isActive: i == _phaseIndex,
-                isCompleted: i < _phaseIndex,
+                isActive: !_reviewingThemes && i == _phaseIndex,
+                isCompleted: _reviewingThemes || i < _phaseIndex,
                 phase: phases[i],
                 dotWidth: metrics.dotWidth,
                 iconCircleSize: metrics.iconCircleSize,
@@ -957,6 +1072,10 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
   }
 
   Widget _buildSessionBody(AppLocalizations l10n) {
+    if (_reviewingThemes) {
+      return _buildThemeReviewBody(l10n);
+    }
+
     final totalPhases = _activePhases.length;
 
     return PlayPageScroll(
@@ -965,9 +1084,9 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
         children: [
           PlayPrimaryButton(
             label: _isLastPhase
-                ? l10n.oneOnOneCompleteSession
+                ? l10n.oneOnOneReviewThemes
                 : l10n.oneOnOneNextPhase,
-            icon: _isLastPhase ? Icons.check_circle : Icons.arrow_forward,
+            icon: _isLastPhase ? Icons.checklist_rtl : Icons.arrow_forward,
             onPressed: _selectedQuestion == null ? null : _goToNextPhase,
           ),
           if (_phaseIndex > 0) ...[
@@ -1070,6 +1189,7 @@ class _OneOnOneSessionPageState extends State<OneOnOneSessionPage> {
       title: l10n.homeThemeShortOneOnOne,
       onBack: _goHome,
       backTooltip: l10n.backToModeSelection,
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.oneOnOne)],
       body: _buildBody(l10n),
     );
   }

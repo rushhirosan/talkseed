@@ -6,7 +6,7 @@ import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/session_config.dart';
 import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/pages/bingo_page.dart';
-import 'package:theme_dice/pages/bingo_tips_page.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
 import 'package:theme_dice/services/bingo_picker.dart';
 import 'package:theme_dice/services/bingo_service.dart';
 import 'package:theme_dice/services/preset_service.dart';
@@ -541,9 +541,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
   }
 
   void _openTips() {
-    Navigator.of(context).push(
-      RouteTransitions.forwardRoute(page: const BingoTipsPage()),
-    );
+    ModeTipsPage.open(context, ModeTipsKind.bingo);
   }
 
   void _start(BingoDeck deck) {
@@ -569,11 +567,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
       title: l10n.bingoTitle,
       leading: HomeBackButton(onPressed: () => Navigator.of(context).pop()),
       actions: [
-        HomeHeaderIconButton(
-          icon: Icons.lightbulb_outline_rounded,
-          tooltip: l10n.bingoTipsOpen,
-          onPressed: _openTips,
-        ),
+        const ModeTipsHeaderButton(kind: ModeTipsKind.bingo),
       ],
       body: _loading || deck == null
           ? const Center(

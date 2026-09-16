@@ -111,6 +111,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialRollDiceBody => '「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。';
 
   @override
+  String get tutorialOneOnOne => '1on1';
+
+  @override
+  String get tutorialOneOnOneBody =>
+      'チェックインから締めまで、フェーズごとに問いを選んで進めます。1人の振り返りにも、上司・メンバーとの1on1にも使えます。';
+
+  @override
+  String get tutorialWorkModes => '仕事の会話';
+
+  @override
+  String get tutorialWorkModesBody =>
+      '1on1・価値観カード・グループディスカッションで、チームや1対1の対話を進められます。各テーマの詳しい遊び方は、画面右上のヒントからいつでも確認できます。';
+
+  @override
   String get tutorialValues => '価値観を知る';
 
   @override
@@ -136,7 +150,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialReadyBody =>
-      'モードを選んで、さっそく始めましょう。場に合わせてサイコロ・価値観カード・グループディスカッションを使い分けられます。';
+      'ホームでテーマを選んで始めましょう。Proのひらめきモード（マッシュアップ・会話ビンゴ）もあります。詳しい遊び方は、各テーマ画面の右上ヒントから見返せます。';
 
   @override
   String get skip => 'スキップ';
@@ -470,6 +484,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get support => 'サポート';
+
+  @override
+  String get rateApp => 'アプリを評価';
 
   @override
   String get privacyPolicy => 'プライバシーポリシー';
@@ -1194,6 +1211,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oneOnOnePreviousPhase => '前のフェーズへ';
 
   @override
+  String get oneOnOneReviewThemes => '今日のテーマを確認';
+
+  @override
+  String get oneOnOneReviewStepLabel => '今日のまとめ';
+
+  @override
+  String get oneOnOneReviewThemesHint => '選んだテーマをもう一度見てから終えましょう';
+
+  @override
+  String get oneOnOneBackToLastPhase => '締めに戻る';
+
+  @override
   String get oneOnOneCompleteSession => '1on1を終える';
 
   @override
@@ -1499,6 +1528,107 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get bingoTipEndBody =>
       'デフォルトはラインが揃ったらビンゴ。続けても、セッション終了でもOKです。「全部埋める」ルールにも切り替えられます。';
+
+  @override
+  String get modeTipsOpen => 'ヒント';
+
+  @override
+  String get diceTipsTitle => 'サイコロのヒント';
+
+  @override
+  String get diceTipRollTitle => '振ってお題を決める';
+
+  @override
+  String get diceTipRollBody =>
+      '「サイコロを振る」を押すと転がって止まり、出た面のテーマがお題になります。話し終わったら次の人へ回しましょう。';
+
+  @override
+  String get diceTipSessionTitle => '人数・タイマー・投票';
+
+  @override
+  String get diceTipSessionBody =>
+      '開始前の設定で人数や名前、タイマー、終了後の投票を選べます。場の雰囲気に合わせて調整してください。';
+
+  @override
+  String get diceTipHistoryTitle => '履歴に残る';
+
+  @override
+  String get diceTipHistoryBody =>
+      'セッションを終えると履歴に保存されます。ホームの履歴アイコンから、あとから振り返れます。';
+
+  @override
+  String get valuesTipsTitle => '価値観カードのヒント';
+
+  @override
+  String get discussionTipsTitle => 'グループディスカッションのヒント';
+
+  @override
+  String get discussionTipSetupTitle => 'カテゴリーを選ぶ';
+
+  @override
+  String get discussionTipSetupBody =>
+      '設定画面でデッキやカテゴリー、卓に出す枚数を決めます。何も絞らないと、選んだ範囲のお題がすべて候補になります。';
+
+  @override
+  String get discussionTipPickTitle => '話すお題を選ぶ';
+
+  @override
+  String get discussionTipPickBody =>
+      '開始後、候補から話すお題を選びます。選んだお題をみんなで順番に話し、全員が一度話したらセッション完了です。';
+
+  @override
+  String get discussionTipFlowTitle => 'タイマーで進める';
+
+  @override
+  String get discussionTipFlowBody =>
+      'タイマーをオンにすると、一人あたりの目安時間が分かります。必要なら一時停止や延長もできます。';
+
+  @override
+  String get oneOnOneTipsTitle => '1on1のヒント';
+
+  @override
+  String get oneOnOneTipFormatTitle => '型を選ぶ';
+
+  @override
+  String get oneOnOneTipFormatBody =>
+      'ライトからフルまで、今日の深さに合わせてフェーズ構成を選びます。チェックインと締めはどの型にも入ります。';
+
+  @override
+  String get oneOnOneTipPhaseTitle => 'フェーズごとに問いを選ぶ';
+
+  @override
+  String get oneOnOneTipPhaseBody =>
+      '各フェーズで候補から1つ問いを選び、その問いで話します。別の候補に切り替えてから次のフェーズへ進めます。';
+
+  @override
+  String get oneOnOneTipReviewTitle => '今日のテーマを確認';
+
+  @override
+  String get oneOnOneTipReviewBody =>
+      '最後に選んだテーマを一覧で見返せます。内容を確認してからセッションを終えましょう。';
+
+  @override
+  String get mashupTipsTitle => 'マッシュアップのヒント';
+
+  @override
+  String get mashupTipCombineTitle => '軸を組み合わせる';
+
+  @override
+  String get mashupTipCombineBody =>
+      'テーマ・切り口・制約などの軸を回して、毎回ちがうお題を作ります。開始前に使う軸を選べます。';
+
+  @override
+  String get mashupTipLockTitle => '一部だけ振り直す';
+
+  @override
+  String get mashupTipLockBody =>
+      '気に入った軸はロックして、ほかの軸だけもう一度回せます。お題の方向を保ったままバリエーションを出せます。';
+
+  @override
+  String get mashupTipTurnTitle => '手番で回す';
+
+  @override
+  String get mashupTipTurnBody => '人数を設定すると手番が進みます。できたお題で話したら、次の人の番へ進みましょう。';
 
   @override
   String get presetModeBingo => 'ビンゴ';

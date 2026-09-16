@@ -20,6 +20,7 @@ import 'package:theme_dice/widgets/mashup_slot_widget.dart';
 import 'package:theme_dice/widgets/play/play_session_ui.dart';
 import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 import 'package:theme_dice/widgets/timer_display.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
 
 /// マッシュアップのプレイ画面。軸ごとのスロットを回して 1 行のお題を作る。
 class MashupPage extends StatefulWidget {
@@ -429,6 +430,7 @@ class _MashupPageState extends State<MashupPage> {
       child: HomeScaffold(
         title: l10n.mashupTitle,
         leading: HomeBackButton(onPressed: _handleBack),
+        actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.mashup)],
         body: LayoutBuilder(
           builder: (context, viewport) {
             final contentWidth = viewport.maxWidth < 520

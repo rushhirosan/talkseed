@@ -17,6 +17,7 @@ import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
 
 /// マッシュアップモードのセッション設定（使う軸・人数・タイマー）
 class MashupSetupPage extends StatefulWidget {
@@ -489,6 +490,7 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
     return HomeScaffold(
       title: l10n.mashupTitle,
       leading: HomeBackButton(onPressed: () => Navigator.of(context).pop()),
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.mashup)],
       body: _loading || deck == null
           ? const Center(
               child: CircularProgressIndicator(color: HomePalette.accent),

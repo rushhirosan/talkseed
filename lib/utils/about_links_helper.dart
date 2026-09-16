@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/services/purchase_service.dart';
+import 'package:theme_dice/services/review_prompt_service.dart';
 import 'package:theme_dice/widgets/pro_paywall_sheet.dart';
 import 'package:theme_dice/widgets/talk_shuffle_dialog.dart';
 
@@ -40,6 +41,14 @@ class AboutLinksHelper {
                   onTap: () {
                     Navigator.of(ctx).pop();
                     openUrl(supportUrl);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.star_outline),
+                  title: Text(l10n.rateApp),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    ReviewPromptService.openStoreListing();
                   },
                 ),
                 ListTile(

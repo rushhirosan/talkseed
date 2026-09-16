@@ -23,10 +23,11 @@ import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/pages/initial_settings_page.dart';
 import 'package:theme_dice/models/preselected_mode.dart';
 import 'package:theme_dice/services/session_record_service.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
+import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
-import 'package:theme_dice/widgets/home/home_scaffold.dart';
 import 'package:theme_dice/widgets/play/play_session_ui.dart';
 
 /// サイコロゲームのメインページ。
@@ -603,6 +604,7 @@ class _DicePageState extends State<DicePage>
         onPressed: _goBackToSettings,
         tooltip: l10n.backToSettings,
       ),
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.dice)],
       body: _showingVoteScreen && _session != null
           ? _buildVoteBody(l10n)
           : _buildPlayBody(l10n),

@@ -8,11 +8,10 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/session_config.dart';
 import 'package:theme_dice/models/session_record.dart';
-import 'package:theme_dice/pages/bingo_tips_page.dart';
+import 'package:theme_dice/pages/mode_tips_page.dart';
 import 'package:theme_dice/services/bingo_rules.dart';
 import 'package:theme_dice/services/session_record_service.dart';
 import 'package:theme_dice/services/timer_service.dart';
-import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/utils/timer_feedback.dart';
 import 'package:theme_dice/widgets/bingo_board_widget.dart';
@@ -711,16 +710,8 @@ class _BingoPageState extends State<BingoPage> {
       child: HomeScaffold(
         title: l10n.bingoTitle,
         leading: HomeBackButton(onPressed: _handleBack),
-        actions: [
-          HomeHeaderIconButton(
-            icon: Icons.lightbulb_outline_rounded,
-            tooltip: l10n.bingoTipsOpen,
-            onPressed: () {
-              Navigator.of(context).push(
-                RouteTransitions.forwardRoute(page: const BingoTipsPage()),
-              );
-            },
-          ),
+        actions: const [
+          ModeTipsHeaderButton(kind: ModeTipsKind.bingo),
         ],
         body: SafeArea(
           top: false,

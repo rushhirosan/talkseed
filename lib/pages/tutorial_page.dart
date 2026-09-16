@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
-import 'package:theme_dice/pages/bingo_tips_page.dart';
-import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/widgets/home/home_ambient_background.dart';
 import 'package:theme_dice/widgets/home/home_palette.dart';
 import 'package:theme_dice/widgets/home/home_primary_button.dart';
 import '../utils/preferences_helper.dart';
 import 'dart:math' as math;
 
-/// チュートリアル画面（全8ページ）
+/// 初回チュートリアル（短めの4ページ。詳細は各モードのヒント／？へ）
 class TutorialPage extends StatefulWidget {
   final VoidCallback onComplete;
 
@@ -48,30 +46,9 @@ class _TutorialPageState extends State<TutorialPage> {
           icon: Icons.casino,
         ),
         TutorialPageData(
-          title: l10n.tutorialValues,
-          body: l10n.tutorialValuesBody,
-          icon: Icons.favorite_border,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialGroupDiscussion,
-          body: l10n.tutorialGroupDiscussionBody,
-          icon: Icons.forum_outlined,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialMashup,
-          body: l10n.tutorialMashupBody,
-          icon: Icons.shuffle_rounded,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialBingo,
-          body: l10n.tutorialBingoBody,
-          icon: Icons.grid_3x3_rounded,
-          tipsCta: l10n.bingoTipsCta,
-        ),
-        TutorialPageData(
-          title: l10n.tutorialPlayersHistory,
-          body: l10n.tutorialPlayersHistoryBody,
-          icon: Icons.groups_outlined,
+          title: l10n.tutorialWorkModes,
+          body: l10n.tutorialWorkModesBody,
+          icon: Icons.work_outline,
         ),
         TutorialPageData(
           title: l10n.tutorialReady,
@@ -286,36 +263,6 @@ class _TutorialPageState extends State<TutorialPage> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              if (pageData.tipsCta != null) ...[
-                SizedBox(height: isSmallScreen ? 12 : 16),
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      RouteTransitions.forwardRoute(
-                        page: const BingoTipsPage(),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.lightbulb_outline_rounded,
-                    size: 18,
-                    color: HomePalette.accent,
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: HomePalette.accent,
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  label: Text(
-                    pageData.tipsCta!,
-                    style: GoogleFonts.zenKakuGothicNew(
-                      fontSize: bodyFontSize,
-                      fontWeight: FontWeight.w700,
-                      color: HomePalette.accent,
-                    ),
-                  ),
-                ),
-              ],
               SizedBox(height: isSmallScreen ? 10 : 16),
               if (showVersion)
                 Text(
@@ -489,14 +436,11 @@ class TutorialPageData {
   final IconData icon;
   /// 1ページ目など、2つアイコンを並べる場合は指定（例: サイコロ＋カード）
   final IconData? icon2;
-  /// 詳細ヒントへの導線ラベル（例: 会話ビンゴ）
-  final String? tipsCta;
 
   TutorialPageData({
     required this.title,
     required this.body,
     required this.icon,
     this.icon2,
-    this.tipsCta,
   });
 }

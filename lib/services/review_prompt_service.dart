@@ -9,6 +9,9 @@ class ReviewPromptService {
   static const _keyHasRequestedReview = 'has_requested_review';
   static const sessionThreshold = 3;
 
+  /// App Store Connect の Apple ID（iOS の [openStoreListing] 用）
+  static const appStoreId = '6760679042';
+
   /// セッション完了時に呼ぶ。3回目以降でレビュー未表示なら [requestReview] を試みる。
   static Future<void> onSessionCompleted() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,6 +29,12 @@ class ReviewPromptService {
 
     await review.requestReview();
     await prefs.setBool(_keyHasRequestedReview, true);
+  }
+
+  /// About などから手動でストアの評価ページを開く。
+  static Future<void> openStoreListing() async {
+    final review = InAppReview.instance;
+    await review.openStoreListing(appStoreId: appStoreId);
   }
 
   /// テスト用: カウンタとフラグをリセット

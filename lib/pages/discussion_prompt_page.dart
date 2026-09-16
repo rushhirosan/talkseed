@@ -17,6 +17,7 @@ import 'package:theme_dice/utils/route_transitions.dart';
 import 'package:theme_dice/utils/session_end_dialog.dart';
 import 'package:theme_dice/theme/talk_shuffle_theme.dart';
 import 'mode_selection_page.dart';
+import 'mode_tips_page.dart';
 
 /// 選定フェーズ（カードをめくって確認）→ 議論フェーズ（案内後にタイマー開始可）。プレイヤー交代はない。
 enum _FlowPhase { pickingTopics, discussion }
@@ -592,6 +593,7 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       title: widget.deckTitle,
       onBack: _goBack,
       backTooltip: l10n.backToSettings,
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.discussion)],
       body: PlayPageScroll(
         stickyFooter: stickyFooter,
         children: [

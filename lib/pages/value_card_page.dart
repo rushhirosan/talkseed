@@ -15,6 +15,7 @@ import '../utils/session_end_dialog.dart';
 import '../widgets/home/home_palette.dart';
 import '../widgets/play/play_session_ui.dart';
 import 'mode_selection_page.dart';
+import 'mode_tips_page.dart';
 
 /// 価値観カード フルルールのゲーム画面
 /// ファシリテーター持ち or 場に置いて、スマホを回さずにプレイ
@@ -274,6 +275,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
       title: l10n.deckTeamBuilding,
       onBack: _goBackToHome,
       backTooltip: l10n.backToSettings,
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.valueCards)],
       body: _gameState == null && !_hasSessionConfig
           ? _buildSetup(l10n)
           : _buildGameScroll(l10n),
@@ -404,63 +406,49 @@ class _ValueCardPageState extends State<ValueCardPage> {
       _rankedCards ??= List<String>.from(hand);
     }
 
-    final scrollChildren = <Widget>[
-      ..._sessionHeaderWidgets(l10n, state),
-      if (showTurnBanner) ...[
-        PlayPlayerBanner(
-          currentPlayerIndex: state.currentPlayerIndex,
-          totalPlayers: state.playerCount,
-          currentPlayerName: _playerDisplayLabel(
-            l10n,
-            state.currentPlayerIndex,
-          ),
-        ),
-        const SizedBox(height: 8),
-      ],
-      Text(
-        l10n.valueRound(state.currentRound),
-        textAlign: TextAlign.center,
-        style: PlayTextStyles.caption(0.7),
-      ),
-      const SizedBox(height: 12),
-      if (state.needsToRank && _rankedCards != null) ...[
-        Text(
-          l10n.valueRankPrompt,
-          textAlign: TextAlign.center,
-          style: PlayTextStyles.bodyEmphasis(),
-        ),
-        const SizedBox(height: 10),
-        RepaintBoundary(
-          child: _buildRankingList(_rankedCards!, l10n.valueDiscardLabel),
-        ),
-      ],
-      if (state.needsToDraw) ...[
-        const Center(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: CircularProgressIndicator(color: HomePalette.accent),
-          ),
-        ),
-        Text(
-          l10n.valueDrawCard,
-          textAlign: TextAlign.center,
-          style: PlayTextStyles.hint(0.7),
-        ),
-      ],
-    ];
+    final isRanking = state.needsToRank && _rankedCards != null;
+
+    final playingBody = isRanking
+        ? _buildRankingFitLayout(l10n, state, showTurnBanner)
+        : PlayPageScroll(
+            children: [
+              ..._sessionHeaderWidgets(l10n, state),
+              if (showTurnBanner) ...[
+                PlayPlayerBanner(
+                  currentPlayerIndex: state.currentPlayerIndex,
+                  totalPlayers: state.playerCount,
+                  currentPlayerName: _playerDisplayLabel(
+                    l10n,
+                    state.currentPlayerIndex,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              Text(
+                l10n.valueRound(state.currentRound),
+                textAlign: TextAlign.center,
+                style: PlayTextStyles.caption(0.7),
+              ),
+              const SizedBox(height: 12),
+              if (state.needsToDraw) ...[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: CircularProgressIndicator(color: HomePalette.accent),
+                  ),
+                ),
+                Text(
+                  l10n.valueDrawCard,
+                  textAlign: TextAlign.center,
+                  style: PlayTextStyles.hint(0.7),
+                ),
+              ],
+            ],
+          );
 
     return Stack(
       children: [
-        PlayPageScroll(
-          stickyFooter: state.needsToRank && _rankedCards != null
-              ? PlayPrimaryButton(
-                  label: l10n.valueConfirmRanking,
-                  icon: Icons.check,
-                  onPressed: _onConfirmRanking,
-                )
-              : null,
-          children: scrollChildren,
-        ),
+        playingBody,
         if (_playerSwitchBannerPlayer != null)
           _PlayerSwitchBanner(
             message: l10n.valuePlayerTurn(
@@ -477,30 +465,108 @@ class _ValueCardPageState extends State<ValueCardPage> {
     );
   }
 
-  Widget _buildRankingList(List<String> cards, String discardLabel) {
-    // 各カード約56px+余白6、semantics エラー回避のため明示的な高さを指定
-    const itemHeight = 68.0;
-    final listHeight = cards.length * itemHeight;
-    return SizedBox(
-      height: listHeight,
-      child: ReorderableListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        buildDefaultDragHandles: false,
-        itemCount: cards.length,
-        onReorder: _onReorderRanking,
-        itemBuilder: (context, index) {
-          final rank = index + 1;
-          final isLast = index == cards.length - 1;
-          return PlayReorderListTile(
-            key: ValueKey('${cards[index]}-$index'),
-            index: index,
-            rank: rank,
-            text: cards[index],
-            isLast: isLast,
-            trailingLabel: isLast ? discardLabel : null,
+  /// 6枚＋「確定して手放す」を1画面に収める（外側スクロールなし）。
+  Widget _buildRankingFitLayout(
+    AppLocalizations l10n,
+    ValueGameState state,
+    bool showTurnBanner,
+  ) {
+    return PlayStickyChrome(
+      padding: const EdgeInsets.fromLTRB(
+        playScreenHorizontalPadding,
+        playScreenVerticalPadding,
+        playScreenHorizontalPadding,
+        8,
+      ),
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ..._sessionHeaderWidgets(l10n, state),
+          if (showTurnBanner) ...[
+            PlayPlayerBanner(
+              currentPlayerIndex: state.currentPlayerIndex,
+              totalPlayers: state.playerCount,
+              currentPlayerName: _playerDisplayLabel(
+                l10n,
+                state.currentPlayerIndex,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          Text(
+            l10n.valueRound(state.currentRound),
+            textAlign: TextAlign.center,
+            style: PlayTextStyles.caption(0.7),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.valueRankPrompt,
+            textAlign: TextAlign.center,
+            style: PlayTextStyles.bodyEmphasis(),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return RepaintBoundary(
+            child: _buildRankingList(
+              _rankedCards!,
+              l10n.valueDiscardLabel,
+              maxHeight: constraints.maxHeight,
+            ),
           );
         },
+      ),
+      footer: PlayPrimaryButton(
+        label: l10n.valueConfirmRanking,
+        icon: Icons.check,
+        onPressed: _onConfirmRanking,
+      ),
+    );
+  }
+
+  Widget _buildRankingList(
+    List<String> cards,
+    String discardLabel, {
+    required double maxHeight,
+  }) {
+    // 残り高さに均等割。上限だけ設けて余白が出たら上寄せ（下限は設けず必ず収める）。
+    const preferredItemHeight = 68.0;
+    final safeMax = maxHeight.isFinite && maxHeight > 0 ? maxHeight : preferredItemHeight * 6;
+    final itemHeight = cards.isEmpty
+        ? preferredItemHeight
+        : (safeMax / cards.length).clamp(1.0, preferredItemHeight);
+    final listHeight = itemHeight * cards.length;
+    final compact = itemHeight < 56;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SizedBox(
+        height: listHeight,
+        child: ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
+          itemCount: cards.length,
+          onReorder: _onReorderRanking,
+          itemBuilder: (context, index) {
+            final rank = index + 1;
+            final isLast = index == cards.length - 1;
+            return SizedBox(
+              key: ValueKey('${cards[index]}-$index'),
+              height: itemHeight,
+              child: PlayReorderListTile(
+                index: index,
+                rank: rank,
+                text: cards[index],
+                isLast: isLast,
+                trailingLabel: isLast ? discardLabel : null,
+                compact: compact,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

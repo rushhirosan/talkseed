@@ -14,6 +14,7 @@ import 'session_setup_page.dart';
 import 'topics_page.dart';
 import 'mode_selection_page.dart';
 import '../models/preselected_mode.dart';
+import 'mode_tips_page.dart';
 
 /// テーマ設定画面（モード選択後、テーマ編集して遊ぶ画面へ遷移）
 class InitialSettingsPage extends StatefulWidget {
@@ -424,6 +425,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
           onPressed: _goBackToModeSelection,
           tooltip: l10n.backToModeSelection,
         ),
+        actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.dice)],
         body: const Center(
           child: CircularProgressIndicator(color: HomePalette.accent),
         ),
@@ -437,6 +439,7 @@ class _InitialSettingsPageState extends State<InitialSettingsPage> {
         onPressed: _goBackToModeSelection,
         tooltip: l10n.backToModeSelection,
       ),
+      actions: const [ModeTipsHeaderButton(kind: ModeTipsKind.dice)],
       body: _buildSettingsBody(l10n, panelPadding),
     );
   }

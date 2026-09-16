@@ -23,6 +23,7 @@ import 'value_card_page.dart';
 import 'discussion_prompt_page.dart';
 import 'mode_selection_page.dart';
 import 'card_settings_page.dart';
+import 'mode_tips_page.dart';
 /// セッション設定画面（設定画面とデザインテイストを統一）
 /// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
 class SessionSetupPage extends StatefulWidget {
@@ -759,6 +760,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         onPressed: _onBack,
         tooltip: backTooltip,
       ),
+      actions: widget.forValueCard
+          ? const [ModeTipsHeaderButton(kind: ModeTipsKind.valueCards)]
+          : widget.forDiscussion
+              ? const [ModeTipsHeaderButton(kind: ModeTipsKind.discussion)]
+              : null,
       body: _buildSessionBody(l10n, isValueCardLayout),
     );
   }

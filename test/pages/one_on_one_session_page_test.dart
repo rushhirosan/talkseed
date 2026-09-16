@@ -149,6 +149,45 @@ void main() {
     expect(find.text('未選択'), findsWidgets);
   });
 
+  testWidgets('last phase opens theme review before ending', (tester) async {
+    await tester.pumpWidget(_wrap(const OneOnOneSessionPage()));
+    await _pumpUntilLoaded(tester);
+    await _startLiteSession(tester);
+
+    for (var phase = 0; phase < 3; phase++) {
+      await tester.tap(find.byIcon(Icons.radio_button_off).first);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final ctaLabel = phase == 2 ? '今日のテーマを確認' : '次のフェーズへ';
+      expect(find.widgetWithText(PlayPrimaryButton, ctaLabel), findsOneWidget);
+      expect(find.widgetWithText(PlayPrimaryButton, '1on1を終える'), findsNothing);
+
+      await tester.tap(find.widgetWithText(PlayPrimaryButton, ctaLabel));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    expect(find.text('今日のまとめ'), findsOneWidget);
+    expect(
+      find.text('選んだテーマをもう一度見てから終えましょう'),
+      findsOneWidget,
+    );
+    expect(find.widgetWithText(PlayPrimaryButton, '1on1を終える'), findsOneWidget);
+    expect(find.text('締めに戻る'), findsOneWidget);
+
+    await tester.tap(find.text('締めに戻る'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('フェーズ 3 / 3'), findsOneWidget);
+    expect(find.text('この問いで話す'), findsOneWidget);
+    expect(
+      find.widgetWithText(PlayPrimaryButton, '今日のテーマを確認'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('English locale shows English prompts', (tester) async {
     await tester.pumpWidget(_wrapEn(const OneOnOneSessionPage()));
     await _pumpUntilLoaded(tester);

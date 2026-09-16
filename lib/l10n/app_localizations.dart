@@ -290,37 +290,61 @@ abstract class AppLocalizations {
   /// **'「サイコロを振る」を押すとサイコロが転がり、ランダムなテーマが選ばれます。'**
   String get tutorialRollDiceBody;
 
-  /// チュートリアル3ページ目のタイトル
+  /// 旧チュートリアル用（互換）。仕事モード一括を参照
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1'**
+  String get tutorialOneOnOne;
+
+  /// 旧チュートリアル用（互換）
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックインから締めまで、フェーズごとに問いを選んで進めます。1人の振り返りにも、上司・メンバーとの1on1にも使えます。'**
+  String get tutorialOneOnOneBody;
+
+  /// チュートリアル3ページ目のタイトル（1on1・価値観・議論）
+  ///
+  /// In ja, this message translates to:
+  /// **'仕事の会話'**
+  String get tutorialWorkModes;
+
+  /// チュートリアル3ページ目の本文（仕事向けテーマまとめ）
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1・価値観カード・グループディスカッションで、チームや1対1の対話を進められます。各テーマの詳しい遊び方は、画面右上のヒントからいつでも確認できます。'**
+  String get tutorialWorkModesBody;
+
+  /// 価値観カードの説明タイトル（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'価値観を知る'**
   String get tutorialValues;
 
-  /// チュートリアル3ページ目の本文
+  /// 価値観カードの説明本文（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'価値観カードで、自分が大切にしていることを並べ替えて共有。チームの相互理解に役立ちます。'**
   String get tutorialValuesBody;
 
-  /// チュートリアル4ページ目のタイトル
+  /// グループディスカッションの説明タイトル（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'グループディスカッション'**
   String get tutorialGroupDiscussion;
 
-  /// チュートリアル4ページ目の本文
+  /// グループディスカッションの説明本文（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'カテゴリーからお題を選び、全員で1つのテーマについて話し合います。タイマー付きで進行できます。'**
   String get tutorialGroupDiscussionBody;
 
-  /// チュートリアル5ページ目のタイトル
+  /// プレイヤー・履歴の説明タイトル（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'プレイヤー選択や履歴保存'**
   String get tutorialPlayersHistory;
 
-  /// チュートリアル5ページ目の本文
+  /// プレイヤー・履歴の説明本文（モード内ヒント用）
   ///
   /// In ja, this message translates to:
   /// **'参加人数や名前、タイマーを設定できます。セッション後は履歴に保存され、あとから振り返れます。'**
@@ -335,7 +359,7 @@ abstract class AppLocalizations {
   /// チュートリアル最終ページの本文
   ///
   /// In ja, this message translates to:
-  /// **'モードを選んで、さっそく始めましょう。場に合わせてサイコロ・価値観カード・グループディスカッションを使い分けられます。'**
+  /// **'ホームでテーマを選んで始めましょう。Proのひらめきモード（マッシュアップ・会話ビンゴ）もあります。詳しい遊び方は、各テーマ画面の右上ヒントから見返せます。'**
   String get tutorialReadyBody;
 
   /// タイマースキップボタン
@@ -979,6 +1003,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'サポート'**
   String get support;
+
+  /// App Store / Google Play の評価ページを開く
+  ///
+  /// In ja, this message translates to:
+  /// **'アプリを評価'**
+  String get rateApp;
 
   /// プライバシーポリシーへのリンク
   ///
@@ -2288,6 +2318,30 @@ abstract class AppLocalizations {
   /// **'前のフェーズへ'**
   String get oneOnOnePreviousPhase;
 
+  /// No description provided for @oneOnOneReviewThemes.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日のテーマを確認'**
+  String get oneOnOneReviewThemes;
+
+  /// No description provided for @oneOnOneReviewStepLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日のまとめ'**
+  String get oneOnOneReviewStepLabel;
+
+  /// No description provided for @oneOnOneReviewThemesHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'選んだテーマをもう一度見てから終えましょう'**
+  String get oneOnOneReviewThemesHint;
+
+  /// No description provided for @oneOnOneBackToLastPhase.
+  ///
+  /// In ja, this message translates to:
+  /// **'締めに戻る'**
+  String get oneOnOneBackToLastPhase;
+
   /// No description provided for @oneOnOneCompleteSession.
   ///
   /// In ja, this message translates to:
@@ -2857,6 +2911,186 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'デフォルトはラインが揃ったらビンゴ。続けても、セッション終了でもOKです。「全部埋める」ルールにも切り替えられます。'**
   String get bingoTipEndBody;
+
+  /// 各モード画面右上のヒントボタン
+  ///
+  /// In ja, this message translates to:
+  /// **'ヒント'**
+  String get modeTipsOpen;
+
+  /// No description provided for @diceTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'サイコロのヒント'**
+  String get diceTipsTitle;
+
+  /// No description provided for @diceTipRollTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'振ってお題を決める'**
+  String get diceTipRollTitle;
+
+  /// No description provided for @diceTipRollBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'「サイコロを振る」を押すと転がって止まり、出た面のテーマがお題になります。話し終わったら次の人へ回しましょう。'**
+  String get diceTipRollBody;
+
+  /// No description provided for @diceTipSessionTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'人数・タイマー・投票'**
+  String get diceTipSessionTitle;
+
+  /// No description provided for @diceTipSessionBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'開始前の設定で人数や名前、タイマー、終了後の投票を選べます。場の雰囲気に合わせて調整してください。'**
+  String get diceTipSessionBody;
+
+  /// No description provided for @diceTipHistoryTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'履歴に残る'**
+  String get diceTipHistoryTitle;
+
+  /// No description provided for @diceTipHistoryBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'セッションを終えると履歴に保存されます。ホームの履歴アイコンから、あとから振り返れます。'**
+  String get diceTipHistoryBody;
+
+  /// No description provided for @valuesTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'価値観カードのヒント'**
+  String get valuesTipsTitle;
+
+  /// No description provided for @discussionTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'グループディスカッションのヒント'**
+  String get discussionTipsTitle;
+
+  /// No description provided for @discussionTipSetupTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'カテゴリーを選ぶ'**
+  String get discussionTipSetupTitle;
+
+  /// No description provided for @discussionTipSetupBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'設定画面でデッキやカテゴリー、卓に出す枚数を決めます。何も絞らないと、選んだ範囲のお題がすべて候補になります。'**
+  String get discussionTipSetupBody;
+
+  /// No description provided for @discussionTipPickTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'話すお題を選ぶ'**
+  String get discussionTipPickTitle;
+
+  /// No description provided for @discussionTipPickBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'開始後、候補から話すお題を選びます。選んだお題をみんなで順番に話し、全員が一度話したらセッション完了です。'**
+  String get discussionTipPickBody;
+
+  /// No description provided for @discussionTipFlowTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'タイマーで進める'**
+  String get discussionTipFlowTitle;
+
+  /// No description provided for @discussionTipFlowBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'タイマーをオンにすると、一人あたりの目安時間が分かります。必要なら一時停止や延長もできます。'**
+  String get discussionTipFlowBody;
+
+  /// No description provided for @oneOnOneTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'1on1のヒント'**
+  String get oneOnOneTipsTitle;
+
+  /// No description provided for @oneOnOneTipFormatTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'型を選ぶ'**
+  String get oneOnOneTipFormatTitle;
+
+  /// No description provided for @oneOnOneTipFormatBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'ライトからフルまで、今日の深さに合わせてフェーズ構成を選びます。チェックインと締めはどの型にも入ります。'**
+  String get oneOnOneTipFormatBody;
+
+  /// No description provided for @oneOnOneTipPhaseTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'フェーズごとに問いを選ぶ'**
+  String get oneOnOneTipPhaseTitle;
+
+  /// No description provided for @oneOnOneTipPhaseBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'各フェーズで候補から1つ問いを選び、その問いで話します。別の候補に切り替えてから次のフェーズへ進めます。'**
+  String get oneOnOneTipPhaseBody;
+
+  /// No description provided for @oneOnOneTipReviewTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日のテーマを確認'**
+  String get oneOnOneTipReviewTitle;
+
+  /// No description provided for @oneOnOneTipReviewBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'最後に選んだテーマを一覧で見返せます。内容を確認してからセッションを終えましょう。'**
+  String get oneOnOneTipReviewBody;
+
+  /// No description provided for @mashupTipsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'マッシュアップのヒント'**
+  String get mashupTipsTitle;
+
+  /// No description provided for @mashupTipCombineTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'軸を組み合わせる'**
+  String get mashupTipCombineTitle;
+
+  /// No description provided for @mashupTipCombineBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ・切り口・制約などの軸を回して、毎回ちがうお題を作ります。開始前に使う軸を選べます。'**
+  String get mashupTipCombineBody;
+
+  /// No description provided for @mashupTipLockTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'一部だけ振り直す'**
+  String get mashupTipLockTitle;
+
+  /// No description provided for @mashupTipLockBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'気に入った軸はロックして、ほかの軸だけもう一度回せます。お題の方向を保ったままバリエーションを出せます。'**
+  String get mashupTipLockBody;
+
+  /// No description provided for @mashupTipTurnTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'手番で回す'**
+  String get mashupTipTurnTitle;
+
+  /// No description provided for @mashupTipTurnBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'人数を設定すると手番が進みます。できたお題で話したら、次の人の番へ進みましょう。'**
+  String get mashupTipTurnBody;
 
   /// No description provided for @presetModeBingo.
   ///

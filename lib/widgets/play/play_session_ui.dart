@@ -15,6 +15,7 @@ class PlaySessionScaffold extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
   final String? backTooltip;
+  final List<Widget>? actions;
   final Widget body;
   final bool resizeToAvoidBottomInset;
 
@@ -23,6 +24,7 @@ class PlaySessionScaffold extends StatelessWidget {
     required this.title,
     required this.onBack,
     this.backTooltip,
+    this.actions,
     required this.body,
     this.resizeToAvoidBottomInset = true,
   });
@@ -57,6 +59,7 @@ class PlaySessionScaffold extends StatelessWidget {
         onPressed: onBack,
         tooltip: kIsWeb ? '' : backTooltip,
       ),
+      actions: actions,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: Theme(
         data: playTheme,
@@ -594,6 +597,8 @@ class PlayReorderListTile extends StatelessWidget {
   final String text;
   final bool isLast;
   final String? trailingLabel;
+  /// 狭い高さに収めるときの余白・行数を圧縮する。
+  final bool compact;
 
   const PlayReorderListTile({
     super.key,
@@ -602,61 +607,70 @@ class PlayReorderListTile extends StatelessWidget {
     required this.text,
     this.isLast = false,
     this.trailingLabel,
+    this.compact = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: key,
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: isLast ? HomePalette.surface : PlayColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isLast
-              ? PlayColors.textMuted.withValues(alpha: 0.5)
-              : PlayColors.border,
+    final handleSize = compact ? 30.0 : 36.0;
+    final gap = compact ? 4.0 : 8.0;
+    return Padding(
+      padding: EdgeInsets.only(bottom: gap),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: isLast ? HomePalette.surface : PlayColors.surface,
+          borderRadius: BorderRadius.circular(compact ? 10 : 12),
+          border: Border.all(
+            color: isLast
+                ? PlayColors.textMuted.withValues(alpha: 0.5)
+                : PlayColors.border,
+          ),
         ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ReorderableDragStartListener(
-            index: index,
-            child: Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: HomePalette.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: PlayColors.border),
-              ),
-              child: const Icon(
-                Icons.drag_handle,
-                color: PlayColors.textMuted,
-                size: 20,
-              ),
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: compact ? 4 : 10,
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              '$rank. $text',
-              style: PlayTextStyles.listItem(),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ReorderableDragStartListener(
+                index: index,
+                child: Container(
+                  width: handleSize,
+                  height: handleSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: HomePalette.surface,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: PlayColors.border),
+                  ),
+                  child: Icon(
+                    Icons.drag_handle,
+                    color: PlayColors.textMuted,
+                    size: compact ? 18 : 20,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '$rank. $text',
+                  style: PlayTextStyles.listItem(),
+                  maxLines: compact ? 1 : 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (trailingLabel != null) ...[
+                const SizedBox(width: 8),
+                Text(
+                  trailingLabel!,
+                  style: PlayTextStyles.timerNote(),
+                ),
+              ],
+            ],
           ),
-          if (trailingLabel != null) ...[
-            const SizedBox(width: 8),
-            Text(
-              trailingLabel!,
-              style: PlayTextStyles.timerNote(),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
