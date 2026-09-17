@@ -295,6 +295,8 @@ class _MashupPageState extends State<MashupPage> {
       _picks.clear();
       _resolvedPicks.clear();
       _tickValues.clear();
+      // 前の人のロックを引き継ぐと空スロットのまま固定される
+      _lockedAxisIds.clear();
     });
   }
 
@@ -484,7 +486,9 @@ class _MashupPageState extends State<MashupPage> {
                           locked: _lockedAxisIds.contains(axis.id),
                           lockTooltip: l10n.mashupLockAxis,
                           unlockTooltip: l10n.mashupUnlockAxis,
-                          onToggleLock: () => _toggleLock(axis.id),
+                          onToggleLock: spinning
+                              ? null
+                              : () => _toggleLock(axis.id),
                         ),
                         const SizedBox(height: 10),
                       ],
@@ -528,7 +532,7 @@ class _MashupPageState extends State<MashupPage> {
                           if (!_isLastPlayer)
                             Expanded(
                               child: TextButton(
-                                onPressed: _finish,
+                                onPressed: spinning ? null : _finish,
                                 style: TextButton.styleFrom(
                                   foregroundColor: HomePalette.textMuted,
                                 ),

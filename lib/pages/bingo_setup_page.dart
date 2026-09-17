@@ -10,6 +10,7 @@ import 'package:theme_dice/pages/mode_tips_page.dart';
 import 'package:theme_dice/services/bingo_picker.dart';
 import 'package:theme_dice/services/bingo_service.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/utils/preset_display.dart';
@@ -38,7 +39,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
     Duration(minutes: 2),
     Duration(minutes: 3),
     Duration(minutes: 5),
-    Duration(hours: 1),
+    TimerService.unlimitedDuration,
   ];
 
   BingoDeck? _deck;
@@ -65,6 +66,9 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
   }
 
   void _initializePlayerNames({List<String>? initialNames}) {
+    final preserved = initialNames ??
+        _playerNameControllers.map((c) => c.text).toList(growable: false);
+
     for (final controller in _playerNameControllers) {
       controller.dispose();
     }
@@ -76,8 +80,8 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
 
     for (var i = 0; i < _config.playerCount; i++) {
       final controller = TextEditingController();
-      if (initialNames != null && i < initialNames.length) {
-        controller.text = initialNames[i];
+      if (i < preserved.length) {
+        controller.text = preserved[i];
       }
       _playerNameControllers.add(controller);
       _playerNameFocusNodes.add(FocusNode());
@@ -234,7 +238,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
     if (d == const Duration(minutes: 2)) return l10n.timer2Minutes;
     if (d == const Duration(minutes: 3)) return l10n.timer3Minutes;
     if (d == const Duration(minutes: 5)) return l10n.timer5Minutes;
-    if (d == const Duration(hours: 1)) return l10n.timerUnlimited;
+    if (d == TimerService.unlimitedDuration) return l10n.timerUnlimited;
     return l10n.timer1Minute;
   }
 

@@ -4,6 +4,7 @@ import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/card_deck.dart';
 import 'package:theme_dice/models/polyhedron_type.dart';
 import 'package:theme_dice/models/session_preset.dart';
+import 'package:theme_dice/models/value_game_state.dart';
 import 'package:theme_dice/pages/bingo_page.dart';
 import 'package:theme_dice/pages/discussion_prompt_page.dart';
 import 'package:theme_dice/pages/dice_page.dart';
@@ -14,9 +15,11 @@ import 'package:theme_dice/services/bingo_picker.dart';
 import 'package:theme_dice/services/bingo_service.dart';
 import 'package:theme_dice/services/mashup_service.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/utils/preferences_helper.dart';
 import 'package:theme_dice/utils/pro_access.dart';
 import 'package:theme_dice/utils/route_transitions.dart';
+import 'package:theme_dice/models/mashup_deck.dart';
 
 /// 保存済みプリセットからセッションを起動する
 class PresetLauncher {
@@ -61,12 +64,21 @@ class PresetLauncher {
     }
   }
 
+  static void _showLaunchError(BuildContext context) {
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.presetLaunchError)),
+    );
+  }
+
   static Future<void> _launchOneOnOne(
     BuildContext context,
     SessionPreset preset,
   ) async {
     final format = preset.oneOnOneFormat;
     if (format == null) {
+      _showLaunchError(context);
       return;
     }
     await Navigator.of(context).push(
@@ -86,10 +98,12 @@ class PresetLauncher {
     final config = preset.sessionConfig;
     final deckType = preset.discussionDeckType;
     if (config == null || deckType == null) {
+      _showLaunchError(context);
       return;
     }
     final ids = config.discussionCategoryIds;
     if (ids != null && ids.isEmpty) {
+      _showLaunchError(context);
       return;
     }
 
@@ -115,6 +129,7 @@ class PresetLauncher {
   ) async {
     final config = preset.sessionConfig;
     if (config == null) {
+      _showLaunchError(context);
       return;
     }
 
@@ -123,12 +138,16 @@ class PresetLauncher {
       (d) => d.type == CardDeckType.teamBuilding,
     );
     final themes = deck.themes(l10n);
+    final maxPlayers = ValueGameLogic.maxPlayersForDeck(themes.length);
+    final safeConfig = config.playerCount > maxPlayers
+        ? config.copyWith(playerCount: maxPlayers)
+        : config;
 
     await Navigator.of(context).push(
       RouteTransitions.forwardRoute(
         page: ValueCardPage(
           themes: themes,
-          sessionConfig: config,
+          sessionConfig: safeConfig,
         ),
       ),
     );
@@ -141,6 +160,7 @@ class PresetLauncher {
     final config = preset.sessionConfig;
     final themes = preset.diceThemes;
     if (config == null || themes == null || themes.length != 6) {
+      _showLaunchError(context);
       return;
     }
 
@@ -167,13 +187,33 @@ class PresetLauncher {
     final config = preset.sessionConfig;
     final axisIds = config?.mashupEnabledAxisIds;
     if (config == null || axisIds == null || axisIds.isEmpty) {
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.mashupPresetLaunchError)),
+        );
+      }
       return;
     }
 
     final l10n = AppLocalizations.of(context)!;
-    final deck = await MashupService.loadDeck(languageCode: l10n.localeName);
+    late final MashupDeck deck;
+    try {
+      deck = await MashupService.loadDeck(languageCode: l10n.localeName);
+    } catch (_) {
+      if (context.mounted) {
+        await ErrorDialogHelper.showDataLoadError(context);
+      }
+      return;
+    }
     final axes = deck.axes.where((a) => axisIds.contains(a.id)).toList();
-    if (axes.isEmpty || !context.mounted) {
+    if (!context.mounted) {
+      return;
+    }
+    if (axes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.mashupPresetLaunchError)),
+      );
       return;
     }
 
@@ -190,11 +230,20 @@ class PresetLauncher {
   ) async {
     final config = preset.sessionConfig;
     if (config == null) {
+      _showLaunchError(context);
       return;
     }
 
     final l10n = AppLocalizations.of(context)!;
-    final deck = await BingoService.loadDeck(languageCode: l10n.localeName);
+    late final BingoDeck deck;
+    try {
+      deck = await BingoService.loadDeck(languageCode: l10n.localeName);
+    } catch (_) {
+      if (context.mounted) {
+        await ErrorDialogHelper.showDataLoadError(context);
+      }
+      return;
+    }
     if (!context.mounted) {
       return;
     }

@@ -4,7 +4,7 @@ class MashupAxis {
   final String label;
   final List<String> items;
 
-  /// セッション設定でオフにできる軸（制約軸など）
+  /// 起動時デフォルトでオフにする軸（制約など）。UI 上は全軸トグル可。
   final bool optional;
 
   const MashupAxis({
@@ -76,6 +76,7 @@ class MashupDeck {
   }
 
   /// 軸ID -> 選ばれた語 から 1 行の合成文を作る。
+  /// オフにした軸のプレースホルダは空になり、前後の助詞・接続を整える。
   String compose(Map<String, String> picks) {
     final hasConstraint =
         (picks[mashupConstraintAxisId] ?? '').isNotEmpty;
@@ -83,6 +84,28 @@ class MashupDeck {
     for (final axis in axes) {
       text = text.replaceAll('{${axis.id}}', picks[axis.id] ?? '');
     }
+    return _cleanupComposeResidue(text);
+  }
+
+  /// 欠落プレースホルダ由来の助詞・接続詞を落とす（日英テンプレ両対応）。
+  /// 両側が埋まっている接続語（JA「の」「を」、EN「about」）は消さない。
+  static String _cleanupComposeResidue(String raw) {
+    var text = raw.trim();
+    // EN: dangling "about" when angle or category is missing
+    text = text.replaceAll(RegExp(r'^about\s+'), '');
+    text = text.replaceAll(RegExp(r'\s+about\s*$'), '');
+    // EN: "{angle} about  — {constraint}" when category is empty
+    text = text.replaceAll(RegExp(r'\s+about\s+—'), ' —');
+    // EN: dangling em dash around constraint
+    text = text.replaceAll(RegExp(r'\s*—\s*$'), '');
+    text = text.replaceAll(RegExp(r'^\s*—\s*'), '');
+    // JA: "{category}の{angle}を{constraint}"
+    text = text.replaceAll('のを', 'を');
+    text = text.replaceAll(RegExp(r'^の'), '');
+    text = text.replaceAll(RegExp(r'の$'), '');
+    text = text.replaceAll(RegExp(r'^を'), '');
+    text = text.replaceAll(RegExp(r'を$'), '');
+    text = text.replaceAll(RegExp(r'\s{2,}'), ' ');
     return text.trim();
   }
 

@@ -92,8 +92,21 @@ enum ValuePhase {
 class ValueGameLogic {
   static final Random _random = Random();
 
+  /// 1人あたり5枚配る前提の最大人数
+  static int maxPlayersForDeck(int deckSize) {
+    final max = deckSize ~/ 5;
+    if (max < 2) return 2;
+    return max;
+  }
+
   /// デッキをシャッフルして初期状態を作成
   static ValueGameState createGame(List<String> deck, int playerCount) {
+    final maxPlayers = maxPlayersForDeck(deck.length);
+    if (playerCount < 2 || playerCount > maxPlayers) {
+      throw ArgumentError(
+        'プレイヤー数が不正です（$playerCount、許容 2〜$maxPlayers）',
+      );
+    }
     if (deck.length < playerCount * 5) {
       throw ArgumentError(
           'デッキが足りません（${deck.length}枚 < ${playerCount * 5}枚）');

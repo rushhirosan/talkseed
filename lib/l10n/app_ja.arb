@@ -1032,7 +1032,7 @@
       }
     }
   },
-  "discussionPreviewSessionEnd": "終了: 全員が一度話したとき",
+  "discussionPreviewSessionEnd": "終了: 終了ボタンでいつでも終了できます",
   "discussionGroupKickoffTitle": "グループディスカッションを始めよう",
   "discussionGroupKickoffLead": "全員で {count} 個のお題について話し合います。",
   "@discussionGroupKickoffLead": {
@@ -1205,6 +1205,10 @@
   "historyFilterMashup": "マッシュアップ",
   "historyMashupPromptsTitle": "話したお題",
   "mashupAllAxesLocked": "固定を1つ以上外してから回してください",
+  "mashupAxesRequired": "使う軸を1つ以上オンにしてください",
+  "mashupPresetLaunchError": "プリセットの軸設定が無効です。もう一度設定から始めてください",
+  "presetLaunchError": "プリセットを起動できませんでした。設定を確認してください",
+  "couldNotOpenLink": "リンクを開けませんでした",
   "mashupLeaveTitle": "セッションを終了しますか？",
   "mashupLeaveMessage": "進行中の内容は保存されません。",
   "mashupLeaveConfirm": "終了する",

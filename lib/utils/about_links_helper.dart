@@ -15,10 +15,17 @@ class AboutLinksHelper {
   static const String supportUrl = 'https://talk-seed.web.app/support.html';
   static const String privacyUrl = 'https://talk-seed.web.app/privacy.html';
 
-  static Future<void> openUrl(String url) async {
+  static Future<void> openUrl(String url, {BuildContext? context}) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (context != null && context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.couldNotOpenLink)),
+      );
     }
   }
 
@@ -40,7 +47,7 @@ class AboutLinksHelper {
                   title: Text(l10n.support),
                   onTap: () {
                     Navigator.of(ctx).pop();
-                    openUrl(supportUrl);
+                    openUrl(supportUrl, context: parentContext);
                   },
                 ),
                 ListTile(
@@ -56,7 +63,7 @@ class AboutLinksHelper {
                   title: Text(l10n.privacyPolicy),
                   onTap: () {
                     Navigator.of(ctx).pop();
-                    openUrl(privacyUrl);
+                    openUrl(privacyUrl, context: parentContext);
                   },
                 ),
                 if (PurchaseService.iapEnabled)

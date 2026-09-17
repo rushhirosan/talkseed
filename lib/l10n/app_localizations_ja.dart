@@ -953,7 +953,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get discussionPreviewSessionEnd => '終了: 全員が一度話したとき';
+  String get discussionPreviewSessionEnd => '終了: 終了ボタンでいつでも終了できます';
 
   @override
   String get discussionGroupKickoffTitle => 'グループディスカッションを始めよう';
@@ -1291,6 +1291,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mashupAllAxesLocked => '固定を1つ以上外してから回してください';
+
+  @override
+  String get mashupAxesRequired => '使う軸を1つ以上オンにしてください';
+
+  @override
+  String get mashupPresetLaunchError => 'プリセットの軸設定が無効です。もう一度設定から始めてください';
+
+  @override
+  String get presetLaunchError => 'プリセットを起動できませんでした。設定を確認してください';
+
+  @override
+  String get couldNotOpenLink => 'リンクを開けませんでした';
 
   @override
   String get mashupLeaveTitle => 'セッションを終了しますか？';

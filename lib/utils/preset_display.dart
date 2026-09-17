@@ -3,6 +3,7 @@ import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/bingo_deck.dart';
 import 'package:theme_dice/models/session_config.dart';
 import 'package:theme_dice/models/session_preset.dart';
+import 'package:theme_dice/services/timer_service.dart';
 
 /// プリセット UI 表示用ヘルパー
 extension SessionPresetDisplay on SessionPreset {
@@ -134,7 +135,7 @@ String presetTimerLabel(AppLocalizations l10n, Duration duration) {
   if (duration == const Duration(minutes: 2)) return l10n.timer2Minutes;
   if (duration == const Duration(minutes: 3)) return l10n.timer3Minutes;
   if (duration == const Duration(minutes: 5)) return l10n.timer5Minutes;
-  if (duration == const Duration(hours: 1)) return l10n.timerUnlimited;
+  if (duration == TimerService.unlimitedDuration) return l10n.timerUnlimited;
   return l10n.timer3Minutes;
 }
 

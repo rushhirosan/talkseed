@@ -973,8 +973,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get discussionPreviewSessionEnd =>
-      'Ends when everyone has spoken once';
+  String get discussionPreviewSessionEnd => 'Ends when you tap End discussion';
 
   @override
   String get discussionGroupKickoffTitle => 'Let\'s start the group discussion';
@@ -1331,6 +1330,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mashupAllAxesLocked => 'Unlock at least one reel before spinning';
+
+  @override
+  String get mashupAxesRequired => 'Turn on at least one reel to start';
+
+  @override
+  String get mashupPresetLaunchError =>
+      'This preset\'s reel settings are invalid. Start again from setup.';
+
+  @override
+  String get presetLaunchError =>
+      'Couldn\'t start this preset. Check its settings and try again.';
+
+  @override
+  String get couldNotOpenLink => 'Couldn\'t open the link';
 
   @override
   String get mashupLeaveTitle => 'Leave this session?';

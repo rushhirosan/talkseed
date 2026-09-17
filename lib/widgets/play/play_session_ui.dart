@@ -346,7 +346,9 @@ class PlayPrimaryButton extends StatelessWidget {
     if (onPressed == null) {
       return Opacity(
         opacity: 0.45,
-        child: _buildButton(onPressed: () {}),
+        child: IgnorePointer(
+          child: _buildButton(onPressed: () {}),
+        ),
       );
     }
     return _buildButton(onPressed: onPressed!);

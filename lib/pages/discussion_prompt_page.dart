@@ -262,7 +262,12 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
       final p = _promptForCardId(id);
       if (p != null) prompts.add(p);
     }
-    if (prompts.length != k) return;
+    if (prompts.length != k) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.discussionSelectAtLeastOneCategory)),
+      );
+      return;
+    }
 
     setState(() {
       _discussionPromptsRounds = prompts;
@@ -365,9 +370,11 @@ class _DiscussionPromptPageState extends State<DiscussionPromptPage> {
   Widget _buildPickingKickoffSummary(AppLocalizations l10n) {
     final hasTimer = widget.sessionConfig.enableTimer;
     final btn = l10n.discussionKickoffStartButton;
-    final durationLabel = hasTimer
-        ? _formatDiscussionDuration(widget.sessionConfig.timerDuration)
-        : '';
+    final durationLabel = !hasTimer
+        ? ''
+        : widget.sessionConfig.timerDuration == TimerService.unlimitedDuration
+            ? l10n.timerUnlimited
+            : _formatDiscussionDuration(widget.sessionConfig.timerDuration);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

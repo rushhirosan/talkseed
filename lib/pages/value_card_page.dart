@@ -64,14 +64,18 @@ class _ValueCardPageState extends State<ValueCardPage> {
     super.initState();
     final config = widget.sessionConfig;
     if (config != null) {
-      _playerCount = config.playerCount;
-      var state = ValueGameLogic.createGame(widget.themes, config.playerCount);
+      _playerCount = config.playerCount
+          .clamp(2, ValueGameLogic.maxPlayersForDeck(widget.themes.length));
+      final sessionConfig = config.playerCount == _playerCount
+          ? config
+          : config.copyWith(playerCount: _playerCount);
+      var state = ValueGameLogic.createGame(widget.themes, _playerCount);
       if (state.needsToDraw) {
         state = ValueGameLogic.drawCard(state);
       }
       _gameState = state;
       _session = GameSession(
-        config: config,
+        config: sessionConfig,
         themes: {PolyhedronType.cube: widget.themes},
         isActive: true,
       );
@@ -241,9 +245,10 @@ class _ValueCardPageState extends State<ValueCardPage> {
       playerNames: selectedCardsByPlayer.keys.toList(),
       sessionConfig: widget.sessionConfig ??
           SessionConfig(
-            playerCount: playerCount < 2
-                ? 2
-                : (playerCount > 10 ? 10 : playerCount),
+            playerCount: playerCount.clamp(
+              2,
+              ValueGameLogic.maxPlayersForDeck(widget.themes.length),
+            ),
             timerDuration: SessionConfig.defaultConfig.timerDuration,
             enableTimer: false,
           ),
@@ -304,6 +309,7 @@ class _ValueCardPageState extends State<ValueCardPage> {
   }
 
   Widget _buildSetup(AppLocalizations l10n) {
+    final maxPlayers = ValueGameLogic.maxPlayersForDeck(widget.themes.length);
     return PlayPageScroll(
       children: [
         const SizedBox(height: 48),
@@ -336,12 +342,12 @@ class _ValueCardPageState extends State<ValueCardPage> {
               ),
             ),
             IconButton.filled(
-              onPressed: _playerCount < 10
+              onPressed: _playerCount < maxPlayers
                   ? () => setState(() => _playerCount++)
                   : null,
               icon: const Icon(Icons.add),
               style: IconButton.styleFrom(
-                backgroundColor: _playerCount < 10
+                backgroundColor: _playerCount < maxPlayers
                     ? HomePalette.surface2
                     : HomePalette.surface2.withValues(alpha: 0.4),
                 foregroundColor: HomePalette.text,

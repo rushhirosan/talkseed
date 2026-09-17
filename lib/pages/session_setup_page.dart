@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:theme_dice/l10n/app_localizations.dart';
 import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/preset_display.dart';
 import 'package:theme_dice/utils/pro_access.dart';
@@ -23,6 +24,7 @@ import 'value_card_page.dart';
 import 'discussion_prompt_page.dart';
 import 'mode_selection_page.dart';
 import 'card_settings_page.dart';
+import '../models/value_game_state.dart';
 import 'mode_tips_page.dart';
 /// セッション設定画面（設定画面とデザインテイストを統一）
 /// サイコロ用・価値観カード用の両方で利用（参加人数・タイマー・プレイヤー名）
@@ -101,6 +103,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void initState() {
     super.initState();
     _config = SessionConfig.defaultConfig;
+    if (widget.forValueCard && _config.playerCount > _maxPlayerCount) {
+      _config = _config.copyWith(playerCount: _maxPlayerCount);
+    }
     _discussionPromptsPerCategory = 1;
     _discussionTotalPromptsOnTableSelection = null;
     _discussionIncludedCategories = {};
@@ -118,6 +123,17 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   /// グループ導線は [forDice] を付けないことがあるため、カード系以外を対象にする。
   bool get _isDiceSessionSetup =>
       !widget.forValueCard && !widget.forDiscussion;
+
+  int get _maxPlayerCount {
+    if (widget.forValueCard) {
+      final themes = _themesForSession[PolyhedronType.cube];
+      if (themes != null && themes.isNotEmpty) {
+        return ValueGameLogic.maxPlayersForDeck(themes.length);
+      }
+      return 5;
+    }
+    return 10;
+  }
 
   SessionPresetMode? get _presetMode {
     if (widget.forDiscussion) {
@@ -169,6 +185,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   }
 
   void _initializePlayerNames() {
+    final preserved =
+        _playerNameControllers.map((c) => c.text).toList(growable: false);
     for (var controller in _playerNameControllers) {
       controller.dispose();
     }
@@ -178,7 +196,11 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     _playerNameControllers.clear();
     _playerNameFocusNodes.clear();
     for (int i = 0; i < _config.playerCount; i++) {
-      _playerNameControllers.add(TextEditingController());
+      final controller = TextEditingController();
+      if (i < preserved.length) {
+        controller.text = preserved[i];
+      }
+      _playerNameControllers.add(controller);
       _playerNameFocusNodes.add(FocusNode());
     }
   }
@@ -197,7 +219,9 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
 
   void _updatePlayerCount(int count) {
     setState(() {
-      _config = _config.copyWith(playerCount: count);
+      _config = _config.copyWith(
+        playerCount: count.clamp(2, _maxPlayerCount),
+      );
       _initializePlayerNames();
     });
   }
@@ -314,12 +338,20 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
   void _applySavedPreset(SessionPreset preset) {
     final config = preset.sessionConfig;
     if (config == null) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetLaunchError)),
+      );
       return;
     }
 
+    var diceThemesApplied = true;
     setState(() {
+      final playerCount = widget.forValueCard
+          ? config.playerCount.clamp(2, _maxPlayerCount)
+          : config.playerCount;
       _config = _config.copyWith(
-        playerCount: config.playerCount,
+        playerCount: playerCount,
         timerDuration: config.timerDuration,
         enableTimer: config.enableTimer,
         enableVoting: config.enableVoting,
@@ -353,9 +385,18 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         final themes = preset.diceThemes;
         if (themes != null && themes.length == 6) {
           _cubeThemes = List<String>.from(themes);
+        } else {
+          diceThemesApplied = false;
         }
       }
     });
+
+    if (!diceThemesApplied && mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.presetLaunchError)),
+      );
+    }
   }
 
   SessionPreset _summaryPresetForDialog(SessionConfig config) {
@@ -775,7 +816,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     Duration(minutes: 2),
     Duration(minutes: 3),
     Duration(minutes: 5),
-    Duration(hours: 1),
+    TimerService.unlimitedDuration,
   ];
 
   String _getTimerLabel(AppLocalizations l10n, Duration d) {
@@ -784,7 +825,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
     if (d == const Duration(minutes: 2)) return l10n.timer2Minutes;
     if (d == const Duration(minutes: 3)) return l10n.timer3Minutes;
     if (d == const Duration(minutes: 5)) return l10n.timer5Minutes;
-    if (d == const Duration(hours: 1)) return l10n.timerUnlimited;
+    if (d == TimerService.unlimitedDuration) return l10n.timerUnlimited;
     return l10n.timer3Minutes;
   }
 
@@ -802,8 +843,8 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
         Text(l10n.playerCount, style: _labelStyle()),
         SizedBox(height: itemSpacing),
         _buildDropdown<int>(
-          value: _config.playerCount,
-          items: List.generate(9, (i) => i + 2),
+          value: _config.playerCount.clamp(2, _maxPlayerCount),
+          items: List.generate(_maxPlayerCount - 1, (i) => i + 2),
           labelBuilder: (v) => '$v',
           onChanged: (v) => v != null ? _updatePlayerCount(v) : null,
         ),

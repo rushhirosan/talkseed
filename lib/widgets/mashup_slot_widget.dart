@@ -10,7 +10,7 @@ class MashupSlotWidget extends StatelessWidget {
   final bool locked;
   final String lockTooltip;
   final String unlockTooltip;
-  final VoidCallback onToggleLock;
+  final VoidCallback? onToggleLock;
 
   const MashupSlotWidget({
     super.key,

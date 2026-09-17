@@ -111,5 +111,31 @@ void main() {
       expect(service.remainingTime, const Duration(minutes: 1));
       service.dispose();
     });
+
+    test('unlimited duration does not finish after elapsed time', () async {
+      var finished = false;
+      final service = TimerService(
+        initialDuration: TimerService.unlimitedDuration,
+        onFinished: () => finished = true,
+      );
+      service.start();
+      expect(service.isUnlimited, isTrue);
+      expect(service.isRunning, isTrue);
+      await Future<void>.delayed(const Duration(milliseconds: 1200));
+      expect(finished, isFalse);
+      expect(service.hasFinished, isFalse);
+      service.dispose();
+    });
+
+    test('reset to unlimited clears countdown behavior', () {
+      final service = TimerService(
+        initialDuration: const Duration(seconds: 30),
+      );
+      service.reset(TimerService.unlimitedDuration);
+      expect(service.isUnlimited, isTrue);
+      service.start();
+      expect(service.isRunning, isTrue);
+      service.dispose();
+    });
   });
 }

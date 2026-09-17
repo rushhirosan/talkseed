@@ -1835,7 +1835,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionPreviewSessionEnd.
   ///
   /// In ja, this message translates to:
-  /// **'終了: 全員が一度話したとき'**
+  /// **'終了: 終了ボタンでいつでも終了できます'**
   String get discussionPreviewSessionEnd;
 
   /// No description provided for @discussionGroupKickoffTitle.
@@ -2473,6 +2473,30 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'固定を1つ以上外してから回してください'**
   String get mashupAllAxesLocked;
+
+  /// No description provided for @mashupAxesRequired.
+  ///
+  /// In ja, this message translates to:
+  /// **'使う軸を1つ以上オンにしてください'**
+  String get mashupAxesRequired;
+
+  /// No description provided for @mashupPresetLaunchError.
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットの軸設定が無効です。もう一度設定から始めてください'**
+  String get mashupPresetLaunchError;
+
+  /// No description provided for @presetLaunchError.
+  ///
+  /// In ja, this message translates to:
+  /// **'プリセットを起動できませんでした。設定を確認してください'**
+  String get presetLaunchError;
+
+  /// No description provided for @couldNotOpenLink.
+  ///
+  /// In ja, this message translates to:
+  /// **'リンクを開けませんでした'**
+  String get couldNotOpenLink;
 
   /// No description provided for @mashupLeaveTitle.
   ///

@@ -50,6 +50,83 @@ void main() {
       expect(text, '趣味のこだわり');
     });
 
+    test('compose with only category drops leftover particles', () {
+      expect(deck.compose({'category': '趣味'}), '趣味');
+    });
+
+    test('compose with only angle drops leftover particles', () {
+      expect(deck.compose({'angle': 'こだわり'}), 'こだわり');
+    });
+
+    test('compose with angle and constraint', () {
+      expect(
+        deck.compose({
+          'angle': 'こだわり',
+          'constraint': '30秒で',
+        }),
+        'こだわりを30秒で',
+      );
+    });
+
+    test('compose with category and constraint', () {
+      expect(
+        deck.compose({
+          'category': '趣味',
+          'constraint': '30秒で',
+        }),
+        '趣味を30秒で',
+      );
+    });
+
+    test('EN compose keeps about when both axes present', () {
+      final en = MashupDeck.fromJson({
+        'template': '{angle} about {category} — {constraint}',
+        'templateWithoutConstraint': '{angle} about {category}',
+        'axes': [
+          {
+            'id': 'category',
+            'label': 'Topic',
+            'items': ['work'],
+          },
+          {
+            'id': 'angle',
+            'label': 'Angle',
+            'items': ['A quiet brag'],
+          },
+          {
+            'id': 'constraint',
+            'label': 'Twist',
+            'optional': true,
+            'items': ['in 30 seconds'],
+          },
+        ],
+      });
+      expect(
+        en.compose({
+          'category': 'work',
+          'angle': 'A quiet brag',
+        }),
+        'A quiet brag about work',
+      );
+      expect(
+        en.compose({
+          'category': 'work',
+          'angle': 'A quiet brag',
+          'constraint': 'in 30 seconds',
+        }),
+        'A quiet brag about work — in 30 seconds',
+      );
+      expect(en.compose({'angle': 'A quiet brag'}), 'A quiet brag');
+      expect(en.compose({'category': 'work'}), 'work');
+      expect(
+        en.compose({
+          'angle': 'A quiet brag',
+          'constraint': 'in 30 seconds',
+        }),
+        'A quiet brag — in 30 seconds',
+      );
+    });
+
     test('isBlocked detects blocklisted pair', () {
       expect(
         deck.isBlocked({

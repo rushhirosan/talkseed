@@ -8,6 +8,7 @@ import 'package:theme_dice/models/session_preset.dart';
 import 'package:theme_dice/pages/mashup_page.dart';
 import 'package:theme_dice/services/mashup_service.dart';
 import 'package:theme_dice/services/preset_service.dart';
+import 'package:theme_dice/services/timer_service.dart';
 import 'package:theme_dice/utils/dispose_text_controller.dart';
 import 'package:theme_dice/utils/error_dialog_helper.dart';
 import 'package:theme_dice/utils/preset_display.dart';
@@ -36,13 +37,13 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
     Duration(minutes: 2),
     Duration(minutes: 3),
     Duration(minutes: 5),
-    Duration(hours: 1),
+    TimerService.unlimitedDuration,
   ];
 
   MashupDeck? _deck;
   bool _loading = true;
 
-  /// 使う軸（必須軸は常に含む）
+  /// 使う軸（起動時は必須軸をオン。全軸トグル可・最低1軸は必須）
   final Set<String> _enabledAxisIds = {};
 
   late SessionConfig _config;
@@ -66,6 +67,9 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
   }
 
   void _initializePlayerNames({List<String>? initialNames}) {
+    final preserved = initialNames ??
+        _playerNameControllers.map((c) => c.text).toList(growable: false);
+
     for (final controller in _playerNameControllers) {
       controller.dispose();
     }
@@ -77,8 +81,8 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
 
     for (var i = 0; i < _config.playerCount; i++) {
       final controller = TextEditingController();
-      if (initialNames != null && i < initialNames.length) {
-        controller.text = initialNames[i];
+      if (i < preserved.length) {
+        controller.text = preserved[i];
       }
       _playerNameControllers.add(controller);
       _playerNameFocusNodes.add(FocusNode());
@@ -122,10 +126,12 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
       setState(() {
         _deck = deck;
         _loading = false;
+        // 古いプリセット等の不明 ID を落とし、空なら必須軸で埋める
+        _enabledAxisIds.removeWhere((id) => deck.axisById(id) == null);
         if (_enabledAxisIds.isEmpty) {
-          _enabledAxisIds
-            ..clear()
-            ..addAll(deck.axes.where((a) => !a.optional).map((a) => a.id));
+          _enabledAxisIds.addAll(
+            deck.axes.where((a) => !a.optional).map((a) => a.id),
+          );
         }
       });
     } catch (_) {
@@ -232,27 +238,42 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
                     height: 1,
                     color: HomePalette.border.withValues(alpha: 0.6),
                   ),
-                _AxisTile(
-                  label: deck.axes[i].label,
-                  sampleText: deck.axes[i].items.take(3).join(' / '),
-                  enabled: _enabledAxisIds.contains(deck.axes[i].id),
-                  canToggle: deck.axes[i].optional,
-                  onChanged: (on) {
-                    setState(() {
-                      if (on) {
-                        _enabledAxisIds.add(deck.axes[i].id);
-                      } else {
-                        _enabledAxisIds.remove(deck.axes[i].id);
-                      }
-                    });
-                  },
-                ),
+                _buildAxisTile(l10n, deck.axes[i]),
               ],
             ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildAxisTile(AppLocalizations l10n, MashupAxis axis) {
+    final axisId = axis.id;
+    final enabled = _enabledAxisIds.contains(axisId);
+    return _AxisTile(
+      key: ValueKey<String>('mashup-axis-$axisId'),
+      label: axis.label,
+      sampleText: axis.items.take(3).join(' / '),
+      enabled: enabled,
+      onChanged: (on) => _setAxisEnabled(l10n, axisId, on),
+    );
+  }
+
+  void _setAxisEnabled(AppLocalizations l10n, String axisId, bool on) {
+    if (on) {
+      setState(() => _enabledAxisIds.add(axisId));
+      return;
+    }
+    // 各軸は独立。最後の1つだけはオフ不可（開始できなくなるため）
+    if (_enabledAxisIds.length <= 1 && _enabledAxisIds.contains(axisId)) {
+      // Switch が先に OFF 側へ動くので、rebuild で ON に戻す
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.mashupAxesRequired)),
+      );
+      return;
+    }
+    setState(() => _enabledAxisIds.remove(axisId));
   }
 
   TextStyle _labelStyle() => GoogleFonts.zenKakuGothicNew(
@@ -279,7 +300,7 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
     if (d == const Duration(minutes: 2)) return l10n.timer2Minutes;
     if (d == const Duration(minutes: 3)) return l10n.timer3Minutes;
     if (d == const Duration(minutes: 5)) return l10n.timer5Minutes;
-    if (d == const Duration(hours: 1)) return l10n.timerUnlimited;
+    if (d == TimerService.unlimitedDuration) return l10n.timerUnlimited;
     return l10n.timer1Minute;
   }
 
@@ -469,6 +490,10 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
     final axes =
         deck.axes.where((a) => _enabledAxisIds.contains(a.id)).toList();
     if (axes.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.mashupAxesRequired)),
+      );
       return;
     }
     Navigator.of(context).push(
@@ -570,14 +595,13 @@ class _AxisTile extends StatelessWidget {
   final String label;
   final String sampleText;
   final bool enabled;
-  final bool canToggle;
   final ValueChanged<bool> onChanged;
 
   const _AxisTile({
+    super.key,
     required this.label,
     required this.sampleText,
     required this.enabled,
-    required this.canToggle,
     required this.onChanged,
   });
 
@@ -617,7 +641,7 @@ class _AxisTile extends StatelessWidget {
             value: enabled,
             activeThumbColor: HomePalette.accent,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            onChanged: canToggle ? onChanged : null,
+            onChanged: onChanged,
           ),
         ],
       ),

@@ -60,6 +60,7 @@ class TimerDisplay extends StatelessWidget {
     final isRunning = timerService!.isRunning;
     final isPaused = timerService!.isPaused;
     final timeUp = timerService!.hasFinished;
+    final unlimited = timerService!.isUnlimited;
 
     final borderColor = timeUp
         ? _timeUpBorder
@@ -92,9 +93,11 @@ class TimerDisplay extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                _formatDuration(remainingTime),
+                unlimited
+                    ? l10n.timerUnlimited
+                    : _formatDuration(remainingTime),
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: unlimited ? 18 : 26,
                   fontWeight: FontWeight.bold,
                   color: timeUp
                       ? _timeUpBorder
@@ -102,7 +105,7 @@ class TimerDisplay extends StatelessWidget {
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
-              if (showControls && !timeUp) ...[
+              if (showControls && !timeUp && !unlimited) ...[
                 const SizedBox(width: 4),
                 Row(
                   mainAxisSize: MainAxisSize.min,
