@@ -1543,16 +1543,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialBingoBody =>
-      'Up to 6 players. Boards are 3×3 for 2–3 people and 5×5 for 4–6 (Pro Spark modes). Open Hints on the bingo setup screen for the full how-to.';
+      'Up to 6 players. Boards are 3×3 for 2–3 people and 5×5 for 4–6 (Pro Spark modes). Open Hints from the top-right for the full how-to.';
 
   @override
   String get bingoTipsTitle => 'Conversation bingo hints';
-
-  @override
-  String get bingoTipsOpen => 'Hints';
-
-  @override
-  String get bingoTipsCta => 'See how to play';
 
   @override
   String get bingoTipBasicTitle => 'Pick a square and talk';

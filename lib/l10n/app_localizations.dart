@@ -2855,7 +2855,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialBingoBody.
   ///
   /// In ja, this message translates to:
-  /// **'人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。設定画面の「ヒント」から詳しい遊び方を確認できます。'**
+  /// **'人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。詳しい遊び方は、画面右上のヒントから確認できます。'**
   String get tutorialBingoBody;
 
   /// No description provided for @bingoTipsTitle.
@@ -2863,18 +2863,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'会話ビンゴのヒント'**
   String get bingoTipsTitle;
-
-  /// No description provided for @bingoTipsOpen.
-  ///
-  /// In ja, this message translates to:
-  /// **'ヒント'**
-  String get bingoTipsOpen;
-
-  /// No description provided for @bingoTipsCta.
-  ///
-  /// In ja, this message translates to:
-  /// **'遊び方ヒントを見る'**
-  String get bingoTipsCta;
 
   /// No description provided for @bingoTipBasicTitle.
   ///

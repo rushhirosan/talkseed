@@ -544,10 +544,6 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
     }
   }
 
-  void _openTips() {
-    ModeTipsPage.open(context, ModeTipsKind.bingo);
-  }
-
   void _start(BingoDeck deck) {
     final board = BingoPicker(deck: deck).deal(
       playerCount: _buildSessionConfig().playerCount,
@@ -603,33 +599,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
                                   color: HomePalette.textSecondary,
                                 ),
                               ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: TextButton.icon(
-                                  onPressed: _openTips,
-                                  icon: Icon(
-                                    Icons.lightbulb_outline_rounded,
-                                    size: 18,
-                                    color: bingoAccent,
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: bingoAccent,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                    ),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                  label: Text(
-                                    l10n.bingoTipsCta,
-                                    style: _bodyStyle(
-                                      fontSize: 13,
-                                      weight: FontWeight.w700,
-                                      color: bingoAccent,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               _buildWinModeSection(l10n),
                               const SizedBox(height: 12),
                               _buildRuleToggles(l10n),

@@ -1495,16 +1495,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialBingoBody =>
-      '人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。設定画面の「ヒント」から詳しい遊び方を確認できます。';
+      '人数は最大6人。2〜3人は3×3、4〜6人は5×5のボードです（Pro のひらめきモード）。詳しい遊び方は、画面右上のヒントから確認できます。';
 
   @override
   String get bingoTipsTitle => '会話ビンゴのヒント';
-
-  @override
-  String get bingoTipsOpen => 'ヒント';
-
-  @override
-  String get bingoTipsCta => '遊び方ヒントを見る';
 
   @override
   String get bingoTipBasicTitle => 'マスを選んで話す';
