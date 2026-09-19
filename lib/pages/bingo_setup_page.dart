@@ -574,12 +574,7 @@ class _BingoSetupPageState extends State<BingoSetupPage> {
               child: CircularProgressIndicator(color: bingoAccent),
             )
           : Padding(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                12,
-                16,
-                12 + MediaQuery.of(context).viewInsets.bottom,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 520),

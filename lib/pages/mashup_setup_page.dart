@@ -521,12 +521,7 @@ class _MashupSetupPageState extends State<MashupSetupPage> {
               child: CircularProgressIndicator(color: HomePalette.accent),
             )
           : Padding(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                12,
-                16,
-                12 + MediaQuery.of(context).viewInsets.bottom,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 520),
