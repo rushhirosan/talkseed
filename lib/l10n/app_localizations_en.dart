@@ -54,7 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startupDefaultSection => 'On next launch';
 
   @override
-  String get selectThemePrompt => 'Tap the dice to\nselect a theme!';
+  String get selectThemePrompt => 'Tap “Roll Dice” to\nselect a theme!';
 
   @override
   String get selectThemePromptCard => 'Tap the button below to draw a card';

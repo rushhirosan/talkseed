@@ -28,7 +28,7 @@ void main() {
         wrapWithMaterialApp(const ThemeDisplay(selectedTheme: null, useCardPrompt: false)),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Tap the dice to\nselect a theme!'), findsOneWidget);
+      expect(find.text('Tap “Roll Dice” to\nselect a theme!'), findsOneWidget);
     });
 
     testWidgets('shows card prompt when useCardPrompt is true', (WidgetTester tester) async {
@@ -45,7 +45,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       // When a theme is selected, the prompt text must not be shown (AnimatedTextKit shows the theme instead)
-      expect(find.text('Tap the dice to\nselect a theme!'), findsNothing);
+      expect(find.text('Tap “Roll Dice” to\nselect a theme!'), findsNothing);
     });
   });
 }

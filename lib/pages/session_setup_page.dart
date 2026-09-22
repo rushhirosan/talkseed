@@ -805,7 +805,7 @@ class _SessionSetupPageState extends State<SessionSetupPage> {
           ? const [ModeTipsHeaderButton(kind: ModeTipsKind.valueCards)]
           : widget.forDiscussion
               ? const [ModeTipsHeaderButton(kind: ModeTipsKind.discussion)]
-              : null,
+              : const [ModeTipsHeaderButton(kind: ModeTipsKind.dice)],
       body: _buildSessionBody(l10n, isValueCardLayout),
     );
   }

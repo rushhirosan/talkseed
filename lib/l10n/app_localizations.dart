@@ -182,10 +182,10 @@ abstract class AppLocalizations {
   /// **'次回起動時'**
   String get startupDefaultSection;
 
-  /// テーマ選択を促すメッセージ（サイコロ画面用）
+  /// テーマ選択を促すメッセージ（サイコロ画面用・下部ボタンを指す）
   ///
   /// In ja, this message translates to:
-  /// **'サイコロをタップして\nテーマを選ぼう！'**
+  /// **'「サイコロを振る」をタップして\nテーマを選ぼう！'**
   String get selectThemePrompt;
 
   /// テーマ選択を促すメッセージ（カード画面用）

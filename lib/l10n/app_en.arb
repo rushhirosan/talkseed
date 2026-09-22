@@ -22,7 +22,7 @@
   "alwaysOpenWithDiceHint": "Skips this menu and opens theme setup—the same path as the purple button above.",
   "alwaysOpenWithCards": "Open with cards on startup",
   "startupDefaultSection": "On next launch",
-  "selectThemePrompt": "Tap the dice to\nselect a theme!",
+  "selectThemePrompt": "Tap “Roll Dice” to\nselect a theme!",
   "selectThemePromptCard": "Tap the button below to draw a card",
   "themeResultAnnouncement": "This theme came up!",
   "faceLabel": "Face {faceNumber}",

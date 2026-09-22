@@ -62,9 +62,9 @@
   "@startupDefaultSection": {
     "description": "案B: 起動時デフォルトのセクション見出し"
   },
-  "selectThemePrompt": "サイコロをタップして\nテーマを選ぼう！",
+  "selectThemePrompt": "「サイコロを振る」をタップして\nテーマを選ぼう！",
   "@selectThemePrompt": {
-    "description": "テーマ選択を促すメッセージ（サイコロ画面用）"
+    "description": "テーマ選択を促すメッセージ（サイコロ画面用・下部ボタンを指す）"
   },
   "selectThemePromptCard": "下のボタンで1枚引こう",
   "@selectThemePromptCard": {

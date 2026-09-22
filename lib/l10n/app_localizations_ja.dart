@@ -54,7 +54,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get startupDefaultSection => '次回起動時';
 
   @override
-  String get selectThemePrompt => 'サイコロをタップして\nテーマを選ぼう！';
+  String get selectThemePrompt => '「サイコロを振る」をタップして\nテーマを選ぼう！';
 
   @override
   String get selectThemePromptCard => '下のボタンで1枚引こう';

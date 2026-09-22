@@ -7,7 +7,7 @@ import 'package:theme_dice/widgets/home/home_palette.dart';
 class ThemeDisplay extends StatelessWidget {
   final String? selectedTheme;
   /// true: カードモード用のプロンプト（「下のボタンで1枚引こう」）
-  /// false: サイコロモード用のプロンプト（「サイコロをタップして」）
+  /// false: サイコロモード用のプロンプト（「サイコロを振る」ボタンを指す）
   final bool useCardPrompt;
   /// トップ画面と同じダーク UI
   final bool useHomeStyle;
