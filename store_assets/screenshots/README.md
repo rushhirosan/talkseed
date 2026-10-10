@@ -6,10 +6,11 @@
 
 | フォルダ | 用途 |
 |----------|------|
-| `ios/6.7inch/` | iPhone 14/15 Pro Max 相当（App Store 推奨） |
-| `ios/6.1inch/` | iPhone 16e など 6.1" 用 |
+| `ios/6.5inch/` | iPhone の生キャプチャ。スクショエディタと `scripts/resize_ios_screenshots.py` の入力 |
+| `ios/6.1inch/` | 6.5" からリサイズした 6.1" 用 |
+| `ios/6.7inch/` | 6.7" 用の置き場（いまは空。撮ったらここへ） |
 | `ios/ipad-13inch/` | iPad Pro 13" 相当（iPad ネイティブ対応時・App Store 必須） |
-| `android/16x9/` | Android 16:9 用 |
+| `android/16x9/` | Android 16:9 用。提出用は `{ja,en}/` 直下の `01_` 〜 |
 
 ### 言語別サブフォルダ
 
@@ -20,7 +21,7 @@
 | `ja/` | 日本語 UI のスクリーンショット |
 | `en/` | 英語 UI のスクリーンショット |
 
-- **iOS**: `ios/6.1inch/ja/`, `ios/6.1inch/en/`, `ios/6.7inch/ja/`, `ios/6.7inch/en/`, `ios/ipad-13inch/ja/`, `ios/ipad-13inch/en/`
+- **iOS**: `ios/6.5inch/{ja,en}/`（原本）、`ios/6.1inch/{ja,en}/`、`ios/ipad-13inch/{ja,en}/`。`ios/6.7inch/` は空の置き場
 - **Android**: `android/16x9/ja/`, `android/16x9/en/`
 
 ## iPad スクリーンショット（実機なし）

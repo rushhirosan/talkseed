@@ -52,9 +52,9 @@
 | 5 | `05_one_on_one` | 1on1 型選択 | **済** |
 | 6 | `06_play_history` | 履歴（フィルタに Mashup/Bingo） | **済** |
 
-追加: `07_theme_settings` / `08_session_setup`（ja）。生データは `_pulled/`（端末時計が 1970 のためファイル名が `Screenshot_19700228-*`）。
+追加: `07_theme_settings` / `08_session_setup`（ja）。
 
-旧セット（Talk Seed / 黄 UI・2026-03）は `android/16x9/{ja,en}/_archive_202603/` に退避。
+旧セット（Talk Seed / 黄 UI・2026-03）と生キャプチャ置き場（`_pulled/`）はリポジトリから外した。必要なら Git 履歴から戻せる。
 
 ### 任意の追加撮影
 
@@ -68,8 +68,6 @@ Play 訴求を強めるなら次があるとよい:
 ADB=~/Library/Android/sdk/platform-tools/adb
 OUT=store_assets/screenshots/android/16x9/ja
 # 電源+音量下で撮ったあと:
-$ADB pull /sdcard/Pictures/Screenshots/Screenshot_19700228-XXXXXX.png "$OUT/"
+$ADB pull /sdcard/Pictures/Screenshots/Screenshot_YYYYMMDD-HHMMSS.png "$OUT/"
 ```
-
-（端末時刻が直っていれば通常の `Screenshot_YYYYMMDD-*.png`）
 
