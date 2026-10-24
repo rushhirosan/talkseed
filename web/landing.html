@@ -147,6 +147,8 @@
       .scene { background: #141218; }
     }
   </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW593EGVN1"></script>
+  <script src="analytics.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -189,7 +191,7 @@
 
       <section>
         <h2 data-i18n="privacyTitle">プライバシー</h2>
-        <p data-i18n="privacyBody">Talk Shuffle はアカウント登録なしで利用できます。セッション履歴は端末内にのみ保存され、外部サーバーへ個人データを送信しません。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
+        <p data-i18n="privacyBody">Talk Shuffle はアカウント登録なしで利用できます。セッション履歴は端末内にのみ保存され、アプリの利用データは外部へ送信しません。このサイトのトップ・サポート・プライバシーポリシーでは、ページの閲覧状況を Google アナリティクスで計測します。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
       </section>
     </main>
 
@@ -212,6 +214,24 @@
         : 'https://apps.apple.com/jp/app/talk-shuffle/id6760679042';
       document.querySelectorAll('.app-store-link').forEach(function (a) {
         a.href = store;
+        a.addEventListener('click', function () {
+          if (typeof gtag === 'function') {
+            gtag('event', 'cta_click', {
+              cta_name: 'app_store',
+              transport_type: 'beacon',
+            });
+          }
+        });
+      });
+      document.querySelectorAll('a[href="app.html"]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          if (typeof gtag === 'function') {
+            gtag('event', 'cta_click', {
+              cta_name: 'web_app',
+              transport_type: 'beacon',
+            });
+          }
+        });
       });
     })();
   </script>

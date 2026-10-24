@@ -262,10 +262,6 @@ class DiceWidget extends StatelessWidget {
     );
   }
 
-  // 注意: 正三角形の面を描画するコード（_buildTriangleFace）は削除されました
-  // 正六面体のみをサポートするため、正方形の面のみを使用します
-  // 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
-
   /// サイコロの面にテーマテキストを描画
   Widget _buildDiceFaceContent(BuildContext context, int number, {double brightness = 1.0}) {
     // 数字（1-6）に対応するテーマを取得（インデックスは0-5）
@@ -298,8 +294,4 @@ class DiceWidget extends StatelessWidget {
     );
   }
 }
-
-// 注意: TriangleClipper と _TetrahedronPainter は削除されました
-// 正六面体のみをサポートするため、これらは不要になりました
-// 正四面体・正八面体のコードは lib/polyhedrons/tetrahedron_octahedron_preserved.dart に保存されています
 

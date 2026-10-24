@@ -38,7 +38,7 @@
         privacyTitle: 'プライバシー',
         privacyBody: {
           html: true,
-          text: 'Talk Shuffle はアカウント登録なしで利用できます。セッション履歴は端末内にのみ保存され、外部サーバーへ個人データを送信しません。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。',
+          text: 'Talk Shuffle はアカウント登録なしで利用できます。セッション履歴は端末内にのみ保存され、アプリの利用データは外部へ送信しません。このサイトのトップ・サポート・プライバシーポリシーでは、ページの閲覧状況を Google アナリティクスで計測します。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。',
         },
         navAppStore: 'App Store',
         navSupport: 'サポート',
@@ -75,7 +75,7 @@
         privacyTitle: 'Privacy',
         privacyBody: {
           html: true,
-          text: 'No account is required. Session history stays on your device only; we do not send personal data to external servers. See the <a href="privacy.html">Privacy Policy</a> for details.',
+          text: 'No account is required. Session history stays on your device, and the App does not send usage data externally. Page views on the home, Support, and Privacy Policy pages of this site are measured with Google Analytics. See the <a href="privacy.html">Privacy Policy</a> for details.',
         },
         navAppStore: 'App Store',
         navSupport: 'Support',
@@ -92,10 +92,10 @@
         navTop: 'Talk Shuffle トップ',
         navAppStore: 'App Store',
         h1: 'プライバシーポリシー',
-        updated: '最終更新日: 2026年7月',
+        updated: '最終更新日: 2026年10月',
         s1Title: '1. はじめに',
         s1Body:
-          'Talk Shuffle（以下「本アプリ」）は、会話のテーマを決める際の支援を目的としたアプリです。本プライバシーポリシーは、本アプリにおける利用者情報の取り扱いについて説明します。',
+          'Talk Shuffle（以下「本アプリ」）は、会話のテーマを決める際の支援を目的としたアプリです。本プライバシーポリシーは、本アプリおよび本アプリのウェブサイト（https://talk-seed.web.app/）における利用者情報の取り扱いについて説明します。',
         s2Title: '2. 収集するデータ',
         s2Body:
           '本アプリは、利用者を特定する個人情報を収集しません。アカウント登録も不要です。',
@@ -107,7 +107,7 @@
           '本アプリは、個人を特定できる情報を外部のサーバーや第三者へ送信しません。アプリの利用状況の分析や広告配信の目的でデータを収集することもありません。',
         s5Title: '5. サードパーティサービス',
         s5Body:
-          '本アプリは、現時点ではサードパーティの分析ツールや広告ネットワークを含んでいません。将来的にこれらを導入する場合は、本ポリシーを更新してお知らせします。',
+          '本アプリには、サードパーティの分析ツールや広告ネットワークを含んでいません。本サイトのトップページ、サポート、プライバシーポリシーでは、ページの閲覧状況（ページの URL や参照元など）を Google アナリティクスで計測します。ブラウザ版（/app.html）と、アプリ内のセッション履歴・利用回数は計測しません。',
         s5bTitle: '5-2. アプリ内課金',
         s5bBody:
           '本アプリでは、任意の Pro 機能（名前付きプリセットの保存・セッション履歴の共有など）を App Store / Google Play のアプリ内課金で提供する場合があります。購入・復元の処理は各ストアが行い、支払情報はストア側で管理されます。本アプリは決済カード番号などを収集・保存しません。購入状態は端末内に保持し、同じストアアカウントであれば「購入の復元」から再適用できます。',
@@ -135,10 +135,10 @@
         navTop: 'Talk Shuffle home',
         navAppStore: 'App Store',
         h1: 'Privacy Policy',
-        updated: 'Last updated: July 2026',
+        updated: 'Last updated: October 2026',
         s1Title: '1. Introduction',
         s1Body:
-          'Talk Shuffle (the "App") helps you choose conversation topics. This Privacy Policy explains how we handle information when you use the App.',
+          'Talk Shuffle (the "App") helps you choose conversation topics. This Privacy Policy explains how we handle information when you use the App and its website (https://talk-seed.web.app/).',
         s2Title: '2. Data we collect',
         s2Body:
           'The App does not collect personally identifiable information. No account sign-up is required.',
@@ -147,10 +147,10 @@
           'Session history (topics used, dates, etc.) is stored only on the device where you use the App. This data is not sent to external servers. We may also keep anonymous, on-device counters such as completed sessions per mode (not sent externally).',
         s4Title: '4. Data sent externally',
         s4Body:
-          'The App does not send personally identifiable information to external servers or third parties. We do not collect data for analytics or advertising.',
+          'The App does not send personally identifiable information to external servers or third parties. The App does not collect usage data for analytics or advertising.',
         s5Title: '5. Third-party services',
         s5Body:
-          'The App currently does not include third-party analytics or ad networks. If we add them in the future, we will update this policy.',
+          'The App does not include third-party analytics or ad networks. The home page, Support page, and this Privacy Policy on this site send page views (such as the page URL and referrer) to Google Analytics. The browser app at /app.html, and in-app session history or usage counts, are not measured.',
         s5bTitle: '5-2. In-app purchases',
         s5bBody:
           'The App may offer optional Pro features (named presets and session history sharing) via App Store / Google Play in-app purchases. Purchase and restore are handled by each store; payment details stay with the store. The App does not collect or store card numbers. Purchase status is kept on device and can be re-applied with Restore Purchases under the same store account.',
