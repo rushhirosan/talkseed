@@ -1,7 +1,8 @@
 # Talk Shuffle Pro — IAP セットアップ
 
 商品 ID（コードと一致）: `talk_shuffle_pro`（非消費型）  
-Bundle ID: `com.talkseed.app`
+Bundle ID: `com.talkseed.app`  
+本番価格（ASC 確認 2026-10-30）: 日本 ¥300 / 米国など $1.99。受取は日本 ¥210（手数料 30%）
 
 コード側: `PurchaseService.iapEnabled = true`（確認完了後にコミット）
 
@@ -39,7 +40,7 @@ Bundle ID: `com.talkseed.app`
 | --- | --- |
 | 参照名 | `Talk Shuffle Pro` |
 | 製品 ID | **`talk_shuffle_pro`**（後から変更不可） |
-| 価格 | 仮 tier（例: ¥480） |
+| 価格 | 日本 ¥300（米国など $1.99） |
 
 5. ローカライズ（最低 1 言語。日英あるとよい）:
 
@@ -66,7 +67,7 @@ ASC 登録と**並行可**。実ストアに繋がず、ローカル課金シー
 3. **StoreKit Configuration** = `Runner/TalkShuffle.storekit`
 4. `flutter run`（実機 or シミュレータ）
 5. 確認内容:
-   - ペイウォールに価格（¥480 相当）が出る
+   - ペイウォールに価格（¥300）が出る
    - **購入** → Pro 解除（共有・プリセット 2 件目が通る）
    - **復元**（アプリについて or ペイウォール）
 

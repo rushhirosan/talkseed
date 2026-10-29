@@ -48,7 +48,7 @@ class PurchaseService {
   /// ストアから取得した Pro 商品（価格表示用）。未取得なら null。
   static ProductDetails? get proProduct => _proProduct;
 
-  /// ローカライズ済み価格文字列（例: `¥480`）。未取得なら null。
+  /// ローカライズ済み価格文字列（例: `¥300`）。未取得なら null。
   static String? get proPrice => _proProduct?.price;
 
   static bool get _storeSupported {
